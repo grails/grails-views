@@ -4,6 +4,7 @@ import grails.artefact.Enhances
 import grails.plugins.json.view.api.internal.JsonGrailsViewHelper
 import grails.views.Views
 import grails.views.api.GrailsView
+import grails.views.api.GrailsViewHelper
 
 /**
  * Extends default view API with additional methods
@@ -17,5 +18,10 @@ trait JsonView extends GrailsView {
     /**
      * Overrides the default helper with new methods specific to JSON building
      */
-    GrailsJsonViewHelper g = new JsonGrailsViewHelper(this)
+    private GrailsJsonViewHelper viewHelper = new JsonGrailsViewHelper(this)
+
+    @Override
+    GrailsJsonViewHelper getG() {
+        return viewHelper
+    }
 }

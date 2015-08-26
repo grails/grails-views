@@ -15,7 +15,6 @@ import org.springframework.context.MessageSource
  * @author Graeme Rocher
  * @since 1.0
  */
-@Enhances(Views.TYPE)
 @CompileStatic
 trait GrailsView extends View implements WriterProvider {
 
@@ -33,4 +32,11 @@ trait GrailsView extends View implements WriterProvider {
      * @return The current action name
      */
     String actionName
+
+
+    private GrailsViewHelper viewHelper = new DefaultGrailsViewHelper(this)
+
+    GrailsViewHelper getG() {
+        return this.viewHelper
+    }
 }
