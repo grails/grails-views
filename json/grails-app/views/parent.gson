@@ -1,0 +1,9 @@
+model {
+    Integer age
+}
+json {
+    name "Joe"
+    age age
+    child g.render(template:"child", model:[age:4])
+    children g.render(template:"child", collection:[1,2,3], var:'age')
+}

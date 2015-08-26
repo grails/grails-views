@@ -1,0 +1,20 @@
+ext {
+    grailsVersion = project.grailsVersion
+    gradleWrapperVersion = project.gradleWrapperVersion
+}
+
+apply plugin:'idea'
+
+
+subprojects {
+    group "org.grails"
+    version = "1.0.0-SNAPSHOT"
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+
+}
+
+version = "1.0.0-SNAPSHOT"

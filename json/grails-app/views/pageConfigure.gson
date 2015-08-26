@@ -1,0 +1,6 @@
+page.header(foo:"bar")
+page.contentType "application/hal+json"
+
+json.person {
+    name "Bob"
+}
