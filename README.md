@@ -20,7 +20,7 @@ Produces
 
 All JSON views implement the [JsonView](json/src/main/groovy/grails/plugins/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits.
 
-There is an implicit `json` variable which is an instance of [StreamingJsonBuilder](http://docs.groovy-lang.org/latest/html/gapi/groovy/json/StreamingJsonBuilder.html).
+There is an implicit `json` variable which is an instance of [StreamingJsonBuilder](http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html).
 
 Example usages:
 
