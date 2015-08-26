@@ -26,6 +26,7 @@ dependencies {
 	compile gradleApi()
 
 	compile "org.codehaus.groovy:groovy:2.4.4"
+	compile project(":grails-views-core")
 	compile project(":grails-views-json")
 }
 

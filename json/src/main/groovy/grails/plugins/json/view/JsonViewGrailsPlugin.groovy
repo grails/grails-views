@@ -16,7 +16,7 @@ A plugin that allows rendering of JSON views
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    def documentation = "http://bintray.com/grails/plugins/json-view"
+    def documentation = "http://github.com/grails/grails-views"
 
     // Extra (optional) plugin metadata
 
@@ -27,13 +27,13 @@ A plugin that allows rendering of JSON views
     def organization = [ name: "OCI", url: "http://www.ociweb.com/" ]
 
     // Any additional developers beyond the author specified above.
-    def developers = [ [ name: "Graeme Rocher", email: "graeme.rocher@gmail.co" ]]
+    def developers = [ [ name: "Graeme Rocher", email: "graeme.rocher@gmail.com" ]]
 
     // Location of the plugin's issue tracker.
-    def issueManagement = [ system: "Github", url: "http://github.com/grails3-plugins/json-view/issues" ]
+    def issueManagement = [ system: "Github", url: "http://github.com/grails/grails-views/issues" ]
 
     // Online location of the plugin's browseable source code.
-    def scm = [ url: "http://github.com/grails3-plugins/json-view" ]
+    def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
             jsonViewResolver(JsonViewResolver)
