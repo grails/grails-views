@@ -38,6 +38,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         }
         else {
             def url = templateResolver.resolveTemplate(path)
+            if(url == null) {
+                url = templateResolver.resolveTemplate("${path}.${extension}")
+            }
             if(url != null) {
                 return createTemplate(path, url)
             }
@@ -60,16 +63,21 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     /**
      * The class loader to use
      */
-    GroovyClassLoader classLoader
+    final GroovyClassLoader classLoader
     /**
      * The configuration to use for compilation
      */
-    CompilerConfiguration compilerConfiguration
+    final CompilerConfiguration compilerConfiguration
 
     /**
      * The view uri resolver
      */
     final ViewUriResolver viewUriResolver
+
+    /**
+     * The file extension used for script templates
+     */
+    final String extension
 
     /**
      * Whether to reload views
@@ -92,6 +100,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @param extension The file extension
      */
     ResolvableGroovyTemplateEngine(String baseClassName, String extension) {
+        this.extension = extension
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(baseClassName)
