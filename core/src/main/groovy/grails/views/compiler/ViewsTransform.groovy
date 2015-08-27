@@ -3,6 +3,7 @@ package grails.views.compiler
 import grails.compiler.traits.TraitInjector
 import grails.views.Views
 import groovy.transform.CompilationUnitAware
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.ast.ClassCodeExpressionTransformer
@@ -47,9 +48,7 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
 
     @Override
     void visit(ASTNode[] nodes, SourceUnit source) {
-        def traitInjectors = GrailsFactoriesLoader.loadFactories(TraitInjector).findAll() { TraitInjector ti ->
-            ti.artefactTypes.contains(Views.TYPE)
-        }
+        def traitInjectors = findTraitInjectors()
         for(classNode in source.AST.classes) {
             if ( classNode.isScript() ) {
                 for(injector in traitInjectors) {
@@ -59,6 +58,13 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
 
                 new ModelTypesVisitor(source).visitClass(classNode)
             }
+        }
+    }
+
+    @CompileDynamic
+    protected List<TraitInjector> findTraitInjectors() {
+        GrailsFactoriesLoader.loadFactories(TraitInjector).findAll() { TraitInjector ti ->
+            ti.artefactTypes.contains(Views.TYPE)
         }
     }
 

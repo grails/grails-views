@@ -1,6 +1,5 @@
 package grails.views.gradle.json
 
-import grails.plugins.json.view.JsonTemplate
 import grails.views.gradle.AbstractGroovyTemplateCompileTask
 import groovy.transform.CompileStatic
 
@@ -10,14 +9,14 @@ import groovy.transform.CompileStatic
  * @author Graeme Rocher
  */
 @CompileStatic
-class JsonTemplateCompilerTask extends AbstractGroovyTemplateCompileTask {
+class JsonViewCompilerTask extends AbstractGroovyTemplateCompileTask {
     @Override
     String getFileExtension() {
-        JsonTemplate.EXTENSION
+        "gson"
     }
 
     @Override
     String getScriptBaseName() {
-        JsonTemplate.name
+        "grails.plugins.json.view.JsonTemplate"
     }
 }

@@ -1,13 +1,16 @@
 package grails.views.gradle
 
-import grails.views.GenericGroovyTemplateCompiler
 import groovy.transform.CompileStatic
+import org.gradle.api.Action
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.gradle.process.ExecResult
+import org.gradle.process.JavaExecSpec
 
 /**
  * Abstract Gradle task for compiling templates, using GenericGroovyTemplateCompiler
@@ -21,12 +24,11 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
     @Optional
     String packageName
 
-    @Input
-    @Optional
-    String encoding = "UTF-8"
-
     @InputDirectory
     File srcDir
+
+    @Nested
+    ViewCompileOptions compileOptions = new ViewCompileOptions()
 
     @Override
     void setSource(Object source) {
@@ -48,17 +50,32 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
 
     @Override
     protected void compile() {
-        def compiler = new GenericGroovyTemplateCompiler(getScriptBaseName(),packageName, srcDir)
-        compiler.setTargetDirectory( getDestinationDir() )
-        compiler.setClasspath( getClasspath().asPath )
-        compiler.setSourceEncoding( encoding )
-        if(targetCompatibility != null) {
-            compiler.setTargetBytecode( targetCompatibility )
-        }
+        ExecResult result = project.javaexec(
+                new Action<JavaExecSpec>() {
+                    @Override
+                    void execute(JavaExecSpec javaExecSpec) {
+                        javaExecSpec.setMain("grails.views.GenericGroovyTemplateCompiler")
+                        javaExecSpec.setClasspath(getClasspath())
 
-        def ext = getFileExtension()
-        compiler.setDefaultScriptExtension(ext)
-        compiler.compile( project.files(srcDir).filter { File f -> f.name.endsWith(ext) }.files)
+                        def jvmArgs = compileOptions.forkOptions.jvmArgs
+                        if(jvmArgs) {
+                            javaExecSpec.jvmArgs(jvmArgs)
+                        }
+                        javaExecSpec.setMaxHeapSize( compileOptions.forkOptions.memoryMaximumSize )
+                        javaExecSpec.setMinHeapSize( compileOptions.forkOptions.memoryInitialSize )
+                        javaExecSpec.args(
+                                getScriptBaseName(),
+                                packageName,
+                                getFileExtension(),
+                                srcDir.canonicalPath,
+                                destinationDir.canonicalPath,
+                                targetCompatibility,
+                                compileOptions.encoding
+                        )
+                    }
+                }
+        )
+        result.assertNormalExitValue()
     }
 
     abstract String getFileExtension()
