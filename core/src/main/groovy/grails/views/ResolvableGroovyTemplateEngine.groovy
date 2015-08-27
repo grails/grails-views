@@ -8,7 +8,9 @@ import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.grails.io.watch.DirectoryWatcher
 
+import javax.annotation.PreDestroy
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -18,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @since 1.0
  */
 @CompileStatic
-abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
+abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements Closeable {
 
     private static final Template NULL_ENTRY = new Template() {
         @Override
@@ -68,7 +70,20 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      */
     final ViewUriResolver viewUriResolver
 
+    /**
+     * Whether to reload views
+     */
+    boolean enableReloading = false
+
+    /**
+     * Used to watch for file changes
+     */
+    private DirectoryWatcher directoryWatcher
+
+    private Map<String, String> watchedFilePaths = new ConcurrentHashMap<String, String>()
+
     private ASTTransformationCustomizer currentCustomizer
+
     /**
      * Creates a ResolvableGroovyTemplateEngine for the given base class name and file extension
      *
@@ -80,8 +95,40 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(baseClassName)
         this.currentCustomizer = new ASTTransformationCustomizer(new ViewsTransform())
-        compilerConfiguration.addCompilationCustomizers( currentCustomizer )
+        compilerConfiguration.addCompilationCustomizers( this.currentCustomizer )
         classLoader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, compilerConfiguration)
+    }
+
+    void setEnableReloading(boolean enableReloading) {
+        this.enableReloading = enableReloading
+        this.directoryWatcher = new DirectoryWatcher()
+        this.directoryWatcher.addListener(new DirectoryWatcher.FileChangeListener() {
+            @Override
+            void onChange(File file) {
+                def path = watchedFilePaths[file.canonicalPath]
+                if(path != null) {
+                    cachedTemplates.remove(path)
+                }
+            }
+
+            @Override
+            void onNew(File file) {
+                onChange(file)
+            }
+        })
+        this.directoryWatcher.start()
+    }
+
+    @Override
+    @PreDestroy
+    void close() throws IOException {
+        if(directoryWatcher != null) {
+            try {
+                directoryWatcher.setActive(false)
+            } catch (Throwable e) {
+                // ignore
+            }
+        }
     }
 
     /**
@@ -120,10 +167,22 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
 
     Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         // Had to do this hack because of a Groovy bug where ASTTransformationCustomizer are only applied once!?
-        compilerConfiguration.compilationCustomizers.remove(currentCustomizer)
-        currentCustomizer = new ASTTransformationCustomizer(new ViewsTransform())
-        compilerConfiguration.compilationCustomizers.add(currentCustomizer)
+        def file = new File(url.file)
+        if(directoryWatcher != null) {
+            def pathToFile = file.canonicalPath
+            if(!watchedFilePaths.containsKey(pathToFile)) {
+                watchedFilePaths.put(pathToFile, path)
+                directoryWatcher.addWatchFile(
+                        file
+                )
+            }
+        }
 
+
+        // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
+        compilerConfiguration.compilationCustomizers.remove(currentCustomizer)
+        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform()))
+        def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
         // now parse the class
         url.withReader { Reader reader ->
             def viewScriptName = GenericGroovyTemplateResolver.resolveTemplateName(packageName, path)

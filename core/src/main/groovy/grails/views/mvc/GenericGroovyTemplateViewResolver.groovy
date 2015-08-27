@@ -11,6 +11,8 @@ import org.springframework.web.servlet.View
 import org.springframework.web.servlet.view.AbstractUrlBasedView
 import org.springframework.web.servlet.view.UrlBasedViewResolver
 
+import javax.annotation.PostConstruct
+import javax.annotation.PreDestroy
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletRequest
  * @since 1.0
  */
 @CompileStatic
-class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver {
+class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver implements Closeable {
 
     public static final String SLASH = "/"
     @Autowired
@@ -37,7 +39,14 @@ class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver {
         setViewClass(GenericGroovyTemplateView)
     }
 
-
+    /**
+     * Sets whether to reload changes to templates
+     *
+     * @param enableReloading Reload changes if set to true
+     */
+    void setEnableReloading(boolean enableReloading) {
+        this.templateEngine.setEnableReloading(enableReloading)
+    }
 
     @Override
     protected AbstractUrlBasedView buildView(String viewName) throws Exception {
@@ -68,5 +77,10 @@ class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver {
             }
 
         }
+    }
+
+    @PreDestroy
+    void close() {
+        templateEngine.close()
     }
 }

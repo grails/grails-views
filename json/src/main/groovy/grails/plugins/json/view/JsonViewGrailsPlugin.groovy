@@ -1,6 +1,8 @@
 package grails.plugins.json.view
 
 import grails.plugins.*
+import grails.util.Environment
+import grails.views.ViewsEnvironment
 
 class JsonViewGrailsPlugin extends Plugin {
 
@@ -36,7 +38,9 @@ A plugin that allows rendering of JSON views
     def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
-            jsonViewResolver(JsonViewResolver)
+            jsonViewResolver(JsonViewResolver) {
+                enableReloading = ViewsEnvironment.isDevelopmentMode()
+            }
         } 
     }
 }
