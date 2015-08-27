@@ -138,7 +138,21 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @param cls The class
      * @return The template
      */
-    protected abstract Template createTemplate(Class<? extends Template> cls)
+    protected Template createTemplate(Class<? extends Template> cls) {
+        createTemplate(cls, null)
+    }
+
+    /**
+     * Creates a template for the given template class
+     *
+     * @param cls The class
+     * @return The template
+     */
+    protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
+        def template = new WritableScriptTemplate((Class<? extends WritableScript>) cls)
+        template.setSourceFile(sourceFile)
+        return template
+    }
 
     /**
      * Resolves a template for the given path
@@ -156,7 +170,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     @Override
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
         def cls = classLoader.parseClass(file)
-        return createTemplate(cls)
+        return createTemplate(cls, file)
     }
 
     @Override
@@ -189,7 +203,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
             def viewScriptName = GenericGroovyTemplateResolver.resolveTemplateName(packageName, path)
             try {
                 def clazz = classLoader.parseClass(new GroovyCodeSource(reader, viewScriptName, GroovyShell.DEFAULT_CODE_BASE))
-                return createTemplate(clazz)
+                return createTemplate(clazz, file)
             } catch (CompilationFailedException e) {
                 throw new ViewCompilationException(e, file.canonicalPath)
             }

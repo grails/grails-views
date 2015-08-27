@@ -39,10 +39,6 @@ class JsonTemplateEngine extends ResolvableGroovyTemplateEngine {
         }
     }
 
-    @Override
-    protected Template createTemplate(Class<? extends Template> cls) {
-        new WritableScriptTemplate( (Class<? extends WritableScript>)cls )
-    }
 
     @Override
     String getDynamicTemplatePrefix() {

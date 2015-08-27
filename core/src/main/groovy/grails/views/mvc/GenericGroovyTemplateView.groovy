@@ -4,6 +4,7 @@ import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.api.GrailsView
 import grails.views.api.HttpView
 import grails.web.mapping.LinkGenerator
+import grails.web.mime.MimeType
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -34,7 +35,15 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             def writable = template.make(map)
             prepareWritable(writable, httpServletRequest, httpServletResponse)
             def writer = httpServletResponse.writer
-            writable.writeTo(writer)
+            try {
+                writable.writeTo(writer)
+            } catch (RuntimeException e) {
+                if(!httpServletResponse.isCommitted()) {
+                    // set back to HTML to errors are rendered correctly
+                    httpServletResponse.setContentType(MimeType.HTML.name)
+                }
+                throw e
+            }
             writer.flush()
         }
     }

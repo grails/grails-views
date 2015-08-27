@@ -48,6 +48,13 @@ class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver implements 
         this.templateEngine.setEnableReloading(enableReloading)
     }
 
+    /**
+     * @param name The name of the package to use
+     */
+    void setPackageName(String name) {
+        this.templateEngine.setPackageName(name)
+    }
+
     @Override
     protected AbstractUrlBasedView buildView(String viewName) throws Exception {
         GenericGroovyTemplateView view = (GenericGroovyTemplateView)super.buildView(viewName)

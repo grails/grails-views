@@ -11,8 +11,13 @@ import groovy.transform.CompileStatic
 abstract class WritableScript extends Script implements Writable, WriterProvider {
 
     Writer out
+    File sourceFile
+
     private Map<String, Class> modelTypes
 
+    /**
+     * @return The current writer
+     */
     Writer getOut() {
         return out
     }
@@ -20,9 +25,23 @@ abstract class WritableScript extends Script implements Writable, WriterProvider
     @Override
     final Writer writeTo(Writer out) throws IOException {
         this.out = out
-        return doWrite(out)
+        try {
+            return doWrite(out)
+        } catch (Throwable e) {
+            if(ViewsEnvironment.isDevelopmentMode() && sourceFile != null) {
+                throw new ViewRenderException("Error rendering view: ${e.message}", e, sourceFile, this)
+            }
+            else {
+                throw new ViewException("Error rendering view: ${e.message}", e)
+            }
+        }
     }
 
+    /**
+     * Subclasses should implement to perform the write
+     * @param writer The writer
+     * @return The original writer or a wrapped version
+     */
     abstract Writer doWrite(Writer writer)
 
     /**

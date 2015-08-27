@@ -10,9 +10,15 @@ import groovy.transform.CompileStatic
 class WritableScriptTemplate implements Template {
 
     Class<? extends WritableScript> templateClass
+    File sourceFile
 
     WritableScriptTemplate(Class<? extends WritableScript> templateClass) {
         this.templateClass = templateClass
+    }
+
+    WritableScriptTemplate(Class<? extends WritableScript> templateClass, File sourceFile) {
+        this.templateClass = templateClass
+        this.sourceFile = sourceFile
     }
 
     @Override
@@ -27,6 +33,7 @@ class WritableScriptTemplate implements Template {
         if(!binding.isEmpty()) {
             writableTemplate.binding = new Binding(binding)
         }
+        writableTemplate.setSourceFile(sourceFile)
         return writableTemplate
     }
 }
