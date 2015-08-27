@@ -1397,5 +1397,6 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="grails-views-core" exported="" />
   </component>
 </module>
