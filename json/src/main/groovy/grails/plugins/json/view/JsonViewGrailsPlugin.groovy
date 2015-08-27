@@ -2,6 +2,7 @@ package grails.plugins.json.view
 
 import grails.plugins.*
 import grails.util.Environment
+import grails.util.Metadata
 import grails.views.ViewsEnvironment
 
 class JsonViewGrailsPlugin extends Plugin {
@@ -40,6 +41,7 @@ A plugin that allows rendering of JSON views
     Closure doWithSpring() { {->
             jsonViewResolver(JsonViewResolver) {
                 enableReloading = ViewsEnvironment.isDevelopmentMode()
+                packageName = Metadata.getCurrent().getApplicationName()
             }
         } 
     }
