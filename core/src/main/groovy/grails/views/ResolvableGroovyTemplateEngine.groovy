@@ -118,6 +118,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
                 def path = watchedFilePaths[file.canonicalPath]
                 if(path != null) {
                     cachedTemplates.remove(path)
+                    cachedTemplates.remove("${path}.${extension}".toString())
                 }
             }
 
