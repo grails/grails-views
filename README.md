@@ -6,6 +6,15 @@ Initial implementation includes JSON views powered by Groovy's JsonBuilder.
 
 ## JSON Views
 
+
+### Installation
+
+Add the following dependency to your `build.gradle`:
+
+    runtime "org.grails.plugins:grails-views-json:1.0.0-SNAPSHOT"
+
+### Usage
+
 JSON views go into the `grails-app/views` directory and end with the `.gson` suffix. They are regular Groovy scripts and can be opened in any Groovy editor.
 
 Example JSON view:
@@ -90,5 +99,23 @@ To customize content types and headers use the `page` object from [HttpView](cor
         name "bob"
     }
 
+### Adding New Helper Methods via Traits
 
+You can add new methods to JSON views via traits. For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) uses the `Enhances` annotation to add the `page` object to all views:
 
+    import grails.artefact.Enhances
+    import grails.views.Views
+
+    @Enhances(Views.TYPE)
+    trait HttpView {
+
+        /**
+         * @return The page object
+         */
+        Page page
+        ...
+    }
+
+The result is all JSON views have a `page` object that can be used to control the HTTP response:
+
+    page.header "Token", "foo"
