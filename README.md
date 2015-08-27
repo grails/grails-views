@@ -99,9 +99,23 @@ To customize content types and headers use the `page` object from [HttpView](cor
         name "bob"
     }
 
+### Changing the view base class
+
+All JSON views subclass the [JsonTemplate](json/src/main/groovy/grails/plugins/json/view/JsonTemplate.groovy) class by default.
+
+You can however change the subclass (which should be a subclass of `JsonTemplate`) using configuration:
+
+    grails:
+        views:
+            json:
+                compileStatic: true
+                baseClass: com.example.MyCustomJsonTemplate
+
 ### Adding New Helper Methods via Traits
 
-You can add new methods to JSON views via traits. For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) uses the `Enhances` annotation to add the `page` object to all views:
+Alternatively, rather than modifying the base class, you can instead just add new methods via traits.
+
+For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) uses the `Enhances` annotation to add the `page` object to all views:
 
     import grails.artefact.Enhances
     import grails.views.Views
