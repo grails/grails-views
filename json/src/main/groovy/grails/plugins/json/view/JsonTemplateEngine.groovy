@@ -15,6 +15,8 @@ import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
  */
 @CompileStatic
 class JsonTemplateEngine extends ResolvableGroovyTemplateEngine {
+    public static final String VIEW_BASE_CLASS = 'grails.views.json.baseClass'
+    public static final String COMPILE_STATIC = 'grails.views.json.compileStatic'
 
 
     /**

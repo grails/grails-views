@@ -39,7 +39,9 @@ A plugin that allows rendering of JSON views
     def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
-            jsonViewResolver(JsonViewResolver) {
+            String scriptBaseClass = config.getProperty(JsonTemplateEngine.VIEW_BASE_CLASS, JsonTemplate.name)
+            boolean compileStatic = config.getProperty(JsonTemplateEngine.COMPILE_STATIC, Boolean, true)
+            jsonViewResolver(JsonViewResolver, scriptBaseClass, compileStatic) {
                 enableReloading = ViewsEnvironment.isDevelopmentMode()
                 packageName = Metadata.getCurrent().getApplicationName()
             }
