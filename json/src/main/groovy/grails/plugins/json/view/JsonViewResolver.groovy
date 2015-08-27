@@ -38,7 +38,7 @@ class JsonViewResolver extends GenericGroovyTemplateViewResolver {
             def defaultJsonRenderer = rendererRegistry.findRenderer(MimeType.JSON, Object.class)
 
             rendererRegistry.addDefaultRenderer(
-                    new JsonViewJsonRenderer<Object>(Object.class, (JsonTemplateEngine)getTemplateEngine() , proxyHandler, rendererRegistry, defaultJsonRenderer)
+                    new JsonViewJsonRenderer<Object>(Object.class, this , proxyHandler, rendererRegistry, defaultJsonRenderer)
             )
         }
     }

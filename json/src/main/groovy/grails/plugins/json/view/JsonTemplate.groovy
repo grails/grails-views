@@ -12,7 +12,6 @@ import org.grails.buffer.FastStringWriter
  * All JSON views subclass this superclass
  *
  *  TODO:
- *      - renderer integration
  *      - declaring templates for types
  *      - HAL integration
  *
