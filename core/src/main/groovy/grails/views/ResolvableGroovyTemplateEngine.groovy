@@ -7,6 +7,7 @@ import groovy.text.TemplateEngine
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.grails.io.watch.DirectoryWatcher
 
@@ -186,8 +187,12 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         // now parse the class
         url.withReader { Reader reader ->
             def viewScriptName = GenericGroovyTemplateResolver.resolveTemplateName(packageName, path)
-            def clazz = classLoader.parseClass(new GroovyCodeSource(reader, viewScriptName, GroovyShell.DEFAULT_CODE_BASE))
-            return createTemplate(clazz)
+            try {
+                def clazz = classLoader.parseClass(new GroovyCodeSource(reader, viewScriptName, GroovyShell.DEFAULT_CODE_BASE))
+                return createTemplate(clazz)
+            } catch (CompilationFailedException e) {
+                throw new ViewCompilationException(e, file.canonicalPath)
+            }
         }
     }
 
