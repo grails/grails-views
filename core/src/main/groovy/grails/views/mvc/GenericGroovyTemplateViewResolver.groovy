@@ -56,6 +56,13 @@ class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver implements 
     }
 
     @Override
+    protected View loadView(String viewName, Locale locale) throws Exception {
+        def view = (AbstractUrlBasedView)super.loadView(viewName, locale)
+
+        return view
+    }
+
+    @Override
     protected AbstractUrlBasedView buildView(String viewName) throws Exception {
         GenericGroovyTemplateView view = (GenericGroovyTemplateView)super.buildView(viewName)
         view.templateEngine = templateEngine

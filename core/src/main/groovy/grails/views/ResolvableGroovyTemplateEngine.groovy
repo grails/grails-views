@@ -168,9 +168,33 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @return The template or null if it doesn't exist
      */
     Template resolveTemplate(String path) {
-        def template = cachedTemplates[path]
+        resolveTemplate(path, Locale.ENGLISH)
+    }
+
+    /**
+     * Resolves a template for the given path
+     * @param path The path to the template
+     * @param locale The locale of the template
+     *
+     * @return The template or null if it doesn't exist
+     */
+    Template resolveTemplate(String path, Locale locale) {
+        String originalPath = path - ".$extension"
+        String localeSpecificPath = "${originalPath}_$locale"
+        Template template = cachedTemplates[localeSpecificPath]
+        if(template.is(NULL_ENTRY)) {
+            localeSpecificPath = "${originalPath}_$locale.language"
+            template = cachedTemplates[localeSpecificPath]
+        }
+        if(template.is(NULL_ENTRY)) {
+            template = cachedTemplates[originalPath]
+        }
         if(template.is(NULL_ENTRY)) {
             return null
+        }
+        else {
+            cachedTemplates.put(localeSpecificPath, template)
+            cachedTemplates.put("${originalPath}_$locale".toString(), template)
         }
         return template
     }

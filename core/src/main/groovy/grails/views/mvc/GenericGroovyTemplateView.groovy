@@ -28,12 +28,13 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     @Override
     protected void renderMergedOutputModel(Map<String, Object> map, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-        Template template = templateEngine.resolveTemplate(url)
+        def locale = localeResolver?.resolveLocale(httpServletRequest)
+        Template template = templateEngine.resolveTemplate(url, locale)
         if(template != null) {
 
             httpServletResponse.setContentType( getContentType() )
             def writable = template.make(map)
-            prepareWritable(writable, httpServletRequest, httpServletResponse)
+            prepareWritable(writable, httpServletRequest, httpServletResponse, locale)
             def writer = httpServletResponse.writer
             try {
                 writable.writeTo(writer)
@@ -48,13 +49,13 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         }
     }
 
-    protected void prepareWritable(Writable writable, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    protected void prepareWritable(Writable writable, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale) {
         if (writable instanceof GrailsView) {
             def grailsView = (GrailsView) writable
             grailsView.setLinkGenerator(linkGenerator)
             grailsView.setTemplateEngine(templateEngine)
             grailsView.setLocale(
-                localeResolver?.resolveLocale(httpServletRequest)
+                locale
             )
 
 
@@ -115,6 +116,6 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     @Override
     boolean checkResource(Locale locale) throws Exception {
-        return templateEngine?.resolveTemplate(url) != null
+        return templateEngine?.resolveTemplate(url, locale) != null
     }
 }

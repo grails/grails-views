@@ -117,6 +117,16 @@ To customize content types and headers use the `page` object from [HttpView](cor
         name "bob"
     }
 
+## I18n & Locale Integration
+
+You can lookup i18n messages use the `g.message` method:
+
+    json.error {
+        description g.message(code:'default.error.message')
+    }
+
+You can also create locale specific views by appending the locale to view name. For example `person_de.gson` for German or `person.gson` for the default.
+
 ### Changing the view base class
 
 All JSON views subclass the [JsonTemplate](json/src/main/groovy/grails/plugins/json/view/JsonTemplate.groovy) class by default.
