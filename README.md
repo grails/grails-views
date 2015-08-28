@@ -45,7 +45,7 @@ Produces
 
     {"person":{"name":"bob"}}
 
-All JSON views implement the [JsonView](json/src/main/groovy/grails/plugins/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [JsonTemplate](json/src/main/groovy/grails/plugins/json/view/JsonTemplate.groovy) base class.
+All JSON views implement the [JsonView](json/src/main/groovy/grails/plugin/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [JsonTemplate](json/src/main/groovy/grails/plugin/json/view/JsonTemplate.groovy) base class.
 
 There is an implicit `json` variable which is an instance of [StreamingJsonBuilder](http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html).
 
@@ -129,7 +129,7 @@ You can also create locale specific views by appending the locale to view name. 
 
 ### Changing the view base class
 
-All JSON views subclass the [JsonTemplate](json/src/main/groovy/grails/plugins/json/view/JsonTemplate.groovy) class by default.
+All JSON views subclass the [JsonTemplate](json/src/main/groovy/grails/plugin/json/view/JsonTemplate.groovy) class by default.
 
 You can however change the subclass (which should be a subclass of `JsonTemplate`) using configuration:
 
