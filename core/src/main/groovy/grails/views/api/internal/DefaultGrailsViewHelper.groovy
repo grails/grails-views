@@ -1,13 +1,9 @@
 package grails.views.api.internal
 
-import grails.views.ResolvableGroovyTemplateEngine
-import grails.views.ViewException
 import grails.views.api.GrailsView
 import grails.views.api.GrailsViewHelper
 import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileStatic
-import org.grails.buffer.FastStringWriter
-
 /**
  * Default methods for views, additional methods can be added via traits
  *

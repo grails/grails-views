@@ -10,7 +10,7 @@ class JsonViewTemplateEngineSpec extends Specification {
 
     void "Test static compilation"() {
         when:"An engine is created and a template parsed"
-        def templateEngine = new JsonTemplateEngine()
+        def templateEngine = new JsonViewTemplateEngine()
         def template = templateEngine.createTemplate('''
 model {
     URL url
@@ -44,7 +44,7 @@ json.site {
 
     void "Test parsing a JSON view template"() {
         when:"An engine is created and a template parsed"
-        def templateEngine = new JsonTemplateEngine()
+        def templateEngine = new JsonViewTemplateEngine()
         def template = templateEngine.createTemplate('''
 json.person {
     name "bob"
@@ -60,7 +60,7 @@ json.person {
 
     void "Test pretty print a JSON view template"() {
         when:"An engine is created and a template parsed"
-        def templateEngine = new JsonTemplateEngine()
+        def templateEngine = new JsonViewTemplateEngine()
         def template = templateEngine.createTemplate('''
 json.person {
     name "bob"
@@ -84,7 +84,7 @@ json.person {
 
     void "Test resolveTemplate method"() {
         when:"A templateEngine is created"
-        def templateEngine = new JsonTemplateEngine()
+        def templateEngine = new JsonViewTemplateEngine()
         def template = templateEngine.resolveTemplate("/foo.gson")
 
         then:"The template exists"

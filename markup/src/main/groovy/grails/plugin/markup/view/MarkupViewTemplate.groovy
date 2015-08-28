@@ -11,13 +11,13 @@ import groovy.text.markup.TemplateConfiguration
  * @author Graeme Rocher
  * @since 1.0
  */
-abstract class MarkupTemplate extends BaseTemplate implements WritableScript {
+abstract class MarkupViewTemplate extends BaseTemplate implements WritableScript {
 
     public static final String EXTENSION = "gxml"
 
     File sourceFile
 
-    MarkupTemplate(MarkupTemplateEngine templateEngine, Map model, Map<String, String> modelTypes, TemplateConfiguration configuration) {
+    MarkupViewTemplate(MarkupTemplateEngine templateEngine, Map model, Map<String, String> modelTypes, TemplateConfiguration configuration) {
         super(templateEngine, model, modelTypes, configuration)
     }
 

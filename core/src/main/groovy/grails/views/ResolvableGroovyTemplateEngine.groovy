@@ -84,6 +84,10 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     protected CompilerConfiguration compilerConfiguration
 
     /**
+     * The view config
+     */
+    protected final ViewConfiguration viewConfiguration
+    /**
      * Used to watch for file changes
      */
     private DirectoryWatcher directoryWatcher
@@ -97,7 +101,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @param baseClassName The base class name
      * @param extension The file extension
      */
-    ResolvableGroovyTemplateEngine(TemplateConfiguration configuration) {
+    ResolvableGroovyTemplateEngine(ViewConfiguration configuration) {
+        this.viewConfiguration = configuration
         this.extension = configuration.extension
         setPackageName(configuration.packageName)
         setEnableReloading(configuration.enableReloading)
@@ -276,6 +281,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     protected void prepareCustomizers() {
         // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
         compilerConfiguration.compilationCustomizers.clear()
-        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform()))
+        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform(extension, dynamicTemplatePrefix)))
     }
 }

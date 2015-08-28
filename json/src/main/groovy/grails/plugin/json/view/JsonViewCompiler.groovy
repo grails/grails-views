@@ -15,7 +15,7 @@ import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
  */
 @CompileStatic
 @InheritConstructors
-class JsonViewsCompiler extends GenericGroovyTemplateCompiler {
+class JsonViewCompiler extends GenericGroovyTemplateCompiler {
 
     boolean compileStatic = true
 
@@ -26,6 +26,9 @@ class JsonViewsCompiler extends GenericGroovyTemplateCompiler {
             configuration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension"), CompileStatic.class));
         }
+        configuration.setScriptBaseClass(
+                viewConfiguration.baseTemplateClass.name
+        )
 
     }
 
@@ -43,7 +46,14 @@ class JsonViewsCompiler extends GenericGroovyTemplateCompiler {
         String encoding = args[6]
         boolean compileStatic = Boolean.valueOf(args[7])
 
-        def compiler = new JsonViewsCompiler(scriptBaseName,packageName, srcDir)
+        def baseClass = Thread.currentThread().contextClassLoader.loadClass(scriptBaseName)
+        def configuration = new JsonViewConfiguration(
+                baseTemplateClass: baseClass,
+                packageName: packageName,
+                extension: fileExtension
+        )
+
+        def compiler = new JsonViewCompiler(configuration, srcDir)
         compiler.setCompileStatic(compileStatic)
         compiler.setTargetDirectory( destinationDir )
         compiler.setSourceEncoding( encoding )

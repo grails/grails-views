@@ -6,7 +6,7 @@ package grails.views
  * @author Graeme Rocher
  * @since 1.0
  */
-class GenericTemplateConfiguration implements TemplateConfiguration {
+class GenericViewConfiguration implements ViewConfiguration {
 
     boolean enableReloading
     String packageName

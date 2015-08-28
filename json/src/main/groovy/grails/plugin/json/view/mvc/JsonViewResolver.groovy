@@ -2,11 +2,10 @@ package grails.plugin.json.view.mvc
 
 import grails.core.support.proxy.ProxyHandler
 import grails.plugin.json.renderer.JsonViewJsonRenderer
-import grails.plugin.json.view.JsonTemplate
-import grails.plugin.json.view.JsonTemplateEngine
+import grails.plugin.json.view.JsonViewTemplate
+import grails.plugin.json.view.JsonViewTemplateEngine
 import grails.plugin.json.view.JsonViewConfiguration
 import grails.rest.render.RendererRegistry
-import grails.views.TemplateConfiguration
 import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.web.mime.MimeType
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +17,7 @@ import javax.annotation.PostConstruct
  */
 class JsonViewResolver extends GenericGroovyTemplateViewResolver {
 
-    public static final String JSON_VIEW_SUFFIX = ".${JsonTemplate.EXTENSION}"
+    public static final String JSON_VIEW_SUFFIX = ".${JsonViewTemplate.EXTENSION}"
 
     @Autowired(required = false)
     ProxyHandler proxyHandler
@@ -28,12 +27,12 @@ class JsonViewResolver extends GenericGroovyTemplateViewResolver {
 
 
     JsonViewResolver(JsonViewConfiguration configuration = new JsonViewConfiguration()) {
-        super(new JsonTemplateEngine(configuration))
+        super(new JsonViewTemplateEngine(configuration))
         setSuffix(JSON_VIEW_SUFFIX)
         setContentType(MimeType.JSON.name)
     }
 
-    JsonViewResolver(JsonTemplateEngine templateEngine) {
+    JsonViewResolver(JsonViewTemplateEngine templateEngine) {
         super(templateEngine)
     }
 

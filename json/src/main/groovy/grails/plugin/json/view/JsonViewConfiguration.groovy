@@ -1,6 +1,6 @@
 package grails.plugin.json.view
 
-import grails.views.GenericTemplateConfiguration
+import grails.views.GenericViewConfiguration
 
 /**
  * Default configuration for JSON views
@@ -8,11 +8,11 @@ import grails.views.GenericTemplateConfiguration
  * @author Graeme Rocher
  * @since 1.0
  */
-class JsonViewConfiguration extends GenericTemplateConfiguration {
+class JsonViewConfiguration extends GenericViewConfiguration {
 
     JsonViewConfiguration() {
-        setExtension(JsonTemplate.EXTENSION)
+        setExtension(JsonViewTemplate.EXTENSION)
         setCompileStatic(true)
-        setBaseTemplateClass(JsonTemplate)
+        setBaseTemplateClass(JsonViewTemplate)
     }
 }

@@ -20,7 +20,7 @@ import org.grails.buffer.FastStringWriter
  */
 @CompileStatic
 @InheritConstructors
-abstract class JsonTemplate extends AbstractWritableScript {
+abstract class JsonViewTemplate extends AbstractWritableScript {
 
     public static final String EXTENSION = "gson"
 

@@ -6,7 +6,7 @@ package grails.views
  * @author Graeme Rocher
  * @since 1.0
  */
-interface TemplateConfiguration {
+interface ViewConfiguration {
     /**
      * @return Should compile statically
      */

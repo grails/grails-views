@@ -3,7 +3,6 @@ package grails.plugin.json.view
 import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.plugins.*
 import grails.util.Metadata
-import grails.views.GenericTemplateConfiguration
 import grails.views.ViewsEnvironment
 
 class JsonViewGrailsPlugin extends Plugin {
@@ -41,8 +40,8 @@ A plugin that allows rendering of JSON views
 
     Closure doWithSpring() { {->
             jsonViewConfiguration(JsonViewConfiguration) {
-                baseTemplateClass = config.getProperty(JsonTemplateEngine.VIEW_BASE_CLASS, Class, JsonTemplate)
-                compileStatic = config.getProperty(JsonTemplateEngine.COMPILE_STATIC, Boolean, true)
+                baseTemplateClass = config.getProperty(JsonViewTemplateEngine.VIEW_BASE_CLASS, Class, JsonViewTemplate)
+                compileStatic = config.getProperty(JsonViewTemplateEngine.COMPILE_STATIC, Boolean, true)
                 enableReloading = ViewsEnvironment.isDevelopmentMode()
                 packageName = Metadata.getCurrent().getApplicationName()
             }

@@ -20,24 +20,19 @@ class GenericGroovyTemplateCompiler {
 
     String packageName = ""
     File sourceDir
+    final ViewConfiguration viewConfiguration
 
-    GenericGroovyTemplateCompiler(String packageName, File sourceDir) {
-        this(null, packageName, sourceDir)
-    }
-
-    GenericGroovyTemplateCompiler(String scriptBaseName, String packageName, File sourceDir) {
-        this.packageName = packageName
+    GenericGroovyTemplateCompiler(ViewConfiguration configuration, File sourceDir) {
+        this.viewConfiguration = configuration
+        this.packageName = configuration.packageName
         this.sourceDir = sourceDir
-        if(scriptBaseName != null) {
-            configuration.scriptBaseClass = scriptBaseName
-        }
 
         configureCompiler()
     }
 
     protected CompilerConfiguration configureCompiler() {
         configuration.compilationCustomizers.clear()
-        configuration.addCompilationCustomizers(new ASTTransformationCustomizer(new ViewsTransform()))
+        configuration.addCompilationCustomizers(new ASTTransformationCustomizer(new ViewsTransform(viewConfiguration.extension)))
         return configuration
     }
 
@@ -81,7 +76,14 @@ class GenericGroovyTemplateCompiler {
         String targetCompatibility = args[5]
         String encoding = args[6]
 
-        def compiler = new GenericGroovyTemplateCompiler(scriptBaseName,packageName, srcDir)
+
+        def baseClass = Thread.currentThread().contextClassLoader.loadClass(scriptBaseName)
+        def configuration = new GenericViewConfiguration(
+                baseTemplateClass: baseClass,
+                packageName: packageName,
+                extension: fileExtension
+        )
+        def compiler = new GenericGroovyTemplateCompiler(configuration, srcDir)
         compiler.setTargetDirectory( destinationDir )
         compiler.setSourceEncoding( encoding )
         if(targetCompatibility != null) {

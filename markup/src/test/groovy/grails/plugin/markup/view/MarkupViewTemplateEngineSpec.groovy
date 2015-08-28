@@ -27,7 +27,7 @@ cars {
         def writable = template.make(cars: [[make:"Audi", model:"A5"]])
 
         then:"The writable is of the correct type"
-        writable instanceof MarkupTemplate
+        writable instanceof MarkupViewTemplate
 
         when:"The writable writes"
 

@@ -1,6 +1,7 @@
 package grails.views.compiler
 
 import grails.compiler.traits.TraitInjector
+import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.Views
 import groovy.text.markup.MarkupTemplateEngine
 import groovy.transform.CompilationUnitAware
@@ -47,13 +48,27 @@ import java.lang.reflect.Modifier
 @CompileStatic
 class ViewsTransform implements ASTTransformation, CompilationUnitAware {
     public static final String APPLIED = "grails.views.transform.APPLIED"
+
+    final String extension
+    String dynamicPrefix
     CompilationUnit compilationUnit
+
+    ViewsTransform(String extension, String dynamicPrefix = null) {
+        this.extension = extension
+        this.dynamicPrefix = dynamicPrefix
+    }
 
     @Override
     void visit(ASTNode[] nodes, SourceUnit source) {
         def traitInjectors = findTraitInjectors()
 
         def classes = source.AST.classes
+
+
+        def sourceName = source.name
+        if(!sourceName.endsWith("_$extension") && (dynamicPrefix != null && !sourceName.startsWith(dynamicPrefix))) {
+            return
+        }
         for(cn in classes) {
             ClassNode classNode = (ClassNode)cn
             if(!classNode.getNodeMetaData(APPLIED)) {

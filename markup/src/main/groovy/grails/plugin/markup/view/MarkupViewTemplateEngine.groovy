@@ -73,6 +73,6 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     @Override
     String getDynamicTemplatePrefix() {
-        "MarkupView".intern()
+        "GeneratedMarkupTemplate".intern()
     }
 }
