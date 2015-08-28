@@ -118,23 +118,30 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     void setEnableReloading(boolean enableReloading) {
         this.enableReloading = enableReloading
-        this.directoryWatcher = new DirectoryWatcher()
-        this.directoryWatcher.addListener(new DirectoryWatcher.FileChangeListener() {
-            @Override
-            void onChange(File file) {
-                def path = watchedFilePaths[file.canonicalPath]
-                if(path != null) {
-                    cachedTemplates.remove(path)
-                    cachedTemplates.remove("${path}.${extension}".toString())
+        if(enableReloading && directoryWatcher == null) {
+            this.directoryWatcher = new DirectoryWatcher()
+            this.directoryWatcher.addListener(new DirectoryWatcher.FileChangeListener() {
+                @Override
+                void onChange(File file) {
+                    def path = watchedFilePaths[file.canonicalPath]
+                    if(path != null) {
+                        path = path - ".$extension".toString()
+                        def keysToRemove = cachedTemplates.keySet().findAll() { String key ->
+                            key.startsWith(path)
+                        }
+                        for(key in keysToRemove) {
+                            cachedTemplates.remove(key)
+                        }
+                    }
                 }
-            }
 
-            @Override
-            void onNew(File file) {
-                onChange(file)
-            }
-        })
-        this.directoryWatcher.start()
+                @Override
+                void onNew(File file) {
+                    onChange(file)
+                }
+            })
+            this.directoryWatcher.start()
+        }
     }
 
     @Override
