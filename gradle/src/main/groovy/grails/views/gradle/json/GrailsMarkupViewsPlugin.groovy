@@ -1,0 +1,19 @@
+package grails.views.gradle.json
+
+import grails.views.gradle.AbstractGroovyTemplatePlugin
+import grails.views.gradle.markup.MarkupViewCompilerTask
+import groovy.transform.CompileStatic
+
+/**
+ * A plugin for compiling markup templates
+ *
+ * @author Graeme Rocher
+ * @since 1.0
+ */
+@CompileStatic
+class GrailsMarkupViewsPlugin extends AbstractGroovyTemplatePlugin {
+
+    GrailsMarkupViewsPlugin() {
+        super(MarkupViewCompilerTask, "gxml")
+    }
+}
