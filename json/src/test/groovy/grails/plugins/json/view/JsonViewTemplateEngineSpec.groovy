@@ -1,5 +1,6 @@
 package grails.plugins.json.view
 
+import grails.views.ViewCompilationException
 import groovy.text.Template
 import spock.lang.Specification
 
@@ -7,6 +8,40 @@ import spock.lang.Specification
  * Created by graemerocher on 21/08/15.
  */
 class JsonViewTemplateEngineSpec extends Specification {
+
+    void "Test static compilation"() {
+        when:"An engine is created and a template parsed"
+        def templateEngine = new JsonTemplateEngine()
+        def template = templateEngine.createTemplate('''
+model {
+    URL url
+}
+json.site {
+    protocol url.protocol
+}
+''')
+
+        def writer = new StringWriter()
+        template.make(url: new URL("http://foo.com")).writeTo(writer)
+
+        then:"The output is correct"
+        writer.toString() == '{"site":{"protocol":"http"}}'
+
+        when:"A template is compiled with a compilation error"
+        template = templateEngine.createTemplate('''
+model {
+    URL url
+}
+json.site {
+    protocol url.frotocol
+}
+''')
+        writer = new StringWriter()
+        template.make(url: new URL("http://foo.com")).writeTo(writer)
+
+        then:"A compilation error is thrown"
+        thrown ViewCompilationException
+    }
 
     void "Test parsing a JSON view template"() {
         when:"An engine is created and a template parsed"

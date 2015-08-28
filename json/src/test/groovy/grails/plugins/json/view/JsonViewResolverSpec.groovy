@@ -1,5 +1,6 @@
 package grails.plugins.json.view
 
+import grails.views.GenericGroovyTemplateResolver
 import grails.web.mapping.LinkGenerator
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
@@ -21,6 +22,7 @@ class JsonViewResolverSpec extends Specification {
                 return this.buildView(viewName)
             }
         }
+        configureIfRunFromRoot(resolver)
 
         when:"A view is resolved"
         def view = resolver.resolveViewName("/parent", Locale.ENGLISH)
@@ -41,6 +43,8 @@ class JsonViewResolverSpec extends Specification {
             }
         }
 
+        configureIfRunFromRoot(resolver)
+
         def linkGenerator = Mock(LinkGenerator)
         linkGenerator.link(_) >> { args -> "http://foo.com/${args[0].controller}"}
         resolver.linkGenerator = linkGenerator
@@ -55,6 +59,7 @@ class JsonViewResolverSpec extends Specification {
         response.contentAsString == '{"person":{"name":"bob","homepage":"http://foo.com/person"}}'
     }
 
+
     void "Test that a resolved JSON view can configure the page response"() {
         given:"A view resolver"
         def resolver = new JsonViewResolver(){
@@ -63,6 +68,8 @@ class JsonViewResolverSpec extends Specification {
                 return this.buildView(viewName)
             }
         }
+        configureIfRunFromRoot(resolver)
+
 
         when:"A view is resolved"
         def view = resolver.resolveViewName("/pageConfigure", Locale.ENGLISH)
@@ -73,4 +80,14 @@ class JsonViewResolverSpec extends Specification {
         response.getHeader("foo") == "bar"
         response.contentType == 'application/hal+json'
     }
+
+    protected void configureIfRunFromRoot(JsonViewResolver resolver) {
+        def parent = new File("./json/grails-app/views")
+        if (parent.exists()) {
+            resolver.setTemplateResolver(
+                    new GenericGroovyTemplateResolver(baseDir: parent)
+            )
+        }
+    }
+
 }

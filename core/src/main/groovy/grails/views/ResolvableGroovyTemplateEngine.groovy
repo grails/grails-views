@@ -204,9 +204,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         }
 
 
-        // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
-        compilerConfiguration.compilationCustomizers.remove(currentCustomizer)
-        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform()))
+
+        prepareCustomizers()
         def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
         // now parse the class
         url.withReader { Reader reader ->
@@ -222,11 +221,22 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
-
+        prepareCustomizers()
         // if we reach here, use a throw away child class loader for dynamic templates
-        def clazz = new GroovyClassLoader(classLoader).parseClass(new GroovyCodeSource(reader, getDynamicTemplatePrefix() + templateCounter++, GroovyShell.DEFAULT_CODE_BASE))
-        return createTemplate(clazz)
+        def fileName = getDynamicTemplatePrefix() + templateCounter++
+        try {
+            def clazz = new GroovyClassLoader(classLoader).parseClass(new GroovyCodeSource(reader, fileName, GroovyShell.DEFAULT_CODE_BASE))
+            return createTemplate(clazz)
+        } catch (CompilationFailedException e) {
+            throw new ViewCompilationException(e, fileName)
+        }
     }
 
     abstract String getDynamicTemplatePrefix()
+
+    protected void prepareCustomizers() {
+        // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
+        compilerConfiguration.compilationCustomizers.remove(currentCustomizer)
+        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform()))
+    }
 }
