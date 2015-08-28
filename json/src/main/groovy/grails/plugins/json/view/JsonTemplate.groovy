@@ -2,7 +2,7 @@ package grails.plugins.json.view
 
 import grails.plugins.json.builder.JsonOutput
 import grails.plugins.json.builder.StreamingJsonBuilder
-import grails.views.WritableScript
+import grails.views.AbstractWritableScript
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.buffer.FastStringWriter
@@ -20,7 +20,7 @@ import org.grails.buffer.FastStringWriter
  */
 @CompileStatic
 @InheritConstructors
-abstract class JsonTemplate extends WritableScript {
+abstract class JsonTemplate extends AbstractWritableScript {
 
     public static final String EXTENSION = "gson"
 

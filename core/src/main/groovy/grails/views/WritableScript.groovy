@@ -1,69 +1,33 @@
 package grails.views
 
-import groovy.transform.CompileStatic
-
 /**
- * A script that is writable
+ * Interface for scripts that are writable
  *
  * @author Graeme Rocher
+ * @since 1.0
  */
-@CompileStatic
-abstract class WritableScript extends Script implements Writable, WriterProvider {
-
-    Writer out
-    File sourceFile
-
-    private Map<String, Class> modelTypes
+interface WritableScript extends Writable, WriterProvider {
 
     /**
-     * @return The current writer
+     * Obtains the source file
      */
-    Writer getOut() {
-        return out
-    }
-
-    @Override
-    final Writer writeTo(Writer out) throws IOException {
-        this.out = out
-        try {
-            return doWrite(out)
-        } catch (Throwable e) {
-            if(ViewsEnvironment.isDevelopmentMode() && sourceFile != null) {
-                throw new ViewRenderException("Error rendering view: ${e.message}", e, sourceFile, this)
-            }
-            else {
-                throw new ViewException("Error rendering view: ${e.message}", e)
-            }
-        }
-    }
-
+    File getSourceFile()
     /**
-     * Subclasses should implement to perform the write
-     * @param writer The writer
-     * @return The original writer or a wrapped version
+     * @param file Sets the source file
      */
-    abstract Writer doWrite(Writer writer)
+    void setSourceFile(File file)
 
     /**
-     * Obtains a model value for the given name and type
+     * Sets the binding
      *
-     * @param name The name
-     * @param targetType The type
-     * @return The model value or null if it doesn't exist
+     * @param binding The binding
      */
-    def <T> T model(String name, Class<T> targetType = Object) {
-        def value = getBinding().variables.get(name)
-        if(targetType.isInstance(value)) {
-            return (T)value
-        }
-        return null
-    }
+    void setBinding(Binding binding)
 
-    void setModelTypes(Map<String, Class> modelTypes) {
-        this.modelTypes = modelTypes
-    }
-
-    Map<String, Class> getModelTypes() {
-        return modelTypes
-    }
+    /**
+     * Runs the script and returns the result
+     *
+     * @return The result
+     */
+    Object run()
 }

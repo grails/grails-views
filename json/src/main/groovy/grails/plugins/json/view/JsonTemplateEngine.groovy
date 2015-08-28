@@ -1,9 +1,6 @@
 package grails.plugins.json.view
 
 import grails.views.ResolvableGroovyTemplateEngine
-import grails.views.WritableScript
-import grails.views.WritableScriptTemplate
-import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 

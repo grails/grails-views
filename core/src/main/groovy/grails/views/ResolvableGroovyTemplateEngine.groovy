@@ -7,7 +7,6 @@ import groovy.text.TemplateEngine
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilerConfiguration
-import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.grails.io.watch.DirectoryWatcher
 
@@ -179,24 +178,34 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @return The template or null if it doesn't exist
      */
     Template resolveTemplate(String path, Locale locale) {
-        String originalPath = path - ".$extension"
-        String localeSpecificPath = "${originalPath}_$locale"
+        String extensionSuffix = ".$extension"
+        String originalPath = path - extensionSuffix
+        String defaultPath = "${originalPath}${extensionSuffix}"
+        String localeSpecificPath = locale ? "${originalPath}_${locale}${extensionSuffix}" : defaultPath
+        String languageSpecificPath = locale ? "${originalPath}_${locale.language}${extensionSuffix}" : defaultPath
+
         Template template = cachedTemplates[localeSpecificPath]
         if(template.is(NULL_ENTRY)) {
-            localeSpecificPath = "${originalPath}_$locale.language"
-            template = cachedTemplates[localeSpecificPath]
+            template = cachedTemplates[languageSpecificPath]
+        }
+        else {
+            return template
         }
         if(template.is(NULL_ENTRY)) {
-            template = cachedTemplates[originalPath]
+            template = cachedTemplates[defaultPath]
         }
+        else {
+            return template
+        }
+
         if(template.is(NULL_ENTRY)) {
             return null
         }
         else {
             cachedTemplates.put(localeSpecificPath, template)
-            cachedTemplates.put("${originalPath}_$locale".toString(), template)
+            cachedTemplates.put(languageSpecificPath, template)
+            return template
         }
-        return template
     }
 
     @Override

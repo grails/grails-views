@@ -1,6 +1,6 @@
 package grails.views
 
-import groovy.transform.InheritConstructors
+import groovy.transform.CompileStatic
 import org.grails.exceptions.reporting.SourceCodeAware
 
 /**
@@ -9,14 +9,15 @@ import org.grails.exceptions.reporting.SourceCodeAware
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 class ViewRenderException extends ViewException implements SourceCodeAware {
     final File sourceFile
     final WritableScript view
     final int lineNumber
 
-    ViewRenderException(String message, Throwable cause, File sourceFile, WritableScript view) {
+    ViewRenderException(String message, Throwable cause, WritableScript view) {
         super(message, cause)
-        this.sourceFile = sourceFile
+        this.sourceFile = view.sourceFile
         this.view = view
         this.lineNumber = findFirstElementCausedByScript()?.lineNumber ?: -1
     }

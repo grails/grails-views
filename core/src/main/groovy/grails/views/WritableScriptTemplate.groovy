@@ -5,6 +5,7 @@ import groovy.transform.CompileStatic
 
 /**
  * @author Graeme Rocher
+ * @since 1.0
  */
 @CompileStatic
 class WritableScriptTemplate implements Template {
