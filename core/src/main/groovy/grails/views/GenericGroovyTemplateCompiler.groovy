@@ -26,7 +26,6 @@ class GenericGroovyTemplateCompiler {
         this.viewConfiguration = configuration
         this.packageName = configuration.packageName
         this.sourceDir = sourceDir
-
         configureCompiler()
     }
 

@@ -10,12 +10,13 @@ import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.codehaus.groovy.control.customizers.CompilationCustomizer
 
 /**
- * Created by graemerocher on 28/08/15.
+ * A compiler for markup templates
+ *
+ * @author Graeme Rocher
+ * @since 1.0
  */
 @InheritConstructors
 class MarkupViewCompiler extends GenericGroovyTemplateCompiler {
-
-    boolean compileStatic = true
 
     @Override
     protected CompilerConfiguration configureCompiler() {
@@ -23,7 +24,7 @@ class MarkupViewCompiler extends GenericGroovyTemplateCompiler {
         def templateCustomizer = (CompilationCustomizer) getClass().classLoader.loadClass("groovy.text.markup.TemplateASTTransformer")
                 .newInstance(viewConfiguration)
         configuration.addCompilationCustomizers(templateCustomizer)
-        if(compileStatic) {
+        if(viewConfiguration.compileStatic) {
             configuration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "groovy.text.markup.MarkupTemplateTypeCheckingExtension"), CompileStatic.class));
         }

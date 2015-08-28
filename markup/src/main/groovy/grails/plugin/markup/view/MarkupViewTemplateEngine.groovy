@@ -1,6 +1,7 @@
 package grails.plugin.markup.view
 
 import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.WritableScript
 import groovy.text.Template
 import groovy.text.markup.MarkupTemplateEngine
 import groovy.text.markup.TemplateConfiguration
@@ -69,6 +70,11 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
         return innerEngine.createTemplate(reader)
+    }
+
+    @Override
+    protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
+        return new MarkupViewWritableScriptTemplate((Class<? extends WritableScript>)cls , sourceFile, innerEngine, (MarkupViewConfiguration)viewConfiguration)
     }
 
     @Override

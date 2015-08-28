@@ -10,7 +10,6 @@ import spock.lang.Specification
  */
 class MarkupViewCompilerSpec extends Specification {
 
-    @Ignore
     void "Test MarkupViewCompiler compiles templates correctly"() {
         given: "A compiler instance"
         def view = new File(MarkupViewCompilerSpec.getResource("/views/bar.gxml").file)
