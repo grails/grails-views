@@ -54,7 +54,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                 new Action<JavaExecSpec>() {
                     @Override
                     void execute(JavaExecSpec javaExecSpec) {
-                        javaExecSpec.setMain("grails.views.GenericGroovyTemplateCompiler")
+                        javaExecSpec.setMain(getCompilerName())
                         javaExecSpec.setClasspath(getClasspath())
 
                         def jvmArgs = compileOptions.forkOptions.jvmArgs
@@ -63,20 +63,34 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                         }
                         javaExecSpec.setMaxHeapSize( compileOptions.forkOptions.memoryMaximumSize )
                         javaExecSpec.setMinHeapSize( compileOptions.forkOptions.memoryInitialSize )
-                        javaExecSpec.args(
+
+                        def arguments = [
                                 getScriptBaseName(),
                                 packageName,
                                 getFileExtension(),
                                 srcDir.canonicalPath,
                                 destinationDir.canonicalPath,
                                 targetCompatibility,
-                                compileOptions.encoding
-                        )
+                                compileOptions.encoding]
+
+                        prepareArguments(arguments)
+                        javaExecSpec.args(arguments)
                     }
+
                 }
         )
         result.assertNormalExitValue()
+
     }
+
+    void prepareArguments(List<String> arguments) {
+        // no-op
+    }
+
+    protected String getCompilerName() {
+        "grails.views.GenericGroovyTemplateCompiler"
+    }
+
 
     abstract String getFileExtension()
 

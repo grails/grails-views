@@ -19,6 +19,7 @@ class JsonTemplateEngine extends ResolvableGroovyTemplateEngine {
     public static final String COMPILE_STATIC = 'grails.views.json.compileStatic'
 
 
+    private final boolean compileStatic
     /**
      * Constructs a JsonTemplateEngine with the default configuration
      */
@@ -34,13 +35,18 @@ class JsonTemplateEngine extends ResolvableGroovyTemplateEngine {
     JsonTemplateEngine(String baseClassName, boolean compileStatic = true) {
         super(baseClassName, JsonTemplate.EXTENSION)
         // TODO: Enable this once upgraded to latest Groovy
-        if(compileStatic) {
+        this.compileStatic = compileStatic
+        prepareCustomizers()
+    }
 
+    @Override
+    protected void prepareCustomizers() {
+        super.prepareCustomizers()
+        if(compileStatic) {
             compilerConfiguration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "grails.plugins.json.view.internal.JsonTemplateTypeCheckingExtension"), CompileStatic.class));
         }
     }
-
 
     @Override
     String getDynamicTemplatePrefix() {

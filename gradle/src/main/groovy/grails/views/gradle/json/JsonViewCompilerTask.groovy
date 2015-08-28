@@ -10,6 +10,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class JsonViewCompilerTask extends AbstractGroovyTemplateCompileTask {
+
     @Override
     String getFileExtension() {
         "gson"
@@ -18,5 +19,15 @@ class JsonViewCompilerTask extends AbstractGroovyTemplateCompileTask {
     @Override
     String getScriptBaseName() {
         "grails.plugins.json.view.JsonTemplate"
+    }
+
+    @Override
+    protected String getCompilerName() {
+        "grails.plugins.json.view.JsonViewsCompiler"
+    }
+
+    @Override
+    void prepareArguments(List<String> arguments) {
+        arguments.add(String.valueOf(compileOptions.compileStatic))
     }
 }

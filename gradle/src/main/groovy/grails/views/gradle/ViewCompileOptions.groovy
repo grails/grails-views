@@ -11,4 +11,6 @@ class ViewCompileOptions {
     String encoding = "UTF-8"
 
     GroovyForkOptions forkOptions = new GroovyForkOptions()
+
+    boolean compileStatic = true
 }

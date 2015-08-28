@@ -32,14 +32,21 @@ class GenericGroovyTemplateCompiler {
             configuration.scriptBaseClass = scriptBaseName
         }
 
-        configuration.addCompilationCustomizers( new ASTTransformationCustomizer(new ViewsTransform()))
+        configureCompiler()
+    }
+
+    protected CompilerConfiguration configureCompiler() {
+        configuration.compilationCustomizers.clear()
+        configuration.addCompilationCustomizers(new ASTTransformationCustomizer(new ViewsTransform()))
+        return configuration
     }
 
     void compile(Iterable<File> sources) {
         configuration.setClasspathList(classpath)
-        def unit = new CompilationUnit(configuration)
         def pathToSourceDir = sourceDir.canonicalPath
         for(source in sources) {
+            configureCompiler()
+            def unit = new CompilationUnit(configuration)
             def pathToSource = source.canonicalPath
             def path = pathToSource - pathToSourceDir
             def templateName = GenericGroovyTemplateResolver.resolveTemplateName(
@@ -52,8 +59,8 @@ class GenericGroovyTemplateCompiler {
                     unit.classLoader,
                     unit.errorCollector
             ))
+            unit.compile()
         }
-        unit.compile()
 
     }
 
@@ -64,6 +71,7 @@ class GenericGroovyTemplateCompiler {
     static void main(String[] args) {
         if(args.length != 7) {
             System.err.println("Invalid arguments")
+            System.exit(1)
         }
         String scriptBaseName = args[0]
         String packageName = args[1]

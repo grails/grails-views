@@ -91,7 +91,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     private Map<String, String> watchedFilePaths = new ConcurrentHashMap<String, String>()
 
-    private ASTTransformationCustomizer currentCustomizer
 
     /**
      * Creates a ResolvableGroovyTemplateEngine for the given base class name and file extension
@@ -104,8 +103,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(baseClassName)
-        this.currentCustomizer = new ASTTransformationCustomizer(new ViewsTransform())
-        compilerConfiguration.addCompilationCustomizers( this.currentCustomizer )
+        prepareCustomizers()
         classLoader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, compilerConfiguration)
     }
 
@@ -179,6 +177,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     @Override
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
+        prepareCustomizers()
+        def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
         def cls = classLoader.parseClass(file)
         return createTemplate(cls, file)
     }
@@ -193,18 +193,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         // Had to do this hack because of a Groovy bug where ASTTransformationCustomizer are only applied once!?
         def file = new File(url.file)
-        if(directoryWatcher != null) {
-            def pathToFile = file.canonicalPath
-            if(!watchedFilePaths.containsKey(pathToFile)) {
-                watchedFilePaths.put(pathToFile, path)
-                directoryWatcher.addWatchFile(
-                        file
-                )
-            }
-        }
-
-
-
+        watchIfNecessary(file, path)
         prepareCustomizers()
         def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
         // now parse the class
@@ -215,6 +204,18 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
                 return createTemplate(clazz, file)
             } catch (CompilationFailedException e) {
                 throw new ViewCompilationException(e, file.canonicalPath)
+            }
+        }
+    }
+
+    protected void watchIfNecessary(File file, String path) {
+        if (directoryWatcher != null) {
+            def pathToFile = file.canonicalPath
+            if (!watchedFilePaths.containsKey(pathToFile)) {
+                watchedFilePaths.put(pathToFile, path)
+                directoryWatcher.addWatchFile(
+                        file
+                )
             }
         }
     }
@@ -236,7 +237,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     protected void prepareCustomizers() {
         // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
-        compilerConfiguration.compilationCustomizers.remove(currentCustomizer)
+        compilerConfiguration.compilationCustomizers.clear()
         compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform()))
     }
 }

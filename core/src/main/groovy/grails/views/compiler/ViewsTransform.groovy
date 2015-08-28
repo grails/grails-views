@@ -31,6 +31,7 @@ import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import org.grails.compiler.injection.GrailsASTUtils
 import org.grails.core.io.support.GrailsFactoriesLoader
 
 import java.lang.reflect.Modifier
@@ -44,19 +45,27 @@ import java.lang.reflect.Modifier
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 @CompileStatic
 class ViewsTransform implements ASTTransformation, CompilationUnitAware {
+    public static final String APPLIED = "grails.views.transform.APPLIED"
     CompilationUnit compilationUnit
 
     @Override
     void visit(ASTNode[] nodes, SourceUnit source) {
         def traitInjectors = findTraitInjectors()
-        for(classNode in source.AST.classes) {
-            if ( classNode.isScript() ) {
-                for(injector in traitInjectors) {
-                    classNode.addInterface(ClassHelper.make(injector.trait))
-                }
-                org.codehaus.groovy.transform.trait.TraitComposer.doExtendTraits(classNode, source, compilationUnit)
 
-                new ModelTypesVisitor(source).visitClass(classNode)
+        def classes = source.AST.classes
+        for(cn in classes) {
+            ClassNode classNode = (ClassNode)cn
+            if(!classNode.getNodeMetaData(APPLIED)) {
+
+                if ( classNode.isScript() ) {
+                    for(injector in traitInjectors) {
+                        classNode.addInterface(ClassHelper.make(injector.trait))
+                    }
+                    org.codehaus.groovy.transform.trait.TraitComposer.doExtendTraits(classNode, source, compilationUnit)
+
+                    new ModelTypesVisitor(source).visitClass(classNode)
+                    classNode.putNodeMetaData(APPLIED, Boolean.TRUE)
+                }
             }
         }
     }
