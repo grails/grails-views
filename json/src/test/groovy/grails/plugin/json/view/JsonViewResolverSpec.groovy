@@ -1,5 +1,6 @@
 package grails.plugin.json.view
 
+import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.views.GenericGroovyTemplateResolver
 import grails.web.mapping.LinkGenerator
 import org.springframework.mock.web.MockHttpServletRequest

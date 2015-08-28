@@ -2,6 +2,7 @@ package grails.views.compiler
 
 import grails.compiler.traits.TraitInjector
 import grails.views.Views
+import groovy.text.markup.MarkupTemplateEngine
 import groovy.transform.CompilationUnitAware
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -64,6 +65,34 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                     org.codehaus.groovy.transform.trait.TraitComposer.doExtendTraits(classNode, source, compilationUnit)
 
                     new ModelTypesVisitor(source).visitClass(classNode)
+                    def runMethod = classNode.getMethod("run", GrailsASTUtils.ZERO_PARAMETERS)
+                    def stm = runMethod.code
+                    if(stm instanceof BlockStatement) {
+                        BlockStatement bs = (BlockStatement)stm
+
+                        def statements = bs.statements
+                        Statement modelStatement = null
+                        for(st in statements) {
+                            if(st instanceof ExpressionStatement) {
+                                Expression exp = ((ExpressionStatement)st).expression
+                                if(exp instanceof MethodCallExpression) {
+                                    MethodCallExpression mce = (MethodCallExpression)exp
+                                    if(mce.methodAsString == 'model') {
+                                        def arguments = mce.getArguments()
+                                        def args = arguments instanceof ArgumentListExpression ? ((ArgumentListExpression) arguments).getExpressions() : Collections.emptyList()
+                                        if(args.size() == 1 && args[0] instanceof ClosureExpression) {
+                                            modelStatement = st
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if(modelStatement != null) {
+                            statements.remove(modelStatement)
+                        }
+                    }
+
                     classNode.putNodeMetaData(APPLIED, Boolean.TRUE)
                 }
             }
@@ -112,8 +141,8 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                                     def expr = ((ExpressionStatement) st).expression
                                     if(expr instanceof DeclarationExpression) {
                                         VariableExpression var = (VariableExpression)((DeclarationExpression)expr).leftExpression
-                                        classNode.addProperty(var.name, Modifier.PUBLIC, var.type.plainNodeReference, null, null, null)
-                                        modelTypes[var.name] = var.type.plainNodeReference
+                                        classNode.addProperty(var.name, Modifier.PUBLIC, var.type, null, null, null)
+                                        modelTypes[var.name] = var.type
                                         map.addMapEntryExpression(
                                                 new MapEntryExpression(new ConstantExpression(var.name), new ClassExpression(var.type))
                                         )
@@ -121,12 +150,12 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                                 }
                             }
                         }
-                        call.setMethod(new ConstantExpression("setModelTypes"))
-                        call.setArguments(new ArgumentListExpression(map))
                     }
                 }
             }
             classNode.putNodeMetaData(Views.MODEL_TYPES, modelTypes)
+            // used by markup template engine
+            classNode.putNodeMetaData("MTE.modelTypes", modelTypes)
             super.visitMethodCallExpression(call)
         }
     }

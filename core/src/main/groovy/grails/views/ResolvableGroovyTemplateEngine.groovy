@@ -66,22 +66,22 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     /**
      * The configuration to use for compilation
      */
-    final CompilerConfiguration compilerConfiguration
+    final ViewUriResolver viewUriResolver
 
     /**
      * The view uri resolver
      */
-    final ViewUriResolver viewUriResolver
+    final String extension
 
     /**
      * The file extension used for script templates
      */
-    final String extension
+    boolean enableReloading = false
 
     /**
      * Whether to reload views
      */
-    boolean enableReloading = false
+    protected CompilerConfiguration compilerConfiguration
 
     /**
      * Used to watch for file changes
@@ -97,13 +97,18 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @param baseClassName The base class name
      * @param extension The file extension
      */
-    ResolvableGroovyTemplateEngine(String baseClassName, String extension) {
-        this.extension = extension
+    ResolvableGroovyTemplateEngine(TemplateConfiguration configuration) {
+        this.extension = configuration.extension
+        setPackageName(configuration.packageName)
+        setEnableReloading(configuration.enableReloading)
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
-        compilerConfiguration.setScriptBaseClass(baseClassName)
-        prepareCustomizers()
+        compilerConfiguration.setScriptBaseClass(configuration.baseTemplateClass.name)
         classLoader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, compilerConfiguration)
+    }
+
+    CompilerConfiguration getCompilerConfiguration() {
+        return compilerConfiguration
     }
 
     void setEnableReloading(boolean enableReloading) {

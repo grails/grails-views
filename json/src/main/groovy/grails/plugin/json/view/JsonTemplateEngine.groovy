@@ -1,7 +1,9 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension
+import grails.views.GenericTemplateConfiguration
 import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.TemplateConfiguration
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 
@@ -22,7 +24,7 @@ class JsonTemplateEngine extends ResolvableGroovyTemplateEngine {
      * Constructs a JsonTemplateEngine with the default configuration
      */
     JsonTemplateEngine() {
-        this(JsonTemplate.name)
+        this(new JsonViewConfiguration(baseTemplateClass: JsonTemplate))
     }
 
     /**
@@ -30,11 +32,9 @@ class JsonTemplateEngine extends ResolvableGroovyTemplateEngine {
      *
      * @param baseClassName The name of the base class
      */
-    JsonTemplateEngine(String baseClassName, boolean compileStatic = true) {
-        super(baseClassName, JsonTemplate.EXTENSION)
-        // TODO: Enable this once upgraded to latest Groovy
-        this.compileStatic = compileStatic
-        prepareCustomizers()
+    JsonTemplateEngine(TemplateConfiguration configuration) {
+        super(configuration)
+        this.compileStatic = configuration.compileStatic
     }
 
     @Override

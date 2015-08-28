@@ -1,5 +1,6 @@
 package grails.plugin.json.view
 
+import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.views.mvc.GenericGroovyTemplateView
 import org.springframework.web.servlet.View
 import spock.lang.Specification

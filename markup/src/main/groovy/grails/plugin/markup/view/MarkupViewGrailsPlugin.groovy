@@ -1,12 +1,17 @@
-package grails.plugin.json.view
+package grails.plugin.markup.view
 
-import grails.plugin.json.view.mvc.JsonViewResolver
-import grails.plugins.*
+import grails.plugin.markup.view.mvc.MarkupViewResolver
+import grails.plugins.Plugin
 import grails.util.Metadata
-import grails.views.GenericTemplateConfiguration
 import grails.views.ViewsEnvironment
 
-class JsonViewGrailsPlugin extends Plugin {
+/**
+ * Plugin class for markup views
+ *
+ * @author Graeme Rocher
+ * @since 1.0
+ */
+class MarkupViewGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.0.0 > *"
@@ -40,13 +45,13 @@ A plugin that allows rendering of JSON views
     def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
-            jsonViewConfiguration(JsonViewConfiguration) {
-                baseTemplateClass = config.getProperty(JsonTemplateEngine.VIEW_BASE_CLASS, Class, JsonTemplate)
-                compileStatic = config.getProperty(JsonTemplateEngine.COMPILE_STATIC, Boolean, true)
-                enableReloading = ViewsEnvironment.isDevelopmentMode()
-                packageName = Metadata.getCurrent().getApplicationName()
-            }
-            jsonViewResolver(JsonViewResolver, jsonViewConfiguration)
-        } 
-    }
+        markupViewConfiguration(MarkupViewConfiguration) {
+            baseTemplateClass = config.getProperty(MarkupViewTemplateEngine.VIEW_BASE_CLASS, Class, JsonTemplate)
+            compileStatic = config.getProperty(MarkupViewTemplateEngine.COMPILE_STATIC, Boolean, true)
+            enableReloading = ViewsEnvironment.isDevelopmentMode()
+            packageName = Metadata.getCurrent().getApplicationName()
+        }
+
+        markupViewResolver(MarkupViewResolver, markupViewConfiguration)
+    } }
 }

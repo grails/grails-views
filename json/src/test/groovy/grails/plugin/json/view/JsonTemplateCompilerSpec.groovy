@@ -12,7 +12,7 @@ class JsonTemplateCompilerSpec extends Specification {
     void "Test JsonTemplateCompiler compiles templates correctly"() {
         given:"A compiler instance"
         def view = new File(JsonTemplateCompilerSpec.getResource("/views/bar.gson").file)
-        def compiler = new GenericGroovyTemplateCompiler(JsonTemplate.name, "test", view.parentFile)
+        def compiler = new JsonViewsCompiler(JsonTemplate.name, "test", view.parentFile)
 
         def dir = File.createTempDir()
         dir.deleteOnExit()
