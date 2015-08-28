@@ -9,9 +9,27 @@ Initial implementation includes JSON views powered by Groovy's JsonBuilder.
 
 ### Installation
 
-Add the following dependency to your `build.gradle`:
+Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    runtime "org.grails.plugins:grails-views-json:1.0.0-SNAPSHOT"
+    compile "org.grails.plugins:grails-views-json:1.0.0-SNAPSHOT"
+
+To enable Gradle compilation of JSON views for production environment add the following to the `buildscript` `dependencies` block:
+
+    buildscript {
+        ...
+        dependencies {
+            ...
+            classpath "org.grails.plugins:grails-views-gradle:1.0.0-SNAPSHOT"
+        }
+    }
+
+Then apply the `org.grails.plugins.grails-json-views` Gradle plugin after any Grails core gradle plugins:
+
+    ...
+    apply plugin: "org.grails.grails-web"
+    apply plugin: "org.grails.plugins.grails-json-views"
+
+This will add a `compileGsonViews` task to Gradle.
 
 ### Usage
 
