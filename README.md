@@ -45,7 +45,7 @@ Produces
 
     {"person":{"name":"bob"}}
 
-All JSON views implement the [JsonView](json/src/main/groovy/grails/plugins/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits.
+All JSON views implement the [JsonView](json/src/main/groovy/grails/plugins/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [JsonTemplate](json/src/main/groovy/grails/plugins/json/view/JsonTemplate.groovy) base class.
 
 There is an implicit `json` variable which is an instance of [StreamingJsonBuilder](http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html).
 
