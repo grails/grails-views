@@ -3,6 +3,7 @@ package grails.plugin.markup.view
 import grails.compiler.traits.TraitInjector
 import grails.plugin.markup.view.internal.MarkupViewsTransform
 import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.ViewCompilationException
 import grails.views.WritableScript
 import grails.views.compiler.ViewsTransform
 import groovy.text.Template
@@ -58,19 +59,34 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         def file = new File(url.file)
         watchIfNecessary(file, path)
 
-        return innerEngine.createTemplate(url)
+        try {
+            return innerEngine.createTemplate(url)
+        } catch (CompilationFailedException e) {
+            throw new ViewCompilationException(e, file.canonicalPath)
+        }
+
     }
 
     @Override
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers()
-        return innerEngine.createTemplate(file.toURI().toURL())
+        try {
+            return innerEngine.createTemplate(file.toURI().toURL())
+        } catch (CompilationFailedException e) {
+            throw new ViewCompilationException(e, file.canonicalPath)
+        }
+
     }
 
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers()
-        return innerEngine.createTemplate(reader)
+        try {
+            return innerEngine.createTemplate(reader)
+        } catch (CompilationFailedException e) {
+            throw new ViewCompilationException(e, "Generated")
+        }
+
     }
 
     @Override
