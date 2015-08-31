@@ -187,6 +187,24 @@ Add the following dependency to the `dependencies` block of your `build.gradle`:
 
     compile "org.grails.plugins:grails-views-markup:1.0.0-SNAPSHOT"
 
+To enable Gradle compilation of Markup views for production environment add the following to the `buildscript` `dependencies` block:
+
+    buildscript {
+        ...
+        dependencies {
+            ...
+            classpath "org.grails.plugins:grails-views-gradle:1.0.0-SNAPSHOT"
+        }
+    }
+
+Then apply the `org.grails.plugins.grails-markup-views` Gradle plugin after any Grails core gradle plugins:
+
+    ...
+    apply plugin: "org.grails.grails-web"
+    apply plugin: "org.grails.plugins.grails-markup-views"
+
+This will add a `compileGmlViews` task to Gradle that will be executed when a WAR or JAR is built.
+
 ### Usage
 
 Markup views go in the `grails-app/views` directory using the file extension `gml`. They are regular Groovy scripts and can be opened in the Groovy editor of your IDE.
