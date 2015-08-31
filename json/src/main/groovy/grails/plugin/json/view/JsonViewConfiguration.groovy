@@ -8,7 +8,7 @@ import grails.views.GenericViewConfiguration
  * @author Graeme Rocher
  * @since 1.0
  */
-class JsonViewConfiguration extends GenericViewConfiguration {
+class JsonViewConfiguration implements GenericViewConfiguration {
 
     JsonViewConfiguration() {
         setExtension(JsonViewTemplate.EXTENSION)

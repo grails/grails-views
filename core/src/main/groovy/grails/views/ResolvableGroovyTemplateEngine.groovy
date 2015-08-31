@@ -8,6 +8,7 @@ import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.codehaus.groovy.control.customizers.ImportCustomizer
 import org.grails.io.watch.DirectoryWatcher
 
 import javax.annotation.PreDestroy
@@ -289,7 +290,14 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     protected void prepareCustomizers() {
         // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
         compilerConfiguration.compilationCustomizers.clear()
-        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(newViewsTransform()))
+
+
+        def importCustomizer = new ImportCustomizer()
+        importCustomizer.addStarImports(viewConfiguration.packageImports)
+        compilerConfiguration.addCompilationCustomizers(
+                importCustomizer,
+                new ASTTransformationCustomizer(newViewsTransform())
+        )
     }
 
     protected ViewsTransform newViewsTransform() {
