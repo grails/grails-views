@@ -31,6 +31,7 @@ Then apply the `org.grails.plugins.grails-json-views` Gradle plugin after any Gr
 
 This will add a `compileGsonViews` task to Gradle.
 
+
 ### Usage
 
 JSON views go into the `grails-app/views` directory and end with the `.gson` suffix. They are regular Groovy scripts and can be opened in any Groovy editor.
@@ -54,6 +55,20 @@ Example usages:
     json(1,2,3) == "[1,2,3]"
     json { name "Bob" } == '{"name":"Bob"}'
     json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'
+
+### Configuration
+
+JSON views configuration can be altered with `application.yml`. Any of the properties within the [JsonViewConfiguration](core/src/main/groovy/grails/views/ViewConfiguration.groovy) interface can be set. For example:
+
+    grails:
+        views:
+            json:
+                compileStatic: true
+                cache: true
+                ...
+
+Alternatively you can register a new `JsonViewConfiguration` bean using the bean name `jsonViewConfiguration` in `resources.groovy`.
+
 
 ### Static Compilation and Models
 
@@ -151,7 +166,7 @@ You can however change the subclass (which should be a subclass of `JsonTemplate
         views:
             json:
                 compileStatic: true
-                baseClass: com.example.MyCustomJsonTemplate
+                baseTemplateClass: com.example.MyCustomJsonTemplate
 
 ### Adding New Helper Methods via Traits
 
@@ -223,6 +238,20 @@ Example Markup View:
 
 
 All Markup views implement the [MarkupView](markup/src/main/groovy/grails/plugin/markup/view/api/MarkupView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [MarkupViewTemplate](markup/src/main/groovy/grails/plugin/markup/view/MarkupViewTemplate.groovy) base class.
+
+### Configuration
+
+Markup views configuration can be altered with `application.yml`. Any of the properties within the [ViewConfiguration](core/src/main/groovy/grails/views/ViewConfiguration.groovy) interface and Groovy's [TemplateConfiguration](http://docs.groovy-lang.org/latest/html/api/groovy/text/markup/TemplateConfiguration.html) class can be set. For example:
+
+    grails:
+        views:
+            markup:
+                compileStatic: true
+                cacheTemplates: true
+                autoIndent: true
+                ...
+
+Alternatively you can register a new `MarkupViewConfiguration` bean using the bean name `markupViewConfiguration` in `grails-app/conf/spring/resources.groovy`.
 
 ### Shared Features with JSON views
 

@@ -43,13 +43,6 @@ A plugin that allows rendering of JSON views
 
     Closure doWithSpring() { {->
             jsonViewConfiguration(JsonViewConfiguration) {
-                baseTemplateClass = config.getProperty(JsonViewTemplateEngine.VIEW_BASE_CLASS, Class, JsonViewTemplate)
-                compileStatic = config.getProperty(JsonViewTemplateEngine.COMPILE_STATIC, Boolean, true)
-                enableReloading = ViewsEnvironment.isDevelopmentMode()
-                packageName = Metadata.getCurrent().getApplicationName()
-                def current = Environment.current
-                def pathToTemplates = current.hasReloadLocation() ? current.reloadLocation : BuildSettings.BASE_DIR?.path
-                templatePath = "${pathToTemplates}/${GrailsResourceUtils.VIEWS_DIR_PATH}"
             }
             jsonViewResolver(JsonViewResolver, jsonViewConfiguration)
         } 

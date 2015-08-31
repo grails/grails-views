@@ -46,4 +46,9 @@ interface ViewConfiguration {
      * @return The packages to automatically import
      */
     String[] getPackageImports()
+
+    /**
+     * @return The name of the views module (example json or markup)
+     */
+    String getViewModuleName()
 }

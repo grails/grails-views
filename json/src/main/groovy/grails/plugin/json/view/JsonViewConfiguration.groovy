@@ -10,9 +10,17 @@ import grails.views.GenericViewConfiguration
  */
 class JsonViewConfiguration implements GenericViewConfiguration {
 
+
+    public static final String MODULE_NAME = "json"
+
     JsonViewConfiguration() {
         setExtension(JsonViewTemplate.EXTENSION)
         setCompileStatic(true)
         setBaseTemplateClass(JsonViewTemplate)
+    }
+
+    @Override
+    String getViewModuleName() {
+         MODULE_NAME
     }
 }

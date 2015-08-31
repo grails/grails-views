@@ -48,16 +48,7 @@ A plugin that allows rendering of JSON views
     def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
-        markupViewConfiguration(MarkupViewConfiguration) {
-            baseTemplateClass = config.getProperty(MarkupViewTemplateEngine.VIEW_BASE_CLASS, Class, MarkupViewTemplate)
-            compileStatic = config.getProperty(MarkupViewTemplateEngine.COMPILE_STATIC, Boolean, true)
-            enableReloading = ViewsEnvironment.isDevelopmentMode()
-            packageName = Metadata.getCurrent().getApplicationName()
-            def current = Environment.current
-            def pathToTemplates = current.hasReloadLocation() ? current.reloadLocation : BuildSettings.BASE_DIR?.path
-            templatePath = "${pathToTemplates}/${GrailsResourceUtils.VIEWS_DIR_PATH}"
-        }
-
+        markupViewConfiguration(MarkupViewConfiguration)
         markupViewResolver(MarkupViewResolver, markupViewConfiguration)
     } }
 }
