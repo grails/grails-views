@@ -202,7 +202,7 @@ Example Markup View:
     }
 
 
-All Markup views implement the [JsonView](markup/src/main/groovy/grails/plugin/markup/view/api/MarkupView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [MarkupViewTemplate](markup/src/main/groovy/grails/plugin/markup/view/MarkupViewTemplate.groovy) base class.
+All Markup views implement the [MarkupView](markup/src/main/groovy/grails/plugin/markup/view/api/MarkupView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [MarkupViewTemplate](markup/src/main/groovy/grails/plugin/markup/view/MarkupViewTemplate.groovy) base class.
 
 ### Shared Features with JSON views
 
