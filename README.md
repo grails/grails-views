@@ -117,7 +117,7 @@ To customize content types and headers use the `page` object from [HttpView](cor
         name "bob"
     }
 
-## I18n & Locale Integration
+### I18n & Locale Integration
 
 You can lookup i18n messages use the `g.message` method:
 
@@ -126,6 +126,18 @@ You can lookup i18n messages use the `g.message` method:
     }
 
 You can also create locale specific views by appending the locale to view name. For example `person_de.gson` for German or `person.gson` for the default.
+
+### Grails Renderer Integration
+
+GSON views integrate with Grails' renderer infrastructure. For example if you create 2 views called `show.gsp` (for HTML) and `show.gson` (for JSON), you can define the following action:
+
+    def show() {
+        respond Book.get(params.id)
+    }
+
+If you send a request to `/book/show` it will render `show.gsp` but if you send a request to `/book/show.json` it will render `show.gson`.
+
+In addition if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. For example given a class called `demo.Book` you can create `grails-app/views/demo/Book.gson` and whenever JSON for an instance of `Book` Grails will render `Book.gson`.
 
 ### Changing the view base class
 
@@ -161,3 +173,37 @@ For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy
 The result is all JSON views have a `page` object that can be used to control the HTTP response:
 
     page.header "Token", "foo"
+
+
+## Markup Views
+
+Markup views use Groovy's [MarkupTemplateEngine](http://docs.groovy-lang.org/docs/next/html/documentation/template-engines.html#_the_markuptemplateengine).
+
+### Installation
+
+Add the following dependency to the `dependencies` block of your `build.gradle`:
+
+    compile "org.grails.plugins:grails-views-markup:1.0.0-SNAPSHOT"
+
+### Usage
+
+Markup views go in the `grails-app/views` directory using the file extension `gml`. They are regular Groovy scripts and can be opened in the Groovy editor of your IDE.
+
+Example Markup View:
+
+    model {
+        Iterable<Map> cars
+    }
+    xmlDeclaration()
+    cars {
+        cars.each {
+            car(make: it.make, model: it.model)
+        }
+    }
+
+
+All Markup views implement the [JsonView](markup/src/main/groovy/grails/plugin/markup/view/api/MarkupView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [MarkupViewTemplate](markup/src/main/groovy/grails/plugin/markup/view/MarkupViewTemplate.groovy) base class.
+
+### Shared Features with JSON views
+
+All of the features of JSON views (links, page header customization, i18n etc.) work the same in markup views.
