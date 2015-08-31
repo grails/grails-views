@@ -28,8 +28,15 @@ publishing {
                 password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
             }
 
-            if(version.endsWith('-SNAPSHOT')) {
-                url "https://repo.grails.org/grails/plugins3-snapshots-local"
+            if(group == 'org.grails.plugins') {
+                if(version.endsWith('-SNAPSHOT')) {
+                    url "https://repo.grails.org/grails/plugins3-snapshots-local"
+                }
+            }
+            else {
+                if(version.endsWith('-SNAPSHOT')) {
+                    url "https://repo.grails.org/grails/libs-snapshots-local"
+                }
             }
         }
     }
