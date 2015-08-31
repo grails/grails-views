@@ -35,7 +35,6 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     MarkupViewTemplateEngine(MarkupViewConfiguration config = new MarkupViewConfiguration()) {
         super(config)
         this.compileStatic = compileStatic
-
         innerEngine = new MarkupTemplateEngine(Thread.currentThread().contextClassLoader, config, new TemplateResolver() {
             @Override
             void configure(ClassLoader templateClassLoader, TemplateConfiguration configuration) {
@@ -47,24 +46,30 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
             }
         })
         prepareCustomizers()
-        innerEngine.compilerConfiguration.addCompilationCustomizers( compilerConfiguration.compilationCustomizers as CompilationCustomizer[])
-
     }
+
+
 
 
 
     @Override
     Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
+        prepareCustomizers()
+        def file = new File(url.file)
+        watchIfNecessary(file, path)
+
         return innerEngine.createTemplate(url)
     }
 
     @Override
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
+        prepareCustomizers()
         return innerEngine.createTemplate(file.toURI().toURL())
     }
 
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
+        prepareCustomizers()
         return innerEngine.createTemplate(reader)
     }
 
@@ -80,12 +85,15 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     @Override
     protected void prepareCustomizers() {
+        innerEngine.compilerConfiguration.compilationCustomizers.removeAll( compilerConfiguration.compilationCustomizers )
         super.prepareCustomizers()
 
         if(compileStatic) {
             compilerConfiguration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "groovy.text.markup.MarkupTemplateTypeCheckingExtension"), CompileStatic.class));
         }
+
+        innerEngine.compilerConfiguration.addCompilationCustomizers( compilerConfiguration.compilationCustomizers as CompilationCustomizer[])
     }
 
     @Override

@@ -1,6 +1,7 @@
 package grails.plugin.markup.view
 
 import grails.util.BuildSettings
+import grails.util.Environment
 import grails.views.ViewConfiguration
 import groovy.text.markup.TemplateConfiguration
 import org.grails.io.support.GrailsResourceUtils
@@ -19,6 +20,7 @@ class MarkupViewConfiguration extends TemplateConfiguration implements ViewConfi
 
     MarkupViewConfiguration() {
         setBaseTemplateClass(MarkupViewTemplate)
+        setCacheTemplates( !Environment.isDevelopmentMode() )
     }
 
     @Override
