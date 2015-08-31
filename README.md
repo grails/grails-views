@@ -139,7 +139,7 @@ GSON views integrate with Grails' renderer infrastructure. For example if you cr
 
 If you send a request to `/book/show` it will render `show.gsp` but if you send a request to `/book/show.json` it will render `show.gson`.
 
-In addition if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. For example given a class called `demo.Book` you can create `grails-app/views/demo/Book.gson` and whenever JSON for an instance of `Book` Grails will render `Book.gson`.
+In addition if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. For example given a class called `demo.Book` you can create `grails-app/views/demo/Book.gson` and whenever `respond` is called with an instance of `Book` Grails will render `Book.gson`.
 
 ### Changing the view base class
 
