@@ -14,7 +14,7 @@ class MarkupViewCompilerTask extends AbstractGroovyTemplateCompileTask {
 
     @Override
     String getFileExtension() {
-        "gxml"
+        "gml"
     }
 
     @Override
