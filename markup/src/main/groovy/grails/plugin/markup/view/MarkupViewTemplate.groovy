@@ -14,8 +14,8 @@ import groovy.text.markup.TemplateConfiguration
  */
 abstract class MarkupViewTemplate extends BaseTemplate implements WritableScript {
 
-    public static final String EXTENSION = "gxml"
-    public static final String TYPE = "views.gxml"
+    public static final String EXTENSION = "gml"
+    public static final String TYPE = "views.gml"
 
     File sourceFile
 

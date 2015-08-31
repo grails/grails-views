@@ -12,7 +12,7 @@ class MarkupViewCompilerSpec extends Specification {
 
     void "Test MarkupViewCompiler compiles templates correctly"() {
         given: "A compiler instance"
-        def view = new File(MarkupViewCompilerSpec.getResource("/views/bar.gxml").file)
+        def view = new File(MarkupViewCompilerSpec.getResource("/views/bar.gml").file)
 
         def config = new MarkupViewConfiguration(packageName: "test")
         def compiler = new MarkupViewCompiler(config, view.parentFile)
@@ -29,7 +29,7 @@ class MarkupViewCompilerSpec extends Specification {
         when: "templates are compiled"
 
         compiler.compile(view)
-        def template = engine.resolveTemplate("/bar.gxml")
+        def template = engine.resolveTemplate("/bar.gml")
 
         then: "The template can be loaded"
         template != null
