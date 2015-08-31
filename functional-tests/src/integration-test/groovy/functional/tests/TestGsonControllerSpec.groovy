@@ -11,7 +11,7 @@ import geb.spock.*
  */
 @Integration
 @Rollback
-class TestControllerSpec extends GebSpec {
+class TestGsonControllerSpec extends GebSpec {
 
     void "Test the respond method returns a GSON view for JSON request"() {
         when:"When JSON is requested"
