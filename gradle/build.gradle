@@ -3,11 +3,15 @@ plugins {
 	id "com.jfrog.bintray" version "1.2"
 }
 
+ext {
+	userOrg = 'grails'
+}
+
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 
-group "org.grails"
+group "org.grails.plugins"
 
 repositories {
 	mavenLocal()
