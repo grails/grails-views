@@ -64,6 +64,8 @@ JSON views are statically compiled. You can disable static compilation if you pr
             json:
                 compileStatic: false
 
+Note: If you disable static compilation rendering performance will suffer.
+
 For model variables you need to declare the types otherwise you will get a compilation error:
 
     model {
