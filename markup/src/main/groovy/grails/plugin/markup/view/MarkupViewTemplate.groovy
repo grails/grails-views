@@ -1,5 +1,6 @@
 package grails.plugin.markup.view
 
+import grails.views.Views
 import grails.views.WritableScript
 import groovy.text.markup.BaseTemplate
 import groovy.text.markup.MarkupTemplateEngine
@@ -14,6 +15,7 @@ import groovy.text.markup.TemplateConfiguration
 abstract class MarkupViewTemplate extends BaseTemplate implements WritableScript {
 
     public static final String EXTENSION = "gxml"
+    public static final String TYPE = "views.gxml"
 
     File sourceFile
 

@@ -1,6 +1,7 @@
 package grails.plugin.json.view.api
 
 import grails.artefact.Enhances
+import grails.plugin.json.view.JsonViewTemplate
 import grails.plugin.json.view.api.internal.JsonGrailsViewHelper
 import grails.views.Views
 import grails.views.api.GrailsView
@@ -11,7 +12,7 @@ import grails.views.api.GrailsView
  * @author Graeme Rocher
  * @since 1.0
  */
-@Enhances(Views.TYPE)
+@Enhances(JsonViewTemplate.TYPE)
 trait JsonView extends GrailsView {
 
     /**

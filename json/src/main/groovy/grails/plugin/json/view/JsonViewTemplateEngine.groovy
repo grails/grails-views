@@ -1,10 +1,16 @@
 package grails.plugin.json.view
 
+import grails.compiler.traits.TraitInjector
+import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension
+import grails.plugin.json.view.internal.JsonViewsTransform
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewConfiguration
+import grails.views.compiler.ViewsTransform
 import groovy.transform.CompileStatic
+import groovy.transform.InheritConstructors
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.grails.core.io.support.GrailsFactoriesLoader
 
 /**
  * A template engine for parsing JSON views
@@ -43,6 +49,11 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
             compilerConfiguration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", JsonTemplateTypeCheckingExtension.name), CompileStatic.class));
         }
+    }
+
+    @Override
+    protected ViewsTransform newViewsTransform() {
+        return new JsonViewsTransform(viewConfiguration.extension)
     }
 
     @Override

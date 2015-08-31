@@ -1,11 +1,16 @@
 package grails.plugin.json.view
 
+import grails.compiler.traits.TraitInjector
+import grails.plugin.json.view.api.JsonView
+import grails.plugin.json.view.internal.JsonViewsTransform
 import grails.views.GenericGroovyTemplateCompiler
+import grails.views.compiler.ViewsTransform
 import groovy.io.FileType
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.grails.core.io.support.GrailsFactoriesLoader
 
 /**
  * A compiler for JSON views
@@ -30,6 +35,11 @@ class JsonViewCompiler extends GenericGroovyTemplateCompiler {
                 viewConfiguration.baseTemplateClass.name
         )
 
+    }
+
+    @Override
+    protected ViewsTransform newViewsTransform() {
+        return new JsonViewsTransform(this.viewConfiguration.extension)
     }
 
     static void main(String[] args) {

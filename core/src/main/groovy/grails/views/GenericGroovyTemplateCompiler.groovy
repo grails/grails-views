@@ -31,8 +31,12 @@ class GenericGroovyTemplateCompiler {
 
     protected CompilerConfiguration configureCompiler() {
         configuration.compilationCustomizers.clear()
-        configuration.addCompilationCustomizers(new ASTTransformationCustomizer(new ViewsTransform(viewConfiguration.extension)))
+        configuration.addCompilationCustomizers(new ASTTransformationCustomizer(newViewsTransform()))
         return configuration
+    }
+
+    protected ViewsTransform newViewsTransform() {
+        new ViewsTransform(viewConfiguration.extension)
     }
 
     void compile(Iterable<File> sources) {

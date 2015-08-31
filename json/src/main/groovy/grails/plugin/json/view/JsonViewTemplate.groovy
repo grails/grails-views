@@ -3,6 +3,7 @@ package grails.plugin.json.view
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.views.AbstractWritableScript
+import grails.views.Views
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.buffer.FastStringWriter
@@ -21,8 +22,8 @@ import org.grails.buffer.FastStringWriter
 @CompileStatic
 @InheritConstructors
 abstract class JsonViewTemplate extends AbstractWritableScript {
-
     public static final String EXTENSION = "gson"
+    public static final String TYPE = "view.gson"
 
     StreamingJsonBuilder json
     boolean prettyPrint = false

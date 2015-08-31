@@ -1,7 +1,7 @@
 package grails.plugin.markup.view.api
 
 import grails.artefact.Enhances
-import grails.views.Views
+import grails.plugin.markup.view.MarkupViewTemplate
 import grails.views.api.GrailsView
 import grails.views.api.GrailsViewHelper
 import grails.views.api.internal.DefaultGrailsViewHelper
@@ -12,8 +12,9 @@ import grails.views.api.internal.DefaultGrailsViewHelper
  * @author Graeme Rocher
  * @since 1.0
  */
-@Enhances(Views.TYPE)
+@Enhances(MarkupViewTemplate.TYPE)
 trait MarkupView extends GrailsView {
+
     /**
      * Overrides the default helper with new methods specific to JSON building
      */

@@ -288,6 +288,10 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     protected void prepareCustomizers() {
         // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
         compilerConfiguration.compilationCustomizers.clear()
-        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(new ViewsTransform(extension, dynamicTemplatePrefix)))
+        compilerConfiguration.compilationCustomizers.add(new ASTTransformationCustomizer(newViewsTransform()))
+    }
+
+    protected ViewsTransform newViewsTransform() {
+        new ViewsTransform(extension, dynamicTemplatePrefix)
     }
 }
