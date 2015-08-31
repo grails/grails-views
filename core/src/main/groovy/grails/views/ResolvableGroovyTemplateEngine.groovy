@@ -52,7 +52,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     /**
      * The TemplateResolver to use
      */
-    TemplateResolver templateResolver  = new GenericGroovyTemplateResolver()
+    TemplateResolver templateResolver
 
     /**
      * The package name that contains the template
@@ -103,6 +103,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      */
     ResolvableGroovyTemplateEngine(ViewConfiguration configuration) {
         this.viewConfiguration = configuration
+        this.templateResolver = new GenericGroovyTemplateResolver(baseDir: new File(configuration.templatePath))
         this.extension = configuration.extension
         setPackageName(configuration.packageName)
         setEnableReloading(configuration.enableReloading)

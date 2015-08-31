@@ -2,8 +2,11 @@ package grails.plugin.markup.view
 
 import grails.plugin.markup.view.mvc.MarkupViewResolver
 import grails.plugins.Plugin
+import grails.util.BuildSettings
+import grails.util.Environment
 import grails.util.Metadata
 import grails.views.ViewsEnvironment
+import org.grails.io.support.GrailsResourceUtils
 
 /**
  * Plugin class for markup views
@@ -46,10 +49,13 @@ A plugin that allows rendering of JSON views
 
     Closure doWithSpring() { {->
         markupViewConfiguration(MarkupViewConfiguration) {
-            baseTemplateClass = config.getProperty(MarkupViewTemplateEngine.VIEW_BASE_CLASS, Class, JsonTemplate)
+            baseTemplateClass = config.getProperty(MarkupViewTemplateEngine.VIEW_BASE_CLASS, Class, MarkupViewTemplate)
             compileStatic = config.getProperty(MarkupViewTemplateEngine.COMPILE_STATIC, Boolean, true)
             enableReloading = ViewsEnvironment.isDevelopmentMode()
             packageName = Metadata.getCurrent().getApplicationName()
+            def current = Environment.current
+            def pathToTemplates = current.hasReloadLocation() ? current.reloadLocation : BuildSettings.BASE_DIR?.path
+            templatePath = "${pathToTemplates}/${GrailsResourceUtils.VIEWS_DIR_PATH}"
         }
 
         markupViewResolver(MarkupViewResolver, markupViewConfiguration)

@@ -7,6 +7,11 @@ class TestController {
         respond test
     }
 
+    def testRespondWithTemplateForDomain() {
+        def test = new Test(name:"Bob")
+        respond test
+    }
+
     def testCompilationError() {
         [one:"two"]
     }

@@ -36,4 +36,9 @@ interface ViewConfiguration {
      * @return Whether to cache
      */
     boolean isCache()
+
+    /**
+     * @return Path to the templates
+     */
+    String getTemplatePath()
 }

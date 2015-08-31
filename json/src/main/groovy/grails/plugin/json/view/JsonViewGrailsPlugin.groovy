@@ -2,8 +2,11 @@ package grails.plugin.json.view
 
 import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.plugins.*
+import grails.util.BuildSettings
+import grails.util.Environment
 import grails.util.Metadata
 import grails.views.ViewsEnvironment
+import org.grails.io.support.GrailsResourceUtils
 
 class JsonViewGrailsPlugin extends Plugin {
 
@@ -44,6 +47,9 @@ A plugin that allows rendering of JSON views
                 compileStatic = config.getProperty(JsonViewTemplateEngine.COMPILE_STATIC, Boolean, true)
                 enableReloading = ViewsEnvironment.isDevelopmentMode()
                 packageName = Metadata.getCurrent().getApplicationName()
+                def current = Environment.current
+                def pathToTemplates = current.hasReloadLocation() ? current.reloadLocation : BuildSettings.BASE_DIR?.path
+                templatePath = "${pathToTemplates}/${GrailsResourceUtils.VIEWS_DIR_PATH}"
             }
             jsonViewResolver(JsonViewResolver, jsonViewConfiguration)
         } 

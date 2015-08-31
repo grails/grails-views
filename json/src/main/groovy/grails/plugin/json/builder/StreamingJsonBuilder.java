@@ -589,7 +589,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             return writer;
         }
 
-        public static void cloneDelegateAndGetContent(Writer w, Closure c) {
+        public static void cloneDelegateAndGetContent(Writer w, Closure c)
+        {
             cloneDelegateAndGetContent(w, c, true);
         }
 

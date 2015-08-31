@@ -9,6 +9,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.plugins.web.rest.render.ServletRenderContext
 import org.grails.plugins.web.rest.render.html.DefaultHtmlRenderer
+import org.springframework.web.servlet.View
 import org.springframework.web.servlet.ViewResolver
 
 /**
@@ -28,6 +29,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
 
     final Renderer defaultRenderer
 
+
     DefaultViewRenderer(Class<T> targetType, MimeType mimeType, ViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
         super(targetType,mimeType)
         this.viewResolver = viewResolver
@@ -37,24 +39,39 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
     }
 
 
-
     @Override
     void render(T object, RenderContext context) {
-        final mimeType = context.acceptMimeType ?: mimeTypes[0]
-        if (!mimeType.equals(MimeType.ALL)) {
-            context.setContentType(mimeType.name)
+        def arguments = context.arguments
+        def ct = arguments?.contentType
+
+        if(ct) {
+            context.setContentType(ct.toString())
+        }
+        else {
+            final mimeType = context.acceptMimeType ?: mimeTypes[0]
+            if (!mimeType.equals(MimeType.ALL)) {
+                context.setContentType(mimeType.name)
+            }
         }
 
         String viewName
-        if (context.arguments?.view) {
-            viewName = context.arguments.view.toString()
+        if (arguments?.view) {
+            viewName = arguments.view.toString()
         }
         else {
             viewName = context.actionName
         }
 
-        def viewUri = "/${context.controllerName}/${viewName}"
-        def view = viewResolver.resolveViewName(viewUri, context.locale)
+        String viewUri = "/${context.controllerName}/${viewName}"
+        def locale = context.locale
+        View view = viewResolver.resolveViewName(viewUri, locale)
+        if(view == null) {
+            if(proxyHandler != null) {
+                object = (T)proxyHandler.unwrapIfProxy(object)
+            }
+            viewUri = "/${object.getClass().name.replace('.','/')}"
+            view = viewResolver.resolveViewName(viewUri, locale)
+        }
         if(view != null) {
             Map<String, Object> model = [(resolveModelVariableName(object)): object]
 
