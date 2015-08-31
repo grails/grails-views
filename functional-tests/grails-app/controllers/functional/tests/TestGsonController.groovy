@@ -1,6 +1,6 @@
 package functional.tests
 
-class TestController {
+class TestGsonController {
 
     def testRespond() {
         def test = new Test(name:"Bob")

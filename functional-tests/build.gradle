@@ -62,6 +62,7 @@ dependencies {
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
     compile project(":grails-views-json")
+    compile project(":grails-views-markup")
 
     runtime "org.grails.plugins:asset-pipeline"
 
