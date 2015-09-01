@@ -64,9 +64,7 @@ class GenericGroovyTemplateResolver implements TemplateResolver {
         path = path.replace(SLASH_CHAR, UNDERSCORE_CHAR)
         path = path.replace(DOT_CHAR, UNDERSCORE_CHAR)
         if(scope) {
-            scope = scope.replace(SLASH_CHAR, UNDERSCORE_CHAR)
-            scope = scope.replace(DOT_CHAR, UNDERSCORE_CHAR)
-
+            scope = scope.replaceAll(/[\W\s]/, String.valueOf(UNDERSCORE_CHAR))
             path = "${scope}_${path}"
         }
         return path

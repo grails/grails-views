@@ -1,6 +1,8 @@
 package grails.views.gradle
 
+import grails.io.ResourceUtils
 import groovy.transform.CompileStatic
+import org.codehaus.groovy.tools.shell.util.PackageHelper
 import org.gradle.api.Action
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
@@ -50,6 +52,8 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
 
     @Override
     protected void compile() {
+        def projectPackageNames = getProjectPackageNames(project.projectDir)
+
         ExecResult result = project.javaexec(
                 new Action<JavaExecSpec>() {
                     @Override
@@ -64,6 +68,8 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                         javaExecSpec.setMaxHeapSize( compileOptions.forkOptions.memoryMaximumSize )
                         javaExecSpec.setMinHeapSize( compileOptions.forkOptions.memoryInitialSize )
 
+
+                        String packageImports = projectPackageNames.join(',')
                         def arguments = [
                                 getScriptBaseName(),
                                 packageName,
@@ -71,7 +77,8 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                                 srcDir.canonicalPath,
                                 destinationDir.canonicalPath,
                                 targetCompatibility,
-                                compileOptions.encoding]
+                                compileOptions.encoding,
+                                packageImports]
 
                         prepareArguments(arguments)
                         javaExecSpec.args(arguments)
@@ -95,4 +102,24 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
     abstract String getFileExtension()
 
     abstract String getScriptBaseName()
+
+    Iterable<String> getProjectPackageNames(File baseDir) {
+        File rootDir = baseDir ? new File(baseDir, "grails-app/domain") : null
+        Set<String> packageNames = []
+        if (rootDir?.exists()) {
+            populatePackages(rootDir, packageNames, "")
+        }
+        return packageNames
+    }
+
+    protected populatePackages(File rootDir, Collection<String> packageNames, String prefix) {
+        rootDir.eachDir { File dir ->
+            def dirName = dir.name
+            if (!dir.hidden && !dirName.startsWith('.')) {
+                packageNames << "${prefix}${dirName}".toString()
+
+                populatePackages(dir, packageNames, "${prefix}${dirName}.")
+            }
+        }
+    }
 }

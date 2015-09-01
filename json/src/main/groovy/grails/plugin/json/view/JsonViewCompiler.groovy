@@ -1,16 +1,13 @@
 package grails.plugin.json.view
 
-import grails.compiler.traits.TraitInjector
-import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.internal.JsonViewsTransform
-import grails.views.GenericGroovyTemplateCompiler
+import grails.views.AbstractGroovyTemplateCompiler
 import grails.views.compiler.ViewsTransform
 import groovy.io.FileType
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
-import org.grails.core.io.support.GrailsFactoriesLoader
 
 /**
  * A compiler for JSON views
@@ -20,7 +17,7 @@ import org.grails.core.io.support.GrailsFactoriesLoader
  */
 @CompileStatic
 @InheritConstructors
-class JsonViewCompiler extends GenericGroovyTemplateCompiler {
+class JsonViewCompiler extends AbstractGroovyTemplateCompiler {
 
     boolean compileStatic = true
 
@@ -42,9 +39,13 @@ class JsonViewCompiler extends GenericGroovyTemplateCompiler {
         return new JsonViewsTransform(this.viewConfiguration.extension)
     }
 
+
     static void main(String[] args) {
-        if(args.length != 8) {
+        if(args.length != 9) {
             System.err.println("Invalid arguments")
+            System.err.println("""
+Usage: java -cp CLASSPATH ${JsonViewCompiler.name} [scriptBaseName] [packageName] [fileExtension] [srcDir] [destinationDir] [targetCompatibility] [encoding] [packageImports]
+""")
             System.exit(1)
         }
         String scriptBaseName = args[0]
@@ -54,13 +55,15 @@ class JsonViewCompiler extends GenericGroovyTemplateCompiler {
         File destinationDir = new File(args[4])
         String targetCompatibility = args[5]
         String encoding = args[6]
-        boolean compileStatic = Boolean.valueOf(args[7])
+        String[] packageImports = args[7].split(',')
+        boolean compileStatic = Boolean.valueOf(args[8])
 
         def baseClass = Thread.currentThread().contextClassLoader.loadClass(scriptBaseName)
         def configuration = new JsonViewConfiguration(
                 baseTemplateClass: baseClass,
                 packageName: packageName,
-                extension: fileExtension
+                extension: fileExtension,
+                packageImports: packageImports
         )
 
         def compiler = new JsonViewCompiler(configuration, srcDir)

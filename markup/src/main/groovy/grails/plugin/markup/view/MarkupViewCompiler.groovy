@@ -1,7 +1,7 @@
 package grails.plugin.markup.view
 
 import grails.plugin.markup.view.internal.MarkupViewsTransform
-import grails.views.GenericGroovyTemplateCompiler
+import grails.views.AbstractGroovyTemplateCompiler
 import grails.views.compiler.ViewsTransform
 import groovy.io.FileType
 import groovy.text.markup.BaseTemplate
@@ -18,7 +18,7 @@ import org.codehaus.groovy.control.customizers.CompilationCustomizer
  */
 @InheritConstructors
 @CompileStatic
-class MarkupViewCompiler extends GenericGroovyTemplateCompiler {
+class MarkupViewCompiler extends AbstractGroovyTemplateCompiler {
 
     @Override
     protected CompilerConfiguration configureCompiler() {
@@ -38,8 +38,12 @@ class MarkupViewCompiler extends GenericGroovyTemplateCompiler {
     }
 
     static void main(String[] args) {
-        if(args.length != 8) {
+        if(args.length != 9) {
             System.err.println("Invalid arguments")
+            System.err.println("""
+Usage: java -cp CLASSPATH ${MarkupViewCompiler.name} [scriptBaseName] [packageName] [fileExtension] [srcDir] [destinationDir] [targetCompatibility] [encoding] [packageImports]
+""")
+
             System.exit(1)
         }
         String scriptBaseName = args[0]
@@ -49,14 +53,16 @@ class MarkupViewCompiler extends GenericGroovyTemplateCompiler {
         File destinationDir = new File(args[4])
         String targetCompatibility = args[5]
         String encoding = args[6]
-        boolean compileStatic = Boolean.valueOf(args[7])
+        String[] packageImports = args[7].split(',')
+        boolean compileStatic = Boolean.valueOf(args[8])
 
         def baseClass = Thread.currentThread().contextClassLoader.loadClass(scriptBaseName)
         def configuration = new MarkupViewConfiguration(
                 baseTemplateClass: (Class<? extends BaseTemplate>)baseClass,
                 packageName: packageName,
                 extension: fileExtension,
-                compileStatic: compileStatic
+                compileStatic: compileStatic,
+                packageImports: packageImports
         )
 
         def compiler = new MarkupViewCompiler(configuration, srcDir)
