@@ -124,6 +124,18 @@ You can render it with a view as follows:
         children g.render(template:"person", collection: family.children, var:'person')
     }
 
+Alternatively for a more concise way to invoke templates, using the `tmpl` variable:
+
+    model {
+        Family family
+    }
+    json {
+        name family.father.name
+        age family.father.age
+        oldestChild tmpl.person( family.children.max { Person p -> p.age } ] )
+        children tmpl.person( family.children )
+    }
+
 ### Headers, Content Type
 
 To customize content types and headers use the `page` object from [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy):

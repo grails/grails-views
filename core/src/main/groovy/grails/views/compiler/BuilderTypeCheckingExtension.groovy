@@ -41,6 +41,7 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
         }
         beforeVisitMethod {
             newScope {
+                dynamicMethods = [] as Set
                 builderCalls = [] as Set
             }
         }
@@ -53,20 +54,39 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
                 currentScope.builderCalls << call
                 return makeDynamic(call, OBJECT_TYPE)
             }
+            else if(isMethodDynamic(receiver, name, argList, argTypes, call)) {
+                currentScope.dynamicMethods << call
+                return makeDynamic(call, OBJECT_TYPE)
+            }
         }
 
         afterVisitMethod { mn ->
             scopeExit {
-                new BuilderMethodReplacer(
-                        self.getBuilderInvokeMethod(),
-                        self.getDelegateInvokeMethod(),
-                        self.getBuilderVariableName(),
-                        context.source,
-                        builderCalls)
-                        .visitMethod(mn)
+                if(mn.name == 'run') {
+
+                    new BuilderMethodReplacer(
+                            self.getBuilderInvokeMethod(),
+                            self.getDelegateInvokeMethod(),
+                            self.getBuilderVariableName(),
+                            context.source,
+                            builderCalls)
+                            .visitMethod(mn)
+
+                    self.transformDynamicMethods(context.source, mn, dynamicMethods)
+                }
+
             }
         }
     }
+
+    void transformDynamicMethods(SourceUnit source, MethodNode mn, Set dynamicCalls) {
+        // no-op
+    }
+
+    boolean isMethodDynamic(receiver, name, argList, argTypes, call) {
+        return false
+    }
+
 
     /**
      * @return The method node to invoke for an unresolved dynamic method on the main builder variable
@@ -86,7 +106,7 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
      */
     abstract ClassNode getBuilderClassNode()
 
-    private static class BuilderMethodReplacer extends ClassCodeExpressionTransformer {
+    protected static class BuilderMethodReplacer extends ClassCodeExpressionTransformer {
 
         private final MethodNode builderInvokeMethod
         private final MethodNode delegateInvokeMethod
