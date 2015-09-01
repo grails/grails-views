@@ -102,7 +102,7 @@ Links can be generated using the `g.link(..)` method:
 
 ### Templates
 
-You can define templates starting with underscore `_`. For example given the following template called `_person.gsp`:
+You can define templates starting with underscore `_`. For example given the following template called `_person.gson`:
 
     model {
         Person person
