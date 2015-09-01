@@ -11,7 +11,7 @@ Initial implementation includes JSON views powered by Groovy's JsonBuilder, howe
 
 Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    compile "org.grails.plugins:grails-views-json:1.0.0-SNAPSHOT"
+    compile "org.grails.plugins:views-json:1.0.0-SNAPSHOT"
 
 To enable Gradle compilation of JSON views for production environment add the following to the `buildscript` `dependencies` block:
 
@@ -19,7 +19,7 @@ To enable Gradle compilation of JSON views for production environment add the fo
         ...
         dependencies {
             ...
-            classpath "org.grails.plugins:grails-views-gradle:1.0.0-SNAPSHOT"
+            classpath "org.grails.plugins:views-gradle:1.0.0-SNAPSHOT"
         }
     }
 
@@ -27,7 +27,7 @@ Then apply the `org.grails.plugins.grails-json-views` Gradle plugin after any Gr
 
     ...
     apply plugin: "org.grails.grails-web"
-    apply plugin: "org.grails.plugins.grails-json-views"
+    apply plugin: "org.grails.plugins.json-views"
 
 This will add a `compileGsonViews` task to Gradle.
 
@@ -212,7 +212,7 @@ Markup views use Groovy's [MarkupTemplateEngine](http://docs.groovy-lang.org/doc
 
 Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    compile "org.grails.plugins:grails-views-markup:1.0.0-SNAPSHOT"
+    compile "org.grails.plugins:views-markup:1.0.0-SNAPSHOT"
 
 To enable Gradle compilation of Markup views for production environment add the following to the `buildscript` `dependencies` block:
 
@@ -220,7 +220,7 @@ To enable Gradle compilation of Markup views for production environment add the 
         ...
         dependencies {
             ...
-            classpath "org.grails.plugins:grails-views-gradle:1.0.0-SNAPSHOT"
+            classpath "org.grails.plugins:views-gradle:1.0.0-SNAPSHOT"
         }
     }
 
@@ -228,7 +228,7 @@ Then apply the `org.grails.plugins.grails-markup-views` Gradle plugin after any 
 
     ...
     apply plugin: "org.grails.grails-web"
-    apply plugin: "org.grails.plugins.grails-markup-views"
+    apply plugin: "org.grails.plugins.markup-views"
 
 This will add a `compileGmlViews` task to Gradle that will be executed when a WAR or JAR is built.
 
