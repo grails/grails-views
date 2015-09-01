@@ -23,7 +23,7 @@ class JsonViewCompilerTask extends AbstractGroovyTemplateCompileTask {
 
     @Override
     protected String getCompilerName() {
-        "grails.plugin.json.view.JsonViewsCompiler"
+        "grails.plugin.json.view.JsonViewCompiler"
     }
 
     @Override
