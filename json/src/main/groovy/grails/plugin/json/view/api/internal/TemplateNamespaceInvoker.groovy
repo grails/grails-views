@@ -26,6 +26,9 @@ class TemplateNamespaceInvoker {
             if(val instanceof Map) {
                 return jsonViewHelper.render(template:name, model:val)
             }
+            else if(val instanceof Iterable) {
+                return jsonViewHelper.render(template:name, var:name, collection:val)
+            }
             else {
                 return jsonViewHelper.render(template:name, model:[(name): val])
             }
