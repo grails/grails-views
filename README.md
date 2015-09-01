@@ -46,7 +46,7 @@ Produces
 
     {"person":{"name":"bob"}}
 
-All JSON views implement the [JsonView](json/src/main/groovy/grails/plugin/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [JsonTemplate](json/src/main/groovy/grails/plugin/json/view/JsonTemplate.groovy) base class.
+All JSON views implement the [JsonView](json/src/main/groovy/grails/plugin/json/view/api/JsonView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [JsonViewTemplate](json/src/main/groovy/grails/plugin/json/view/JsonViewTemplate.groovy) base class.
 
 There is an implicit `json` variable which is an instance of [StreamingJsonBuilder](http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html).
 
@@ -170,15 +170,15 @@ In addition if you want to define a template to render any instance the `Book` d
 
 ### Changing the view base class
 
-All JSON views subclass the [JsonTemplate](json/src/main/groovy/grails/plugin/json/view/JsonTemplate.groovy) class by default.
+All JSON views subclass the [JsonViewTemplate](json/src/main/groovy/grails/plugin/json/view/JsonViewTemplate.groovy) class by default.
 
-You can however change the subclass (which should be a subclass of `JsonTemplate`) using configuration:
+You can however change the subclass (which should be a subclass of `JsonViewTemplate`) using configuration:
 
     grails:
         views:
             json:
                 compileStatic: true
-                baseTemplateClass: com.example.MyCustomJsonTemplate
+                baseTemplateClass: com.example.MyCustomJsonViewTemplate
 
 ### Adding New Helper Methods via Traits
 
