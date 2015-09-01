@@ -18,10 +18,19 @@ import org.springframework.context.MessageSource
 @CompileStatic
 trait GrailsView extends View implements WriterProvider {
 
+    /**
+     * The link generator
+     */
     LinkGenerator linkGenerator
 
+    /**
+     * The template engine
+     */
     ResolvableGroovyTemplateEngine templateEngine
 
+    /**
+     * The message source object
+     */
     MessageSource messageSource
 
     /**

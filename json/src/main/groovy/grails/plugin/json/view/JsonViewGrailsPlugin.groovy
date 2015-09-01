@@ -42,8 +42,7 @@ A plugin that allows rendering of JSON views
     def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
-            jsonViewConfiguration(JsonViewConfiguration) {
-            }
+            jsonViewConfiguration(JsonViewConfiguration)
             jsonViewResolver(JsonViewResolver, jsonViewConfiguration)
         } 
     }

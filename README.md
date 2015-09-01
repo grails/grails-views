@@ -236,6 +236,12 @@ Example Markup View:
         }
     }
 
+This produces the following output given a model such as `[cars:[[make:"Audi", model:"A5"]]]`:
+
+    <?xml version='1.0'?>
+    <cars><car make='Audi' model='A5'/></cars>
+
+For further examples see Groovy's [MarkupTemplateEngine](http://docs.groovy-lang.org/docs/next/html/documentation/template-engines.html#_the_markuptemplateengine) documentation.
 
 All Markup views implement the [MarkupView](markup/src/main/groovy/grails/plugin/markup/view/api/MarkupView.groovy) and [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) traits and extend from the [MarkupViewTemplate](markup/src/main/groovy/grails/plugin/markup/view/MarkupViewTemplate.groovy) base class.
 
