@@ -1,14 +1,17 @@
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
+    userOrg = "grails"
 }
 
 apply plugin:'idea'
 
-
 subprojects {
+    ext {
+        userOrg = "grails"
+    }
     group "org.grails"
-    version = "1.0.0-SNAPSHOT"
+    version "1.0.0.M1"
     repositories {
         mavenLocal()
         mavenCentral()
@@ -17,4 +20,3 @@ subprojects {
 
 }
 
-version = "1.0.0-SNAPSHOT"
