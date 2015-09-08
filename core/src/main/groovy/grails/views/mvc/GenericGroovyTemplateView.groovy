@@ -47,12 +47,13 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         if(template != null) {
 
             httpServletResponse.setContentType( getContentType() )
+            httpServletResponse.setCharacterEncoding( defaultEncoding )
+
             def writable = template.make(map)
             prepareWritable(writable, httpServletRequest, httpServletResponse, locale)
             def writer = httpServletResponse.writer
             try {
                 // set the default encoding
-                httpServletResponse.setCharacterEncoding( defaultEncoding )
                 // now write the writable
                 writable.writeTo(writer)
             } catch (RuntimeException e) {
