@@ -51,4 +51,9 @@ interface ViewConfiguration {
      * @return The name of the views module (example json or markup)
      */
     String getViewModuleName()
+
+    /**
+     * @return The default encoding to use to render views
+     */
+    String getEncoding()
 }

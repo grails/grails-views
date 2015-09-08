@@ -27,6 +27,12 @@ class MarkupViewConfiguration extends TemplateConfiguration implements GenericVi
     }
 
     @Override
+    void setEncoding(String encoding) {
+        GenericViewConfiguration.super.setEncoding(encoding)
+        setDeclarationEncoding(encoding)
+    }
+
+    @Override
     boolean isCache() {
         return isCacheTemplates()
     }

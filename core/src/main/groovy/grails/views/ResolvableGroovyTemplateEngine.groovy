@@ -118,6 +118,10 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         return compilerConfiguration
     }
 
+    ViewConfiguration getViewConfiguration() {
+        return viewConfiguration
+    }
+
     void setEnableReloading(boolean enableReloading) {
         this.enableReloading = enableReloading
         if(enableReloading && directoryWatcher == null) {

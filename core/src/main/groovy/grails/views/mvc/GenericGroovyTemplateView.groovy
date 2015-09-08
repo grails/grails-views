@@ -25,6 +25,20 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
     ResolvableGroovyTemplateEngine templateEngine
     LinkGenerator linkGenerator
     LocaleResolver localeResolver
+    private String defaultEncoding = "UTF-8"
+
+    void setTemplateEngine(ResolvableGroovyTemplateEngine templateEngine) {
+        this.templateEngine = templateEngine
+        this.defaultEncoding = templateEngine.viewConfiguration.encoding
+    }
+
+    void setLinkGenerator(LinkGenerator linkGenerator) {
+        this.linkGenerator = linkGenerator
+    }
+
+    void setLocaleResolver(LocaleResolver localeResolver) {
+        this.localeResolver = localeResolver
+    }
 
     @Override
     protected void renderMergedOutputModel(Map<String, Object> map, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
@@ -37,6 +51,9 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             prepareWritable(writable, httpServletRequest, httpServletResponse, locale)
             def writer = httpServletResponse.writer
             try {
+                // set the default encoding
+                httpServletResponse.setCharacterEncoding( defaultEncoding )
+                // now write the writable
                 writable.writeTo(writer)
             } catch (RuntimeException e) {
                 if(!httpServletResponse.isCommitted()) {
@@ -58,7 +75,6 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
                 locale
             )
 
-
             final webRequest = GrailsWebRequest.lookup(httpServletRequest)
             if (webRequest != null) {
                 grailsView.setActionName(
@@ -70,52 +86,58 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             }
         }
         if (writable instanceof HttpView) {
-            ((HttpView) writable).setPage(
-                    new HttpView.Page() {
-
-                        @Override
-                        void header(Map<String, String> nameAndValue) {
-                            headers(nameAndValue)
-                        }
-
-                        @Override
-                        void headers(Map<String, String> namesAndValues) {
-                            for (entry in namesAndValues.entrySet()) {
-                                header entry.key, entry.value
-                            }
-                        }
-
-                        @Override
-                        void header(String name, String value) {
-                            httpServletResponse.addHeader(name, value)
-                        }
-
-                        @Override
-                        void contentType(String contentType) {
-                            httpServletResponse.setContentType(contentType)
-                        }
-
-                        @Override
-                        void encoding(String encoding) {
-                            httpServletResponse.setCharacterEncoding(encoding)
-                        }
-
-                        @Override
-                        void status(int status) {
-                            httpServletResponse.setStatus(status)
-                        }
-
-                        @Override
-                        void status(int status, String message) {
-                            httpServletResponse.sendError(status, message)
-                        }
-                    }
-            )
+            def page = new HttpViewPage(httpServletResponse)
+            ((HttpView) writable).setPage(page)
         }
     }
 
     @Override
     boolean checkResource(Locale locale) throws Exception {
         return templateEngine?.resolveTemplate(url, locale) != null
+    }
+
+    private static class HttpViewPage implements HttpView.Page {
+        final HttpServletResponse httpServletResponse
+
+        HttpViewPage(HttpServletResponse httpServletResponse) {
+            this.httpServletResponse = httpServletResponse
+        }
+
+        @Override
+        void header(Map<String, String> nameAndValue) {
+            headers(nameAndValue)
+        }
+
+        @Override
+        void headers(Map<String, String> namesAndValues) {
+            for (entry in namesAndValues.entrySet()) {
+                header entry.key, entry.value
+            }
+        }
+
+        @Override
+        void header(String name, String value) {
+            httpServletResponse.addHeader(name, value)
+        }
+
+        @Override
+        void contentType(String contentType) {
+            httpServletResponse.setContentType(contentType)
+        }
+
+        @Override
+        void encoding(String encoding) {
+            httpServletResponse.setCharacterEncoding(encoding)
+        }
+
+        @Override
+        void status(int status) {
+            httpServletResponse.setStatus(status)
+        }
+
+        @Override
+        void status(int status, String message) {
+            httpServletResponse.sendError(status, message)
+        }
     }
 }
