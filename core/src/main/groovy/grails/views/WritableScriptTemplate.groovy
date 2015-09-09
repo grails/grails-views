@@ -1,7 +1,15 @@
 package grails.views
 
+import grails.util.GrailsNameUtils
 import groovy.text.Template
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import org.springframework.cglib.reflect.FastMethod
+
+import java.beans.Introspector
+import java.beans.PropertyDescriptor
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 /**
  * @author Graeme Rocher
@@ -13,13 +21,36 @@ class WritableScriptTemplate implements Template {
     Class<? extends WritableScript> templateClass
     File sourceFile
 
+    protected final Map<String, Method> modelSetters = [:]
+
     WritableScriptTemplate(Class<? extends WritableScript> templateClass) {
-        this.templateClass = templateClass
+        this(templateClass, null)
     }
 
     WritableScriptTemplate(Class<? extends WritableScript> templateClass, File sourceFile) {
         this.templateClass = templateClass
         this.sourceFile = sourceFile
+
+        initModelTypes(templateClass)
+    }
+
+    protected void initModelTypes(Class<? extends WritableScript> templateClass) {
+        try {
+            def field = templateClass.getDeclaredField(Views.MODEL_TYPES_FIELD)
+            field.setAccessible(true)
+
+            def modelTypes = (Map<String, Class>) field.get(templateClass)
+            for(mt in modelTypes) {
+                def propertyName = mt.key
+                def setterName = GrailsNameUtils.getSetterName(propertyName)
+                def method = templateClass.getDeclaredMethod(setterName, mt.value)
+                method.setAccessible(true)
+                modelSetters[propertyName] = method
+
+            }
+        } catch (Throwable e) {
+            // ignore
+        }
     }
 
     @Override
@@ -33,6 +64,12 @@ class WritableScriptTemplate implements Template {
                                     .newInstance()
         if(!binding.isEmpty()) {
             writableTemplate.binding = new Binding(binding)
+            for(modelSetter in modelSetters.entrySet()) {
+                def value = binding[modelSetter.key]
+                if(value != null) {
+                    modelSetter.value.invoke(writableTemplate, value)
+                }
+            }
         }
         writableTemplate.setSourceFile(sourceFile)
         return writableTemplate

@@ -16,4 +16,9 @@ interface Views {
      * The identifier used for model types
      */
     String MODEL_TYPES = "modelTypes"
+
+    /**
+     * Field used to hold the model types
+     */
+    String MODEL_TYPES_FIELD = "MODEL_TYPES"
 }

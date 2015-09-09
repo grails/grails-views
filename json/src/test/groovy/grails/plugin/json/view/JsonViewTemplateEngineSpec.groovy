@@ -8,6 +8,27 @@ import spock.lang.Specification
  */
 class JsonViewTemplateEngineSpec extends Specification {
 
+    void "Test static compilation with collections"() {
+        when:"An engine is created and a template parsed"
+        def templateEngine = new JsonViewTemplateEngine()
+        def template = templateEngine.createTemplate('''
+model {
+    List<URL> urls
+}
+
+json urls, { URL url ->
+    protocol url.protocol
+}
+''')
+
+        def writer = new StringWriter()
+        template.make(urls: [new URL("http://foo.com")]).writeTo(writer)
+
+        then:"The output is correct"
+        writer.toString() == '[{"protocol":"http"}]'
+
+    }
+
     void "Test static compilation"() {
         when:"An engine is created and a template parsed"
         def templateEngine = new JsonViewTemplateEngine()

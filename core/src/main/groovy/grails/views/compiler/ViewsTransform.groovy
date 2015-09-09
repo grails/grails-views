@@ -13,6 +13,7 @@ import org.codehaus.groovy.ast.ClassCodeVisitorSupport
 import org.codehaus.groovy.ast.ClassHelper
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.DynamicVariable
+import org.codehaus.groovy.ast.FieldNode
 import org.codehaus.groovy.ast.MethodNode
 import org.codehaus.groovy.ast.Parameter
 import org.codehaus.groovy.ast.expr.ArgumentListExpression
@@ -79,7 +80,9 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                     }
                     org.codehaus.groovy.transform.trait.TraitComposer.doExtendTraits(classNode, source, compilationUnit)
 
-                    new ModelTypesVisitor(source).visitClass(classNode)
+
+                    def modelTypesVisitor = new ModelTypesVisitor(source)
+                    modelTypesVisitor.visitClass(classNode)
                     def runMethod = classNode.getMethod("run", GrailsASTUtils.ZERO_PARAMETERS)
                     def stm = runMethod.code
                     if(stm instanceof BlockStatement) {
@@ -108,6 +111,14 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                         }
                     }
 
+
+                    def modelTypesMap = new MapExpression()
+                    for(entry in modelTypesVisitor.modelTypes) {
+                        modelTypesMap.addMapEntryExpression( new MapEntryExpression(
+                                new ConstantExpression(entry.key),
+                                new ClassExpression(ClassHelper.make(entry.value.name))))
+                    }
+                    classNode.addField( new FieldNode(Views.MODEL_TYPES_FIELD, Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, ClassHelper.make(Map).plainNodeReference, classNode.plainNodeReference, modelTypesMap))
                     classNode.putNodeMetaData(APPLIED, Boolean.TRUE)
                 }
             }
@@ -168,6 +179,8 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                     }
                 }
             }
+
+
             classNode.putNodeMetaData(Views.MODEL_TYPES, modelTypes)
             // used by markup template engine
             classNode.putNodeMetaData("MTE.modelTypes", modelTypes)
