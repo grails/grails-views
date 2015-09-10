@@ -40,13 +40,14 @@ class WritableScriptTemplate implements Template {
             field.setAccessible(true)
 
             def modelTypes = (Map<String, Class>) field.get(templateClass)
-            for(mt in modelTypes) {
-                def propertyName = mt.key
-                def setterName = GrailsNameUtils.getSetterName(propertyName)
-                def method = templateClass.getDeclaredMethod(setterName, mt.value)
-                method.setAccessible(true)
-                modelSetters[propertyName] = method
-
+            if(modelTypes != null) {
+                for(mt in modelTypes) {
+                    def propertyName = mt.key
+                    def setterName = GrailsNameUtils.getSetterName(propertyName)
+                    def method = templateClass.getDeclaredMethod(setterName, mt.value)
+                    method.setAccessible(true)
+                    modelSetters[propertyName] = method
+                }
             }
         } catch (Throwable e) {
             // ignore
