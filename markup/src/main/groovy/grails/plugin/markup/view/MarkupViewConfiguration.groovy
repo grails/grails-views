@@ -27,6 +27,12 @@ class MarkupViewConfiguration extends TemplateConfiguration implements GenericVi
     }
 
     @Override
+    void setPrettyPrint(boolean prettyPrint) {
+        setAutoIndent(true)
+        setAutoNewLine(true)
+    }
+
+    @Override
     void setEncoding(String encoding) {
         GenericViewConfiguration.super.setEncoding(encoding)
         setDeclarationEncoding(encoding)
