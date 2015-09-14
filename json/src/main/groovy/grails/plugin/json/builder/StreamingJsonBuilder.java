@@ -412,14 +412,18 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      */
     public static class StreamingJsonDelegate extends GroovyObjectSupport {
 
-        private Writer writer;
-        private boolean first;
-        private State state;
+        protected Writer writer;
+        protected boolean first;
+        protected State state;
 
 
         public StreamingJsonDelegate(Writer w, boolean first) {
             this.writer = w;
             this.first = first;
+        }
+
+        public Writer getWriter() {
+            return writer;
         }
 
         public Object invokeMethod(String name, Object args) {
@@ -443,6 +447,10 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
                                 }
                                 else if(obj.getClass().isArray()) {
                                     call(name, Arrays.asList( (Object[])obj), callable);
+                                    return null;
+                                }
+                                else {
+                                    call(name, obj, callable);
                                     return null;
                                 }
                             }
@@ -524,6 +532,32 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
         }
 
         /**
+         * Writes the name and value of a JSON attribute
+         *
+         * @param name The attribute name
+         * @param value The value
+         * @throws IOException
+         */
+        public void call(String name, Object value, @DelegatesTo(StreamingJsonDelegate.class) Closure callable) throws IOException {
+            writeName(name);
+            verifyValue();
+            writeObject(writer, value, callable);
+        }
+        /**
+         * Writes the name and another JSON boject
+         *
+         * @param name The attribute name
+         * @param value The value
+         * @throws IOException
+         */
+        public void call(String name,@DelegatesTo(StreamingJsonDelegate.class) Closure value) throws IOException {
+            writeName(name);
+            writer.write(JsonOutput.OPEN_BRACE);
+            StreamingJsonDelegate.cloneDelegateAndGetContent(writer, value);
+            writer.write(JsonOutput.CLOSE_BRACE);
+
+        }
+        /**
          * Writes an unescaped value. Note: can cause invalid JSON if passed JSON is invalid
          *
          * @param name The attribute name
@@ -541,7 +575,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             writeCollectionWithClosure(writer, coll, c);
         }
 
-        private void verifyValue() {
+        protected void verifyValue() {
             if(state == State.VALUE) {
                 throw new IllegalStateException("Cannot write value when value has just been written. Write a name first!");
             }
@@ -551,7 +585,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
         }
 
 
-        private void writeName(String name) throws IOException {
+        protected void writeName(String name) throws IOException {
             if(state == State.NAME) {
                 throw new IllegalStateException("Cannot write a name when a name has just been written. Write a value first!");
             }
@@ -567,12 +601,12 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             writer.write(JsonOutput.COLON);
         }
 
-        private void writeValue(Object value) throws IOException {
+        protected void writeValue(Object value) throws IOException {
             verifyValue();
             writer.write(JsonOutput.toJson(value));
         }
 
-        private void writeArray(List<Object> list) throws IOException {
+        protected void writeArray(List<Object> list) throws IOException {
             verifyValue();
             writer.write(JsonOutput.toJson(list));
         }
@@ -591,13 +625,17 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
                     first = false;
                 }
 
-                writer.write(JsonOutput.OPEN_BRACE);
-                curryDelegateAndGetContent(writer, closure, it);
-                writer.write(JsonOutput.CLOSE_BRACE);
+                writeObject(writer, it, closure);
             }
             writer.write(JsonOutput.CLOSE_BRACKET);
 
             return writer;
+        }
+
+        private static void writeObject(Writer writer, Object object, Closure closure) throws IOException {
+            writer.write(JsonOutput.OPEN_BRACE);
+            curryDelegateAndGetContent(writer, closure, object);
+            writer.write(JsonOutput.CLOSE_BRACE);
         }
 
         public static void cloneDelegateAndGetContent(Writer w, Closure c)

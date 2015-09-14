@@ -10,4 +10,9 @@ trait View {
      * The locale of the view
      */
     Locale locale = Locale.ENGLISH
+
+    /**
+     * The output stream
+     */
+    Writer out
 }

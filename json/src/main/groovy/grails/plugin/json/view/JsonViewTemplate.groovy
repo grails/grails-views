@@ -2,6 +2,7 @@ package grails.plugin.json.view
 
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
+import grails.plugin.json.view.api.JsonView
 import grails.views.AbstractWritableScript
 import grails.views.Views
 import groovy.transform.CompileStatic
@@ -14,18 +15,17 @@ import org.grails.buffer.FastStringWriter
  *
  *  TODO:
  *      - declaring templates for types
- *      - HAL integration
+ *      - versioning integration
  *
  * @author Graeme Rocher
  * @since 1.0
  */
 @CompileStatic
 @InheritConstructors
-abstract class JsonViewTemplate extends AbstractWritableScript {
+abstract class JsonViewTemplate extends AbstractWritableScript implements JsonView {
     public static final String EXTENSION = "gson"
     public static final String TYPE = "view.gson"
 
-    StreamingJsonBuilder json
     boolean prettyPrint = false
     Object root
 

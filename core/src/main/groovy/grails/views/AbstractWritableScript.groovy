@@ -24,7 +24,7 @@ abstract class AbstractWritableScript extends Script implements WritableScript {
 
     @Override
     final Writer writeTo(Writer out) throws IOException {
-        this.out = out
+        setOut(out)
         try {
             return doWrite(out)
         } catch (Throwable e) {

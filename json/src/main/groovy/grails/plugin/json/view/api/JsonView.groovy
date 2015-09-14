@@ -1,10 +1,8 @@
 package grails.plugin.json.view.api
 
-import grails.artefact.Enhances
-import grails.plugin.json.view.JsonViewTemplate
+import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.internal.JsonGrailsViewHelper
 import grails.plugin.json.view.api.internal.TemplateNamespaceInvoker
-import grails.views.Views
 import grails.views.api.GrailsView
 
 /**
@@ -13,8 +11,12 @@ import grails.views.api.GrailsView
  * @author Graeme Rocher
  * @since 1.0
  */
-@Enhances(JsonViewTemplate.TYPE)
 trait JsonView extends GrailsView {
+
+    /**
+     * The {@link StreamingJsonBuilder} instance
+     */
+    StreamingJsonBuilder json
 
     /**
      * Overrides the default helper with new methods specific to JSON building

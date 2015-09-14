@@ -49,15 +49,15 @@ import java.util.*;
  */
 public class JsonOutput {
 
-    static final char OPEN_BRACKET = '[';
-    static final char CLOSE_BRACKET = ']';
-    static final char OPEN_BRACE = '{';
-    static final char CLOSE_BRACE = '}';
-    static final char COLON = ':';
-    static final char COMMA = ',';
-    static final char SPACE = ' ';
-    static final char NEW_LINE = '\n';
-    static final char QUOTE = '"';
+    public static final char OPEN_BRACKET = '[';
+    public static final char CLOSE_BRACKET = ']';
+    public static final char OPEN_BRACE = '{';
+    public static final char CLOSE_BRACE = '}';
+    public static final char COLON = ':';
+    public static final char COMMA = ',';
+    public static final char SPACE = ' ';
+    public static final char NEW_LINE = '\n';
+    public static final char QUOTE = '"';
 
     private static final char[] EMPTY_STRING_CHARS = Chr.array(QUOTE, QUOTE);
 
