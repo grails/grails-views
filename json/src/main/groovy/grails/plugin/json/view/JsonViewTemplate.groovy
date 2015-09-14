@@ -26,7 +26,7 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
     public static final String EXTENSION = "gson"
     public static final String TYPE = "view.gson"
 
-    boolean prettyPrint = false
+
     Object root
 
     @Override
@@ -38,6 +38,7 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
         }
         else {
             def writer = new FastStringWriter()
+            setOut(writer)
             this.json = new StreamingJsonBuilder(writer)
             run()
             def prettyOutput = JsonOutput.prettyPrint(writer.toString())

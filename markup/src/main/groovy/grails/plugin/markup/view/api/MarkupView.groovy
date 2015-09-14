@@ -12,7 +12,6 @@ import grails.views.api.internal.DefaultGrailsViewHelper
  * @author Graeme Rocher
  * @since 1.0
  */
-@Enhances(MarkupViewTemplate.TYPE)
 trait MarkupView extends GrailsView {
 
     /**

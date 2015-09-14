@@ -22,6 +22,7 @@ import java.beans.PropertyDescriptor
 trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAware {
 
     String encoding = "UTF-8"
+    boolean prettyPrint = false
     boolean enableReloading = ViewsEnvironment.isDevelopmentMode()
     String packageName = Metadata.getCurrent().getApplicationName() ?: ""
     boolean compileStatic = true

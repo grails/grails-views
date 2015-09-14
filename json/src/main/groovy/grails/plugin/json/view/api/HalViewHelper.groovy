@@ -4,6 +4,7 @@ import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.rest.Link
 import grails.views.api.GrailsViewHelper
+import grails.views.api.HttpView
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -36,18 +37,29 @@ class HalViewHelper {
     }
 
     /**
+     * @param name Sets the HAL response type
+     */
+    void type(String name) {
+        def mimeType = view.mimeUtility?.getMimeTypeForExtension(name)
+        this.contentType = mimeType?.name ?: name
+        if(view instanceof HttpView) {
+            ((HttpView)view).page?.contentType(contentType)
+        }
+    }
+
+    /**
      * Creates HAL links for the given object
      *
      * @param object The object to create links for
      */
-    void links(Object object) {
-        def jsonBuilder = view.json
+    void links(Object object, String contentType = this.contentType) {
         def locale = view.locale ?: Locale.ENGLISH
-
-        jsonBuilder.call(LINKS_ATTRIBUTE) {
+        contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
+        new StreamingJsonDelegate(view.out, true).call(LINKS_ATTRIBUTE) {
             call(SELF_ATTRIBUTE) {
                 call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true)
                 call HREFLANG_ATTRIBUTE, locale.toString()
+
                 call TYPE_ATTRIBUTE, contentType
             }
 
@@ -67,11 +79,29 @@ class HalViewHelper {
         view.out.write(JsonOutput.COMMA)
     }
 
+    /**
+     * Outputs a HAL embedded entry for the given closure
+     *
+     * @param callable The callable
+     */
     void embedded(@DelegatesTo(StreamingJsonDelegate) Closure callable) {
-        def json = view.json
-        json.call(EMBEDDED_ATTRIBUTE) {
+        new StreamingJsonDelegate(view.out, true).call(EMBEDDED_ATTRIBUTE) {
 
             callable.setDelegate(new HalStreamingJsonDelegate(this, (StreamingJsonDelegate)delegate))
+            callable.call()
+        }
+        view.out.write(JsonOutput.COMMA)
+    }
+
+    /**
+     * Outputs a HAL embedded entry for the content type and closure
+     *
+     * @param callable The callable
+     */
+    void embedded(String contentType, @DelegatesTo(StreamingJsonDelegate) Closure callable) {
+        new StreamingJsonDelegate(view.out, true).call(EMBEDDED_ATTRIBUTE) {
+
+            callable.setDelegate(new HalStreamingJsonDelegate(contentType, this, (StreamingJsonDelegate)delegate))
             callable.call()
         }
         view.out.write(JsonOutput.COMMA)
@@ -88,12 +118,22 @@ class HalViewHelper {
     }
 
     static class HalStreamingJsonDelegate extends StreamingJsonDelegate {
-        StreamingJsonDelegate delegate
+        String contentType
         HalViewHelper viewHelper
+        StreamingJsonDelegate delegate
+
         HalStreamingJsonDelegate(HalViewHelper viewHelper, StreamingJsonDelegate delegate) {
             super(delegate.getWriter(), true)
             this.viewHelper = viewHelper
             this.delegate = delegate
+            this.contentType = viewHelper.contentType
+        }
+
+        HalStreamingJsonDelegate(String contentType, HalViewHelper viewHelper, StreamingJsonDelegate delegate) {
+            super(delegate.getWriter(), true)
+            this.viewHelper = viewHelper
+            this.delegate = delegate
+            this.contentType = contentType
         }
 
         @Override
@@ -167,7 +207,7 @@ class HalViewHelper {
 
         protected void writeObject(value, Closure callable) {
             writer.write(JsonOutput.OPEN_BRACE)
-            viewHelper.links(value)
+            viewHelper.links(value, contentType)
             curryDelegateAndGetContent(writer, callable, value)
             writer.write(JsonOutput.CLOSE_BRACE)
         }

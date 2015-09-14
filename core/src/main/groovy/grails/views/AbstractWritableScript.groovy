@@ -1,5 +1,6 @@
 package grails.views
 
+import grails.views.api.GrailsView
 import groovy.transform.CompileStatic
 
 /**
@@ -8,7 +9,7 @@ import groovy.transform.CompileStatic
  * @author Graeme Rocher
  */
 @CompileStatic
-abstract class AbstractWritableScript extends Script implements WritableScript {
+abstract class AbstractWritableScript extends Script implements WritableScript, GrailsView {
 
     Writer out
     File sourceFile

@@ -168,6 +168,98 @@ If you send a request to `/book/show` it will render `show.gsp` but if you send 
 
 In addition if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. For example given a class called `demo.Book` you can create `grails-app/views/demo/Book.gson` and whenever `respond` is called with an instance of `Book` Grails will render `Book.gson`.
 
+### View Resolving Strategy
+
+Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.
+
+The order of searches is a follows:
+
+    1) view_name[_LOCALE][.ACCEPT_CONTENT_TYPE][.ACCEPT_VERSION].gson (Example: show_de.hal.v1.0.gson)
+    2) view_name[_LOCALE][.ACCEPT_CONTENT_TYPE].gson (Example: show_de.hal.gson)
+    3) view_name[_LOCALE][.ACCEPT_VERSION].gson (Example: show_de.v1.0.gson)
+    4) view_name[_LOCALE].gson (Example: show_de.gson)
+    5) view_name[.ACCEPT_CONTENT_TYPE][.ACCEPT_VERSION].gson (Example: show.hal.v1.0.gson)
+    6) view_name[.ACCEPT_CONTENT_TYPE].gson (Example: show.hal.gson)
+    7) view_name[.ACCEPT_VERSION].gson (Example: show.v1.0.gson)
+    8) view_name.gson (Example: show.gson)
+
+The content type (defined by either the `ACCEPT` header or file extension in the URI) is taken into account to allow different formats for the same view.
+
+Also you can for example define custom content types in `application.yml`:
+
+    grails:
+        mime:
+            types:
+                all:      "*/*"
+                book:     "application/vnd.books.org.book+json"
+                bookList: "application/vnd.books.org.booklist+json"
+
+And then define a view such as `show.book.gson` for that particular type.
+
+The version (defined by the `ACCEPT_VERSION` header) is taken into account to allow versioned APIs.
+
+Finally, the locale allows different views for different languages.
+
+So for example if the `CONTENT_TYPE` of the request is `application/json`
+
+### HAL Support
+
+HAL is a specification for linking resources in an API and makes an API explorable.
+
+JSON views include HAL support. For example:
+
+    model {
+        Book book
+    }
+    json {
+        hal.links(book)
+        hal.embedded {
+            author( book.authors.first() ) { Author author ->
+                name author.name
+            }
+        }
+        title book.title
+    }
+
+
+This produces:
+
+    {
+        "_links": {
+            "self": {
+                "href": "http://localhost:8080/book/show/1",
+                "hreflang": "en",
+                "type": "application/hal+json"
+            }
+        },
+        "_embedded": {
+            "author": {
+                "_links": {
+                    "self": {
+                        "href": "http://localhost:8080/author/show/1",
+                        "hreflang": "en",
+                        "type": "application/hal+json"
+                    }
+                },
+                "name": "Stephen King"
+            }
+        },
+        "title": "The Stand"
+    }
+
+You can set the HAL content type to an explicit content type or one of the named content types defined in `grails.mime.types` in `application.yml`:
+
+
+    model {
+        Book book
+    }
+    hal.type("book")
+    json {
+        ...
+    }
+
+The above example sets the content type to `application/vnd.books.org.book+json`
+
 ### Changing the view base class
 
 All JSON views subclass the [JsonViewTemplate](json/src/main/groovy/grails/plugin/json/view/JsonViewTemplate.groovy) class by default.

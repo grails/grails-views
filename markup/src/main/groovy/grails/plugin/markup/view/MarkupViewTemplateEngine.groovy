@@ -5,6 +5,7 @@ import grails.plugin.markup.view.internal.MarkupViewsTransform
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewCompilationException
 import grails.views.WritableScript
+import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
 import groovy.text.Template
 import groovy.text.markup.MarkupTemplateEngine
@@ -96,7 +97,10 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     @Override
     protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
-        return new MarkupViewWritableScriptTemplate((Class<? extends WritableScript>)cls , sourceFile, innerEngine, (MarkupViewConfiguration)viewConfiguration)
+        def template = new MarkupViewWritableScriptTemplate((Class<? extends GrailsView>) cls, sourceFile, innerEngine, (MarkupViewConfiguration) viewConfiguration)
+        template.setSourceFile(sourceFile)
+        template.setPrettyPrint( viewConfiguration.prettyPrint )
+        return template
     }
 
     @Override

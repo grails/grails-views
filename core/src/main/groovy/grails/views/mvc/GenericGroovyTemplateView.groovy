@@ -5,6 +5,7 @@ import grails.views.api.GrailsView
 import grails.views.api.HttpView
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
+import grails.web.mime.MimeUtility
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -25,6 +26,8 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
     ResolvableGroovyTemplateEngine templateEngine
     LinkGenerator linkGenerator
     LocaleResolver localeResolver
+    MimeUtility mimeUtility
+
     private String defaultEncoding = "UTF-8"
 
     void setTemplateEngine(ResolvableGroovyTemplateEngine templateEngine) {
@@ -38,6 +41,10 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver
+    }
+
+    void setMimeUtility(MimeUtility mimeUtility) {
+        this.mimeUtility = mimeUtility
     }
 
     @Override

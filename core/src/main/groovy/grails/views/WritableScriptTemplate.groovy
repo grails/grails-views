@@ -1,6 +1,7 @@
 package grails.views
 
 import grails.util.GrailsNameUtils
+import grails.views.api.GrailsView
 import groovy.text.Template
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -18,16 +19,17 @@ import java.lang.reflect.Method
 @CompileStatic
 class WritableScriptTemplate implements Template {
 
-    Class<? extends WritableScript> templateClass
+    Class<? extends GrailsView> templateClass
     File sourceFile
+    boolean prettyPrint = false
 
     protected final Map<String, Method> modelSetters = [:]
 
-    WritableScriptTemplate(Class<? extends WritableScript> templateClass) {
+    WritableScriptTemplate(Class<? extends GrailsView> templateClass) {
         this(templateClass, null)
     }
 
-    WritableScriptTemplate(Class<? extends WritableScript> templateClass, File sourceFile) {
+    WritableScriptTemplate(Class<? extends GrailsView> templateClass, File sourceFile) {
         this.templateClass = templateClass
         this.sourceFile = sourceFile
 
@@ -61,8 +63,9 @@ class WritableScriptTemplate implements Template {
 
     @Override
     Writable make(Map binding) {
-        def writableTemplate = templateClass
+        WritableScript writableTemplate = templateClass
                                     .newInstance()
+        writableTemplate.prettyPrint = prettyPrint
         if(!binding.isEmpty()) {
             writableTemplate.binding = new Binding(binding)
             for(modelSetter in modelSetters.entrySet()) {

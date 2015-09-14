@@ -4,6 +4,7 @@ import grails.rest.Linkable
 import grails.views.ViewCompilationException
 import grails.views.api.GrailsView
 import grails.web.mapping.LinkGenerator
+import groovy.json.JsonSlurper
 import spock.lang.Specification
 
 /**
@@ -23,6 +24,7 @@ json urls, { URL url ->
     protocol url.protocol
 }
 ''')
+        def writer = new StringWriter()
         template.make(urls: [new URL("http://foo.com")]).writeTo(writer)
         then:"The output is correct"
         writer.toString() == '[{"protocol":"http"}]'
@@ -30,12 +32,13 @@ json urls, { URL url ->
 
     void "Test HAL JSON view template"() {
         when:"An engine is created and a template parsed"
-        def templateEngine = new JsonViewTemplateEngine()
+        def templateEngine = new JsonViewTemplateEngine(new JsonViewConfiguration(prettyPrint: true))
         def template = templateEngine.createTemplate('''
 import grails.plugin.json.view.*
 model {
     Book book
 }
+hal.type "application/hal+json"
 json {
     hal.links(book)
     hal.embedded {
@@ -50,8 +53,8 @@ json {
 }
 ''')
 
-        def writer = new StringWriter()
 
+        def writer = new StringWriter()
 
         GrailsView view = (GrailsView)template.make(book: new Book(title:"The Stand", authors: [new Author(name:"Stephen King")] as Set))
         def linkGenerator = Mock(LinkGenerator)
@@ -59,8 +62,31 @@ json {
         view.setLinkGenerator(linkGenerator)
         view.writeTo(writer)
 
+        def output = writer.toString()
         then:"The output is correct"
-        writer.toString() == '{{"_links":{"self":{"href":"http://localhost:8080/book/show/1","hreflang":"en","type":"application/hal+json"}}},{"_embedded":{"primaryAuthor":{{"_links":{"self":{"href":"http://localhost:8080/book/show/1","hreflang":"en","type":"application/hal+json"}}},"name":"Stephen King"}}},"title":"The Stand"}'
+        new JsonSlurper().parse(output.getBytes("UTF-8"))
+        output == '''{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/book/show/1",
+            "hreflang": "en",
+            "type": "application/hal+json"
+        }
+    },
+    "_embedded": {
+        "primaryAuthor": {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/book/show/1",
+                    "hreflang": "en",
+                    "type": "application/hal+json"
+                }
+            },
+            "name": "Stephen King"
+        }
+    },
+    "title": "The Stand"
+}'''
     }
 
     void "Test static compilation"() {

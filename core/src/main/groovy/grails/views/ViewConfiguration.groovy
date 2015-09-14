@@ -18,6 +18,11 @@ interface ViewConfiguration {
     boolean isEnableReloading()
 
     /**
+     * @return Whether to pretty print
+     */
+    boolean isPrettyPrint()
+
+    /**
      * @return The package name
      */
     String getPackageName()

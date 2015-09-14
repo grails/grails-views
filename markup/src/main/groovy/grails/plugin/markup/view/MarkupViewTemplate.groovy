@@ -1,5 +1,6 @@
 package grails.plugin.markup.view
 
+import grails.plugin.markup.view.api.MarkupView
 import grails.views.Views
 import grails.views.WritableScript
 import groovy.text.markup.BaseTemplate
@@ -12,7 +13,7 @@ import groovy.text.markup.TemplateConfiguration
  * @author Graeme Rocher
  * @since 1.0
  */
-abstract class MarkupViewTemplate extends BaseTemplate implements WritableScript {
+abstract class MarkupViewTemplate extends BaseTemplate implements WritableScript, MarkupView {
 
     public static final String EXTENSION = "gml"
     public static final String TYPE = "views.gml"

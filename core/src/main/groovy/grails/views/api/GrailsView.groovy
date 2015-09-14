@@ -3,9 +3,11 @@ package grails.views.api
 import grails.artefact.Enhances
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.Views
+import grails.views.WritableScript
 import grails.views.WriterProvider
 import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.web.mapping.LinkGenerator
+import grails.web.mime.MimeUtility
 import groovy.transform.CompileStatic
 import org.springframework.context.MessageSource
 
@@ -16,12 +18,22 @@ import org.springframework.context.MessageSource
  * @since 1.0
  */
 @CompileStatic
-trait GrailsView extends View implements WriterProvider {
+trait GrailsView extends View implements WriterProvider, WritableScript {
+
+    /**
+     * Whether to pretty print
+     */
+    boolean prettyPrint = false
 
     /**
      * The link generator
      */
     LinkGenerator linkGenerator
+
+    /**
+     * The mime utility
+     */
+    MimeUtility mimeUtility
 
     /**
      * The template engine

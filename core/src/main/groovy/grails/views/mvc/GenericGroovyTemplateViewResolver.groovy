@@ -3,6 +3,7 @@ package grails.views.mvc
 import grails.util.Environment
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.web.mapping.LinkGenerator
+import grails.web.mime.MimeUtility
 import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +31,9 @@ class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver implements 
 
     @Autowired
     LocaleResolver localeResolver
+
+    @Autowired
+    MimeUtility mimeUtility
 
     @Delegate final ResolvableGroovyTemplateEngine templateEngine
 
@@ -68,6 +72,7 @@ class GenericGroovyTemplateViewResolver extends UrlBasedViewResolver implements 
         view.templateEngine = templateEngine
         view.linkGenerator = linkGenerator
         view.localeResolver = localeResolver
+        view.mimeUtility = mimeUtility
         return view
     }
 

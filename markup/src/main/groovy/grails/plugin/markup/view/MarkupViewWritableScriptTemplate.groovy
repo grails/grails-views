@@ -2,6 +2,7 @@ package grails.plugin.markup.view
 
 import grails.views.WritableScript
 import grails.views.WritableScriptTemplate
+import grails.views.api.GrailsView
 import groovy.text.markup.MarkupTemplateEngine
 import groovy.text.markup.TemplateConfiguration
 import groovy.transform.CompileStatic
@@ -17,7 +18,7 @@ class MarkupViewWritableScriptTemplate extends WritableScriptTemplate {
     MarkupTemplateEngine templateEngine
     MarkupViewConfiguration configuration
 
-    MarkupViewWritableScriptTemplate(Class<? extends WritableScript> templateClass, File sourceFile, MarkupTemplateEngine templateEngine, MarkupViewConfiguration configuration) {
+    MarkupViewWritableScriptTemplate(Class<? extends GrailsView> templateClass, File sourceFile, MarkupTemplateEngine templateEngine, MarkupViewConfiguration configuration) {
         super(templateClass, sourceFile)
         this.templateEngine = templateEngine
         this.configuration = configuration

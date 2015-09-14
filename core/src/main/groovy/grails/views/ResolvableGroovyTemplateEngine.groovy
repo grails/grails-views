@@ -1,6 +1,7 @@
 package grails.views
 
 import grails.util.GrailsStringUtils
+import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
 import groovy.text.Template
 import groovy.text.TemplateEngine
@@ -179,8 +180,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @return The template
      */
     protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
-        def template = new WritableScriptTemplate((Class<? extends WritableScript>) cls)
+        def template = new WritableScriptTemplate((Class<? extends GrailsView>) cls)
         template.setSourceFile(sourceFile)
+        template.setPrettyPrint( viewConfiguration.prettyPrint )
         return template
     }
 
