@@ -72,6 +72,18 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
     }
 
     /**
+     * Print unescaped json directly
+     *
+     * @param unescaped The unescaped JSON produced from templates
+     *
+     * @return The json builder
+     */
+    StreamingJsonBuilder json(JsonOutput.JsonUnescaped unescaped) {
+        print(unescaped.text)
+        return json
+    }
+
+    /**
      * TODO: When Groovy 2.4.5 go back to JsonBuilder from groovy-json
      *
      * @param callable
