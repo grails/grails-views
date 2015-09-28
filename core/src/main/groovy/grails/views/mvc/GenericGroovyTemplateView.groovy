@@ -3,6 +3,7 @@ package grails.views.mvc
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.api.GrailsView
 import grails.views.api.HttpView
+import grails.web.http.HttpHeaders
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
 import grails.web.mime.MimeUtility
@@ -32,7 +33,7 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     void setTemplateEngine(ResolvableGroovyTemplateEngine templateEngine) {
         this.templateEngine = templateEngine
-        this.defaultEncoding = templateEngine.viewConfiguration.encoding
+        this.defaultEncoding = templateEngine.viewConfiguration?.encoding ?: defaultEncoding
     }
 
     void setLinkGenerator(LinkGenerator linkGenerator) {
@@ -49,8 +50,17 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     @Override
     protected void renderMergedOutputModel(Map<String, Object> map, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-        def locale = localeResolver?.resolveLocale(httpServletRequest)
-        Template template = templateEngine.resolveTemplate(url, locale)
+        def locale = localeResolver?.resolveLocale(httpServletRequest) ?: Locale.ENGLISH
+        def qualifiers = []
+        def v = httpServletRequest.getHeader(HttpHeaders.ACCEPT_VERSION)
+        MimeType mimeType = GrailsWebRequest.lookup(httpServletRequest) != null ? httpServletResponse.mimeType : null
+        if(mimeType != null && mimeType != MimeType.ALL) {
+            qualifiers.add(mimeType.extension)
+        }
+        if(v != null) {
+            qualifiers.add(v)
+        }
+        Template template = templateEngine.resolveTemplate(url, locale, qualifiers as String[])
         if(template != null) {
 
             httpServletResponse.setContentType( getContentType() )
@@ -78,6 +88,7 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         if (writable instanceof GrailsView) {
             def grailsView = (GrailsView) writable
             grailsView.setLinkGenerator(linkGenerator)
+            grailsView.setMimeUtility(mimeUtility)
             grailsView.setTemplateEngine(templateEngine)
             grailsView.setLocale(
                 locale
@@ -97,11 +108,6 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             def page = new HttpViewPage(httpServletResponse)
             ((HttpView) writable).setPage(page)
         }
-    }
-
-    @Override
-    boolean checkResource(Locale locale) throws Exception {
-        return templateEngine?.resolveTemplate(url, locale) != null
     }
 
     private static class HttpViewPage implements HttpView.Page {

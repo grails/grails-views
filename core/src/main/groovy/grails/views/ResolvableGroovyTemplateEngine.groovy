@@ -1,5 +1,7 @@
 package grails.views
 
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
+import grails.util.Environment
 import grails.util.GrailsStringUtils
 import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
@@ -31,7 +33,11 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         Writable make(Map binding) {}
     }
 
-    private Map<String, Template> cachedTemplates = new ConcurrentHashMap<String, Template>()
+    protected Map<List, Template> resolveCache = new ConcurrentLinkedHashMap.Builder<List, Template>()
+                                                                            .maximumWeightedCapacity(150)
+                                                                            .build()
+
+    protected Map<String, Template> cachedTemplates = new ConcurrentHashMap<String, Template>()
             .withDefault { String path ->
         def cls = templateResolver.resolveTemplateClass(packageName, path)
         if(cls != null) {
@@ -39,7 +45,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         }
         else {
             def url = templateResolver.resolveTemplate(path)
-            if(url == null) {
+            if(url == null && !path.endsWith(extension)) {
                 url = templateResolver.resolveTemplate("${path}.${extension}")
             }
             if(url != null) {
@@ -189,48 +195,118 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     /**
      * Resolves a template for the given path
      * @param path The path to the template
+     *
      * @return The template or null if it doesn't exist
      */
     Template resolveTemplate(String path) {
         resolveTemplate(path, Locale.ENGLISH)
     }
-
     /**
      * Resolves a template for the given path
      * @param path The path to the template
-     * @param locale The locale of the template
+     * @param qualifiers One or many qualifiers to scope the view (for example the locale, the version etc.)
      *
      * @return The template or null if it doesn't exist
      */
-    Template resolveTemplate(String path, Locale locale) {
+    Template resolveTemplate(String path, Locale locale, String...qualifiers) {
+        boolean shouldCache = viewConfiguration.cache
+        def cacheKey = [path, locale.language]
+        cacheKey.addAll(qualifiers)
+        Template template = null
+        if(shouldCache) {
+            template = resolveCache.get(cacheKey)
+            if(template != null) {
+                if(template.is(NULL_ENTRY)) {
+                    return null
+                }
+                return template
+            }
+        }
+
+
+
         String extensionSuffix = ".$extension"
         String originalPath = path - extensionSuffix
         String defaultPath = "${originalPath}${extensionSuffix}"
-        String localeSpecificPath = locale ? "${originalPath}_${locale}${extensionSuffix}" : defaultPath
-        String languageSpecificPath = locale ? "${originalPath}_${locale.language}${extensionSuffix}" : defaultPath
+        String language = locale.language
+        String defaultLanguageSpecificPath = "${originalPath}_${language}${extensionSuffix}"
 
-        Template template = cachedTemplates[localeSpecificPath]
-        if(template.is(NULL_ENTRY)) {
-            template = cachedTemplates[languageSpecificPath]
-        }
-        else {
-            return template
-        }
-        if(template.is(NULL_ENTRY)) {
-            template = cachedTemplates[defaultPath]
-        }
-        else {
-            return template
-        }
+        List<String> qualifiedPaths = [defaultPath, defaultLanguageSpecificPath]
+        if(qualifiers) {
+            Queue<String> qualifierQueue = new ArrayDeque<String>()
+            qualifierQueue.addAll(qualifiers)
 
-        if(template.is(NULL_ENTRY)) {
-            return null
+            boolean first = true
+            while(first || qualifierQueue.peekLast() != null) {
+                first = false
+
+
+                boolean isEmpty = qualifierQueue.isEmpty()
+                String qualified = !isEmpty ? "_${qualifierQueue.join('_')}" : ""
+                String qualifiedLanguageSpecificPath = "${originalPath}_${language}${qualified}${extensionSuffix}"
+                String qualifiedPath = "${originalPath}${qualified}${extensionSuffix}"
+                qualifiedPaths.add qualifiedPath
+                qualifiedPaths.add qualifiedLanguageSpecificPath
+
+                template = cachedTemplates[qualifiedLanguageSpecificPath]
+                if(template.is(NULL_ENTRY)) {
+                    template = cachedTemplates[qualifiedPath]
+                    if(template.is(NULL_ENTRY) && !isEmpty) {
+                        qualifierQueue.removeLast()
+                    }
+                }
+                else {
+                    break
+                }
+            }
+
+            qualifierQueue.addAll(qualifiers.reverse())
+            first = true
+            while(first || qualifierQueue.peekLast() != null) {
+                first = false
+
+
+                boolean isEmpty = qualifierQueue.isEmpty()
+                String qualified = !isEmpty ? "_${qualifierQueue.join('_')}" : ""
+                String qualifiedLanguageSpecificPath = "${originalPath}_${language}${qualified}${extensionSuffix}"
+                String qualifiedPath = "${originalPath}${qualified}${extensionSuffix}"
+                qualifiedPaths.add qualifiedPath
+                qualifiedPaths.add qualifiedLanguageSpecificPath
+
+                template = cachedTemplates[qualifiedLanguageSpecificPath]
+                if(template.is(NULL_ENTRY)) {
+                    template = cachedTemplates[qualifiedPath]
+                    if(template.is(NULL_ENTRY) && !isEmpty) {
+                        qualifierQueue.removeLast()
+                    }
+                }
+                else {
+                    break
+                }
+            }
         }
-        else {
-            cachedTemplates.put(localeSpecificPath, template)
-            cachedTemplates.put(languageSpecificPath, template)
-            return template
+        if(template == null || template.is(NULL_ENTRY)) {
+            template = cachedTemplates[defaultLanguageSpecificPath]
+            if(template.is(NULL_ENTRY)) {
+                template = cachedTemplates[defaultPath]
+            }
         }
+        if(template != null) {
+
+            for(p in qualifiedPaths) {
+                cachedTemplates.put(p, template)
+            }
+            if(shouldCache) {
+                resolveCache.put(cacheKey, template)
+            }
+            if(template.is(NULL_ENTRY)) {
+                return null
+            }
+            else {
+                return template
+            }
+        }
+        return template
     }
 
     @Override

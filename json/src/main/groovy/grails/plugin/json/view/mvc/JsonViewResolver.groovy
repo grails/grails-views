@@ -7,6 +7,7 @@ import grails.plugin.json.view.JsonViewTemplateEngine
 import grails.plugin.json.view.JsonViewConfiguration
 import grails.rest.render.RendererRegistry
 import grails.views.mvc.GenericGroovyTemplateViewResolver
+import grails.views.mvc.SmartViewResolver
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +18,7 @@ import javax.annotation.PostConstruct
  * @since 1.0
  */
 @CompileStatic
-class JsonViewResolver extends GenericGroovyTemplateViewResolver {
+class JsonViewResolver extends SmartViewResolver {
 
     public static final String JSON_VIEW_SUFFIX = ".${JsonViewTemplate.EXTENSION}"
 

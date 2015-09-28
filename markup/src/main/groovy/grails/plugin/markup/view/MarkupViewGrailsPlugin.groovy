@@ -6,6 +6,7 @@ import grails.util.BuildSettings
 import grails.util.Environment
 import grails.util.Metadata
 import grails.views.ViewsEnvironment
+import grails.views.mvc.GenericGroovyTemplateViewResolver
 import org.grails.io.support.GrailsResourceUtils
 
 /**
@@ -49,6 +50,7 @@ A plugin that allows rendering of JSON views
 
     Closure doWithSpring() { {->
         markupViewConfiguration(MarkupViewConfiguration)
-        markupViewResolver(MarkupViewResolver, markupViewConfiguration)
+        smartMarkupViewResolver(MarkupViewResolver, markupViewConfiguration)
+        markupViewResolver(GenericGroovyTemplateViewResolver, smartMarkupViewResolver)
     } }
 }

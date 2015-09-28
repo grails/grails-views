@@ -4,13 +4,17 @@ import grails.core.support.proxy.ProxyHandler
 import grails.rest.render.RenderContext
 import grails.rest.render.Renderer
 import grails.rest.render.RendererRegistry
+import grails.util.GrailsNameUtils
+import grails.views.mvc.SmartViewResolver
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.plugins.web.rest.render.ServletRenderContext
 import org.grails.plugins.web.rest.render.html.DefaultHtmlRenderer
 import org.springframework.web.servlet.View
-import org.springframework.web.servlet.ViewResolver
+
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 /**
  * A renderer implementation that looks up a view from the ViewResolver
@@ -21,7 +25,7 @@ import org.springframework.web.servlet.ViewResolver
 @InheritConstructors
 @CompileStatic
 abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
-    final ViewResolver viewResolver
+    final SmartViewResolver viewResolver
 
     final ProxyHandler proxyHandler
 
@@ -30,7 +34,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
     final Renderer defaultRenderer
 
 
-    DefaultViewRenderer(Class<T> targetType, MimeType mimeType, ViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
+    DefaultViewRenderer(Class<T> targetType, MimeType mimeType, SmartViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
         super(targetType,mimeType)
         this.viewResolver = viewResolver
         this.proxyHandler = proxyHandler
@@ -63,20 +67,31 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         }
 
         String viewUri = "/${context.controllerName}/${viewName}"
-        def locale = context.locale
-        View view = viewResolver.resolveViewName(viewUri, locale)
+        def webRequest = ((ServletRenderContext) context).getWebRequest()
+
+        def request = webRequest.currentRequest
+        def response = webRequest.currentResponse
+
+        View view = viewResolver.resolveView(viewUri, request, response)
         if(view == null) {
             if(proxyHandler != null) {
                 object = (T)proxyHandler.unwrapIfProxy(object)
             }
-            viewUri = "/${object.getClass().name.replace('.','/')}"
-            view = viewResolver.resolveViewName(viewUri, locale)
+
+            def cls = object.getClass()
+            viewUri = "/${cls.name.replace('.','/')}"
+            view = viewResolver.resolveView(viewUri, request, response)
+            if(view == null) {
+                // Try resolve template. Example /book/_book
+                def propertyName = GrailsNameUtils.getPropertyName(cls)
+                viewUri = "/$propertyName/_$propertyName"
+                view = viewResolver.resolveView(viewUri, request, response)
+            }
         }
         if(view != null) {
             Map<String, Object> model = [(resolveModelVariableName(object)): object]
 
-            def webRequest = ((ServletRenderContext) context).getWebRequest()
-            view.render(model, webRequest.currentRequest, webRequest.currentResponse)
+            view.render(model, request, response)
         }
         else {
             defaultRenderer.render(object, context)

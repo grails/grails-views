@@ -3,6 +3,7 @@ package grails.plugin.json.renderer
 import grails.core.support.proxy.ProxyHandler
 import grails.rest.render.Renderer
 import grails.rest.render.RendererRegistry
+import grails.views.mvc.SmartViewResolver
 import grails.views.mvc.renderer.DefaultViewRenderer
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
@@ -18,11 +19,11 @@ import org.springframework.web.servlet.ViewResolver
 class JsonViewJsonRenderer<T> extends DefaultViewRenderer<T> {
 
 
-    JsonViewJsonRenderer(Class<T> targetType, ViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
+    JsonViewJsonRenderer(Class<T> targetType, SmartViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
         super(targetType, MimeType.JSON, viewResolver, proxyHandler, rendererRegistry, defaultRenderer)
     }
 
-    JsonViewJsonRenderer(Class<T> targetType, MimeType mimeType, ViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
+    JsonViewJsonRenderer(Class<T> targetType, MimeType mimeType, SmartViewResolver viewResolver, ProxyHandler proxyHandler, RendererRegistry rendererRegistry, Renderer defaultRenderer) {
         super(targetType, mimeType, viewResolver, proxyHandler, rendererRegistry, defaultRenderer)
     }
 

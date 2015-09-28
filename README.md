@@ -172,16 +172,17 @@ In addition if you want to define a template to render any instance the `Book` d
 
 Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.
 
-The order of searches is a follows:
+The following paths are searched:
 
-    1) view_name[_LOCALE][.ACCEPT_CONTENT_TYPE][.ACCEPT_VERSION].gson (Example: show_de.hal.v1.0.gson)
-    2) view_name[_LOCALE][.ACCEPT_CONTENT_TYPE].gson (Example: show_de.hal.gson)
-    3) view_name[_LOCALE][.ACCEPT_VERSION].gson (Example: show_de.v1.0.gson)
-    4) view_name[_LOCALE].gson (Example: show_de.gson)
-    5) view_name[.ACCEPT_CONTENT_TYPE][.ACCEPT_VERSION].gson (Example: show.hal.v1.0.gson)
-    6) view_name[.ACCEPT_CONTENT_TYPE].gson (Example: show.hal.gson)
-    7) view_name[.ACCEPT_VERSION].gson (Example: show.v1.0.gson)
-    8) view_name.gson (Example: show.gson)
+    * view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_de_hal_v1.0.gson)
+    * view_name[_LOCALE][_ACCEPT_CONTENT_TYPE].gson (Example: show_de_hal.gson)
+    * view_name[_LOCALE][_ACCEPT_VERSION].gson (Example: show_de_v1.0.gson)
+    * view_name[_LOCALE].gson (Example: show_de.gson)
+    * view_name[_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_hal_v1.0.gson)
+    * view_name[_ACCEPT_VERSION][_ACCEPT_CONTENT_TYPE].gson (Example: show_v1.0_hal.gson)
+    * view_name[_ACCEPT_CONTENT_TYPE].gson (Example: show_hal.gson)
+    * view_name[_ACCEPT_VERSION].gson (Example: show_v1.0.gson)
+    * view_name.gson (Example: show.gson)
 
 The content type (defined by either the `ACCEPT` header or file extension in the URI) is taken into account to allow different formats for the same view.
 

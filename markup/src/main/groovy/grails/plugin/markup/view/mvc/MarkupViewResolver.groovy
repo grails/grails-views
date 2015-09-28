@@ -6,9 +6,11 @@ import grails.plugin.markup.view.MarkupViewTemplateEngine
 import grails.plugin.markup.view.renderer.MarkupViewXmlRenderer
 import grails.rest.render.RendererRegistry
 import grails.views.mvc.GenericGroovyTemplateViewResolver
+import grails.views.mvc.SmartViewResolver
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.servlet.ViewResolver
 
 import javax.annotation.PostConstruct
 
@@ -17,7 +19,7 @@ import javax.annotation.PostConstruct
  * @since 1.0
  */
 @CompileStatic
-class MarkupViewResolver extends GenericGroovyTemplateViewResolver {
+class MarkupViewResolver extends SmartViewResolver {
 
 
     @Autowired(required = false)

@@ -16,16 +16,11 @@ class JsonViewResolverSpec extends Specification {
     // We need Groovy 2.4.5 with extensible StreamingJsonBuilder to support templates
     void "Test render templates"() {
         given:"A view resolver"
-        def resolver = new JsonViewResolver(){
-            @Override
-            protected View loadView(String viewName, Locale locale) throws Exception {
-                return this.buildView(viewName)
-            }
-        }
+        def resolver = new JsonViewResolver()
         configureIfRunFromRoot(resolver)
 
         when:"A view is resolved"
-        def view = resolver.resolveViewName("/parent", Locale.ENGLISH)
+        def view = resolver.resolveView("/parent", Locale.ENGLISH)
         def response = new MockHttpServletResponse()
         view.render([childList:[1,2], age:25], new MockHttpServletRequest(), response)
 
@@ -36,12 +31,7 @@ class JsonViewResolverSpec extends Specification {
 
     void "Test create links using LinkGenerator"() {
         given:"A view resolver"
-        def resolver = new JsonViewResolver(){
-            @Override
-            protected View loadView(String viewName, Locale locale) throws Exception {
-                return this.buildView(viewName)
-            }
-        }
+        def resolver = new JsonViewResolver()
 
         configureIfRunFromRoot(resolver)
 
@@ -50,7 +40,7 @@ class JsonViewResolverSpec extends Specification {
         resolver.linkGenerator = linkGenerator
 
         when:"A view is resolved"
-        def view = resolver.resolveViewName("/linkingView", Locale.ENGLISH)
+        def view = resolver.resolveView("/linkingView", Locale.ENGLISH)
         def response = new MockHttpServletResponse()
         view.render([:], new MockHttpServletRequest(), response)
 
@@ -62,17 +52,12 @@ class JsonViewResolverSpec extends Specification {
 
     void "Test that a resolved JSON view can configure the page response"() {
         given:"A view resolver"
-        def resolver = new JsonViewResolver(){
-            @Override
-            protected View loadView(String viewName, Locale locale) throws Exception {
-                return this.buildView(viewName)
-            }
-        }
+        def resolver = new JsonViewResolver()
         configureIfRunFromRoot(resolver)
 
 
         when:"A view is resolved"
-        def view = resolver.resolveViewName("/pageConfigure", Locale.ENGLISH)
+        def view = resolver.resolveView("/pageConfigure", Locale.ENGLISH)
         def response = new MockHttpServletResponse()
         view.render([:], new MockHttpServletRequest(), response)
 
