@@ -13,10 +13,6 @@ import org.grails.buffer.FastStringWriter
 /**
  * All JSON views subclass this superclass
  *
- *  TODO:
- *      - declaring templates for types
- *      - versioning integration
- *
  * @author Graeme Rocher
  * @since 1.0
  */
