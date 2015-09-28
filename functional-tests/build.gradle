@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails.plugins:views-gradle:1.0.0-SNAPSHOT"
         classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.1.1'
     }
 }
@@ -26,6 +27,10 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: "org.grails.grails-web"
 apply plugin: "org.grails.grails-gsp"
+
+// uncommenting fails because we have functional tests for compilation errors
+//apply plugin: "org.grails.plugins.views-json"
+//apply plugin: "org.grails.plugins.views-markup"
 
 ext {
     grailsVersion = project.grailsVersion
@@ -66,7 +71,7 @@ dependencies {
 
     runtime "org.grails.plugins:asset-pipeline"
 
-    
+    testCompile 'org.grails:grails-datastore-rest-client:4.0.6.RELEASE'
 
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"

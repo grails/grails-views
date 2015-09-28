@@ -1,6 +1,6 @@
 ---
 grails:
-    profile: web
+    profile: web-api
     codegen:
         defaultPackage: functional.tests
 info:

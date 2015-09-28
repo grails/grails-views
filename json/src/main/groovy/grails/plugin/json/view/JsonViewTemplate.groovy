@@ -91,7 +91,18 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
     }
 
     StreamingJsonBuilder json(Object...args) {
-        json.call args
+        if(args.length == 1) {
+            def val = args[0]
+            if(val instanceof JsonOutput.JsonUnescaped) {
+                json((JsonOutput.JsonUnescaped)val)
+            }
+            else {
+                json.call val
+            }
+        }
+        else {
+            json.call args
+        }
         return json
     }
 

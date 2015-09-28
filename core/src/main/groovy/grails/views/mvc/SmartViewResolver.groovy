@@ -109,7 +109,7 @@ class SmartViewResolver implements Closeable {
                 return viewCache.get(url)
             }
         }
-        return null
+        return v
     }
 
 

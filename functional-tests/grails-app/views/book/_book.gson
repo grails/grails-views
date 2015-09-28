@@ -1,0 +1,11 @@
+import functional.tests.Book
+
+model {
+	Book book
+}
+
+json {
+	id book.id
+	title book.title
+	vendor "MyCompany"
+}
