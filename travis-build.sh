@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 rm -rf *.zip
-./gradlew check assemble
+./gradlew clean test assemble
 
 EXIT_STATUS=0
 echo "Publishing archives for branch $TRAVIS_BRANCH"
