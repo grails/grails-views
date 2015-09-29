@@ -21,13 +21,16 @@ abstract class AbstractGroovyTemplateCompiler {
 
     String packageName = ""
     File sourceDir
-    final ViewConfiguration viewConfiguration
+    ViewConfiguration viewConfiguration
 
     AbstractGroovyTemplateCompiler(ViewConfiguration configuration, File sourceDir) {
         this.viewConfiguration = configuration
         this.packageName = configuration.packageName
         this.sourceDir = sourceDir
         configureCompiler()
+    }
+
+    AbstractGroovyTemplateCompiler() {
     }
 
     protected CompilerConfiguration configureCompiler() {
@@ -70,5 +73,49 @@ abstract class AbstractGroovyTemplateCompiler {
     void compile(File...sources) {
         compile Arrays.asList(sources)
     }
+
+    static void run(String[] args, Class<? extends GenericViewConfiguration> configurationClass, Class<? extends AbstractGroovyTemplateCompiler> compilerClass) {
+        if(args.length != 7) {
+            System.err.println("Invalid arguments")
+            System.err.println("""
+Usage: java -cp CLASSPATH ${getClass().name} [srcDir] [destDir] [targetCompatibility] [packageImports] [packageName] [configFile] [encoding]
+""")
+            System.exit(1)
+        }
+        File srcDir = new File(args[0])
+        File destinationDir = new File(args[1])
+        String targetCompatibility = args[2]
+        String[] packageImports = args[3].split(',')
+        String packageName = args[4]
+        File configFile = new File(args[5])
+        String encoding = new File(args[6])
+
+        GenericViewConfiguration configuration = configurationClass.newInstance()
+        configuration.packageName = packageName
+        configuration.encoding = encoding
+        configuration.packageImports = packageImports
+
+        configuration.readConfiguration(configFile)
+
+        AbstractGroovyTemplateCompiler compiler = compilerClass.newInstance(configuration, srcDir)
+        compiler.setTargetDirectory( destinationDir )
+        compiler.setSourceEncoding( configuration.encoding )
+        if(targetCompatibility != null) {
+            compiler.setTargetBytecode( targetCompatibility )
+        }
+
+
+        def fileExtension = configuration.extension
+        compiler.setDefaultScriptExtension(fileExtension)
+
+        List<File> allFiles = []
+        srcDir.eachFileRecurse(FileType.FILES) { File f ->
+            if(f.name.endsWith(fileExtension)) {
+                allFiles.add(f)
+            }
+        }
+        compiler.compile(allFiles)
+    }
+
 
 }

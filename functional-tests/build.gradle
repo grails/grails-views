@@ -29,8 +29,8 @@ apply plugin: "org.grails.grails-web"
 apply plugin: "org.grails.grails-gsp"
 
 // uncommenting fails because we have functional tests for compilation errors
-//apply plugin: "org.grails.plugins.views-json"
-//apply plugin: "org.grails.plugins.views-markup"
+apply plugin: "org.grails.plugins.views-json"
+apply plugin: "org.grails.plugins.views-markup"
 
 ext {
     grailsVersion = project.grailsVersion

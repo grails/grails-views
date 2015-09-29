@@ -3,6 +3,7 @@ package grails.plugin.markup.view
 import grails.util.Environment
 import grails.views.GenericViewConfiguration
 import grails.views.ViewConfiguration
+import grails.views.ViewsEnvironment
 import groovy.text.markup.TemplateConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
@@ -21,9 +22,9 @@ class MarkupViewConfiguration extends TemplateConfiguration implements GenericVi
     MarkupViewConfiguration() {
         setExtension(MarkupViewTemplate.EXTENSION)
         setBaseTemplateClass(MarkupViewTemplate)
-        setCacheTemplates( !Environment.isDevelopmentMode() )
+        setCacheTemplates( !ViewsEnvironment.isDevelopmentMode() )
         setAutoEscape(true)
-        setAutoIndent( Environment.isDevelopmentMode() )
+        setPrettyPrint( ViewsEnvironment.isDevelopmentMode() )
     }
 
     @Override
