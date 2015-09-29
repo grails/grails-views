@@ -27,8 +27,4 @@ class MarkupViewCompilerTask extends AbstractGroovyTemplateCompileTask {
         "grails.plugin.markup.view.MarkupViewCompiler"
     }
 
-    @Override
-    void prepareArguments(List<String> arguments) {
-        arguments.add(String.valueOf(compileOptions.compileStatic))
-    }
 }

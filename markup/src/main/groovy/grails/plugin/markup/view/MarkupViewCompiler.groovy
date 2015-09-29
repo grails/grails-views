@@ -38,32 +38,29 @@ class MarkupViewCompiler extends AbstractGroovyTemplateCompiler {
     }
 
     static void main(String[] args) {
-        if(args.length != 9) {
+        if(args.length != 7) {
             System.err.println("Invalid arguments")
             System.err.println("""
-Usage: java -cp CLASSPATH ${MarkupViewCompiler.name} [scriptBaseName] [packageName] [fileExtension] [srcDir] [destinationDir] [targetCompatibility] [encoding] [packageImports]
+Usage: java -cp CLASSPATH ${MarkupViewCompiler.name} [srcDir] [destDir] [targetCompatibility] [packageImports] [packageName] [configFile] [encoding]
 """)
 
             System.exit(1)
         }
-        String scriptBaseName = args[0]
-        String packageName = args[1]
-        String fileExtension = args[2]
-        File srcDir = new File(args[3])
-        File destinationDir = new File(args[4])
-        String targetCompatibility = args[5]
-        String encoding = args[6]
-        String[] packageImports = args[7].split(',')
-        boolean compileStatic = Boolean.valueOf(args[8])
+        File srcDir = new File(args[0])
+        File destinationDir = new File(args[1])
+        String targetCompatibility = args[2]
+        String[] packageImports = args[3].split(',')
+        String packageName = args[4]
+        File configFile = new File(args[5])
+        String encoding = new File(args[6])
 
-        def baseClass = Thread.currentThread().contextClassLoader.loadClass(scriptBaseName)
+
         def configuration = new MarkupViewConfiguration(
-                baseTemplateClass: (Class<? extends BaseTemplate>)baseClass,
                 packageName: packageName,
-                extension: fileExtension,
-                compileStatic: compileStatic,
-                packageImports: packageImports
+                packageImports: packageImports,
+                encoding: encoding
         )
+        configuration.readConfiguration(configFile)
 
         def compiler = new MarkupViewCompiler(configuration, srcDir)
         compiler.setTargetDirectory( destinationDir )
@@ -72,6 +69,8 @@ Usage: java -cp CLASSPATH ${MarkupViewCompiler.name} [scriptBaseName] [packageNa
             compiler.setTargetBytecode( targetCompatibility )
         }
 
+
+        def fileExtension = configuration.extension
         compiler.setDefaultScriptExtension(fileExtension)
 
         List<File> allFiles = []

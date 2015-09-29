@@ -1,5 +1,7 @@
 package grails.views
 
+import grails.config.Config
+import grails.config.ConfigMap
 import grails.core.GrailsApplication
 import grails.core.GrailsClass
 import grails.core.support.GrailsApplicationAware
@@ -7,9 +9,11 @@ import grails.util.BuildSettings
 import grails.util.Environment
 import grails.util.Metadata
 import groovy.transform.CompileStatic
+import org.grails.config.CodeGenConfig
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.io.support.GrailsResourceUtils
 import org.springframework.beans.BeanUtils
+import org.springframework.core.env.PropertyResolver
 
 import java.beans.PropertyDescriptor
 /**
@@ -43,16 +47,30 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
             setPackageImports(
                     findUniquePackages(domainArtefacts)
             )
-            def config = grailsApplication.getConfig()
-            if(config != null) {
-                def descriptors = findViewConfigPropertyDescriptor()
-                def self = (GroovyObject) this
-                def moduleName = viewModuleName
-                for(desc in descriptors) {
-                    if( desc.writeMethod != null ) {
-                        def propertyName = desc.name
-                        def value = config.getProperty("grails.views.${moduleName}.$propertyName", (Class)desc.propertyType, self.getProperty(propertyName))
-                        self.setProperty(propertyName, value)
+            PropertyResolver config = grailsApplication.getConfig()
+
+            readConfiguration((ConfigMap)config)
+        }
+    }
+
+    public void readConfiguration(File configFile) {
+        if(configFile?.exists()) {
+            def config = new CodeGenConfig()
+            config.loadYml(configFile)
+            readConfiguration(config)
+        }
+    }
+    public void readConfiguration(ConfigMap config) {
+        def moduleName = viewModuleName
+        GroovyObject configObject = (GroovyObject)this
+        if (config != null) {
+            def descriptors = findViewConfigPropertyDescriptor()
+            for (desc in descriptors) {
+                if (desc.writeMethod != null) {
+                    def propertyName = desc.name
+                    def value = config.getProperty("grails.views.${moduleName}.$propertyName", (Class) desc.propertyType)
+                    if(value != null) {
+                        configObject.setProperty(propertyName, value)
                     }
                 }
             }

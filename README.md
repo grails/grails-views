@@ -102,6 +102,15 @@ JSON views configuration can be altered with `application.yml`. Any of the prope
 
 Alternatively you can register a new `JsonViewConfiguration` bean using the bean name `jsonViewConfiguration` in `resources.groovy`.
 
+The same settings in `application.yml` will also be used by the Gradle plugin for production compilation. 
+
+The Gradle plugin compiles views using a forked compiler. You can configure the forked compilation task in Gradle as follows:
+
+    compileGsonViews {
+        compileOptions.forkOptions.memoryMaximumSize = '512mb'
+    }
+    
+See the API for [GroovyForkOptions](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html) for more information.    
 
 ### Static Compilation and Models
 

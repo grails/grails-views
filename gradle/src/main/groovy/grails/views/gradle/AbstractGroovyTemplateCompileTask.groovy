@@ -71,14 +71,14 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
 
                         String packageImports = projectPackageNames.join(',')
                         def arguments = [
-                                getScriptBaseName(),
-                                packageName,
-                                getFileExtension(),
                                 srcDir.canonicalPath,
                                 destinationDir.canonicalPath,
                                 targetCompatibility,
-                                compileOptions.encoding,
-                                packageImports]
+                                packageImports,
+                                packageName,
+                                project.file("grails-app/conf/application.yml").canonicalPath,
+                                compileOptions.encoding
+                                ]
 
                         prepareArguments(arguments)
                         javaExecSpec.args(arguments)

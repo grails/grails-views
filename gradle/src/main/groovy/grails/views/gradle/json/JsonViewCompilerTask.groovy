@@ -26,8 +26,4 @@ class JsonViewCompilerTask extends AbstractGroovyTemplateCompileTask {
         "grails.plugin.json.view.JsonViewCompiler"
     }
 
-    @Override
-    void prepareArguments(List<String> arguments) {
-        arguments.add(String.valueOf(compileOptions.compileStatic))
-    }
 }

@@ -1,7 +1,9 @@
 package grails.plugin.json.view
 
+import grails.config.ConfigMap
 import grails.plugin.json.view.internal.JsonViewsTransform
 import grails.views.AbstractGroovyTemplateCompiler
+import grails.views.GenericViewConfiguration
 import grails.views.compiler.ViewsTransform
 import groovy.io.FileType
 import groovy.transform.CompileStatic
@@ -19,19 +21,18 @@ import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 @InheritConstructors
 class JsonViewCompiler extends AbstractGroovyTemplateCompiler {
 
-    boolean compileStatic = true
 
     @Override
     protected CompilerConfiguration configureCompiler() {
-        super.configureCompiler()
-        if(compileStatic) {
+        def compiler = super.configureCompiler()
+        if(viewConfiguration.compileStatic) {
             configuration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension"), CompileStatic.class));
         }
         configuration.setScriptBaseClass(
                 viewConfiguration.baseTemplateClass.name
         )
-
+        return compiler
     }
 
     @Override
@@ -41,39 +42,38 @@ class JsonViewCompiler extends AbstractGroovyTemplateCompiler {
 
 
     static void main(String[] args) {
-        if(args.length != 9) {
+        if(args.length != 7) {
             System.err.println("Invalid arguments")
             System.err.println("""
-Usage: java -cp CLASSPATH ${JsonViewCompiler.name} [scriptBaseName] [packageName] [fileExtension] [srcDir] [destinationDir] [targetCompatibility] [encoding] [packageImports]
+Usage: java -cp CLASSPATH ${JsonViewCompiler.name} [srcDir] [destDir] [targetCompatibility] [packageImports] [packageName] [configFile] [encoding]
 """)
             System.exit(1)
         }
-        String scriptBaseName = args[0]
-        String packageName = args[1]
-        String fileExtension = args[2]
-        File srcDir = new File(args[3])
-        File destinationDir = new File(args[4])
-        String targetCompatibility = args[5]
-        String encoding = args[6]
-        String[] packageImports = args[7].split(',')
-        boolean compileStatic = Boolean.valueOf(args[8])
+        File srcDir = new File(args[0])
+        File destinationDir = new File(args[1])
+        String targetCompatibility = args[2]
+        String[] packageImports = args[3].split(',')
+        String packageName = args[4]
+        File configFile = new File(args[5])
+        String encoding = new File(args[6])
 
-        def baseClass = Thread.currentThread().contextClassLoader.loadClass(scriptBaseName)
         def configuration = new JsonViewConfiguration(
-                baseTemplateClass: baseClass,
                 packageName: packageName,
-                extension: fileExtension,
-                packageImports: packageImports
+                packageImports: packageImports,
+                encoding: encoding
         )
 
+        configuration.readConfiguration(configFile)
+
         def compiler = new JsonViewCompiler(configuration, srcDir)
-        compiler.setCompileStatic(compileStatic)
         compiler.setTargetDirectory( destinationDir )
-        compiler.setSourceEncoding( encoding )
+        compiler.setSourceEncoding( configuration.encoding )
         if(targetCompatibility != null) {
             compiler.setTargetBytecode( targetCompatibility )
         }
 
+
+        def fileExtension = configuration.extension
         compiler.setDefaultScriptExtension(fileExtension)
 
         List<File> allFiles = []

@@ -12,5 +12,4 @@ class ViewCompileOptions {
 
     GroovyForkOptions forkOptions = new GroovyForkOptions()
 
-    boolean compileStatic = true
 }

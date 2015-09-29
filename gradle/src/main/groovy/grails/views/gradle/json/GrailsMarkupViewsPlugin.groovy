@@ -14,6 +14,6 @@ import groovy.transform.CompileStatic
 class GrailsMarkupViewsPlugin extends AbstractGroovyTemplatePlugin {
 
     GrailsMarkupViewsPlugin() {
-        super(MarkupViewCompilerTask, "gxml")
+        super(MarkupViewCompilerTask, "gml")
     }
 }
