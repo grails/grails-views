@@ -83,8 +83,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
             view = viewResolver.resolveView(viewUri, request, response)
             if(view == null) {
                 // Try resolve template. Example /book/_book
-                def propertyName = GrailsNameUtils.getPropertyName(cls)
-                viewUri = "/$propertyName/_$propertyName"
+                viewUri = templateNameForClass(cls)
                 view = viewResolver.resolveView(viewUri, request, response)
             }
         }
@@ -96,5 +95,10 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         else {
             defaultRenderer.render(object, context)
         }
+    }
+
+    public static String templateNameForClass(Class<?> cls) {
+        def propertyName = GrailsNameUtils.getPropertyName(cls)
+        return "/$propertyName/_$propertyName"
     }
 }

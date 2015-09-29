@@ -22,7 +22,7 @@ import org.springframework.context.MessageSource
  * @since 1.0
  */
 @CompileStatic
-trait GrailsView extends View implements WriterProvider, WritableScript {
+trait GrailsView extends HttpView implements WriterProvider, WritableScript {
 
     /**
      * The view template

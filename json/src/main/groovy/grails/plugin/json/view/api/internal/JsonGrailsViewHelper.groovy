@@ -5,8 +5,13 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
+import grails.util.GrailsNameUtils
 import grails.views.ViewException
+import grails.views.api.GrailsView
+import grails.views.api.HttpView
 import grails.views.api.internal.DefaultGrailsViewHelper
+import grails.views.mvc.renderer.DefaultViewRenderer
+import groovy.text.Template
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.beans.support.CachedIntrospectionResults
@@ -144,13 +149,23 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                 def associatedEntity = ass.associatedEntity
 
                 if (ass instanceof Embedded) {
-                    jsonDelegate.call(propertyName) {
-                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                        if(associatedEntity != null) {
-                            process(embeddedDelegate, associatedEntity,value, processedObjects, incs, excs , "${qualified}.")
-                        }
-                        else {
-                            processSimple(embeddedDelegate, value, processedObjects, incs, excs, "${qualified}.")
+                    def propertyType = ass.type
+                    def childTemplate = view.templateEngine?.resolveTemplate(DefaultViewRenderer.templateNameForClass(propertyType), view.locale)
+                    if(childTemplate != null) {
+                        def childView = prepareWritable(childTemplate, [(GrailsNameUtils.getPropertyName(propertyType)): value])
+                        def writer = new FastStringWriter()
+                        childView.writeTo(writer)
+                        jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                    }
+                    else {
+                        jsonDelegate.call(propertyName) {
+                            StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                            if(associatedEntity != null) {
+                                process(embeddedDelegate, associatedEntity,value, processedObjects, incs, excs , "${qualified}.")
+                            }
+                            else {
+                                processSimple(embeddedDelegate, value, processedObjects, incs, excs, "${qualified}.")
+                            }
                         }
                     }
                 }
@@ -183,7 +198,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
             def templateUri = templateEngine
                     .viewUriResolver
                     .resolveTemplateUri(view.getControllerName(), template.toString())
-            def childTemplate = templateEngine.resolveTemplate(templateUri)
+            def childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             if(childTemplate != null) {
                 FastStringWriter stringWriter = new FastStringWriter()
                 if(collection instanceof Iterable) {
@@ -202,7 +217,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                     stringWriter << ']'
                 }
                 else {
-                    def writable = model ? childTemplate.make((Map)model) : childTemplate.make()
+                    GrailsView writable = prepareWritable(childTemplate, model)
                     writable.writeTo( stringWriter )
                 }
 
@@ -213,5 +228,14 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
             }
         }
 
+    }
+
+    protected GrailsView prepareWritable(Template childTemplate, Map model) {
+        GrailsView writable = (GrailsView) (model ? childTemplate.make((Map) model) : childTemplate.make())
+        writable.locale = view.locale
+        writable.page = view.page
+        writable.controllerName = view.controllerName
+        writable.actionName = view.actionName
+        return writable
     }
 }

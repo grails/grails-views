@@ -6,8 +6,7 @@ import grails.views.Views
 /**
  * @author Graeme Rocher
  */
-@Enhances(Views.TYPE)
-trait HttpView {
+trait HttpView extends View {
 
     /**
      * @return The page object

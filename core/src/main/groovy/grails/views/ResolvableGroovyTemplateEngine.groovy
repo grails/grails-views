@@ -272,6 +272,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @return The template or null if it doesn't exist
      */
     Template resolveTemplate(String path, Locale locale, String...qualifiers) {
+        if(locale == null) {
+            locale = Locale.ENGLISH
+        }
         boolean shouldCache = viewConfiguration.cache
         def cacheKey = [path, locale.language]
         cacheKey.addAll(qualifiers)
