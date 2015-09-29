@@ -91,7 +91,7 @@ class SmartViewResolver implements Closeable {
             def qualifiers = []
             def version = request.getHeader(HttpHeaders.ACCEPT_VERSION)
             MimeType mimeType = response.getMimeType()
-            if(mimeType != null) {
+            if(mimeType != null && mimeType != MimeType.ALL) {
                 qualifiers.add(mimeType.extension)
             }
             if(version != null) {

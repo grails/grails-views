@@ -3,10 +3,11 @@ package grails.views
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.core.support.proxy.ProxyHandler
-import grails.util.Environment
 import grails.util.GrailsStringUtils
 import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
+import grails.views.resolve.GenericGroovyTemplateResolver
+import grails.views.resolve.GenericViewUriResolver
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeUtility
 import groovy.text.Template
@@ -49,7 +50,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     protected Map<String, Template> cachedTemplates = new ConcurrentHashMap<String, Template>()
             .withDefault { String path ->
-        def cls = templateResolver.resolveTemplateClass(packageName, path)
+        def cls = templateResolver.resolveTemplateClass(path)
         if(cls != null) {
             return createTemplate( (Class<? extends Template>)cls )
         }
@@ -73,11 +74,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     TemplateResolver templateResolver
 
     /**
-     * The package name that contains the template
-     */
-    String packageName = ""
-
-    /**
      * The class loader to use
      */
     final GroovyClassLoader classLoader
@@ -92,11 +88,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     final String extension
 
     /**
-     * The file extension used for script templates
-     */
-    boolean enableReloading = false
-
-    /**
      * Whether to reload views
      */
     protected CompilerConfiguration compilerConfiguration
@@ -104,7 +95,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     /**
      * The view config
      */
-    protected final ViewConfiguration viewConfiguration
+    @Delegate final ViewConfiguration viewConfiguration
     /**
      * Used to watch for file changes
      */
@@ -131,9 +122,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      */
     ResolvableGroovyTemplateEngine(ViewConfiguration configuration) {
         this.viewConfiguration = configuration
-        this.templateResolver = new GenericGroovyTemplateResolver(baseDir: new File(configuration.templatePath))
+        this.templateResolver = new GenericGroovyTemplateResolver(packageName: configuration.packageName, baseDir: new File(configuration.templatePath))
         this.extension = configuration.extension
-        setPackageName(configuration.packageName)
         setEnableReloading(configuration.enableReloading)
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
@@ -171,12 +161,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         return compilerConfiguration
     }
 
-    ViewConfiguration getViewConfiguration() {
-        return viewConfiguration
-    }
-
     void setEnableReloading(boolean enableReloading) {
-        this.enableReloading = enableReloading
         if(enableReloading && directoryWatcher == null) {
             this.directoryWatcher = new DirectoryWatcher()
             this.directoryWatcher.addListener(new DirectoryWatcher.FileChangeListener() {
@@ -398,7 +383,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
         // now parse the class
         url.withReader { Reader reader ->
-            def viewScriptName = GenericGroovyTemplateResolver.resolveTemplateName(packageName, path)
+            def viewScriptName = GenericGroovyTemplateResolver.resolveTemplateName(viewConfiguration.packageName, path)
             try {
                 def clazz = classLoader.parseClass(new GroovyCodeSource(reader, viewScriptName, GroovyShell.DEFAULT_CODE_BASE))
                 return createTemplate(clazz, file)

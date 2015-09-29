@@ -1,6 +1,6 @@
 package grails.plugin.json.view
 
-import grails.views.GenericViewUriResolver
+import grails.views.resolve.GenericViewUriResolver
 import spock.lang.Specification
 
 /**

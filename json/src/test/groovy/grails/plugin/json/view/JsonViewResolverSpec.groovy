@@ -1,11 +1,10 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.view.mvc.JsonViewResolver
-import grails.views.GenericGroovyTemplateResolver
+import grails.views.resolve.GenericGroovyTemplateResolver
 import grails.web.mapping.LinkGenerator
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
-import org.springframework.web.servlet.View
 import spock.lang.Specification
 
 /**

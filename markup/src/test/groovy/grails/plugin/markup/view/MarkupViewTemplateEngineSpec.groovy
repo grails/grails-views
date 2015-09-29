@@ -36,6 +36,8 @@ cars {
 
         then:"The output is correct"
         writer.toString() == '''<?xml version='1.0'?>
-<cars><car make='Audi' model='A5'/></cars>'''
+<cars>
+    <car make='Audi' model='A5'/>
+</cars>'''
     }
 }

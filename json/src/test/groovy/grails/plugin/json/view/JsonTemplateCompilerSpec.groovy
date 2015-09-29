@@ -1,6 +1,6 @@
 package grails.plugin.json.view
 
-import grails.views.GenericGroovyTemplateResolver
+import grails.views.resolve.GenericGroovyTemplateResolver
 import spock.lang.Specification
 
 /**
@@ -11,18 +11,17 @@ class JsonTemplateCompilerSpec extends Specification {
     void "Test JsonTemplateCompiler compiles templates correctly"() {
         given:"A compiler instance"
         def view = new File(JsonTemplateCompilerSpec.getResource("/views/bar.gson").file)
-        def compiler = new JsonViewCompiler(new JsonViewConfiguration(packageName:"test" ) , view.parentFile)
+
+        def config = new JsonViewConfiguration(packageName: "test")
+        def compiler = new JsonViewCompiler(config, view.parentFile)
 
         def dir = File.createTempDir()
         dir.deleteOnExit()
         compiler.setTargetDirectory(dir)
-        def resolver = new GenericGroovyTemplateResolver()
+        def resolver = new GenericGroovyTemplateResolver(packageName: "test")
         resolver.classLoader = new URLClassLoader([dir.toURL()] as URL[])
-        def engine = new JsonViewTemplateEngine()
+        def engine = new JsonViewTemplateEngine(config)
         engine.templateResolver = resolver
-        engine.packageName = "test"
-
-
         when:"templates are compiled"
 
         compiler.compile(view)

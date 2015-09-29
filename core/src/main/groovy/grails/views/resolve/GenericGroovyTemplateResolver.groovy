@@ -1,6 +1,7 @@
-package grails.views
+package grails.views.resolve
 
 import grails.util.BuildSettings
+import grails.views.TemplateResolver
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.grails.io.support.GrailsResourceUtils

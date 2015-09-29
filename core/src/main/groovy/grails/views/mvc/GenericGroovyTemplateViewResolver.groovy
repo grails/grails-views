@@ -24,16 +24,22 @@ class GenericGroovyTemplateViewResolver implements ViewResolver {
         def webRequest = GrailsWebRequest.lookup()
         if(webRequest != null) {
             def currentRequest = webRequest?.currentRequest
-            def controllerUri = webRequest?.attributes?.getControllerUri(currentRequest)
-            if(controllerUri) {
-                return smartViewResolver.resolveView(
-                        "${controllerUri}/$viewName",
-                        currentRequest,
-                        webRequest.currentResponse
-                )
+            if(viewName.startsWith('/')) {
+                return smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
             }
             else {
-                return smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
+
+                def controllerUri = webRequest?.attributes?.getControllerUri(currentRequest)
+                if(controllerUri) {
+                    return smartViewResolver.resolveView(
+                            "${controllerUri}/$viewName",
+                            currentRequest,
+                            webRequest.currentResponse
+                    )
+                }
+                else {
+                    return smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
+                }
             }
         }
         else {

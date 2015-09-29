@@ -1,8 +1,6 @@
 package grails.plugin.markup.view
 
-import grails.views.GenericGroovyTemplateResolver
-import groovy.text.Template
-import spock.lang.Ignore
+import grails.views.resolve.GenericGroovyTemplateResolver
 import spock.lang.Specification
 
 /**
@@ -20,7 +18,7 @@ class MarkupViewCompilerSpec extends Specification {
         def dir = File.createTempDir()
         dir.deleteOnExit()
         compiler.setTargetDirectory(dir)
-        def resolver = new GenericGroovyTemplateResolver()
+        def resolver = new GenericGroovyTemplateResolver(packageName: "test")
         resolver.classLoader = new URLClassLoader([dir.toURL()] as URL[])
         def engine = new MarkupViewTemplateEngine(config)
         engine.templateResolver = resolver

@@ -1,6 +1,7 @@
 package grails.views
 
 import grails.views.compiler.ViewsTransform
+import grails.views.resolve.GenericGroovyTemplateResolver
 import groovy.io.FileType
 import org.codehaus.groovy.control.CompilationUnit
 import org.codehaus.groovy.control.CompilerConfiguration

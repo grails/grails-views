@@ -68,6 +68,7 @@ dependencies {
     compile "org.grails.plugins:scaffolding"
     compile project(":views-json")
     compile project(":views-markup")
+    compile project(":views-functional-tests-plugin")
 
     runtime "org.grails.plugins:asset-pipeline"
 

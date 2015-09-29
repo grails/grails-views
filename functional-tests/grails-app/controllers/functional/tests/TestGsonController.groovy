@@ -24,6 +24,10 @@ class TestGsonController {
         [test: new Test(name:"Bob"), child: new Test(name:"Joe")]
     }
 
+    def testGsonFromPlugin() {
+        render view:"/fromPlugin"
+    }
+
     def testLinks() {
 
     }

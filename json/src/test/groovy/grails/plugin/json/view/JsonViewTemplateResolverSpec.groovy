@@ -138,10 +138,10 @@ class JsonViewTemplateResolverSpec extends Specification {
         GenericGroovyTemplateView view = (GenericGroovyTemplateView)viewResolver.resolveViewName("bar", Locale.ENGLISH)
 
         then:"The view is not null"
-        1 * templateResolver.resolveTemplateClass(_,'/test/bar.gson')
-        1 * templateResolver.resolveTemplateClass(_,'/test/bar_en.gson')
-        1 * templateResolver.resolveTemplateClass(_,'/test/bar_html.gson')
-        1 * templateResolver.resolveTemplateClass(_,'/test/bar_en_html.gson')
+        1 * templateResolver.resolveTemplateClass('/test/bar.gson')
+        1 * templateResolver.resolveTemplateClass('/test/bar_en.gson')
+        1 * templateResolver.resolveTemplateClass('/test/bar_html.gson')
+        1 * templateResolver.resolveTemplateClass('/test/bar_en_html.gson')
         1 * templateResolver.resolveTemplate('/test/bar.gson')
         1 * templateResolver.resolveTemplate('/test/bar_en.gson')
         1 * templateResolver.resolveTemplate('/test/bar_html.gson')
