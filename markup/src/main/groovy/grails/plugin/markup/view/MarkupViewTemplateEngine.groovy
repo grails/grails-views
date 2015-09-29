@@ -98,9 +98,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     @Override
     protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
         def template = new MarkupViewWritableScriptTemplate((Class<? extends GrailsView>) cls, sourceFile, innerEngine, (MarkupViewConfiguration) viewConfiguration)
-        template.setSourceFile(sourceFile)
-        template.setPrettyPrint( viewConfiguration.prettyPrint )
-        return template
+        super.initializeTemplate(template, sourceFile)
     }
 
     @Override

@@ -65,6 +65,7 @@ class WritableScriptTemplate implements Template {
     Writable make(Map binding) {
         WritableScript writableTemplate = templateClass
                                     .newInstance()
+        writableTemplate.viewTemplate = (GrailsViewTemplate)this
         writableTemplate.prettyPrint = prettyPrint
         if(!binding.isEmpty()) {
             writableTemplate.binding = new Binding(binding)

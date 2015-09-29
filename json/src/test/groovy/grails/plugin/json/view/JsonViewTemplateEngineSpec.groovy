@@ -32,7 +32,11 @@ json urls, { URL url ->
 
     void "Test HAL JSON view template"() {
         when:"An engine is created and a template parsed"
+
         def templateEngine = new JsonViewTemplateEngine(new JsonViewConfiguration(prettyPrint: true))
+        def linkGenerator = Mock(LinkGenerator)
+        linkGenerator.link(_) >> "http://localhost:8080/book/show/1"
+        templateEngine.setLinkGenerator(linkGenerator)
         def template = templateEngine.createTemplate('''
 import grails.plugin.json.view.*
 model {
@@ -56,10 +60,8 @@ json {
 
         def writer = new StringWriter()
 
+
         GrailsView view = (GrailsView)template.make(book: new Book(title:"The Stand", authors: [new Author(name:"Stephen King")] as Set))
-        def linkGenerator = Mock(LinkGenerator)
-        linkGenerator.link(_) >> "http://localhost:8080/book/show/1"
-        view.setLinkGenerator(linkGenerator)
         view.writeTo(writer)
 
         def output = writer.toString()

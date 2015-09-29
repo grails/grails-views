@@ -4,8 +4,6 @@ model {
 	Book book
 }
 
-json {
-	id book.id
-	title book.title
+json g.render(book) {
 	vendor "MyCompany"
 }

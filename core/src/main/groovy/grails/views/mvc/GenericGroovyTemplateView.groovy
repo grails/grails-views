@@ -25,9 +25,7 @@ import javax.servlet.http.HttpServletResponse
 class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     ResolvableGroovyTemplateEngine templateEngine
-    LinkGenerator linkGenerator
     LocaleResolver localeResolver
-    MimeUtility mimeUtility
 
     private String defaultEncoding = "UTF-8"
 
@@ -36,16 +34,8 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         this.defaultEncoding = templateEngine.viewConfiguration?.encoding ?: defaultEncoding
     }
 
-    void setLinkGenerator(LinkGenerator linkGenerator) {
-        this.linkGenerator = linkGenerator
-    }
-
     void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver
-    }
-
-    void setMimeUtility(MimeUtility mimeUtility) {
-        this.mimeUtility = mimeUtility
     }
 
     @Override
@@ -87,9 +77,6 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
     protected void prepareWritable(Writable writable, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale) {
         if (writable instanceof GrailsView) {
             def grailsView = (GrailsView) writable
-            grailsView.setLinkGenerator(linkGenerator)
-            grailsView.setMimeUtility(mimeUtility)
-            grailsView.setTemplateEngine(templateEngine)
             grailsView.setLocale(
                 locale
             )

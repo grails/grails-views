@@ -55,6 +55,39 @@ Example usages:
     json(1,2,3) == "[1,2,3]"
     json { name "Bob" } == '{"name":"Bob"}'
     json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'
+    
+    
+### Rendering Domain Classes
+    
+Typically your model my involve one or many domain instances. JSON views provide a `render` method for rendering these.
+  
+For example given the following domain class:
+
+	class Book {
+	    String title
+	}
+    
+And the following template: 
+ 
+    model {
+        Book book
+    }
+    
+    json g.render(book) 
+
+The resulting output is:
+
+    {id:1,"title":"The Stand"}
+    
+You can customize the rendering by including or excluding properties:
+    
+    json g.render(book, [includes:['title']])
+    
+Or by providing a closure to modify the JSON output:
+    
+    json g.render(book) {
+        pages 1000
+    }    
 
 ### Configuration
 

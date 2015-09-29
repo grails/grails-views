@@ -1,10 +1,14 @@
 package grails.views
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
+import grails.core.support.proxy.DefaultProxyHandler
+import grails.core.support.proxy.ProxyHandler
 import grails.util.Environment
 import grails.util.GrailsStringUtils
 import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
+import grails.web.mapping.LinkGenerator
+import grails.web.mime.MimeUtility
 import groovy.text.Template
 import groovy.text.TemplateEngine
 import groovy.transform.CompileStatic
@@ -12,7 +16,13 @@ import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.codehaus.groovy.control.customizers.ImportCustomizer
+import org.grails.datastore.mapping.model.MappingContext
 import org.grails.io.watch.DirectoryWatcher
+import org.grails.web.mime.DefaultMimeUtility
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.MessageSource
+import org.springframework.context.support.StaticMessageSource
 
 import javax.annotation.PreDestroy
 import java.util.concurrent.ConcurrentHashMap
@@ -103,6 +113,16 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     private Map<String, String> watchedFilePaths = new ConcurrentHashMap<String, String>()
 
 
+    private MessageSource messageSource = new StaticMessageSource()
+
+    private MimeUtility mimeUtility = new DefaultMimeUtility()
+
+    private ProxyHandler proxyHandler = new DefaultProxyHandler()
+
+    private LinkGenerator linkGenerator
+
+    private MappingContext mappingContext
+
     /**
      * Creates a ResolvableGroovyTemplateEngine for the given base class name and file extension
      *
@@ -119,6 +139,32 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(configuration.baseTemplateClass.name)
         classLoader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, compilerConfiguration)
+    }
+
+    @Autowired(required = false)
+    void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource
+    }
+
+    @Autowired
+    void setMimeUtility(MimeUtility mimeUtility) {
+        this.mimeUtility = mimeUtility
+    }
+
+    @Autowired(required = false)
+    void setProxyHandler(ProxyHandler proxyHandler) {
+        this.proxyHandler = proxyHandler
+    }
+
+    @Autowired
+    void setLinkGenerator(LinkGenerator linkGenerator) {
+        this.linkGenerator = linkGenerator
+    }
+
+    @Autowired(required = false)
+    @Qualifier("grailsDomainClassMappingContext")
+    void setMappingContext(MappingContext mappingContext) {
+        this.mappingContext = mappingContext
     }
 
     CompilerConfiguration getCompilerConfiguration() {
@@ -186,9 +232,26 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @return The template
      */
     protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
-        def template = new WritableScriptTemplate((Class<? extends GrailsView>) cls)
+        def template = new GrailsViewTemplate((Class<? extends GrailsView>) cls)
+        return initializeTemplate(template, sourceFile)
+    }
+
+    /**
+     * Initialises a template instance
+     *
+     * @param template The created template
+     * @param sourceFile The source file
+     * @return The initialized template
+     */
+    protected GrailsViewTemplate initializeTemplate(GrailsViewTemplate template, File sourceFile) {
         template.setSourceFile(sourceFile)
-        template.setPrettyPrint( viewConfiguration.prettyPrint )
+        template.setPrettyPrint(viewConfiguration.prettyPrint)
+        template.setMessageSource(messageSource)
+        template.setMimeUtility(mimeUtility)
+        template.setLinkGenerator(linkGenerator)
+        template.setMappingContext(mappingContext)
+        template.setProxyHandler(proxyHandler)
+        template.setTemplateEngine(this)
         return template
     }
 

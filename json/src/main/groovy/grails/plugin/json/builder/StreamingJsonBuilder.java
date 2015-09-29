@@ -552,6 +552,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          */
         public void call(String name,@DelegatesTo(StreamingJsonDelegate.class) Closure value) throws IOException {
             writeName(name);
+            verifyValue();
             writer.write(JsonOutput.OPEN_BRACE);
             StreamingJsonDelegate.cloneDelegateAndGetContent(writer, value);
             writer.write(JsonOutput.CLOSE_BRACE);

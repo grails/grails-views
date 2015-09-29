@@ -1,19 +1,15 @@
 package grails.plugin.markup.view
 
-import grails.views.WritableScript
-import grails.views.WritableScriptTemplate
+import grails.views.GrailsViewTemplate
 import grails.views.api.GrailsView
 import groovy.text.markup.MarkupTemplateEngine
-import groovy.text.markup.TemplateConfiguration
 import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
-
 /**
  * @author Graeme Rocher
  * @since 1.0
  */
 @CompileStatic
-class MarkupViewWritableScriptTemplate extends WritableScriptTemplate {
+class MarkupViewWritableScriptTemplate extends GrailsViewTemplate {
 
     MarkupTemplateEngine templateEngine
     MarkupViewConfiguration configuration

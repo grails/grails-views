@@ -43,20 +43,15 @@ import java.util.concurrent.ConcurrentHashMap
 @CompileStatic
 class SmartViewResolver implements Closeable {
 
-    @Delegate ResolvableGroovyTemplateEngine templateEngine
+    @Delegate(methodAnnotations = true) ResolvableGroovyTemplateEngine templateEngine
 
     Class<? extends GenericGroovyTemplateView> viewClass = GenericGroovyTemplateView
     String contentType
     String suffix = ""
 
     @Autowired
-    LinkGenerator linkGenerator
-
-    @Autowired
     LocaleResolver localeResolver
 
-    @Autowired
-    MimeUtility mimeUtility
 
     private Map<String, GenericGroovyTemplateView> viewCache = new ConcurrentHashMap<String, GenericGroovyTemplateView>().withDefault { String path ->
         GenericGroovyTemplateView view = BeanUtils.instantiateClass(viewClass)
@@ -67,9 +62,7 @@ class SmartViewResolver implements Closeable {
 
         view.url = path
         view.templateEngine = getTemplateEngine()
-        view.linkGenerator = getLinkGenerator()
         view.localeResolver = getLocaleResolver()
-        view.mimeUtility = getMimeUtility()
         return view
     }
 

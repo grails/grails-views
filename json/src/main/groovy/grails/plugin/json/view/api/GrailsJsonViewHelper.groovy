@@ -1,6 +1,7 @@
 package grails.plugin.json.view.api
 
 import grails.plugin.json.builder.JsonOutput
+import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.views.api.GrailsViewHelper
 
 /**
@@ -18,4 +19,40 @@ interface GrailsJsonViewHelper extends GrailsViewHelper{
      * @return The unescaped JSON
      */
     JsonOutput.JsonUnescaped render(Map arguments)
+
+
+    /**
+     * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
+     *
+     * @param object The object to render
+     * @param arguments The supported named arguments: 'includes' or 'excludes' list
+     * @param customizer Used to customize the contents
+     * @return The unescaped JSON
+     */
+    JsonOutput.JsonUnescaped render(Object object, Map<String, Object> arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+    /**
+     * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
+     *
+     * @param object The object to render
+     * @param arguments The supported named arguments: 'includes' or 'excludes' list
+     * @return The unescaped JSON
+     */
+    JsonOutput.JsonUnescaped render(Object object, Map<String, Object> arguments)
+
+    /**
+     * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
+     *
+     * @param object The object to render
+     * @return The unescaped JSON
+     */
+    JsonOutput.JsonUnescaped render(Object object)
+
+    /**
+     * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
+     *
+     * @param object The object to render
+     * @param customizer the customizer
+     * @return The unescaped JSON
+     */
+    JsonOutput.JsonUnescaped render(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
 }

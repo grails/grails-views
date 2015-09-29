@@ -1,6 +1,9 @@
 package grails.views.api
 
 import grails.artefact.Enhances
+import grails.core.support.proxy.DefaultProxyHandler
+import grails.core.support.proxy.ProxyHandler
+import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.Views
 import grails.views.WritableScript
@@ -9,6 +12,7 @@ import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeUtility
 import groovy.transform.CompileStatic
+import org.grails.datastore.mapping.model.MappingContext
 import org.springframework.context.MessageSource
 
 /**
@@ -21,29 +25,56 @@ import org.springframework.context.MessageSource
 trait GrailsView extends View implements WriterProvider, WritableScript {
 
     /**
+     * The view template
+     */
+    GrailsViewTemplate viewTemplate
+
+    /**
      * Whether to pretty print
      */
     boolean prettyPrint = false
 
     /**
+     * The GORM mapping context
+     */
+    MappingContext getMappingContext() {
+        viewTemplate.mappingContext
+    }
+
+    /**
+     * Handlers for proxies
+     */
+    ProxyHandler getProxyHandler() {
+        viewTemplate.proxyHandler
+    }
+
+    /**
      * The link generator
      */
-    LinkGenerator linkGenerator
+    LinkGenerator getLinkGenerator() {
+        viewTemplate.linkGenerator
+    }
 
     /**
      * The mime utility
      */
-    MimeUtility mimeUtility
+    MimeUtility getMimeUtility() {
+        viewTemplate.mimeUtility
+    }
 
     /**
      * The template engine
      */
-    ResolvableGroovyTemplateEngine templateEngine
+    ResolvableGroovyTemplateEngine getTemplateEngine() {
+        (ResolvableGroovyTemplateEngine)viewTemplate.templateEngine
+    }
 
     /**
      * The message source object
      */
-    MessageSource messageSource
+    MessageSource getMessageSource() {
+        viewTemplate.messageSource
+    }
 
     /**
      * @return The current controller name
