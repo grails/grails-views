@@ -1,0 +1,7 @@
+import functional.tests.plugin.Author
+
+model {
+    Author author
+}
+
+json g.render(author)

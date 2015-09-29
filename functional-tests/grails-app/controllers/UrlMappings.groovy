@@ -10,6 +10,8 @@ class UrlMappings {
         "/"(view:"/index")
         "500"(view:'/error')
         "404"(view:'/notFound')
+
         "/books"(resources:"book")
+        "/authors"(resources:"author")
     }
 }
