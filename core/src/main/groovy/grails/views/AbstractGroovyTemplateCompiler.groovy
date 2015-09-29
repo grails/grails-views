@@ -77,9 +77,9 @@ abstract class AbstractGroovyTemplateCompiler {
 
     static void run(String[] args, Class<? extends GenericViewConfiguration> configurationClass, Class<? extends AbstractGroovyTemplateCompiler> compilerClass) {
         if(args.length != 7) {
-            System.err.println("Invalid arguments")
+            System.err.println("Invalid arguments: [${args.join(',')}]")
             System.err.println("""
-Usage: java -cp CLASSPATH ${getClass().name} [srcDir] [destDir] [targetCompatibility] [packageImports] [packageName] [configFile] [encoding]
+Usage: java -cp CLASSPATH ${compilerClass.name} [srcDir] [destDir] [targetCompatibility] [packageImports] [packageName] [configFile] [encoding]
 """)
             System.exit(1)
         }
