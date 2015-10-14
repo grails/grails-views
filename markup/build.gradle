@@ -35,6 +35,13 @@ grailsPublish {
     license = 'Apache-2.0'
 }
 
+bintray {
+    pkg {
+        desc = "Grails Views"
+        name = 'grails-views'
+    }
+}
+
 dependencyManagement {
     imports {
         mavenBom "org.grails:grails-bom:$grailsVersion"
