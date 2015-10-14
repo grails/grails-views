@@ -11,34 +11,25 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "0.5.2.RELEASE"
-    id "com.jfrog.bintray" version "1.2"
-}
-
-ext {
-    userOrg = 'grails'
-    repo = 'grails-core'
-}
 
 group "org.grails.plugins"
 
-apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
+apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: 'optional-base'
-// Used for publishing to central repository, remove if not needed
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
-
-
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+
+grailsPublish {
+    userOrg = 'grails'   
+    githubSlug = 'grails/grails-views'
+    license = 'Apache-2.0'
+}
 
 dependencyManagement {
     imports {
@@ -64,6 +55,13 @@ dependencies {
     console "org.grails:grails-console"
 }
 
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
+}
+
+
+jar {
+  exclude "*.gson"
 }
