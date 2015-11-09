@@ -59,7 +59,7 @@ Example usages:
     
 ### Rendering Domain Classes
     
-Typically your model my involve one or many domain instances. JSON views provide a `render` method for rendering these.
+Typically your model may involve one or many domain instances. JSON views provide a `render` method for rendering these.
   
 For example given the following domain class:
 
