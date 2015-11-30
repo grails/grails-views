@@ -30,6 +30,23 @@ json urls, { URL url ->
         writer.toString() == '[{"protocol":"http"}]'
     }
 
+    void "Test render with includes"() {
+        when: "An engine is created and a template parsed"
+        def templateEngine = new JsonViewTemplateEngine()
+        def template = templateEngine.createTemplate('''
+import grails.plugin.json.view.*
+model {
+    Book book
+}
+
+json g.render(book, [includes:['title']])
+''')
+        def writer = new StringWriter()
+        template.make(book: new Book(title:"The Stand")).writeTo(writer)
+        then:"The output is correct"
+        writer.toString() == '{"title":"The Stand"}'
+    }
+
     void "Test HAL JSON view template"() {
         when:"An engine is created and a template parsed"
 

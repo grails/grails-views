@@ -50,7 +50,7 @@ class DefaultGrailsViewHelper implements GrailsViewHelper {
     }
 
     @Override
-    String message(Map<String, Object> arguments) {
+    String message(Map arguments) {
         def args = arguments.args
         def code = arguments.code?.toString()
         def defaultMessage = arguments.default?.toString() ?: code
@@ -58,6 +58,9 @@ class DefaultGrailsViewHelper implements GrailsViewHelper {
             if(args != null) {
                 if(args instanceof List) {
                     args = ((List)args).toArray()
+                }
+                else if(!args.getClass().isArray()) {
+                    args = [args] as Object[]
                 }
                 return view.messageSource.getMessage( code, (Object[])args, defaultMessage, view.locale)
             }

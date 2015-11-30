@@ -29,7 +29,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper{
      * @param customizer Used to customize the contents
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Object object, Map<String, Object> arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
     /**
      * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
      *
@@ -37,7 +37,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper{
      * @param arguments The supported named arguments: 'includes' or 'excludes' list
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Object object, Map<String, Object> arguments)
+    JsonOutput.JsonUnescaped render(Object object, Map arguments)
 
     /**
      * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties

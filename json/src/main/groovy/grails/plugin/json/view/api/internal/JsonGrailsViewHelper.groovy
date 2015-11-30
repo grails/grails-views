@@ -52,7 +52,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
     }
 
     @Override
-    JsonOutput.JsonUnescaped render(Object object, Map<String, Object> arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
+    JsonOutput.JsonUnescaped render(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
         JsonView jsonView = (JsonView)view
         object = jsonView.proxyHandler?.unwrapIfProxy(object) ?: object
         def entity = jsonView.mappingContext?.getPersistentEntity(object.getClass().name)
