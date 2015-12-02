@@ -370,28 +370,46 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
         if (args != null && Object[].class.isAssignableFrom(args.getClass())) {
             Object[] arr = (Object[]) args;
             try {
-                if (arr.length == 0) {
-                    call(name);
-                } else if (arr.length == 1) {
-                    if (arr[0] instanceof Closure) {
-                        final Closure callable = (Closure) arr[0];
-                        call(name, callable);
-                    } else if (arr[0] instanceof Map) {
-                        final Map<String, Map> map = Collections.singletonMap(name, (Map) arr[0]);
-                        call(map);
-                    } else {
+                switch(arr.length) {
+                    case 0:
+                        call(name);
+                        break;
+                    case 1:
+                        if (arr[0] instanceof Closure) {
+                            final Closure callable = (Closure) arr[0];
+                            call(name, callable);
+                        } else if (arr[0] instanceof Map) {
+                            final Map<String, Map> map = Collections.singletonMap(name, (Map) arr[0]);
+                            call(map);
+                        } else {
+                            notExpectedArgs = true;
+                        }
+                        break;
+                    case 2:
+                        final Object first = arr[0];
+                        final Object second = arr[1];
+                        final boolean isClosure = second instanceof Closure;
+
+                        if(isClosure && first instanceof Map ) {
+                            final Closure callable = (Closure) second;
+                            call(name, (Map)first, callable);
+                        }
+                        else if(isClosure && first instanceof Iterable) {
+                            final Iterable coll = (Iterable) first;
+                            final Closure callable = (Closure) second;
+                            call(name, coll, callable);
+                        }
+                        else if(isClosure && first.getClass().isArray()) {
+                            final Iterable coll = Arrays.asList((Object[])first);
+                            final Closure callable = (Closure) second;
+                            call(name, coll, callable);
+                        }
+                        else {
+                            notExpectedArgs = true;
+                        }
+                        break;
+                    default:
                         notExpectedArgs = true;
-                    }
-                } else if (arr.length == 2 && arr[0] instanceof Map && arr[1] instanceof Closure) {
-                    Map map = (Map) arr[0];
-                    final Closure callable = (Closure) arr[1];
-                    call(name, map, callable);
-                } else if (StreamingJsonDelegate.isCollectionWithClosure(arr)) {
-                    final Iterable coll = (Iterable) arr[0];
-                    final Closure callable = (Closure) arr[1];
-                    call(name, coll, callable);
-                } else {
-                    notExpectedArgs = true;
                 }
             } catch (IOException ioe) {
                 throw new JsonException(ioe);
