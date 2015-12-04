@@ -30,9 +30,13 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 grailsPublish {
-    userOrg = 'grails'   
+    userOrg = 'grails'
     githubSlug = 'grails/grails-views'
     license = 'Apache-2.0'
+    title = "Markup Views Grails Plugin"
+    desc = "Provides the ability to define views that product XML/Markup output"
+    developers = [graemerocher:"Graeme Rocher"]
+
 }
 
 bintray {
