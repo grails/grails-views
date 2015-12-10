@@ -26,9 +26,11 @@ targetCompatibility = 1.7
 
 
 grailsPublish {
-    userOrg = 'grails'   
+    userOrg = 'grails'
     githubSlug = 'grails/grails-views'
-    license.name = 'Apache-2.0'
+    license {
+        name = 'Apache-2.0'
+    }
     title = "JSON Views Plugin"
     desc = "Adds support for defining views in JSON"
     developers = [graemerocher:"Graeme Rocher"]
