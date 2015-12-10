@@ -79,11 +79,12 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
             }
 
             def cls = object.getClass()
-            viewUri = "/${cls.name.replace('.','/')}"
+            // Try resolve template. Example /book/_book
+            viewUri = templateNameForClass(cls)
             view = viewResolver.resolveView(viewUri, request, response)
+
             if(view == null) {
-                // Try resolve template. Example /book/_book
-                viewUri = templateNameForClass(cls)
+                viewUri = "/${cls.name.replace('.','/')}"
                 view = viewResolver.resolveView(viewUri, request, response)
             }
         }

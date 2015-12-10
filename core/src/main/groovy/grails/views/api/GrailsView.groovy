@@ -1,11 +1,8 @@
 package grails.views.api
 
-import grails.artefact.Enhances
-import grails.core.support.proxy.DefaultProxyHandler
 import grails.core.support.proxy.ProxyHandler
 import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
-import grails.views.Views
 import grails.views.WritableScript
 import grails.views.WriterProvider
 import grails.views.api.internal.DefaultGrailsViewHelper

@@ -532,7 +532,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param coll a collection
          * @param c a closure used to convert the objects of coll
          */
-        public void call(String name, Iterable coll, Closure c) throws IOException {
+        public void call(String name, Iterable coll, @DelegatesTo(StreamingJsonDelegate.class) Closure c) throws IOException {
             writeName(name);
             writeObjects(coll, c);
         }
@@ -585,6 +585,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          */
         public void call(String name, JsonOutput.JsonUnescaped json) throws IOException {
             writeName(name);
+            verifyValue();
             writer.write(json.toString());
         }
 

@@ -12,6 +12,8 @@ class UrlMappings {
         "404"(view:'/notFound')
 
         "/books"(resources:"book")
+        "/teams"(resources:"team")
+        "/teams/deep/$id"(controller: "team", action:"deep")
         "/authors"(resources:"author")
     }
 }
