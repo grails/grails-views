@@ -10,6 +10,7 @@ import grails.web.mime.MimeUtility
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.LocaleResolver
 import org.springframework.web.servlet.view.AbstractUrlBasedView
 
@@ -139,6 +140,16 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         @Override
         void status(int status, String message) {
             httpServletResponse.sendError(status, message)
+        }
+
+        @Override
+        void status(HttpStatus s) {
+            status(s.value())
+        }
+
+        @Override
+        void status(HttpStatus s, String message) {
+            status(s.value(), message)
         }
     }
 }

@@ -1,5 +1,6 @@
 package grails.plugin.json.view
 
+import grails.plugin.json.renderer.ErrorsJsonViewRenderer
 import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.plugins.*
 import grails.util.BuildSettings
@@ -9,6 +10,7 @@ import grails.views.ViewsEnvironment
 import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.views.resolve.PluginAwareTemplateResolver
 import org.grails.io.support.GrailsResourceUtils
+import org.springframework.validation.Errors
 
 class JsonViewGrailsPlugin extends Plugin {
 
@@ -49,6 +51,6 @@ A plugin that allows rendering of JSON views
                 templateResolver = bean(PluginAwareTemplateResolver, jsonViewConfiguration)
             }
             jsonViewResolver(GenericGroovyTemplateViewResolver,  jsonSmartViewResolver )
-        } 
+        }
     }
 }

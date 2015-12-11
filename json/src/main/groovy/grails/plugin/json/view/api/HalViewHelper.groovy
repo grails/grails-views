@@ -140,6 +140,15 @@ class HalViewHelper {
         Object invokeMethod(String name, Object args) {
             Object[] arr = (Object[]) args
                 switch(arr.length) {
+                    case 1:
+                        final Object value = arr[0];
+                        if(value instanceof Closure) {
+                            call(name, (Closure)value);
+                        }
+                        else {
+                            call(name, value);
+                        }
+                        return null;
                     case 2:
                         if(arr[-1] instanceof Closure) {
                             final Object obj = arr[0]

@@ -20,6 +20,24 @@ class BookSpec extends GebSpec {
     def cleanup() {
     }
 
+    void "Test errors view rendering"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:"A POST is issued"
+
+        def resp = builder.post("$baseUrl/books") {
+            json {
+                title = ""
+            }
+        }
+
+        then:"The REST resource is created and the correct JSON is returned"
+        resp.status == 422
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/vnd.error;charset=UTF-8'
+        resp.text == '{"message":"Property [title] of class [class functional.tests.Book] cannot be null","path":"/book/index","_links":{"self":{"href":"http://localhost:8080/book/index"}}}'
+    }
+
     void "test REST view rendering"() {
         given:"A rest client"
         def builder = new RestBuilder()

@@ -1,6 +1,7 @@
 package grails.plugin.json.view.mvc
 
 import grails.core.support.proxy.ProxyHandler
+import grails.plugin.json.renderer.ErrorsJsonViewRenderer
 import grails.plugin.json.renderer.JsonViewJsonRenderer
 import grails.plugin.json.view.JsonViewTemplate
 import grails.plugin.json.view.JsonViewTemplateEngine
@@ -11,6 +12,7 @@ import grails.views.mvc.SmartViewResolver
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.Errors
 
 import javax.annotation.PostConstruct
 /**
@@ -44,6 +46,9 @@ class JsonViewResolver extends SmartViewResolver {
         if(rendererRegistry != null) {
             def defaultJsonRenderer = rendererRegistry.findRenderer(MimeType.JSON, Object.class)
 
+            def errorsRenderer = new ErrorsJsonViewRenderer((Class)Errors)
+            errorsRenderer.setJsonViewResolver(this)
+            rendererRegistry.addRenderer(errorsRenderer)
             rendererRegistry.addDefaultRenderer(
                     new JsonViewJsonRenderer<Object>(Object.class, this , proxyHandler, rendererRegistry, defaultJsonRenderer)
             )

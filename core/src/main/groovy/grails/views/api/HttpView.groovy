@@ -2,6 +2,7 @@ package grails.views.api
 
 import grails.artefact.Enhances
 import grails.views.Views
+import org.springframework.http.HttpStatus
 
 /**
  * @author Graeme Rocher
@@ -63,5 +64,19 @@ trait HttpView extends View {
          * @param status The status
          */
         void status(int status, String message)
+
+        /**
+         * Sets the response status
+         *
+         * @param status The status
+         */
+        void status(HttpStatus status)
+
+        /**
+         * Sets the response status
+         *
+         * @param status The status
+         */
+        void status(HttpStatus status, String message)
     }
 }
