@@ -1,5 +1,6 @@
 package grails.plugin.markup.view
 
+import grails.plugin.markup.view.api.MarkupView
 import grails.views.GrailsViewTemplate
 import grails.views.api.GrailsView
 import groovy.text.markup.MarkupTemplateEngine
@@ -22,9 +23,13 @@ class MarkupViewWritableScriptTemplate extends GrailsViewTemplate {
 
     @Override
     Writable make(Map binding) {
-        def writableTemplate = templateClass
+        MarkupView writableTemplate = (MarkupView)templateClass
                 .newInstance(templateEngine, binding, Collections.emptyMap(), configuration)
+        writableTemplate.viewTemplate = (GrailsViewTemplate)this
+        writableTemplate.prettyPrint = prettyPrint
+
         writableTemplate.setSourceFile(sourceFile)
+
         return writableTemplate
     }
 }

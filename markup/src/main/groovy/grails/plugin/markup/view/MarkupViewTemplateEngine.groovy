@@ -2,6 +2,7 @@ package grails.plugin.markup.view
 
 import grails.compiler.traits.TraitInjector
 import grails.plugin.markup.view.internal.MarkupViewsTransform
+import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewCompilationException
 import grails.views.WritableScript
@@ -11,6 +12,7 @@ import groovy.text.Template
 import groovy.text.markup.MarkupTemplateEngine
 import groovy.text.markup.TemplateConfiguration
 import groovy.text.markup.TemplateResolver
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
@@ -61,7 +63,8 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         watchIfNecessary(file, path)
 
         try {
-            return innerEngine.createTemplate(url)
+            def template = innerEngine.createTemplate(url)
+            return createMarkupViewTemplate(template)
         } catch (CompilationFailedException e) {
             throw new ViewCompilationException(e, file.canonicalPath)
         }
@@ -72,7 +75,8 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers()
         try {
-            return innerEngine.createTemplate(file.toURI().toURL())
+            def template = innerEngine.createTemplate(file.toURI().toURL())
+            return createMarkupViewTemplate(template)
         } catch (CompilationFailedException e) {
             throw new ViewCompilationException(e, file.canonicalPath)
         }
@@ -83,11 +87,23 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers()
         try {
-            return innerEngine.createTemplate(reader)
+
+            def template = innerEngine.createTemplate(reader)
+            return createMarkupViewTemplate(template)
+
         } catch (CompilationFailedException e) {
             throw new ViewCompilationException(e, "Generated")
         }
 
+    }
+
+    @CompileDynamic
+    protected MarkupViewWritableScriptTemplate createMarkupViewTemplate(Template template) {
+        def clazz = template.@templateClass
+
+        def markupViewTemplate = new MarkupViewWritableScriptTemplate(clazz, (File) null, innerEngine, viewConfiguration)
+        super.initializeTemplate(markupViewTemplate, null)
+        return markupViewTemplate
     }
 
     @Override

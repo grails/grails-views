@@ -1,11 +1,44 @@
 package grails.plugin.markup.view
 
+import grails.web.mapping.LinkGenerator
 import spock.lang.Specification
 
 /**
  * Created by graemerocher on 28/08/15.
  */
 class MarkupViewTemplateEngineSpec extends Specification {
+
+    void "test links in markup engine"() {
+        given:"A template engine"
+        def templateEngine = new MarkupViewTemplateEngine()
+        def linkGenerator = Mock(LinkGenerator)
+        linkGenerator.link(_) >> "http://localhost:8080/book/show/1"
+        templateEngine.setLinkGenerator(linkGenerator)
+
+        when:"A template that creates a link is rendered"
+        def template = templateEngine.createTemplate('''
+model {
+    Iterable<Map> cars
+}
+xmlDeclaration()
+cars {
+   cars.each {
+       car(make: it.make, model: it.model, href:this.g.link(controller:'car'))
+   }
+}
+''')
+
+        def writable = template.make(cars: [[make:"Audi", model:"A5"]])
+
+        def sw = new StringWriter()
+        writable.writeTo(sw)
+
+        then:"The result is correct"
+        sw.toString() == '''<?xml version='1.0'?>
+<cars>
+    <car make='Audi' model='A5' href='http://localhost:8080/book/show/1'/>
+</cars>'''
+    }
 
     void "Test parse markup template"() {
         given:"A template engine"
