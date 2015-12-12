@@ -26,6 +26,8 @@ targetCompatibility = 1.7
 
 
 grailsPublish {
+    user = 'user'
+    key = 'key'
     userOrg = 'grails'
     githubSlug = 'grails/grails-views'
     license {
