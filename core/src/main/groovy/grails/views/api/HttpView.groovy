@@ -5,7 +5,10 @@ import grails.views.Views
 import org.springframework.http.HttpStatus
 
 /**
+ * A view that is rendered in the context of an HTTP request
+ *
  * @author Graeme Rocher
+ * @since 1.0
  */
 trait HttpView extends View {
 
@@ -14,6 +17,42 @@ trait HttpView extends View {
      */
     Page page
 
+    /**
+     * @return The request object
+     */
+    Request request
+
+    /**
+     * Allows access to request properties
+     */
+    static interface Request {
+        /**
+         * @return The context path
+         */
+        String getContextPath()
+
+        /**
+         * @return The request method
+         */
+        String getMethod()
+
+        /**
+         * @return The request URI
+         */
+        String getUri()
+
+        /**
+         * @return The request content type
+         */
+        String getContentType()
+        /**
+         * @return The request character encoding
+         */
+        String getCharacterEncoding()
+    }
+    /**
+     * Allows control over the page response (headers, content type, status)
+     */
     static interface Page {
 
         /**

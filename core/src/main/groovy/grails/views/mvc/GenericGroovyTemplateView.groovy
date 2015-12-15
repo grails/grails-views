@@ -93,11 +93,25 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             }
         }
         if (writable instanceof HttpView) {
-            def page = new HttpViewPage(httpServletResponse)
-            ((HttpView) writable).setPage(page)
+            def httpView = (HttpView) writable
+            httpView.setPage(new HttpViewPage(httpServletResponse))
+            httpView.setRequest(new HttpViewRequest(httpServletRequest))
         }
     }
 
+    private static class HttpViewRequest implements HttpView.Request {
+        @Delegate final HttpServletRequest request;
+
+        HttpViewRequest(HttpServletRequest request) {
+            this.request = request
+        }
+
+        @Override
+        String getUri() {
+            return request.getRequestURI()
+        }
+
+    }
     private static class HttpViewPage implements HttpView.Page {
         final HttpServletResponse httpServletResponse
 
