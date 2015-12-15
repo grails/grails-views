@@ -1,12 +1,25 @@
 def gdslScriptContext = context(scope: scriptScope(), filetypes: ["gson"])
 
 contributor([gdslScriptContext]) {
+    // methods
+    method name:'model', type:void, params:[callable:"groovy.lang.Closure"]
+
+    // constants
+    property name:"GET", type:"org.springframework.http.HttpMethod.GET"
+    property name:"POST", type:"org.springframework.http.HttpMethod.POST"
+    property name:"PUT", type:"org.springframework.http.HttpMethod.PUT"
+    property name:"OPTIONS", type:"org.springframework.http.HttpMethod.OPTIONS"
+    property name:"PATCH", type:"org.springframework.http.HttpMethod.PATCH"
+    property name:"DELETE", type:"org.springframework.http.HttpMethod.DELETE"
+    property name:"HEAD", type:"org.springframework.http.HttpMethod.HEAD"
+    property name:"TRACE", type:"org.springframework.http.HttpMethod.TRACE"
+
     // scopes
     property name: "response", type: "grails.views.api.HttpView.Response"
     property name: "request", type: "grails.views.api.HttpView.Request"
     property name: "json", type: "groovy.json.StreamingJsonBuilder"
     property name: "g", type: "grails.plugin.json.view.api.GrailsJsonViewHelper"
-    property name: "tmpl", type: "grails.plugin.json.view.api.internal.TemplateNamespaceInvoker"
+    property name: "tmpl", type: "grails.plugin.json.view.api.internal.TemplateRenderer"
     property name: "mappingContext", type: "org.grails.datastore.mapping.model.MappingContext"
     property name: "messageSource", type: "org.springframework.context.MessageSource"
     property name: "controllerName", type: "java.lang.String"
