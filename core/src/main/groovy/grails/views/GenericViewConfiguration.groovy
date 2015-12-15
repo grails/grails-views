@@ -39,6 +39,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
         pathToTemplates ? new File(pathToTemplates, GrailsResourceUtils.VIEWS_DIR_PATH).path : "./grails-app/views"
     }()
     String[] packageImports = [] as String[]
+    String[] staticImports = ["org.springframework.http.HttpStatus", "org.springframework.http.HttpMethod", "grails.web.http.HttpHeaders"] as String[]
 
     @Override
     void setGrailsApplication(GrailsApplication grailsApplication) {

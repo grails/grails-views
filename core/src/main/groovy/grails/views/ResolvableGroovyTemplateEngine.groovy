@@ -426,7 +426,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
 
         def importCustomizer = new ImportCustomizer()
-        importCustomizer.addStarImports(viewConfiguration.packageImports)
+        importCustomizer.addStarImports( viewConfiguration.packageImports )
+        importCustomizer.addStaticStars( viewConfiguration.staticImports )
         compilerConfiguration.addCompilationCustomizers(
                 importCustomizer,
                 new ASTTransformationCustomizer(newViewsTransform())

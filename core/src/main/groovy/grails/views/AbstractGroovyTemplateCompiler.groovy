@@ -39,6 +39,8 @@ abstract class AbstractGroovyTemplateCompiler {
 
         def importCustomizer = new ImportCustomizer()
         importCustomizer.addStarImports( viewConfiguration.packageImports )
+        importCustomizer.addStaticStars( viewConfiguration.staticImports )
+
         configuration.addCompilationCustomizers(importCustomizer)
         configuration.addCompilationCustomizers(new ASTTransformationCustomizer(newViewsTransform()))
         return configuration

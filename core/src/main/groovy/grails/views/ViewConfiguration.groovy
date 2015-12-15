@@ -53,6 +53,11 @@ interface ViewConfiguration {
     String[] getPackageImports()
 
     /**
+     * @return The static imports to automatically import
+     */
+    String[] getStaticImports()
+
+    /**
      * @return The name of the views module (example json or markup)
      */
     String getViewModuleName()
