@@ -15,12 +15,19 @@ trait HttpView extends View {
     /**
      * @return The page object
      */
-    Page page
+    Response response
 
     /**
      * @return The request object
      */
     Request request
+
+    /**
+     * @return The same as {@link #getResponse()}
+     */
+    Request getPage() {
+        request
+    }
 
     /**
      * Allows access to request properties
@@ -53,7 +60,7 @@ trait HttpView extends View {
     /**
      * Allows control over the page response (headers, content type, status)
      */
-    static interface Page {
+    static interface Response {
 
         /**
          * Set a response header

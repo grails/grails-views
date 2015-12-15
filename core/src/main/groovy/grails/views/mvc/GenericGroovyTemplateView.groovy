@@ -4,9 +4,7 @@ import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.api.GrailsView
 import grails.views.api.HttpView
 import grails.web.http.HttpHeaders
-import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
-import grails.web.mime.MimeUtility
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -94,7 +92,7 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         }
         if (writable instanceof HttpView) {
             def httpView = (HttpView) writable
-            httpView.setPage(new HttpViewPage(httpServletResponse))
+            httpView.setResponse(new HttpViewResponse(httpServletResponse))
             httpView.setRequest(new HttpViewRequest(httpServletRequest))
         }
     }
@@ -112,10 +110,10 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         }
 
     }
-    private static class HttpViewPage implements HttpView.Page {
-        final HttpServletResponse httpServletResponse
+    private static class HttpViewResponse implements HttpView.Response {
+        final @Delegate HttpServletResponse httpServletResponse
 
-        HttpViewPage(HttpServletResponse httpServletResponse) {
+        HttpViewResponse(HttpServletResponse httpServletResponse) {
             this.httpServletResponse = httpServletResponse
         }
 

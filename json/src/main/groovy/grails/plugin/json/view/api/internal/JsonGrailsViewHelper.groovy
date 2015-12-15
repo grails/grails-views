@@ -303,7 +303,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
     protected GrailsView prepareWritable(Template childTemplate, Map model) {
         GrailsView writable = (GrailsView) (model ? childTemplate.make((Map) model) : childTemplate.make())
         writable.locale = view.locale
-        writable.page = view.page
+        writable.response = view.response
         writable.controllerName = view.controllerName
         writable.actionName = view.actionName
         return writable

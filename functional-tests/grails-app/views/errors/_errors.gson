@@ -4,8 +4,8 @@ import static org.springframework.http.HttpStatus.*
 model {
     BeanPropertyBindingResult errors
 }
-page.contentType "application/vnd.error"
-page.status UNPROCESSABLE_ENTITY
+response.contentType "application/vnd.error"
+response.status UNPROCESSABLE_ENTITY
 
 json {
     BeanPropertyBindingResult errorsObject = (BeanPropertyBindingResult)this.errors

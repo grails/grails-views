@@ -182,8 +182,8 @@ Alternatively for a more concise way to invoke templates, using the `tmpl` varia
 
 To customize content types and headers use the `page` object from [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy):
 
-    page.contentType "application/hal+json"
-    page.header "Token", "foo"
+    response.contentType "application/hal+json"
+    response.header "Token", "foo"
     json.person {
         name "bob"
     }
@@ -336,7 +336,7 @@ For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy
 
 The result is all JSON views have a `page` object that can be used to control the HTTP response:
 
-    page.header "Token", "foo"
+    response.header "Token", "foo"
 
 
 ## Markup Views

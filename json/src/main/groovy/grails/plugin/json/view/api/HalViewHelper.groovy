@@ -43,7 +43,7 @@ class HalViewHelper {
         def mimeType = view.mimeUtility?.getMimeTypeForExtension(name)
         this.contentType = mimeType?.name ?: name
         if(view instanceof HttpView) {
-            ((HttpView)view).page?.contentType(contentType)
+            ((HttpView)view).response?.contentType(contentType)
         }
     }
 
