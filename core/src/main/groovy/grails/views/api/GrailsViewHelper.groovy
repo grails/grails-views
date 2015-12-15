@@ -15,5 +15,5 @@ interface GrailsViewHelper extends LinkGenerator {
      * @param arguments The arguments
      * @return The message
      */
-    String message(Map<String, Object> arguments)
+    String message(Map arguments)
 }

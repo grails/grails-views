@@ -2,7 +2,7 @@ package grails.plugin.json.view.api
 
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.internal.JsonGrailsViewHelper
-import grails.plugin.json.view.api.internal.TemplateNamespaceInvoker
+import grails.plugin.json.view.api.internal.TemplateRenderer
 import grails.views.api.GrailsView
 
 /**
@@ -34,5 +34,5 @@ trait JsonView extends GrailsView {
     /**
      * The template namespace
      */
-    TemplateNamespaceInvoker tmpl = new TemplateNamespaceInvoker(viewHelper)
+    TemplateRenderer tmpl = new TemplateRenderer(viewHelper)
 }

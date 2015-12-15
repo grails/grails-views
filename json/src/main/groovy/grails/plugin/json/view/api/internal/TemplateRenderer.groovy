@@ -8,11 +8,11 @@ import grails.plugin.json.view.api.GrailsJsonViewHelper
  * @author Graeme Rocher
  * @since 1.0
  */
-class TemplateNamespaceInvoker {
+class TemplateRenderer {
 
-    final GrailsJsonViewHelper jsonViewHelper
+    final @Delegate GrailsJsonViewHelper jsonViewHelper
 
-    TemplateNamespaceInvoker(GrailsJsonViewHelper jsonViewHelper) {
+    TemplateRenderer(GrailsJsonViewHelper jsonViewHelper) {
         this.jsonViewHelper = jsonViewHelper
     }
 
