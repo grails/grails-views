@@ -11,7 +11,7 @@ Initial implementation includes JSON views powered by Groovy's JsonBuilder, howe
 
 Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    compile "org.grails.plugins:views-json:1.0.0.M1"
+    compile "org.grails.plugins:views-json:1.0.0.RC3"
 
 To enable Gradle compilation of JSON views for production environment add the following to the `buildscript` `dependencies` block:
 
@@ -19,7 +19,7 @@ To enable Gradle compilation of JSON views for production environment add the fo
         ...
         dependencies {
             ...
-            classpath "org.grails.plugins:views-gradle:1.0.0.M1"
+            classpath "org.grails.plugins:views-gradle:1.0.0.RC3"
         }
     }
 
@@ -203,12 +203,16 @@ You can also create locale specific views by appending the locale to view name. 
 GSON views integrate with Grails' renderer infrastructure. For example if you create 2 views called `show.gsp` (for HTML) and `show.gson` (for JSON), you can define the following action:
 
     def show() {
-        respond Book.get(params.id)
+        [book: Book.get(params.id) ]
     }
 
 If you send a request to `/book/show` it will render `show.gsp` but if you send a request to `/book/show.json` it will render `show.gson`.
 
-In addition if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. For example given a class called `demo.Book` you can create `grails-app/views/demo/Book.gson` and whenever `respond` is called with an instance of `Book` Grails will render `Book.gson`.
+In addition if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. For example given a class called `demo.Book` you can create `grails-app/views/book/_book.gson` and whenever `respond` is called with an instance of `Book` Grails will render `book.gson`.
+
+    def show() {
+        respond Book.get(params.id) 
+    }
 
 ### View Resolving Strategy
 
@@ -347,7 +351,7 @@ Markup views use Groovy's [MarkupTemplateEngine](http://docs.groovy-lang.org/doc
 
 Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    compile "org.grails.plugins:views-markup:1.0.0.M1"
+    compile "org.grails.plugins:views-markup:1.0.0.RC3"
 
 To enable Gradle compilation of Markup views for production environment add the following to the `buildscript` `dependencies` block:
 
@@ -355,7 +359,7 @@ To enable Gradle compilation of Markup views for production environment add the 
         ...
         dependencies {
             ...
-            classpath "org.grails.plugins:views-gradle:1.0.0.M1"
+            classpath "org.grails.plugins:views-gradle:1.0.0.RC3"
         }
     }
 
