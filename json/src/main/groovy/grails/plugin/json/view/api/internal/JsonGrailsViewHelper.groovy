@@ -10,7 +10,6 @@ import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import grails.views.ViewException
 import grails.views.api.GrailsView
-import grails.views.api.HttpView
 import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.mvc.renderer.DefaultViewRenderer
 import groovy.text.Template
@@ -22,14 +21,10 @@ import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.mapping.collection.PersistentCollection
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
-import org.grails.datastore.mapping.model.config.GormProperties
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Embedded
 import org.grails.datastore.mapping.model.types.ToOne
 import org.springframework.util.ReflectionUtils
-
-import java.beans.PropertyDescriptor
-import java.lang.reflect.Method
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -42,7 +37,10 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
     private static final String DEEP = "deep"
 
-    IncludeExcludeSupport<String> includeExcludeSupport = new IncludeExcludeSupport<String>(null, ["class", 'metaClass', 'properties', GormProperties.VERSION, GormProperties.ATTACHED, GormProperties.ERRORS, GormProperties.DIRTY]) {
+    /**
+     * Default includes/excludes for GORM properties
+     */
+    IncludeExcludeSupport<String> includeExcludeSupport = new IncludeExcludeSupport<String>(null, ["class", 'metaClass', 'properties', "version", "attached", "errors", "dirty"]) {
         @Override
         boolean shouldInclude(List<String> incs, List excs, String object) {
             def i = object.lastIndexOf('.')
