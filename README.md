@@ -11,7 +11,7 @@ Initial implementation includes JSON views powered by Groovy's JsonBuilder, howe
 
 Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    compile "org.grails.plugins:views-json:1.0.0.RC3"
+    compile "org.grails.plugins:views-json:1.0.0"
 
 To enable Gradle compilation of JSON views for production environment add the following to the `buildscript` `dependencies` block:
 
@@ -19,7 +19,7 @@ To enable Gradle compilation of JSON views for production environment add the fo
         ...
         dependencies {
             ...
-            classpath "org.grails.plugins:views-gradle:1.0.0.RC3"
+            classpath "org.grails.plugins:views-gradle:1.0.0"
         }
     }
 
@@ -332,13 +332,13 @@ For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy
     trait HttpView {
 
         /**
-         * @return The page object
+         * @return The response object
          */
-        Page page
+        Response response
         ...
     }
 
-The result is all JSON views have a `page` object that can be used to control the HTTP response:
+The result is all JSON views have a `response` object that can be used to control the HTTP response:
 
     response.header "Token", "foo"
 
@@ -351,7 +351,7 @@ Markup views use Groovy's [MarkupTemplateEngine](http://docs.groovy-lang.org/doc
 
 Add the following dependency to the `dependencies` block of your `build.gradle`:
 
-    compile "org.grails.plugins:views-markup:1.0.0.RC3"
+    compile "org.grails.plugins:views-markup:1.0.0"
 
 To enable Gradle compilation of Markup views for production environment add the following to the `buildscript` `dependencies` block:
 
@@ -359,7 +359,7 @@ To enable Gradle compilation of Markup views for production environment add the 
         ...
         dependencies {
             ...
-            classpath "org.grails.plugins:views-gradle:1.0.0.RC3"
+            classpath "org.grails.plugins:views-gradle:1.0.0"
         }
     }
 
