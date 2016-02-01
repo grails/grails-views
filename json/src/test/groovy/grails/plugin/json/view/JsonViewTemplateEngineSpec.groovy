@@ -11,6 +11,23 @@ import spock.lang.Specification
  * Created by graemerocher on 21/08/15.
  */
 class JsonViewTemplateEngineSpec extends Specification {
+    void "Test model with default value"() {
+        when: "An engine is created and a template parsed"
+        def templateEngine = new JsonViewTemplateEngine()
+        def template = templateEngine.createTemplate('''
+model {
+    String foo = "bar"
+}
+
+json {
+    name foo
+}
+''')
+        def writer = new StringWriter()
+        template.make().writeTo(writer)
+        then:"The output is correct"
+        writer.toString() == '{"name":"bar"}'
+    }
 
     void "Test static compilation with collections"() {
         when: "An engine is created and a template parsed"

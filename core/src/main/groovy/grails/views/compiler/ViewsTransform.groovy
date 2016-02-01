@@ -166,8 +166,9 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                                 if(st instanceof ExpressionStatement) {
                                     def expr = ((ExpressionStatement) st).expression
                                     if(expr instanceof DeclarationExpression) {
-                                        VariableExpression var = (VariableExpression)((DeclarationExpression)expr).leftExpression
-                                        classNode.addProperty(var.name, Modifier.PUBLIC, var.type, null, null, null)
+                                        DeclarationExpression declarationExpression = (DeclarationExpression) expr
+                                        VariableExpression var = (VariableExpression) declarationExpression.leftExpression
+                                        classNode.addProperty(var.name, Modifier.PUBLIC, var.type, declarationExpression.rightExpression, null, null)
                                         modelTypes[var.name] = var.type
                                         map.addMapEntryExpression(
                                                 new MapEntryExpression(new ConstantExpression(var.name), new ClassExpression(var.type))
