@@ -59,7 +59,7 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
                 project.file("${project.projectDir}/$pathToSource")
         )
 
-        templateCompileTask.dependsOn( allTasks.withType(GroovyCompile) )
+        templateCompileTask.dependsOn( allTasks.findByName('classes') )
 
         allTasks.withType(War) { War war ->
             war.dependsOn templateCompileTask
