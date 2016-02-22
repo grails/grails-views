@@ -273,16 +273,16 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                     Iterable iterable = (Iterable)collection
                     int size = iterable.size()
                     int i = 0
-                    stringWriter << '['
+                    stringWriter.append '['
                     for(o in collection) {
                         model.put(var, o)
-                        def writable = childTemplate.make(model)
+                        def writable = prepareWritable(childTemplate, model)
                         writable.writeTo( stringWriter )
                         if(++i != size) {
-                            stringWriter << ','
+                            stringWriter.append ','
                         }
                     }
-                    stringWriter << ']'
+                    stringWriter.append ']'
                 }
                 else {
                     GrailsView writable = prepareWritable(childTemplate, model)
