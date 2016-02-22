@@ -62,6 +62,7 @@ class GenericGroovyTemplateResolver implements TemplateResolver {
 
     public static String resolveTemplateName(String scope, String path) {
         path = path.substring(1) // remove leading slash '/'
+        path = path.replace(File.separatorChar, UNDERSCORE_CHAR)
         path = path.replace(SLASH_CHAR, UNDERSCORE_CHAR)
         path = path.replace(DOT_CHAR, UNDERSCORE_CHAR)
         if(scope) {
