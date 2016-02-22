@@ -69,7 +69,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                         javaExecSpec.setMinHeapSize( compileOptions.forkOptions.memoryInitialSize )
 
 
-                        String packageImports = projectPackageNames.join(',')
+                        String packageImports = projectPackageNames.join(',') ?: project.name
                         def arguments = [
                                 srcDir.canonicalPath,
                                 destinationDir.canonicalPath,
