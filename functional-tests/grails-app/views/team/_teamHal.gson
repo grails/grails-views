@@ -7,4 +7,5 @@ model {
 response.contentType "application/hal+json"
 json hal.render(team) {
     sport "football"
+    another g.render(template:'sub')
 }

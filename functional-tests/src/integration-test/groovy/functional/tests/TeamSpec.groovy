@@ -46,7 +46,7 @@ class TeamSpec extends GebSpec{
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
-        resp.text == '{"_links":{"self":{"href":"http://localhost:8080/teams/1","hreflang":"en_US","type":"application/hal+json"}},"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football"}'
+        resp.text == '{"_links":{"self":{"href":"http://localhost:8080/teams/1","hreflang":"en_US","type":"application/hal+json"}},"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football","another":{"foo":"bar"}}'
 
     }
 }
