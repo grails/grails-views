@@ -294,6 +294,8 @@ This produces:
         "title": "The Stand"
     }
 
+Note that `hal.links()` has to be the first element within the `json{}` closure.
+
 You can set the HAL content type to an explicit content type or one of the named content types defined in `grails.mime.types` in `application.yml`:
 
 
