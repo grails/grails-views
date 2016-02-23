@@ -14,6 +14,7 @@ class UrlMappings {
         "/books"(resources:"book")
         "/teams"(resources:"team")
         "/teams/deep/$id"(controller: "team", action:"deep")
+        "/teams/hal/$id"(controller: "team", action:"hal")
         "/authors"(resources:"author")
     }
 }

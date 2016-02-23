@@ -35,4 +35,18 @@ class TeamSpec extends GebSpec{
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta"},{"id":2,"name":"Messi"}],"sport":"football"}'
     }
+
+    void "Test HAL rendering"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:
+        def resp = builder.get("$baseUrl/teams/hal/1")
+
+        then:"The response is correct"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
+        resp.text == '{"_links":{"self":{"href":"http://localhost:8080/teams/1","hreflang":"en_US","type":"application/hal+json"}},"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football"}'
+
+    }
 }

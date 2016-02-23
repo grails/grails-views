@@ -1,6 +1,7 @@
 package grails.plugin.json.view.api
 
 import grails.plugin.json.builder.JsonOutput
+import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.rest.Link
 import grails.views.api.GrailsViewHelper
@@ -28,12 +29,42 @@ class HalViewHelper {
     public static final String EMBEDDED_ATTRIBUTE = "_embedded"
 
     JsonView view
-    GrailsViewHelper viewHelper
+    GrailsJsonViewHelper viewHelper
     String contentType = MimeType.HAL_JSON.name
 
-    HalViewHelper(JsonView view, GrailsViewHelper viewHelper) {
+    HalViewHelper(JsonView view, GrailsJsonViewHelper viewHelper) {
         this.view = view
         this.viewHelper = viewHelper
+    }
+
+    /**
+     * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
+     */
+    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer = null ) {
+        arguments.put("beforeClosure", createlinksRenderingClosure(object))
+        viewHelper.render(object, arguments, customizer)
+    }
+
+    @CompileDynamic
+    protected Closure<Void> createlinksRenderingClosure(object) {
+        return {
+            StreamingJsonDelegate local = (StreamingJsonDelegate) getDelegate()
+
+            def previous = view.getOut()
+            view.setOut(local.writer)
+            try {
+                links(object)
+            } finally {
+                view.setOut(previous)
+            }
+        }
+    }
+
+    /**
+     * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
+     */
+    JsonOutput.JsonUnescaped render(Object object,  @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer = null ) {
+        viewHelper.render(object, [beforeClosure:createlinksRenderingClosure(object)], customizer)
     }
 
     /**
@@ -47,6 +78,20 @@ class HalViewHelper {
         }
     }
 
+    /**
+     * Define the hal links
+     *
+     * @param callable The closure
+     */
+    void links(Closure callable) {
+        new StreamingJsonDelegate(view.out, true).call(LINKS_ATTRIBUTE) {
+
+            callable.setDelegate(new HalStreamingJsonDelegate(this, (StreamingJsonDelegate)delegate))
+            callable.call()
+        }
+        view.out.write(JsonOutput.COMMA)
+
+    }
     /**
      * Creates HAL links for the given object
      *

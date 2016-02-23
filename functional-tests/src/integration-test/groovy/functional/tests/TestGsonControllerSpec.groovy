@@ -43,6 +43,8 @@ class TestGsonControllerSpec extends GebSpec {
         content == '{"test":{"name":"Bob","child":{"child":{"name":"Joe","age":10}},"children":[{"child":{"name":"Joe","age":10}}]}}'
     }
 
+
+
     void "Test views from plugins are rendered"() {
         when:"A view that renders templates is rendered"
         def content = new URL("${baseUrl}/testGson/testGsonFromPlugin").text

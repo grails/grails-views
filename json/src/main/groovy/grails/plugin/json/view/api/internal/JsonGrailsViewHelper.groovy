@@ -36,6 +36,7 @@ import org.springframework.util.ReflectionUtils
 class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
 
     private static final String DEEP = "deep"
+    public static final String BEFORE_CLOSURE = "beforeClosure"
 
     /**
      * Default includes/excludes for GORM properties
@@ -58,12 +59,17 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
     JsonOutput.JsonUnescaped render(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
         JsonView jsonView = (JsonView)view
         object = jsonView.proxyHandler?.unwrapIfProxy(object) ?: object
+        if(object == null) {
+            return JsonOutput.unescaped("null")
+        }
+
         def entity = jsonView.mappingContext?.getPersistentEntity(object.getClass().name)
         def writer = new FastStringWriter()
         List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
         List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
 
         boolean isDeep = GrailsClassUtils.getBooleanFromMap(DEEP, arguments)
+        Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
         StreamingJsonBuilder builder = new StreamingJsonBuilder(writer)
         Set processedObjects = []
 
@@ -71,6 +77,10 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
             builder.call {
                 StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate)getDelegate()
+                if(beforeClosure != null) {
+                    beforeClosure.setDelegate(jsonDelegate)
+                    beforeClosure.call()
+                }
                 process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep)
                 if(customizer != null) {
                     customizer.setDelegate(jsonDelegate)
@@ -81,6 +91,10 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
         else {
             builder.call {
                 StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate)getDelegate()
+                if(beforeClosure != null) {
+                    beforeClosure.setDelegate(jsonDelegate)
+                    beforeClosure.call()
+                }
                 processSimple(jsonDelegate, object, processedObjects, incs, excs, "")
                 if(customizer != null) {
                     customizer.setDelegate(jsonDelegate)
@@ -302,6 +316,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
         GrailsView writable = (GrailsView) (model ? childTemplate.make((Map) model) : childTemplate.make())
         writable.locale = view.locale
         writable.response = view.response
+        writable.request = view.request
         writable.controllerName = view.controllerName
         writable.actionName = view.actionName
         return writable

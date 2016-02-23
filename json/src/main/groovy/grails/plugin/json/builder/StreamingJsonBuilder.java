@@ -576,6 +576,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             verifyValue();
             writeObject(writer, value, callable);
         }
+
         /**
          * Writes the name and another JSON object
          *
@@ -589,8 +590,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             writer.write(JsonOutput.OPEN_BRACE);
             StreamingJsonDelegate.cloneDelegateAndGetContent(writer, value);
             writer.write(JsonOutput.CLOSE_BRACE);
-
         }
+
         /**
          * Writes an unescaped value. Note: can cause invalid JSON if passed JSON is invalid
          *

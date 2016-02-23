@@ -13,4 +13,8 @@ class TeamController extends RestfulController {
     def deep(Long id) {
         respond Team.get(id)
     }
+
+    def hal(Long id) {
+        respond Team.get(id)
+    }
 }
