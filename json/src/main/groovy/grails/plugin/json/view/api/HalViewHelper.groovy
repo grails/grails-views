@@ -40,31 +40,26 @@ class HalViewHelper {
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
-    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer = null ) {
+    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer) {
         arguments.put("beforeClosure", createlinksRenderingClosure(object))
         viewHelper.render(object, arguments, customizer)
     }
 
-    @CompileDynamic
-    protected Closure<Void> createlinksRenderingClosure(object) {
-        return {
-            StreamingJsonDelegate local = (StreamingJsonDelegate) getDelegate()
 
-            def previous = view.getOut()
-            view.setOut(local.writer)
-            try {
-                links(object)
-            } finally {
-                view.setOut(previous)
-            }
-        }
+    JsonOutput.JsonUnescaped render(Object object, Map arguments) {
+        arguments.put("beforeClosure", createlinksRenderingClosure(object))
+        viewHelper.render(object, arguments, null)
     }
 
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
-    JsonOutput.JsonUnescaped render(Object object,  @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer = null ) {
+    JsonOutput.JsonUnescaped render(Object object,  @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer ) {
         viewHelper.render(object, [beforeClosure:createlinksRenderingClosure(object)], customizer)
+    }
+
+    JsonOutput.JsonUnescaped render(Object object) {
+        viewHelper.render(object, [beforeClosure:createlinksRenderingClosure(object)], null)
     }
 
     /**
@@ -274,6 +269,21 @@ class HalViewHelper {
         @Override
         void call(String name, JsonOutput.JsonUnescaped json) throws IOException {
             delegate.call(name, json)
+        }
+    }
+
+    @CompileDynamic
+    protected Closure<Void> createlinksRenderingClosure(object) {
+        return {
+            StreamingJsonDelegate local = (StreamingJsonDelegate) getDelegate()
+
+            def previous = view.getOut()
+            view.setOut(local.writer)
+            try {
+                links(object)
+            } finally {
+                view.setOut(previous)
+            }
         }
     }
 }
