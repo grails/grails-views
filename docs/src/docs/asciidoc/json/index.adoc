@@ -13,3 +13,27 @@ include::templates.adoc[]
 === Rendering Domain Classes
 
 include::rendering.adoc[]
+
+=== JSON View API
+
+include::viewAPI.adoc[]
+
+=== Content Negotiation
+
+include::contentNegotiation.adoc[]
+
+=== HAL Support
+
+include::hal.adoc[]
+
+=== The JsonTemplateEngine
+
+include::templateEngine.adoc[]
+
+=== Static Compilation
+
+include::staticCompilation.adoc[]
+
+=== Configuration
+
+include::configuration.adoc[]

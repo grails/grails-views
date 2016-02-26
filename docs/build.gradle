@@ -15,3 +15,36 @@ asciidoctor {
                'version'       : project.version,
                'sourcedir'     : "${rootProject.allprojects.find { it.name == 'views-core'}.projectDir}/src/main/groovy"
 }
+
+configurations {
+  documentation
+}
+
+dependencies {
+  documentation project(':views-json')
+  documentation project(':views-markup')
+  documentation project(':views-gradle')
+}
+
+
+
+task apidocs(type: Groovydoc) {
+    def allProjects = rootProject.allprojects.findAll { project ->
+      ['views-core', 'views-json', 'views-markup','views-gradle'].contains(project.name)
+    }
+    source allProjects.collect { project ->
+      project.files('src/main/groovy')
+    } 
+
+    destinationDir = new File(buildDir, 'docs/api')
+    // Might need a classpath
+    docTitle = "Grails Views ${version}"
+    
+    classpath = configurations.documentation
+    groovyClasspath = configurations.documentation
+}
+
+task docs(type:Copy, dependsOn:[apidocs, asciidoctor])  {
+    from "$buildDir/asciidoc/html5"
+    into "$buildDir/docs"
+}

@@ -318,40 +318,7 @@ You can set the HAL content type to an explicit content type or one of the named
 
 The above example sets the content type to `application/vnd.books.org.book+json`
 
-### Changing the view base class
 
-All JSON views subclass the [JsonViewTemplate](json/src/main/groovy/grails/plugin/json/view/JsonViewTemplate.groovy) class by default.
-
-You can however change the subclass (which should be a subclass of `JsonViewTemplate`) using configuration:
-
-    grails:
-        views:
-            json:
-                compileStatic: true
-                baseTemplateClass: com.example.MyCustomJsonViewTemplate
-
-### Adding New Helper Methods via Traits
-
-Alternatively, rather than modifying the base class, you can instead just add new methods via traits.
-
-For example the [HttpView](core/src/main/groovy/grails/views/api/HttpView.groovy) uses the `Enhances` annotation to add the `page` object to all views:
-
-    import grails.artefact.Enhances
-    import grails.views.Views
-
-    @Enhances(Views.TYPE)
-    trait HttpView {
-
-        /**
-         * @return The response object
-         */
-        Response response
-        ...
-    }
-
-The result is all JSON views have a `response` object that can be used to control the HTTP response:
-
-    response.header "Token", "foo"
 
 
 ## Markup Views
