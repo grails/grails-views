@@ -41,6 +41,7 @@ Alternatively, rather than modifying the base class, you can instead just add ne
 For example the link:api/grails/views/api/HttpView.html[HttpView] uses the `Enhances` annotation to add the `page` object to all views:
 
 [source,groovy]
+----
 import grails.artefact.Enhances
 import grails.views.Views
 
@@ -53,6 +54,7 @@ trait HttpView {
     Response response
     ...
 }
+----
 
 The result is all JSON views have a `response` object that can be used to control the HTTP response:
 
