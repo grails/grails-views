@@ -296,6 +296,15 @@ This produces:
 
 Note that `hal.links()` has to be the first element within the `json{}` closure.
 
+If you prefer to let the plugin handle the rendering of your object you can use the `hal.render` method:
+
+    model {
+        Book book
+    }
+    json hal.render(book)
+    
+The `hal.render` method works the same as the `g.render` method, accepting the same argument, the difference being it will output HAL links for the object via `hal.links`.    
+
 You can set the HAL content type to an explicit content type or one of the named content types defined in `grails.mime.types` in `application.yml`:
 
 
