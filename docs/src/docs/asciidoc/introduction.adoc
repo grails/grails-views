@@ -1,0 +1,7 @@
+The Grails Views project provides additional view technologies to the Grails framework, including JSON and Markup views.
+
+JSON views allow rendering of JSON responses using Groovy's http://docs.groovy-lang.org/latest/html/gapi/groovy/json/StreamingJsonBuilder.html[StreamingJsonBuilder].
+
+Markup views allow rendering of XML responses using Groovy's http://docs.groovy-lang.org/latest/html/gapi/groovy/text/markup/MarkupTemplateEngine.html[MarkupTemplateEngine].
+
+However the core of the project is extensible for potentially any kind of view implementation that is based on a Groovy DSL. The following sections cover usage of Groovy JSON views.

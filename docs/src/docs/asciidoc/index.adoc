@@ -1,0 +1,13 @@
+= Grails Views
+:author: Graeme Rocher
+:email: graeme.rocher@gmail.com
+:source-highlighter: coderay
+:numbered:
+
+== Introduction
+
+include::introduction.adoc[]
+
+== JSON Views
+
+include::json/index.adoc[]
