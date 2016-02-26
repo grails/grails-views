@@ -16,7 +16,7 @@ include::rendering.adoc[]
 
 === JSON View API
 
-include::viewAPI.adoc[]
+include::viewApi.adoc[]
 
 === Content Negotiation
 

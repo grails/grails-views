@@ -3,38 +3,38 @@ Typically your model may involve one or many domain instances. JSON views provid
 For example given the following domain class:
 
 [source,groovy]
-    class Book {
-        String title
-    }
+class Book {
+    String title
+}
     
 And the following template: 
  
 [source,groovy]
-    model {
-        Book book
-    }    
-    json g.render(book) 
+model {
+    Book book
+}    
+json g.render(book) 
 
 The resulting output is:
 
 [source,javascript]
-    {id:1,"title":"The Stand"}
+{id:1,"title":"The Stand"}
     
 You can customize the rendering by including or excluding properties:
     
 [source,groovy]    
-    json g.render(book, [includes:['title']])
+json g.render(book, [includes:['title']])
     
-Or by providing a closure to modify the JSON output:
+Or by providing a closure to provide additional JSON output:
     
 [source,groovy]    
-    json g.render(book) {
-        pages 1000
-    }  
+json g.render(book) {
+    pages 1000
+}  
 
-Or combine the 2 approaches:
+Or combine the two approaches:
 
 [source,groovy]    
-    json g.render(book, [includes:['title']) {
-        pages 1000
-    }  
+json g.render(book, [includes:['title']) {
+    pages 1000
+}  

@@ -4,15 +4,14 @@ This class is a regular Groovy http://docs.groovy-lang.org/latest/html/documenta
 
 For example:
 
-	[source,groovy]
-	@Autowired
-	JsonViewTemplateEngine templateEngine
-
-	void myMethod() {
-		Template t = templateEngine.resolveTemplate('/book/show')
-		def writable = t.make(book: new Book(title:"The Stand"))
-		def sw = new StringWriter()
-		writable.writeTo( sw )
-		...
-	}
+[source,groovy]
+@Autowired
+JsonViewTemplateEngine templateEngine
+void myMethod() {
+	Template t = templateEngine.resolveTemplate('/book/show')
+	def writable = t.make(book: new Book(title:"The Stand"))
+	def sw = new StringWriter()
+	writable.writeTo( sw )
+	...
+}
 

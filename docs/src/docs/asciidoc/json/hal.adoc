@@ -5,46 +5,46 @@ The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON v
 For example:
 
 [source,groovy]
-    model {
-        Book book
-    }
-    json {
-        hal.links(book)
-        hal.embedded {
-            author( book.authors.first() ) { Author author ->
-                name author.name
-            }
+model {
+    Book book
+}
+json {
+    hal.links(book)
+    hal.embedded {
+        author( book.authors.first() ) { Author author ->
+            name author.name
         }
-        title book.title
     }
+    title book.title
+}
 
 NOTE: The call to `hal.links()` has to be the first element within the `json{}` closure.
 
 This produces the HAL output:
 
 [source,javascript]
-    {
-        "_links": {
-            "self": {
-                "href": "http://localhost:8080/book/show/1",
-                "hreflang": "en",
-                "type": "application/hal+json"
-            }
-        },
-        "_embedded": {
-            "author": {
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/author/show/1",
-                        "hreflang": "en",
-                        "type": "application/hal+json"
-                    }
-                },
-                "name": "Stephen King"
-            }
-        },
-        "title": "The Stand"
-    }
+{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/book/show/1",
+            "hreflang": "en",
+            "type": "application/hal+json"
+        }
+    },
+    "_embedded": {
+        "author": {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/author/show/1",
+                    "hreflang": "en",
+                    "type": "application/hal+json"
+                }
+            },
+            "name": "Stephen King"
+        }
+    },
+    "title": "The Stand"
+}
 
 ==== Generating HAL Links
 

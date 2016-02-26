@@ -11,10 +11,10 @@ NOTE: If you disable static compilation rendering performance will suffer.
 For model variables you need to declare the types otherwise you will get a compilation error:
 
 [source,groovy]
-    model {
-        Person person
-    }
-    json {
-        name person.name
-        age person.age
-    }
+model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}

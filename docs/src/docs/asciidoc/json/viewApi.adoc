@@ -9,10 +9,10 @@ Thanks to these traits several methods and properties are available to JSON view
 Links can be generated using the `g.link(..)` method:
 
 [source,groovy]
-    json.person {
-        name "bob"
-        homepage g.link(controller:"person", id:"bob")
-    }
+json.person {
+    name "bob"
+    homepage g.link(controller:"person", id:"bob")
+}
 
 The `g.link` method is similar to the equivalent tag in GSP and allows you to easily create links to other controllers.
 
@@ -21,11 +21,11 @@ The `g.link` method is similar to the equivalent tag in GSP and allows you to ea
 To customize content types and headers use the `response` object defined by the link:api/grails/views/api/HttpView.html[HttpView] trait:
 
 [source,groovy]
-    response.contentType "application/hal+json"
-    response.header "Token", "foo"
-    json.person {
-        name "bob"
-    }
+response.contentType "application/hal+json"
+response.header "Token", "foo"
+json.person {
+    name "bob"
+}
 
 The `HttpView` trait defines a variety of methods for inspecting the request and altering the response. 
 
@@ -35,9 +35,10 @@ NOTE: The methods available are only a subset of the methods available via the `
 
 You can lookup i18n messages use the `g.message` method:
 
-    json.error {
-        description g.message(code:'default.error.message')
-    }
+[source,groovy]
+json.error {
+    description g.message(code:'default.error.message')
+}
 
 You can also create locale specific views by appending the locale to view name. For example `person_de.gson` for German or `person.gson` for the default.
 

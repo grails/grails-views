@@ -1,10 +1,10 @@
-GSON views integrate with Grails' content negotiation infrastructure. For example if you create 2 views called `grails-app/views/book/show/show.gsp` (for HTML) and `grails-app/views/book/show/show.gson` (for JSON), you can then define the following action:
+GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called `grails-app/views/book/show/show.gsp` (for HTML) and `grails-app/views/book/show/show.gson` (for JSON), you can then define the following action:
 
 [source,groovy]
 .`grails-app/controllers/myapp/BookController.groovy`
-    def show() {
-        respond Book.get(params.id)
-    }
+def show() {
+    respond Book.get(params.id)
+}
 
 The result is that if you send a request to `/book/show` it will render `show.gsp` but if you send a request to `/book/show.json` it will render `show.gson`.
 
@@ -12,13 +12,14 @@ In addition, if the client sends a request with the `Accept` header containing `
 
 ==== Content Negotiation and Domain Classes
 
-Content negotiatio also works nicely with domain classes, for example if you want to define a template to render any instance the `Book` domain classes you can create a `gson` file that matches the class name. 
+Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the `Book` domain class you can create a `gson` file that matches the class name. 
 
-For example given a class called `demo.Book` you can create `grails-app/views/book/_book.gson` and whenever `respond` is called with an instance of `Book` Grails will render `book.gson`.
+For example given a class called `demo.Book` you can create `grails-app/views/book/_book.gson` and whenever `respond` is called with an instance of `Book` Grails will render `_book.gson`.
 
-    def show() {
-        respond Book.get(params.id) 
-    }
+[source,groovy]
+def show() {
+    respond Book.get(params.id) 
+}
 
 ==== Content Negotiation and Versioned APIs
 
@@ -28,7 +29,7 @@ Grails will then use the `ACCEPT_VERSION` header when resolving the view.
 
 For example given a view called `/book/show.gson` if you wish to deprecate your previous API and create a version 2.0 API, you can rename the previous view `/book/show_v1.0.gson` and create a new `/book/show.gson` representing the new version of the API.
 
-Then when the client sends a request with `ACCEPT_VERSION` containing `v1.0` the `/book/show_v1.0.gson` view will be rendered instead of `/book/show.gson`.
+Then when the client sends a request with the `ACCEPT_VERSION` header containing `v1.0` the `/book/show_v1.0.gson` view will be rendered instead of `/book/show.gson`.
 
 ==== Content Negotiation and View Resolving Strategy
 
@@ -51,7 +52,7 @@ The content type (defined by either the `ACCEPT` header or file extension in the
 [[mimeTypes]]
 ==== Content Negotiation and Custom Mime Types
 
-Some REST APIs use the notion of custom mime types to represent resources. Withing Grails you can for example define custom mime types in `application.yml`:
+Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in `grails-app/conf/application.yml`:
 
 [source,groovy]
     grails:
