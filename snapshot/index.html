@@ -1274,21 +1274,17 @@ json {
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">grails.artefact.Enhances</span>
-<span class="keyword">import</span> <span class="include">grails.views.Views</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>@Enhances(Views.TYPE)
-trait HttpView {</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>    /**
+<span class="keyword">import</span> <span class="include">grails.views.Views</span>
+
+<span class="annotation">@Enhances</span>(Views.TYPE)
+trait HttpView {
+
+    <span class="comment">/**
      * @return The response object
-     */
+     */</span>
     Response response
     ...
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1318,7 +1314,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 19:26:32 UTC
+Last updated 2016-02-26 20:51:15 UTC
 </div>
 </div>
 </body>
