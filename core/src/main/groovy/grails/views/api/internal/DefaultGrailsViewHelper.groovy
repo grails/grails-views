@@ -4,6 +4,10 @@ import grails.views.api.GrailsView
 import grails.views.api.GrailsViewHelper
 import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileStatic
+import org.springframework.context.MessageSourceResolvable
+import org.springframework.context.NoSuchMessageException
+import org.springframework.context.support.DefaultMessageSourceResolvable
+
 /**
  * Default methods for views, additional methods can be added via traits
  *
@@ -51,6 +55,24 @@ class DefaultGrailsViewHelper implements GrailsViewHelper {
 
     @Override
     String message(Map arguments) {
+        Object error = arguments.error ?: arguments.message
+        if (error) {
+            try {
+                if (error instanceof MessageSourceResolvable) {
+                    return view.messageSource.getMessage(error, view.locale)
+                } else {
+                    return view.messageSource.getMessage(error.toString(), null, view.locale)
+                }
+            }
+            catch (NoSuchMessageException e) {
+                if (error instanceof MessageSourceResolvable) {
+                    return ((MessageSourceResolvable)error).codes[0]
+                }
+                else {
+                    return error?.toString()
+                }
+            }
+        }
         def args = arguments.args
         def code = arguments.code?.toString()
         def defaultMessage = arguments.default?.toString() ?: code
