@@ -434,16 +434,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">    grails:
-        views:
-            json:
-                compileStatic: true
-                cache: true
-                ...</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            compileStatic: true
+            cache: true
+            ...</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively you can register a new <code>JsonViewConfiguration</code> bean using the bean name <code>jsonViewConfiguration</code> in <code>resources.groovy</code>.</p>
+<p>Alternatively you can register a new <code>JsonViewConfiguration</code> bean using the bean name <code>jsonViewConfiguration</code> in <code>grails-app/conf/resources.groovy</code>.</p>
 </div>
 <div class="paragraph">
 <p>The same settings in <code>grails-app/conf/application.yml</code> will also be used by the Gradle plugin for production compilation.</p>
@@ -453,9 +453,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    compileGsonViews {
-        compileOptions.forkOptions.memoryMaximumSize = '512mb'
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compileGsonViews {
+    compileOptions.forkOptions.memoryMaximumSize = '512mb'
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -471,11 +471,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">    grails:
-        views:
-            json:
-                compileStatic: true
-                baseTemplateClass: com.example.MyCustomJsonViewTemplate</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            compileStatic: true
+            baseTemplateClass: com.example.MyCustomJsonViewTemplate</code></pre>
 </div>
 </div>
 </div>
@@ -489,15 +489,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    import grails.artefact.Enhances
-    import grails.views.Views</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.artefact.Enhances
+import grails.views.Views</code></pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre>@Enhances(Views.TYPE)
-trait HttpView {</pre>
-</div>
+<div class="paragraph">
+<p>@Enhances(Views.TYPE)
+trait HttpView {</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -514,7 +512,7 @@ trait HttpView {</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    response.header "Token", "foo"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.header "Token", "foo"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -533,7 +531,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

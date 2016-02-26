@@ -440,14 +440,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_introduction">Introduction</h3>
 <div class="paragraph">
-<p>JSON views are written in Groovy, end with the file extension <code>gson</code> and reside in the <code>grails-app/views</code> directory. They provide a DSL for production output in the JSON format. A hello world example can be seen below:</p>
+<p>JSON views are written in Groovy, end with the file extension <code>gson</code> and reside in the <code>grails-app/views</code> directory. They provide a DSL for producing output in the JSON format. A hello world example can be seen below:</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/hello.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json.message {
-        hello "world"
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.message {
+    hello "world"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -455,7 +455,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    {"message":{ "hello":"world"}}</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{"message":{ "hello":"world"}}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -464,11 +464,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>More example usages:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>json(1,2,3) == "[1,2,3]"
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json(1,2,3) == "[1,2,3]"
 json { name "Bob" } == '{"name":"Bob"}'
-json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</pre>
+json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 </div>
 </div>
 </div>
@@ -547,10 +547,10 @@ json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</pre>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/family/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json g.render(template:"/person/person", model:[person:person])</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json g.render(template:"/person/person", model:[person:person])</code></pre>
 </div>
 </div>
 </div>
@@ -562,44 +562,42 @@ json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</pre>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json tmpl.person(person)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json tmpl.person(person)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>In this example, the name of the method call (<code>person</code> in this case) is used to dictate which template to render.</p>
 </div>
 <div class="paragraph">
-<p>The template namespace is smart and even accepts a collection:</p>
+<p>The argument to the template is used to define the model. The name of the model variable is taken from the class name, so <code>Person</code> becomes <code>person</code>.</p>
+</div>
+<div class="paragraph">
+<p>The template namespace even accepts a collection (or any <code>Iterable</code> object):</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        List&lt;Person&gt; people = []
-    }
-    json tmpl.person(people)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;Person&gt; people = []
+}
+json tmpl.person(people)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>In this case the output is a JSON array. For example:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    [{"name":"Fred",age:10},{"name":"Bob",age:12}]</code></pre>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_more_ways_to_render_templates">More Ways to Render Templates</h4>
 <div class="paragraph">
-<p>The <code>g.render</code> method is flexible, you can render templates in my forms:</p>
+<p>The <code>g.render</code> method is flexible, you can render templates in many forms:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>model {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
     Family family
 }
 json {
@@ -607,15 +605,15 @@ json {
     age family.father.age
     oldestChild g.render(template:"person", model:[person: family.children.max { Person p -&gt; p.age } ])
     children g.render(template:"person", collection: family.children, var:'person')
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>However, most of these use cases are more concise with the template namespace:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>model {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
     Family family
 }
 json {
@@ -623,7 +621,7 @@ json {
     age family.father.age
     oldestChild tmpl.person( family.children.max { Person p -&gt; p.age } ] )
     children tmpl.person( family.children )
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
@@ -638,9 +636,9 @@ json {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    class Book {
-        String title
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">class Book {
+    String title
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -648,10 +646,10 @@ json {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    json g.render(book)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json g.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -659,7 +657,7 @@ json {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    {id:1,"title":"The Stand"}</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{id:1,"title":"The Stand"}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -667,47 +665,128 @@ json {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json g.render(book, [includes:['title']])</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [includes:['title']])</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Or by providing a closure to modify the JSON output:</p>
+<p>Or by providing a closure to provide additional JSON output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json g.render(book) {
-        pages 1000
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book) {
+    pages 1000
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Or combine the 2 approaches:</p>
+<p>Or combine the two approaches:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json g.render(book, [includes:['title']) {
-        pages 1000
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [includes:['title']) {
+    pages 1000
+}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_json_view_api">JSON View API</h3>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewAPI.adoc[]</p>
+<p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
+</div>
+<div class="paragraph">
+<p>The <code>JsonViewTemplate</code> superclass implements the <a href="api/grails/plugin/json/view/api/JsonView.html">JsonView</a> trait which in turn extends the the <a href="api/grails/views/api/GrailsView.html">GrailsView</a> trait.</p>
+</div>
+<div class="paragraph">
+<p>Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.</p>
+</div>
+<div class="sect3">
+<h4 id="_creating_links">Creating Links</h4>
+<div class="paragraph">
+<p>Links can be generated using the <code>g.link(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+    name "bob"
+    homepage g.link(controller:"person", id:"bob")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>g.link</code> method is similar to the equivalent tag in GSP and allows you to easily create links to other controllers.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_altering_the_response_headers">Altering the Response Headers</h4>
+<div class="paragraph">
+<p>To customize content types and headers use the <code>response</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.contentType "application/hal+json"
+response.header "Token", "foo"
+json.person {
+    name "bob"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>HttpView</code> trait defines a variety of methods for inspecting the request and altering the response.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The methods available are only a subset of the methods available via the <code>HttpServletRequest</code> and <code>HttpServletResponse</code> objects, this is by design as view logic should be limited and logic performed in the controller instead.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_i18n_locale_integration">I18n &amp; Locale Integration</h4>
+<div class="paragraph">
+<p>You can lookup i18n messages use the <code>g.message</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.error {
+    description g.message(code:'default.error.message')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also create locale specific views by appending the locale to view name. For example <code>person_de.gson</code> for German or <code>person.gson</code> for the default.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more complex message lookups the <code>messageSource</code> property is an instance of the Spring <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/MessageSource.html">MessageSource</a> class.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_content_negotiation">Content Negotiation</h3>
 <div class="paragraph">
-<p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create 2 views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
+<p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/controllers/myapp/BookController.groovy</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    def show() {
-        respond Book.get(params.id)
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
+    respond Book.get(params.id)
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -719,16 +798,16 @@ json {
 <div class="sect3">
 <h4 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h4>
 <div class="paragraph">
-<p>Content negotiatio also works nicely with domain classes, for example if you want to define a template to render any instance the <code>Book</code> domain classes you can create a <code>gson</code> file that matches the class name.</p>
+<p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
 </div>
 <div class="paragraph">
-<p>For example given a class called <code>demo.Book</code> you can create <code>grails-app/views/book/_book.gson</code> and whenever <code>respond</code> is called with an instance of <code>Book</code> Grails will render <code>book.gson</code>.</p>
+<p>For example given a class called <code>demo.Book</code> you can create <code>grails-app/views/book/_book.gson</code> and whenever <code>respond</code> is called with an instance of <code>Book</code> Grails will render <code>_book.gson</code>.</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>def show() {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
     respond Book.get(params.id)
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
@@ -744,7 +823,7 @@ json {
 <p>For example given a view called <code>/book/show.gson</code> if you wish to deprecate your previous API and create a version 2.0 API, you can rename the previous view <code>/book/show_v1.0.gson</code> and create a new <code>/book/show.gson</code> representing the new version of the API.</p>
 </div>
 <div class="paragraph">
-<p>Then when the client sends a request with <code>ACCEPT_VERSION</code> containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
+<p>Then when the client sends a request with the <code>ACCEPT_VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -793,7 +872,7 @@ json {
 <div class="sect3">
 <h4 id="mimeTypes">Content Negotiation and Custom Mime Types</h4>
 <div class="paragraph">
-<p>Some REST APIs use the notion of custom mime types to represent resources. Withing Grails you can for example define custom mime types in <code>application.yml</code>:</p>
+<p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -823,18 +902,18 @@ json {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    json {
-        hal.links(book)
-        hal.embedded {
-            author( book.authors.first() ) { Author author -&gt;
-                name author.name
-            }
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(book)
+    hal.embedded {
+        author( book.authors.first() ) { Author author -&gt;
+            name author.name
         }
-        title book.title
-    }</code></pre>
+    }
+    title book.title
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -854,28 +933,28 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    {
-        "_links": {
-            "self": {
-                "href": "http://localhost:8080/book/show/1",
-                "hreflang": "en",
-                "type": "application/hal+json"
-            }
-        },
-        "_embedded": {
-            "author": {
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/author/show/1",
-                        "hreflang": "en",
-                        "type": "application/hal+json"
-                    }
-                },
-                "name": "Stephen King"
-            }
-        },
-        "title": "The Stand"
-    }</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/book/show/1",
+            "hreflang": "en",
+            "type": "application/hal+json"
+        }
+    },
+    "_embedded": {
+        "author": {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/author/show/1",
+                    "hreflang": "en",
+                    "type": "application/hal+json"
+                }
+            },
+            "name": "Stephen King"
+        }
+    },
+    "title": "The Stand"
+}</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -956,22 +1035,17 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>[source,groovy]
-@Autowired
-JsonViewTemplateEngine templateEngine</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>void myMethod() {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Autowired
+JsonViewTemplateEngine templateEngine
+void myMethod() {
 	Template t = templateEngine.resolveTemplate('/book/show')
 	def writable = t.make(book: new Book(title:"The Stand"))
 	def sw = new StringWriter()
 	writable.writeTo( sw )
 	...
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1005,13 +1079,13 @@ If you disable static compilation rendering performance will suffer.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json {
-        name person.name
-        age person.age
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1022,16 +1096,16 @@ If you disable static compilation rendering performance will suffer.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">    grails:
-        views:
-            json:
-                compileStatic: true
-                cache: true
-                ...</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            compileStatic: true
+            cache: true
+            ...</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively you can register a new <code>JsonViewConfiguration</code> bean using the bean name <code>jsonViewConfiguration</code> in <code>resources.groovy</code>.</p>
+<p>Alternatively you can register a new <code>JsonViewConfiguration</code> bean using the bean name <code>jsonViewConfiguration</code> in <code>grails-app/conf/resources.groovy</code>.</p>
 </div>
 <div class="paragraph">
 <p>The same settings in <code>grails-app/conf/application.yml</code> will also be used by the Gradle plugin for production compilation.</p>
@@ -1041,9 +1115,9 @@ If you disable static compilation rendering performance will suffer.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    compileGsonViews {
-        compileOptions.forkOptions.memoryMaximumSize = '512mb'
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compileGsonViews {
+    compileOptions.forkOptions.memoryMaximumSize = '512mb'
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1059,11 +1133,11 @@ If you disable static compilation rendering performance will suffer.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">    grails:
-        views:
-            json:
-                compileStatic: true
-                baseTemplateClass: com.example.MyCustomJsonViewTemplate</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            compileStatic: true
+            baseTemplateClass: com.example.MyCustomJsonViewTemplate</code></pre>
 </div>
 </div>
 </div>
@@ -1077,15 +1151,13 @@ If you disable static compilation rendering performance will suffer.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    import grails.artefact.Enhances
-    import grails.views.Views</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.artefact.Enhances
+import grails.views.Views</code></pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre>@Enhances(Views.TYPE)
-trait HttpView {</pre>
-</div>
+<div class="paragraph">
+<p>@Enhances(Views.TYPE)
+trait HttpView {</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -1102,7 +1174,7 @@ trait HttpView {</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    response.header "Token", "foo"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.header "Token", "foo"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1122,7 +1194,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

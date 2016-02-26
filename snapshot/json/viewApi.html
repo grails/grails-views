@@ -446,10 +446,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json.person {
-        name "bob"
-        homepage g.link(controller:"person", id:"bob")
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+    name "bob"
+    homepage g.link(controller:"person", id:"bob")
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -463,11 +463,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    response.contentType "application/hal+json"
-    response.header "Token", "foo"
-    json.person {
-        name "bob"
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.contentType "application/hal+json"
+response.header "Token", "foo"
+json.person {
+    name "bob"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -491,11 +491,11 @@ The methods available are only a subset of the methods available via the <code>H
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>json.error {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.error {
     description g.message(code:'default.error.message')
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -517,7 +517,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

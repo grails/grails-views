@@ -427,14 +427,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>JSON views are written in Groovy, end with the file extension <code>gson</code> and reside in the <code>grails-app/views</code> directory. They provide a DSL for production output in the JSON format. A hello world example can be seen below:</p>
+<p>JSON views are written in Groovy, end with the file extension <code>gson</code> and reside in the <code>grails-app/views</code> directory. They provide a DSL for producing output in the JSON format. A hello world example can be seen below:</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/hello.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json.message {
-        hello "world"
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.message {
+    hello "world"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    {"message":{ "hello":"world"}}</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{"message":{ "hello":"world"}}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -451,17 +451,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>More example usages:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>json(1,2,3) == "[1,2,3]"
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json(1,2,3) == "[1,2,3]"
 json { name "Bob" } == '{"name":"Bob"}'
-json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</pre>
+json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

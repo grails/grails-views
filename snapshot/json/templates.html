@@ -465,10 +465,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title"><code>grails-app/views/family/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json g.render(template:"/person/person", model:[person:person])</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json g.render(template:"/person/person", model:[person:person])</code></pre>
 </div>
 </div>
 </div>
@@ -480,44 +480,42 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json tmpl.person(person)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json tmpl.person(person)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>In this example, the name of the method call (<code>person</code> in this case) is used to dictate which template to render.</p>
 </div>
 <div class="paragraph">
-<p>The template namespace is smart and even accepts a collection:</p>
+<p>The argument to the template is used to define the model. The name of the model variable is taken from the class name, so <code>Person</code> becomes <code>person</code>.</p>
+</div>
+<div class="paragraph">
+<p>The template namespace even accepts a collection (or any <code>Iterable</code> object):</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        List&lt;Person&gt; people = []
-    }
-    json tmpl.person(people)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;Person&gt; people = []
+}
+json tmpl.person(people)</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>In this case the output is a JSON array. For example:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    [{"name":"Fred",age:10},{"name":"Bob",age:12}]</code></pre>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_more_ways_to_render_templates">More Ways to Render Templates</h4>
 <div class="paragraph">
-<p>The <code>g.render</code> method is flexible, you can render templates in my forms:</p>
+<p>The <code>g.render</code> method is flexible, you can render templates in many forms:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>model {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
     Family family
 }
 json {
@@ -525,15 +523,15 @@ json {
     age family.father.age
     oldestChild g.render(template:"person", model:[person: family.children.max { Person p -&gt; p.age } ])
     children g.render(template:"person", collection: family.children, var:'person')
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>However, most of these use cases are more concise with the template namespace:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>model {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
     Family family
 }
 json {
@@ -541,14 +539,14 @@ json {
     age family.father.age
     oldestChild tmpl.person( family.children.max { Person p -&gt; p.age } ] )
     children tmpl.person( family.children )
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

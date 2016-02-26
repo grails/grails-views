@@ -435,28 +435,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>[source,groovy]
-@Autowired
-JsonViewTemplateEngine templateEngine</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>void myMethod() {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Autowired
+JsonViewTemplateEngine templateEngine
+void myMethod() {
 	Template t = templateEngine.resolveTemplate('/book/show')
 	def writable = t.make(book: new Book(title:"The Stand"))
 	def sw = new StringWriter()
 	writable.writeTo( sw )
 	...
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

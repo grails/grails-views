@@ -434,9 +434,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    class Book {
-        String title
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">class Book {
+    String title
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -444,10 +444,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    json g.render(book)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json g.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -455,7 +455,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    {id:1,"title":"The Stand"}</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{id:1,"title":"The Stand"}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -463,33 +463,33 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json g.render(book, [includes:['title']])</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [includes:['title']])</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Or by providing a closure to modify the JSON output:</p>
+<p>Or by providing a closure to provide additional JSON output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json g.render(book) {
-        pages 1000
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book) {
+    pages 1000
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Or combine the 2 approaches:</p>
+<p>Or combine the two approaches:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    json g.render(book, [includes:['title']) {
-        pages 1000
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [includes:['title']) {
+    pages 1000
+}</code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

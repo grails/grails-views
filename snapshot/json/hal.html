@@ -441,18 +441,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    json {
-        hal.links(book)
-        hal.embedded {
-            author( book.authors.first() ) { Author author -&gt;
-                name author.name
-            }
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(book)
+    hal.embedded {
+        author( book.authors.first() ) { Author author -&gt;
+            name author.name
         }
-        title book.title
-    }</code></pre>
+    }
+    title book.title
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -472,28 +472,28 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">    {
-        "_links": {
-            "self": {
-                "href": "http://localhost:8080/book/show/1",
-                "hreflang": "en",
-                "type": "application/hal+json"
-            }
-        },
-        "_embedded": {
-            "author": {
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/author/show/1",
-                        "hreflang": "en",
-                        "type": "application/hal+json"
-                    }
-                },
-                "name": "Stephen King"
-            }
-        },
-        "title": "The Stand"
-    }</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/book/show/1",
+            "hreflang": "en",
+            "type": "application/hal+json"
+        }
+    },
+    "_embedded": {
+        "author": {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/author/show/1",
+                    "hreflang": "en",
+                    "type": "application/hal+json"
+                }
+            },
+            "name": "Stephen King"
+        }
+    },
+    "title": "The Stand"
+}</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -565,7 +565,7 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>

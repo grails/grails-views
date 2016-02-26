@@ -432,14 +432,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create 2 views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
+<p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/controllers/myapp/BookController.groovy</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    def show() {
-        respond Book.get(params.id)
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
+    respond Book.get(params.id)
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -451,16 +451,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h4>
 <div class="paragraph">
-<p>Content negotiatio also works nicely with domain classes, for example if you want to define a template to render any instance the <code>Book</code> domain classes you can create a <code>gson</code> file that matches the class name.</p>
+<p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
 </div>
 <div class="paragraph">
-<p>For example given a class called <code>demo.Book</code> you can create <code>grails-app/views/book/_book.gson</code> and whenever <code>respond</code> is called with an instance of <code>Book</code> Grails will render <code>book.gson</code>.</p>
+<p>For example given a class called <code>demo.Book</code> you can create <code>grails-app/views/book/_book.gson</code> and whenever <code>respond</code> is called with an instance of <code>Book</code> Grails will render <code>_book.gson</code>.</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>def show() {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
     respond Book.get(params.id)
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
@@ -476,7 +476,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>For example given a view called <code>/book/show.gson</code> if you wish to deprecate your previous API and create a version 2.0 API, you can rename the previous view <code>/book/show_v1.0.gson</code> and create a new <code>/book/show.gson</code> representing the new version of the API.</p>
 </div>
 <div class="paragraph">
-<p>Then when the client sends a request with <code>ACCEPT_VERSION</code> containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
+<p>Then when the client sends a request with the <code>ACCEPT_VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -525,7 +525,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="mimeTypes">Content Negotiation and Custom Mime Types</h4>
 <div class="paragraph">
-<p>Some REST APIs use the notion of custom mime types to represent resources. Withing Grails you can for example define custom mime types in <code>application.yml</code>:</p>
+<p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -544,7 +544,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 18:55:41 UTC
+Last updated 2016-02-26 19:26:32 UTC
 </div>
 </div>
 </body>
