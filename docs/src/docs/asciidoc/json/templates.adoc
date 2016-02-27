@@ -63,7 +63,7 @@ model {
 }
 json tmpl.'/person/person'(person:person)
 
-The template namespace even accept a collection (or any `Iterable` object):
+The template namespace even accepts a collection (or any `Iterable` object):
 
 [source,groovy] 
 .`grails-app/views/person/show.gson`   
