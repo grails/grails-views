@@ -30,16 +30,19 @@ class DefaultGrailsViewHelper implements GrailsViewHelper {
 
     @Override
     String resource(Map params) {
+        ensureAbsolute(params)
         getLinkGenerator().resource(params)
     }
 
     @Override
     String link(Map params) {
+        ensureAbsolute(params)
         getLinkGenerator().link(params)
     }
 
     @Override
     String link(Map params, String encoding) {
+        ensureAbsolute(params)
         getLinkGenerator().link(params, encoding)
     }
 
@@ -91,5 +94,11 @@ class DefaultGrailsViewHelper implements GrailsViewHelper {
             }
         }
         return defaultMessage
+    }
+
+    protected void ensureAbsolute(Map params) {
+        if (!params.containsKey(ATTRIBUTE_ABSOLUTE)) {
+            params.put(ATTRIBUTE_ABSOLUTE, true)
+        }
     }
 }
