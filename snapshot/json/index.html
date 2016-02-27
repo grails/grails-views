@@ -1014,6 +1014,26 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 <div class="paragraph">
 <p>The link will then be included in the HAL output.</p>
 </div>
+<div class="paragraph">
+<p>If you prefer to define the HAL links yourself then you can do so by passing a closure to the <code>hal.links</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links {
+        self {
+            href '...'
+            hreflang 'en'
+            type "application/hal+json"
+        }
+    }
+    ...
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</h4>
@@ -1231,7 +1251,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-27 10:39:01 UTC
+Last updated 2016-02-27 10:56:42 UTC
 </div>
 </div>
 </body>
