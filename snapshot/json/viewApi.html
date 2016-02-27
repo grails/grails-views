@@ -425,6 +425,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_creating_links">Creating Links</a></li>
 <li><a href="#_altering_the_response_headers">Altering the Response Headers</a></li>
+<li><a href="#_default_static_imports">Default Static Imports</a></li>
 <li><a href="#_i18n_locale_integration">I18n &amp; Locale Integration</a></li>
 </ul>
 </div>
@@ -487,6 +488,41 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
+<h4 id="_default_static_imports">Default Static Imports</h4>
+<div class="paragraph">
+<p>The following classes' static properties are imported by default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.springframework.http.HttpStatus</code></p>
+</li>
+<li>
+<p><code>org.springframework.http.HttpMethod</code></p>
+</li>
+<li>
+<p><code>grails.web.http.HttpHeaders</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This means that you can use the <code>response</code> object to set the status using these constants, instead of hard coded numbers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.status NOT_FOUND</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or generate links using the appropriate HTTP method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">g.link(resource:"books", method:POST)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_i18n_locale_integration">I18n &amp; Locale Integration</h4>
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
@@ -517,7 +553,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-27 10:56:42 UTC
+Last updated 2016-02-27 11:04:55 UTC
 </div>
 </div>
 </body>
