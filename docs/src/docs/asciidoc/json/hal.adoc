@@ -56,7 +56,25 @@ The `hal.links(..)` method will by default create a link to the resource, but yo
 book.link(rel:"publisher", href:"http://foo.com/books")
 
 
-The link will then be included in the HAL output.
+The link will then be included in the HAL output. 
+
+If you prefer to define the HAL links yourself then you can do so by passing a closure to the `hal.links` method:
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.links {
+        self {
+            href '...'
+            hreflang 'en'
+            type "application/hal+json"
+        }
+    }
+    ...
+}
+
 
 ==== Rendering Domain Classes as HAL
 
