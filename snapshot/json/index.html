@@ -433,6 +433,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_the_jsontemplateengine">The JsonTemplateEngine</a></li>
 <li><a href="#_static_compilation">Static Compilation</a></li>
 <li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_intellij_support">IntelliJ Support</a></li>
 </ul>
 </div>
 </div>
@@ -1283,10 +1284,25 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_intellij_support">IntelliJ Support</h3>
+<div class="paragraph">
+<p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
+</div>
+<div class="paragraph">
+<p>The plugin includes an <a href="https://github.com/grails/grails-views/blob/master/json/src/main/resources/dsdl/gson.gdsl">IntelliJ GDSL file</a> that provides code completion when using IntelliJ IDEA.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://confluence.jetbrains.com/display/GRVY/Scripting+IDE+for+DSL+awareness">Intellij GDSL</a> is a way to describe the available methods and properties so that code completion is available to the developer when opening <code>.gson</code> files.</p>
+</div>
+<div class="paragraph">
+<p>The GDSL file is generally kept up-to-date with the codebase, however if any variation is spotted please <a href="https://github.com/grails/grails-views/issues">raise an issue</a>.</p>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-27 11:04:55 UTC
+Last updated 2016-02-27 11:14:04 UTC
 </div>
 </div>
 </body>

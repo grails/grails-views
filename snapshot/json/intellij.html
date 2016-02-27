@@ -427,26 +427,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
+<p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
 <div class="paragraph">
-<p>This class is a regular Groovy <a href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html">TemplateEngine</a> and you can use the engine to render JSON views outside the scope of an HTTP request.</p>
+<p>The plugin includes an <a href="https://github.com/grails/grails-views/blob/master/json/src/main/resources/dsdl/gson.gdsl">IntelliJ GDSL file</a> that provides code completion when using IntelliJ IDEA.</p>
 </div>
 <div class="paragraph">
-<p>For example:</p>
+<p><a href="https://confluence.jetbrains.com/display/GRVY/Scripting+IDE+for+DSL+awareness">Intellij GDSL</a> is a way to describe the available methods and properties so that code completion is available to the developer when opening <code>.gson</code> files.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Autowired
-JsonViewTemplateEngine templateEngine
-void myMethod() {
-	Template t = templateEngine.resolveTemplate('/book/show')
-	def writable = t.make(book: new Book(title:"The Stand"))
-	def sw = new StringWriter()
-	writable.writeTo( sw )
-	...
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>The GDSL file is generally kept up-to-date with the codebase, however if any variation is spotted please <a href="https://github.com/grails/grails-views/issues">raise an issue</a>.</p>
 </div>
 </div>
 <div id="footer">
