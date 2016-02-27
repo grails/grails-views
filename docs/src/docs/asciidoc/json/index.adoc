@@ -37,3 +37,7 @@ include::staticCompilation.adoc[]
 === Configuration
 
 include::configuration.adoc[]
+
+=== IntelliJ Support
+
+include::intellij.adoc[]
