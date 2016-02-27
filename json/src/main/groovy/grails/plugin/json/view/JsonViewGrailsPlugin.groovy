@@ -26,7 +26,7 @@ A plugin that allows rendering of JSON views
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    def documentation = "http://github.com/grails/grails-views"
+    def documentation = "http://grails.github.io/grails-views/latest"
 
     // Extra (optional) plugin metadata
 
