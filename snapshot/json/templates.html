@@ -490,7 +490,7 @@ json tmpl.person(person)</code></pre>
 <p>In this example, the name of the method call (<code>person</code> in this case) is used to dictate which template to render.</p>
 </div>
 <div class="paragraph">
-<p>The argument to the template becomes the model. The name of the model variable is the same as the template name. If you wish to alter this you can pass a map insted:</p>
+<p>The argument to the template becomes the model. The name of the model variable is the same as the template name. If you wish to alter this you can pass a map instead:</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
@@ -505,7 +505,19 @@ json tmpl.person(individual:person)</code></pre>
 <p>In the above example the model variable passed to the <code>_person.gson</code> template is called <code>individual</code>.</p>
 </div>
 <div class="paragraph">
-<p>The template namespace even accept a collection (or any <code>Iterable</code> object):</p>
+<p>This technique may also be used when you want to render a template using a relative path:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/person/show.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json tmpl.'/person/person'(person:person)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The template namespace even accepts a collection (or any <code>Iterable</code> object):</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
@@ -518,6 +530,11 @@ json tmpl.person(people)</code></pre>
 </div>
 <div class="paragraph">
 <p>In this case the output is a JSON array. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    [{"name":"Fred",age:10},{"name":"Bob",age:12}]</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>By passing in a collection the plugin will iterate over each element on the collection and render the template as a JSON array. If you do not want this to happen then use the variation of the method that takes a map instead:</p>
@@ -570,7 +587,7 @@ json {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-27 10:33:54 UTC
+Last updated 2016-02-27 10:39:01 UTC
 </div>
 </div>
 </body>
