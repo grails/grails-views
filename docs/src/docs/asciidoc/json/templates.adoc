@@ -43,9 +43,18 @@ json tmpl.person(person)
 
 In this example, the name of the method call (`person` in this case) is used to dictate which template to render.
 
-The argument to the template is used to define the model. The name of the model variable is taken from the class name, so `Person` becomes `person`.
+The argument to the template becomes the model. The name of the model variable is the same as the template name. If you wish to alter this you can pass a map insted:
 
-The template namespace even accepts a collection (or any `Iterable` object):
+[source,groovy] 
+.`grails-app/views/person/show.gson`   
+model {
+    Person person
+}
+json tmpl.person(individual:person)
+
+In the above example the model variable passed to the `_person.gson` template is called `individual`. 
+
+The template namespace even accept a collection (or any `Iterable` object):
 
 [source,groovy] 
 .`grails-app/views/person/show.gson`   
@@ -58,6 +67,15 @@ In this case the output is a JSON array. For example:
 
 [source,javascript]
 [{"name":"Fred",age:10},{"name":"Bob",age:12}]
+
+By passing in a collection the plugin will iterate over each element on the collection and render the template as a JSON array. If you do not want this to happen then use the variation of the method that takes a map instead:
+
+[source,groovy] 
+.`grails-app/views/person/show.gson`   
+model {
+    List<Person> people = []
+}
+json tmpl.person(people:people)
 
 ==== More Ways to Render Templates
 
