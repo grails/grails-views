@@ -53,7 +53,7 @@ The above example uses the `hal.links(..)` method to render links for a domain r
 The `hal.links(..)` method will by default create a link to the resource, but you can define additional links by annotating the domain class with either `grails.rest.Linkable` or `grails.rest.Resource` and using the `link` method on the object:
 
 [source,groovy]
-	book.link(rel:"publisher", href="http://foo.com/books")
+book.link(rel:"publisher", href:"http://foo.com/books")
 
 
 The link will then be included in the HAL output.
@@ -63,10 +63,10 @@ The link will then be included in the HAL output.
 If you prefer to let the plugin handle the rendering of your object you can use the `hal.render(..)` method:
 
 [source,groovy]
-    model {
-        Book book
-    }
-    json hal.render(book)
+model {
+    Book book
+}
+json hal.render(book)
     
 The `hal.render` method works the same as the `g.render` method, accepting the same argument, the difference being it will output HAL links for the object via `hal.links`.    
 
@@ -77,21 +77,21 @@ The default HAL response content type is `application/hal+json`, however as disc
 For example given the following configuration in `grails-app/conf/application.yml`:
 
 [source,groovy]
-    grails:
-        mime:
-            types:
-                all:      "*/*"
-                book:     "application/vnd.books.org.book+json"
+grails:
+    mime:
+        types:
+            all:      "*/*"
+            book:     "application/vnd.books.org.book+json"
 
 You can set the HAL content type to an explicit content type or one of the named content types defined in `grails.mime.types` in `application.yml`:
 
 [source,groovy]
-    model {
-        Book book
-    }
-    hal.type("book")
-    json {
-        ...
-    }
+model {
+    Book book
+}
+hal.type("book")
+json {
+    ...
+}
 
 

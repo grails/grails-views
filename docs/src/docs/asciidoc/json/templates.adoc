@@ -4,22 +4,22 @@ You can define templates starting with underscore `_`. For example given the fol
 
 [source,groovy]
 .`grails-app/views/person/_person.gson`
-    model {
-        Person person
-    }
-    json {
-        name person.name
-        age person.age
-    }
+model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}
 
 You can render the template with the `g.render` method:
 
 [source,groovy] 
 .`grails-app/views/person/show.gson`   
-    model {
-        Person person
-    }
-    json g.render(template:"person", model:[person:person])
+model {
+    Person person
+}
+json g.render(template:"person", model:[person:person])
 
 The above assumes the view is in the same directory as the template. If this is not the case you may need to use a relative URI to the template:
 

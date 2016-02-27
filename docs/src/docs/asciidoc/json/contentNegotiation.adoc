@@ -55,12 +55,12 @@ The content type (defined by either the `ACCEPT` header or file extension in the
 Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in `grails-app/conf/application.yml`:
 
 [source,groovy]
-    grails:
-        mime:
-            types:
-                all:      "*/*"
-                book:     "application/vnd.books.org.book+json"
-                bookList: "application/vnd.books.org.booklist+json"
+grails:
+    mime:
+        types:
+            all:      "*/*"
+            book:     "application/vnd.books.org.book+json"
+            bookList: "application/vnd.books.org.booklist+json"
 
 Once these custom mime types have been defined you can then define a view such as `show.book.gson` for that particular mime type.
 
