@@ -75,7 +75,7 @@ json tmpl.person(people)
 In this case the output is a JSON array. For example:
 
 [source,javascript]
-[{"name":"Fred",age:10},{"name":"Bob",age:12}]
+    [{"name":"Fred",age:10},{"name":"Bob",age:12}]
 
 By passing in a collection the plugin will iterate over each element on the collection and render the template as a JSON array. If you do not want this to happen then use the variation of the method that takes a map instead:
 
