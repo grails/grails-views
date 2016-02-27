@@ -520,13 +520,13 @@ json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/_person.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json {
-        name person.name
-        age person.age
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -535,10 +535,10 @@ json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json g.render(template:"person", model:[person:person])</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json g.render(template:"person", model:[person:person])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -876,12 +876,12 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    grails:
-        mime:
-            types:
-                all:      "*/*"
-                book:     "application/vnd.books.org.book+json"
-                bookList: "application/vnd.books.org.booklist+json"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">grails:
+    mime:
+        types:
+            all:      "*/*"
+            book:     "application/vnd.books.org.book+json"
+            bookList: "application/vnd.books.org.booklist+json"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -967,7 +967,7 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">	book.link(rel:"publisher", href="http://foo.com/books")</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">book.link(rel:"publisher", href:"http://foo.com/books")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -981,10 +981,10 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    json hal.render(book)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1001,11 +1001,11 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    grails:
-        mime:
-            types:
-                all:      "*/*"
-                book:     "application/vnd.books.org.book+json"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">grails:
+    mime:
+        types:
+            all:      "*/*"
+            book:     "application/vnd.books.org.book+json"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1013,13 +1013,13 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    hal.type("book")
-    json {
-        ...
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+hal.type("book")
+json {
+    ...
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1056,10 +1056,10 @@ void myMethod() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    grails:
-        views:
-            json:
-                compileStatic: false</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            compileStatic: false</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1190,7 +1190,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 20:51:15 UTC
+Last updated 2016-02-27 10:10:22 UTC
 </div>
 </div>
 </body>

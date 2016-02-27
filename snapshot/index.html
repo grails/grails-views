@@ -642,13 +642,13 @@ json([<span class="integer">1</span>,<span class="integer">2</span>,<span class=
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/_person.gson</code></div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    model {
-        Person person
-    }
-    json {
-        name person.name
-        age person.age
-    }</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -657,10 +657,10 @@ json([<span class="integer">1</span>,<span class="integer">2</span>,<span class=
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    model {
-        Person person
-    }
-    json g.render(<span class="key">template</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>, <span class="key">model</span>:[<span class="key">person</span>:person])</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    Person person
+}
+json g.render(<span class="key">template</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>, <span class="key">model</span>:[<span class="key">person</span>:person])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -998,12 +998,12 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    <span class="key">grails</span>:
-        <span class="key">mime</span>:
-            <span class="key">types</span>:
-                <span class="key">all</span>:      <span class="string"><span class="delimiter">&quot;</span><span class="content">*/*</span><span class="delimiter">&quot;</span></span>
-                <span class="key">book</span>:     <span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.books.org.book+json</span><span class="delimiter">&quot;</span></span>
-                <span class="key">bookList</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.books.org.booklist+json</span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">grails</span>:
+    <span class="key">mime</span>:
+        <span class="key">types</span>:
+            <span class="key">all</span>:      <span class="string"><span class="delimiter">&quot;</span><span class="content">*/*</span><span class="delimiter">&quot;</span></span>
+            <span class="key">book</span>:     <span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.books.org.book+json</span><span class="delimiter">&quot;</span></span>
+            <span class="key">bookList</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.books.org.booklist+json</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1089,7 +1089,7 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">        book.link(<span class="key">rel</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">publisher</span><span class="delimiter">&quot;</span></span>, href=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://foo.com/books</span><span class="delimiter">&quot;</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">book.link(<span class="key">rel</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">publisher</span><span class="delimiter">&quot;</span></span>, <span class="key">href</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">http://foo.com/books</span><span class="delimiter">&quot;</span></span>)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1103,10 +1103,10 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    model {
-        <span class="predefined-type">Book</span> book
-    }
-    json hal.render(book)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1123,11 +1123,11 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    <span class="key">grails</span>:
-        <span class="key">mime</span>:
-            <span class="key">types</span>:
-                <span class="key">all</span>:      <span class="string"><span class="delimiter">&quot;</span><span class="content">*/*</span><span class="delimiter">&quot;</span></span>
-                <span class="key">book</span>:     <span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.books.org.book+json</span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">grails</span>:
+    <span class="key">mime</span>:
+        <span class="key">types</span>:
+            <span class="key">all</span>:      <span class="string"><span class="delimiter">&quot;</span><span class="content">*/*</span><span class="delimiter">&quot;</span></span>
+            <span class="key">book</span>:     <span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.books.org.book+json</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1135,13 +1135,13 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    model {
-        <span class="predefined-type">Book</span> book
-    }
-    hal.type(<span class="string"><span class="delimiter">&quot;</span><span class="content">book</span><span class="delimiter">&quot;</span></span>)
-    json {
-        ...
-    }</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+hal.type(<span class="string"><span class="delimiter">&quot;</span><span class="content">book</span><span class="delimiter">&quot;</span></span>)
+json {
+    ...
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1178,10 +1178,10 @@ JsonViewTemplateEngine templateEngine
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">    <span class="key">grails</span>:
-        <span class="key">views</span>:
-            <span class="key">json</span>:
-                <span class="key">compileStatic</span>: <span class="predefined-constant">false</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">grails</span>:
+    <span class="key">views</span>:
+        <span class="key">json</span>:
+            <span class="key">compileStatic</span>: <span class="string"><span class="content">false</span></span></code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1314,7 +1314,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 20:51:15 UTC
+Last updated 2016-02-27 10:10:22 UTC
 </div>
 </div>
 </body>

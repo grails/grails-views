@@ -438,13 +438,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/_person.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json {
-        name person.name
-        age person.age
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -453,10 +453,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title"><code>grails-app/views/person/show.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Person person
-    }
-    json g.render(template:"person", model:[person:person])</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json g.render(template:"person", model:[person:person])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -546,7 +546,7 @@ json {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 20:51:15 UTC
+Last updated 2016-02-27 10:10:22 UTC
 </div>
 </div>
 </body>

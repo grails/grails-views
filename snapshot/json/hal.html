@@ -506,7 +506,7 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">	book.link(rel:"publisher", href="http://foo.com/books")</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">book.link(rel:"publisher", href:"http://foo.com/books")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -520,10 +520,10 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    json hal.render(book)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -540,11 +540,11 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    grails:
-        mime:
-            types:
-                all:      "*/*"
-                book:     "application/vnd.books.org.book+json"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">grails:
+    mime:
+        types:
+            all:      "*/*"
+            book:     "application/vnd.books.org.book+json"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -552,20 +552,20 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    model {
-        Book book
-    }
-    hal.type("book")
-    json {
-        ...
-    }</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+hal.type("book")
+json {
+    ...
+}</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-26 20:51:15 UTC
+Last updated 2016-02-27 10:10:22 UTC
 </div>
 </div>
 </body>
