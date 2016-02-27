@@ -43,7 +43,7 @@ json tmpl.person(person)
 
 In this example, the name of the method call (`person` in this case) is used to dictate which template to render.
 
-The argument to the template becomes the model. The name of the model variable is the same as the template name. If you wish to alter this you can pass a map insted:
+The argument to the template becomes the model. The name of the model variable is the same as the template name. If you wish to alter this you can pass a map instead:
 
 [source,groovy] 
 .`grails-app/views/person/show.gson`   
@@ -53,6 +53,15 @@ model {
 json tmpl.person(individual:person)
 
 In the above example the model variable passed to the `_person.gson` template is called `individual`. 
+
+This technique may also be used when you want to render a template using a relative path:
+
+[source,groovy] 
+.`grails-app/views/person/show.gson`   
+model {
+    Person person
+}
+json tmpl.'/person/person'(person:person)
 
 The template namespace even accept a collection (or any `Iterable` object):
 
