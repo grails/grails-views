@@ -107,7 +107,7 @@ class HalViewHelper {
             for(link in links) {
                 call(link.rel) {
                     call HREF_ATTRIBUTE, link.href
-                    call HREF_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
+                    call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
                     def linkType = link.contentType
                     if(linkType) {
                         call TYPE_ATTRIBUTE, linkType
