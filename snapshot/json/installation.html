@@ -431,7 +431,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    compile "org.grails.plugins:views-json:VERSION"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:VERSION"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -439,13 +439,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    buildscript {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
+    ...
+    dependencies {
         ...
-        dependencies {
-            ...
-            classpath "org.grails.plugins:views-gradle:VERSION"
-        }
-    }</code></pre>
+        classpath "org.grails.plugins:views-gradle:VERSION"
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -453,9 +453,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">    ...
-    apply plugin: "org.grails.grails-web"
-    apply plugin: "org.grails.plugins.views-json"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">...
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.plugins.views-json"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -464,7 +464,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-02-27 10:17:01 UTC
+Last updated 2016-02-27 10:33:54 UTC
 </div>
 </div>
 </body>
