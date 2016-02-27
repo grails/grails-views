@@ -1,25 +1,25 @@
 To activate JSON views, add the following dependency to the `dependencies` block of your `build.gradle` where `VERSION` is the version of the plugin you plan to use:
 
 [source,groovy]
-    compile "org.grails.plugins:views-json:VERSION"
+compile "org.grails.plugins:views-json:VERSION"
 
 
 To enable Gradle compilation of JSON views for production environment add the following to the `buildscript` `dependencies` block:
 
 [source,groovy]
-    buildscript {
+buildscript {
+    ...
+    dependencies {
         ...
-        dependencies {
-            ...
-            classpath "org.grails.plugins:views-gradle:VERSION"
-        }
+        classpath "org.grails.plugins:views-gradle:VERSION"
     }
+}
 
 Then apply the `org.grails.plugins.views-json` Gradle plugin after any Grails core gradle plugins:
 
 [source,groovy]
-    ...
-    apply plugin: "org.grails.grails-web"
-    apply plugin: "org.grails.plugins.views-json"
+...
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.plugins.views-json"
 
 This will add a `compileGsonViews` task to Gradle that is executed when producing a JAR or WAR file.
