@@ -11,3 +11,7 @@ include::introduction.adoc[]
 == JSON Views
 
 include::json/index.adoc[]
+
+== Markup Views
+
+include::markup/index.adoc[]
