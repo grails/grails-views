@@ -68,7 +68,7 @@ task javadocJar(type:Jar) {
 
 // Used for publishing to central repository, remove if not needed
 apply from:'../publishing/grailsCentralPublishing.gradle'
-//apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 
 task wrapper(type: Wrapper) {
