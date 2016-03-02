@@ -128,7 +128,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(configuration.baseTemplateClass.name)
-        classLoader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, compilerConfiguration)
+        prepareCustomizers(compilerConfiguration)
+        classLoader = new GroovyClassLoader(getClass().getClassLoader(), new CompilerConfiguration(compilerConfiguration))
     }
 
     @Autowired(required = false)
@@ -362,8 +363,10 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     @Override
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
-        prepareCustomizers()
-        def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
+        def cc = new CompilerConfiguration(compilerConfiguration)
+        prepareCustomizers(cc)
+
+        def classLoader = new GroovyClassLoader(classLoader, cc)
         def cls = classLoader.parseClass(file)
         return createTemplate(cls, file)
     }
@@ -379,8 +382,10 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         // Had to do this hack because of a Groovy bug where ASTTransformationCustomizer are only applied once!?
         def file = new File(url.file)
         watchIfNecessary(file, path)
-        prepareCustomizers()
-        def classLoader = new GroovyClassLoader(classLoader, compilerConfiguration)
+        def cc = new CompilerConfiguration(compilerConfiguration)
+        prepareCustomizers(cc)
+
+        def classLoader = new GroovyClassLoader(classLoader, cc)
         // now parse the class
         url.withReader { Reader reader ->
             def viewScriptName = GenericGroovyTemplateResolver.resolveTemplateName(viewConfiguration.packageName, path)
@@ -407,11 +412,12 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
-        prepareCustomizers()
+        def cc = new CompilerConfiguration(compilerConfiguration)
+        prepareCustomizers(cc)
         // if we reach here, use a throw away child class loader for dynamic templates
         def fileName = getDynamicTemplatePrefix() + templateCounter++
         try {
-            def clazz = new GroovyClassLoader(classLoader).parseClass(new GroovyCodeSource(reader, fileName, GroovyShell.DEFAULT_CODE_BASE))
+            def clazz = new GroovyClassLoader(classLoader, cc).parseClass(new GroovyCodeSource(reader, fileName, GroovyShell.DEFAULT_CODE_BASE))
             return createTemplate(clazz)
         } catch (CompilationFailedException e) {
             throw new ViewCompilationException(e, fileName)
@@ -420,7 +426,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
 
     abstract String getDynamicTemplatePrefix()
 
-    protected void prepareCustomizers() {
+    protected void prepareCustomizers(CompilerConfiguration compilerConfiguration) {
         // this hack is required because of https://issues.apache.org/jira/browse/GROOVY-7560
         compilerConfiguration.compilationCustomizers.clear()
 

@@ -6,6 +6,7 @@ import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewConfiguration
 import grails.views.compiler.ViewsTransform
 import groovy.transform.CompileStatic
+import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 
 /**
@@ -37,12 +38,13 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     }
 
     @Override
-    protected void prepareCustomizers() {
-        super.prepareCustomizers()
+    protected void prepareCustomizers(CompilerConfiguration compilerConfiguration) {
+        super.prepareCustomizers(compilerConfiguration)
         if(compileStatic) {
             compilerConfiguration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", JsonTemplateTypeCheckingExtension.name), CompileStatic.class));
         }
+
     }
 
     @Override

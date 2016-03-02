@@ -15,6 +15,7 @@ import groovy.text.markup.TemplateResolver
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationFailedException
+import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.codehaus.groovy.control.customizers.CompilationCustomizer
 import org.grails.core.io.support.GrailsFactoriesLoader
@@ -49,7 +50,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
                 return templateResolver.resolveTemplate(templatePath)
             }
         })
-        prepareCustomizers()
+        prepareCustomizers(this.compilerConfiguration)
     }
 
 
@@ -58,7 +59,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     @Override
     Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
-        prepareCustomizers()
+        prepareCustomizers(innerEngine.compilerConfiguration)
         def file = new File(url.file)
         watchIfNecessary(file, path)
 
@@ -73,7 +74,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     @Override
     Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
-        prepareCustomizers()
+        prepareCustomizers(innerEngine.compilerConfiguration)
         try {
             def template = innerEngine.createTemplate(file.toURI().toURL())
             return createMarkupViewTemplate(template)
@@ -85,7 +86,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
-        prepareCustomizers()
+        prepareCustomizers(innerEngine.compilerConfiguration)
         try {
 
             def template = innerEngine.createTemplate(reader)
@@ -118,16 +119,21 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     }
 
     @Override
-    protected void prepareCustomizers() {
-        innerEngine.compilerConfiguration.compilationCustomizers.removeAll( compilerConfiguration.compilationCustomizers )
-        super.prepareCustomizers()
+    protected void prepareCustomizers(CompilerConfiguration cc) {
+        if(innerEngine != null) {
 
-        if(compileStatic) {
-            compilerConfiguration.addCompilationCustomizers(
-                    new ASTTransformationCustomizer(Collections.singletonMap("extensions", "groovy.text.markup.MarkupTemplateTypeCheckingExtension"), CompileStatic.class));
+            innerEngine.compilerConfiguration.compilationCustomizers.removeAll( this.compilerConfiguration.compilationCustomizers )
+            CompilerConfiguration newConfig = new CompilerConfiguration(this.compilerConfiguration)
+            super.prepareCustomizers(newConfig)
+
+            if(compileStatic) {
+                newConfig.addCompilationCustomizers(
+                        new ASTTransformationCustomizer(Collections.singletonMap("extensions", "groovy.text.markup.MarkupTemplateTypeCheckingExtension"), CompileStatic.class));
+            }
+
+            innerEngine.compilerConfiguration.addCompilationCustomizers( newConfig.compilationCustomizers as CompilationCustomizer[])
         }
 
-        innerEngine.compilerConfiguration.addCompilationCustomizers( compilerConfiguration.compilationCustomizers as CompilationCustomizer[])
     }
 
     @Override
