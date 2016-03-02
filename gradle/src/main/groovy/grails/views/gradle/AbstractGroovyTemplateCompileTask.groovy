@@ -54,6 +54,13 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
     protected void compile() {
         def projectPackageNames = getProjectPackageNames(project.projectDir)
 
+        if(!packageName) {
+            packageName = project.name
+            if(!packageName) {
+                packageName = project.projectDir.canonicalFile.name
+            }
+        }
+
         ExecResult result = project.javaexec(
                 new Action<JavaExecSpec>() {
                     @Override
@@ -69,7 +76,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                         javaExecSpec.setMinHeapSize( compileOptions.forkOptions.memoryInitialSize )
 
 
-                        String packageImports = projectPackageNames.join(',') ?: project.name
+                        String packageImports = projectPackageNames.join(',') ?: packageName
                         def arguments = [
                                 srcDir.canonicalPath,
                                 destinationDir.canonicalPath,
@@ -104,7 +111,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
     abstract String getScriptBaseName()
 
     Iterable<String> getProjectPackageNames(File baseDir) {
-        File rootDir = baseDir ? new File(baseDir, "grails-app/domain") : null
+        File rootDir = baseDir ? new File(baseDir, "grails-app${File.separator}domain") : null
         Set<String> packageNames = []
         if (rootDir?.exists()) {
             populatePackages(rootDir, packageNames, "")
