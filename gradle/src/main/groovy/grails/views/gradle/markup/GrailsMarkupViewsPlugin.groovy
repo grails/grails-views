@@ -1,4 +1,4 @@
-package grails.views.gradle.json
+package grails.views.gradle.markup
 
 import grails.views.gradle.AbstractGroovyTemplatePlugin
 import grails.views.gradle.markup.MarkupViewCompilerTask
