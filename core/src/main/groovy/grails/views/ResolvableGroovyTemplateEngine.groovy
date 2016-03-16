@@ -233,7 +233,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 if(template.is(NULL_ENTRY)) {
                     return null
                 }
-                if(!((GrailsViewTemplate)template).wasModified()) {
+                else if(!((GrailsViewTemplate)template).wasModified()) {
                     return template
                 }
                 else {
@@ -314,7 +314,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         }
         if(template != null) {
 
-            if(((GrailsViewTemplate)template).wasModified()) {
+            boolean isNull = template.is(NULL_ENTRY)
+            if(!isNull && ((GrailsViewTemplate)template).wasModified()) {
                 for(p in qualifiedPaths) {
                     cachedTemplates.remove(p)
                     resolveCache.remove(cacheKey)
@@ -328,7 +329,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 if(shouldCache) {
                     resolveCache.put(cacheKey, template)
                 }
-                if(template.is(NULL_ENTRY)) {
+                if(isNull) {
                     return null
                 }
                 else {
