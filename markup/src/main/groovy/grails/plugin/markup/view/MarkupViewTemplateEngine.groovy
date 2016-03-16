@@ -61,7 +61,6 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers(innerEngine.compilerConfiguration)
         def file = new File(url.file)
-        watchIfNecessary(file, path)
 
         try {
             def template = innerEngine.createTemplate(url)

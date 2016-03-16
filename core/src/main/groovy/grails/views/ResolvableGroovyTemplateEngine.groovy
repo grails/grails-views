@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @since 1.0
  */
 @CompileStatic
-abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements Closeable {
+abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
 
     private static final Template NULL_ENTRY = new Template() {
         @Override
@@ -88,6 +88,13 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     final String extension
 
     /**
+     * Whether to enable reloading
+     */
+    final boolean enableReloading
+
+    final boolean shouldCache
+
+    /**
      * Whether to reload views
      */
     protected CompilerConfiguration compilerConfiguration
@@ -96,13 +103,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * The view config
      */
     @Delegate final ViewConfiguration viewConfiguration
-    /**
-     * Used to watch for file changes
-     */
-    private DirectoryWatcher directoryWatcher
-
-    private Map<String, String> watchedFilePaths = new ConcurrentHashMap<String, String>()
-
 
     private MessageSource messageSource = new StaticMessageSource()
 
@@ -122,9 +122,10 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      */
     ResolvableGroovyTemplateEngine(ViewConfiguration configuration) {
         this.viewConfiguration = configuration
+        this.enableReloading = configuration.enableReloading
+        this.shouldCache = configuration.cache
         this.templateResolver = new GenericGroovyTemplateResolver(packageName: configuration.packageName, baseDir: new File(configuration.templatePath))
         this.extension = configuration.extension
-        setEnableReloading(configuration.enableReloading)
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(configuration.baseTemplateClass.name)
@@ -162,44 +163,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         return compilerConfiguration
     }
 
-    void setEnableReloading(boolean enableReloading) {
-        if(enableReloading && directoryWatcher == null) {
-            this.directoryWatcher = new DirectoryWatcher()
-            this.directoryWatcher.addListener(new DirectoryWatcher.FileChangeListener() {
-                @Override
-                void onChange(File file) {
-                    def path = watchedFilePaths[file.canonicalPath]
-                    if(path != null) {
-                        path = path - ".$extension".toString()
-                        def keysToRemove = cachedTemplates.keySet().findAll() { String key ->
-                            key.startsWith(path)
-                        }
-                        for(key in keysToRemove) {
-                            cachedTemplates.remove(key)
-                        }
-                    }
-                }
-
-                @Override
-                void onNew(File file) {
-                    onChange(file)
-                }
-            })
-            this.directoryWatcher.start()
-        }
-    }
-
-    @Override
-    @PreDestroy
-    void close() throws IOException {
-        if(directoryWatcher != null) {
-            try {
-                directoryWatcher.setActive(false)
-            } catch (Throwable e) {
-                // ignore
-            }
-        }
-    }
 
     /**
      * Creates a template for the given template class
@@ -218,7 +181,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
      * @return The template
      */
     protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
-        def template = new GrailsViewTemplate((Class<? extends GrailsView>) cls)
+        def template = new GrailsViewTemplate((Class<? extends GrailsView>) cls, sourceFile)
         return initializeTemplate(template, sourceFile)
     }
 
@@ -261,7 +224,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         if(locale == null) {
             locale = Locale.ENGLISH
         }
-        boolean shouldCache = viewConfiguration.cache
         def cacheKey = [path, locale.language]
         cacheKey.addAll(qualifiers)
         Template template = null
@@ -271,7 +233,14 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
                 if(template.is(NULL_ENTRY)) {
                     return null
                 }
-                return template
+                if(!((GrailsViewTemplate)template).wasModified()) {
+                    return template
+                }
+                else {
+                    cachedTemplates.remove(path)
+                    resolveCache.remove(cacheKey)
+                    template = null
+                }
             }
         }
 
@@ -345,18 +314,28 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         }
         if(template != null) {
 
-            for(p in qualifiedPaths) {
-                cachedTemplates.put(p, template)
-            }
-            if(shouldCache) {
-                resolveCache.put(cacheKey, template)
-            }
-            if(template.is(NULL_ENTRY)) {
-                return null
+            if(((GrailsViewTemplate)template).wasModified()) {
+                for(p in qualifiedPaths) {
+                    cachedTemplates.remove(p)
+                    resolveCache.remove(cacheKey)
+                }
+                return resolveTemplate(path, locale, qualifiers)
             }
             else {
-                return template
+                for(p in qualifiedPaths) {
+                    cachedTemplates.put(p, template)
+                }
+                if(shouldCache) {
+                    resolveCache.put(cacheKey, template)
+                }
+                if(template.is(NULL_ENTRY)) {
+                    return null
+                }
+                else {
+                    return template
+                }
             }
+
         }
         return template
     }
@@ -381,7 +360,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
     Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         // Had to do this hack because of a Groovy bug where ASTTransformationCustomizer are only applied once!?
         def file = new File(url.file)
-        watchIfNecessary(file, path)
         def cc = new CompilerConfiguration(compilerConfiguration)
         prepareCustomizers(cc)
 
@@ -398,17 +376,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine implements 
         }
     }
 
-    protected void watchIfNecessary(File file, String path) {
-        if (directoryWatcher != null) {
-            def pathToFile = file.canonicalPath
-            if (!watchedFilePaths.containsKey(pathToFile)) {
-                watchedFilePaths.put(pathToFile, path)
-                directoryWatcher.addWatchFile(
-                        file
-                )
-            }
-        }
-    }
 
     @Override
     Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {

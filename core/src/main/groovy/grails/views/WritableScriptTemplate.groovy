@@ -22,6 +22,7 @@ class WritableScriptTemplate implements Template {
     Class<? extends GrailsView> templateClass
     File sourceFile
     boolean prettyPrint = false
+    long lastModified = -1
 
     protected final Map<String, Method> modelSetters = [:]
 
@@ -32,8 +33,20 @@ class WritableScriptTemplate implements Template {
     WritableScriptTemplate(Class<? extends GrailsView> templateClass, File sourceFile) {
         this.templateClass = templateClass
         this.sourceFile = sourceFile
-
+        if(sourceFile != null) {
+            lastModified = sourceFile.lastModified()
+        }
         initModelTypes(templateClass)
+    }
+
+    /**
+     * @return Whether the template has been modified
+     */
+    boolean wasModified() {
+        if(sourceFile != null && lastModified != -1) {
+            return sourceFile.lastModified() > lastModified
+        }
+        return false
     }
 
     protected void initModelTypes(Class<? extends WritableScript> templateClass) {
@@ -63,6 +76,7 @@ class WritableScriptTemplate implements Template {
 
     @Override
     Writable make(Map binding) {
+
         WritableScript writableTemplate = templateClass
                                     .newInstance()
         writableTemplate.viewTemplate = (GrailsViewTemplate)this

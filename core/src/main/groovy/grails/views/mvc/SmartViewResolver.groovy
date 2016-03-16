@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @since 1.0
  */
 @CompileStatic
-class SmartViewResolver implements Closeable {
+class SmartViewResolver  {
 
     @Delegate(methodAnnotations = true) ResolvableGroovyTemplateEngine templateEngine
 
@@ -106,8 +106,4 @@ class SmartViewResolver implements Closeable {
     }
 
 
-    @PreDestroy
-    void close() {
-        templateEngine.close()
-    }
 }
