@@ -29,4 +29,28 @@ class JsonTemplateCompilerSpec extends Specification {
         then:"The template can be loaded"
         engine.resolveTemplate("/bar.gson") != null
     }
+
+    void "Test JsonTemplateCompiler compiles templates correctly where the view has a package name"() {
+        given:"A compiler instance"
+        def view = new File(JsonTemplateCompilerSpec.getResource("/views/bar2.gson").file)
+
+        def config = new JsonViewConfiguration(packageName: "test")
+        def compiler = new JsonViewCompiler(config, view.parentFile)
+
+        def dir = File.createTempDir()
+        dir.deleteOnExit()
+        compiler.setTargetDirectory(dir)
+        def resolver = new GenericGroovyTemplateResolver(packageName: "test")
+        resolver.classLoader = new URLClassLoader([dir.toURL()] as URL[])
+        def engine = new JsonViewTemplateEngine(config)
+        engine.templateResolver = resolver
+        when:"templates are compiled"
+
+        compiler.compile(view)
+
+        then:"The template can be loaded"
+        engine.resolveTemplate("/bar2.gson") != null
+    }
 }
+
+

@@ -75,6 +75,10 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
             if(!classNode.getNodeMetaData(APPLIED)) {
 
                 if ( classNode.isScript() ) {
+                    if(classNode.hasPackageName()) {
+                        System.err.println("WARN: GSON view ${sourceName} defines package, and should not. Please remove the package statement.")
+                        classNode.setName(classNode.nameWithoutPackage)
+                    }
                     for(injector in traitInjectors) {
                         classNode.addInterface(ClassHelper.make(injector.trait))
                     }
