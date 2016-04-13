@@ -1,6 +1,7 @@
 package grails.plugin.json.view
 
 import grails.views.GenericViewConfiguration
+import org.springframework.boot.context.properties.ConfigurationProperties
 
 /**
  * Default configuration for JSON views
@@ -8,6 +9,7 @@ import grails.views.GenericViewConfiguration
  * @author Graeme Rocher
  * @since 1.0
  */
+@ConfigurationProperties('grails.views.json')
 class JsonViewConfiguration implements GenericViewConfiguration {
 
 

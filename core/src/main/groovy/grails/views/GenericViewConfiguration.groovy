@@ -48,9 +48,6 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
             setPackageImports(
                     findUniquePackages(domainArtefacts)
             )
-            PropertyResolver config = grailsApplication.getConfig()
-
-            readConfiguration((ConfigMap)config)
         }
     }
 

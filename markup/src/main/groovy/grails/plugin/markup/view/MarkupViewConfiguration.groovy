@@ -7,6 +7,7 @@ import grails.views.ViewsEnvironment
 import groovy.text.markup.TemplateConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
+import org.springframework.boot.context.properties.ConfigurationProperties
 
 import java.beans.PropertyDescriptor
 
@@ -15,6 +16,7 @@ import java.beans.PropertyDescriptor
  * @since 1.0
  */
 @CompileStatic
+@ConfigurationProperties('grails.views.json')
 class MarkupViewConfiguration extends TemplateConfiguration implements GenericViewConfiguration {
 
     public static final String MODULE_NAME = "markup"
