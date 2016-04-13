@@ -15,7 +15,6 @@ import grails.views.mvc.renderer.DefaultViewRenderer
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
-import org.grails.beans.support.CachedIntrospectionResults
 import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
@@ -25,7 +24,6 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Embedded
 import org.grails.datastore.mapping.model.types.ToOne
-import org.springframework.util.ReflectionUtils
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -38,6 +36,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
     private static final String DEEP = "deep"
     public static final String BEFORE_CLOSURE = "beforeClosure"
+    public static final String PROCESSED_OBJECT_VARIABLE = "org.json.views.RENDER_PROCESSED_OBJECTS"
 
     /**
      * Default includes/excludes for GORM properties
@@ -59,6 +58,8 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
     @Override
     JsonOutput.JsonUnescaped render(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
         JsonView jsonView = (JsonView)view
+
+        def binding = jsonView.getBinding()
         object = jsonView.proxyHandler?.unwrapIfProxy(object) ?: object
         if(object == null) {
             return JsonOutput.unescaped("null")
@@ -72,38 +73,56 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
         boolean isDeep = GrailsClassUtils.getBooleanFromMap(DEEP, arguments)
         Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
         StreamingJsonBuilder builder = new StreamingJsonBuilder(writer)
-        Set processedObjects = []
+        Set processedObjects
+        boolean rootRender = false
 
-        if(entity != null) {
-
-            builder.call {
-                StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate)getDelegate()
-                if(beforeClosure != null) {
-                    beforeClosure.setDelegate(jsonDelegate)
-                    beforeClosure.call()
-                }
-                process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep)
-                if(customizer != null) {
-                    customizer.setDelegate(jsonDelegate)
-                    customizer.call()
-                }
-            }
+        def bindingVariables = binding.variables
+        if(bindingVariables.containsKey(PROCESSED_OBJECT_VARIABLE)) {
+            processedObjects = (Set)binding.getVariable(PROCESSED_OBJECT_VARIABLE)
         }
         else {
-            builder.call {
-                StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate)getDelegate()
-                if(beforeClosure != null) {
-                    beforeClosure.setDelegate(jsonDelegate)
-                    beforeClosure.call()
-                }
-                processSimple(jsonDelegate, object, processedObjects, incs, excs, "")
-                if(customizer != null) {
-                    customizer.setDelegate(jsonDelegate)
-                    customizer.call()
+            processedObjects = []
+            binding.setVariable(PROCESSED_OBJECT_VARIABLE, processedObjects)
+            rootRender = true
+        }
+
+        try {
+            if(entity != null) {
+
+                builder.call {
+                    StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate)getDelegate()
+                    if(beforeClosure != null) {
+                        beforeClosure.setDelegate(jsonDelegate)
+                        beforeClosure.call()
+                    }
+                    process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep)
+                    if(customizer != null) {
+                        customizer.setDelegate(jsonDelegate)
+                        customizer.call()
+                    }
                 }
             }
+            else {
+                builder.call {
+                    StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate)getDelegate()
+                    if(beforeClosure != null) {
+                        beforeClosure.setDelegate(jsonDelegate)
+                        beforeClosure.call()
+                    }
+                    processSimple(jsonDelegate, object, processedObjects, incs, excs, "")
+                    if(customizer != null) {
+                        customizer.setDelegate(jsonDelegate)
+                        customizer.call()
+                    }
+                }
+            }
+            return JsonOutput.unescaped(writer.toString())
+        } finally {
+
+            if(rootRender) {
+                bindingVariables.remove(PROCESSED_OBJECT_VARIABLE)
+            }
         }
-        return JsonOutput.unescaped(writer.toString())
     }
 
     protected void processSimple(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, Object object, Set processedObjects, List<String> incs, List<String> excs, String path) {
@@ -150,9 +169,10 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
     protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Set processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep) {
 
-        if(processedObjects.contains(object))return
+        if(processedObjects.contains(object)) {
+            return
+        }
         processedObjects.add(object)
-
 
         def idName = entity.identity?.name
         String idQualified = "${path}${idName}"
@@ -206,7 +226,8 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                         def propertyType = ass.type
                         def childTemplate = view.templateEngine?.resolveTemplate(DefaultViewRenderer.templateNameForClass(propertyType), view.locale)
                         if(childTemplate != null) {
-                            def childView = prepareWritable(childTemplate, [(GrailsNameUtils.getPropertyName(propertyType)): value])
+                            def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
+                            def childView = prepareWritable(childTemplate, model)
                             def writer = new FastStringWriter()
                             childView.writeTo(writer)
                             jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
@@ -246,7 +267,9 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
                         while(iterator.hasNext()) {
                             def o = iterator.next()
-                            def childView = prepareWritable(childTemplate, [(childPropertyName): o])
+
+                            def model = [(childPropertyName): o]
+                            def childView = prepareWritable(childTemplate, model)
                             childView.writeTo(writer)
                             if(iterator.hasNext()) {
                                 writer.write(JsonOutput.COMMA)
@@ -325,7 +348,15 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
     }
 
+    protected void populateModelWithViewState(Map model) {
+        def parentViewBinding = view.binding
+        if (parentViewBinding.variables.containsKey(PROCESSED_OBJECT_VARIABLE)) {
+            model.put(PROCESSED_OBJECT_VARIABLE, parentViewBinding.getVariable(PROCESSED_OBJECT_VARIABLE))
+        }
+    }
+
     protected GrailsView prepareWritable(Template childTemplate, Map model) {
+        populateModelWithViewState(model)
         GrailsView writable = (GrailsView) (model ? childTemplate.make((Map) model) : childTemplate.make())
         writable.locale = view.locale
         writable.response = view.response

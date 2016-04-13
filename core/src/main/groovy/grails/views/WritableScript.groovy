@@ -25,6 +25,11 @@ interface WritableScript extends Writable, WriterProvider {
     void setBinding(Binding binding)
 
     /**
+     * @return Obtains the binding
+     */
+    Binding getBinding()
+
+    /**
      * Runs the script and returns the result
      *
      * @return The result
