@@ -17,6 +17,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.beans.support.CachedIntrospectionResults
 import org.grails.buffer.FastStringWriter
+import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.mapping.collection.PersistentCollection
 import org.grails.datastore.mapping.model.MappingFactory
@@ -109,23 +110,35 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
 
         if(!processedObjects.contains(object)) {
             processedObjects.add(object)
-            def descriptors = CachedIntrospectionResults.forClass(object.getClass()).getPropertyDescriptors()
+
+            def cpf = ClassPropertyFetcher.forClass(object.getClass())
+            def descriptors = cpf.getPropertyDescriptors()
             for (desc in descriptors) {
                 def readMethod = desc.readMethod
                 if (readMethod && desc.writeMethod) {
                     def name = desc.name
                     String qualified = "${path}${name}"
                     if (includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
-                        ReflectionUtils.makeAccessible(readMethod)
-                        def value = readMethod.invoke(object)
+                        def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
-                            if(MappingFactory.isSimpleType(desc.propertyType.name)) {
+                            boolean isArray = value.getClass().isArray()
+                            if(MappingFactory.isSimpleType(desc.propertyType.name) || (value instanceof Map)) {
                                 jsonDelegate.call name, value
                             }
+
+                            else if(isArray || (value instanceof Iterable)) {
+                                Iterable iterable = isArray ? value as List : (Iterable)value
+                                jsonDelegate.call(name, iterable) { child ->
+                                    StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                                    processSimple(embeddedDelegate, child, processedObjects, incs, excs,"${path}${name}.")
+                                }
+                            }
                             else {
-                                jsonDelegate.call( name ) {
-                                    jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                    processSimple(jsonDelegate, value, processedObjects, incs, excs,"${path}${name}.")
+                                if(!processedObjects.contains(value)) {
+                                    jsonDelegate.call( name ) {
+                                        jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                                        processSimple(jsonDelegate, value, processedObjects, incs, excs,"${path}${name}.")
+                                    }
                                 }
                             }
                         }
