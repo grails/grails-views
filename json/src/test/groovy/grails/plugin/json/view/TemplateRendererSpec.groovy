@@ -13,23 +13,41 @@ class TemplateRendererSpec extends Specification {
         given:"A template renderer"
 
         def mockViewHelper = Mock(GrailsJsonViewHelper)
-        def renderer = new TemplateRenderer(mockViewHelper)
+        def tmpl = new TemplateRenderer(mockViewHelper)
 
         def o = new Object()
         when:
-        renderer.foo(o)
+        tmpl.foo(o)
 
         then:
         1 * mockViewHelper.render([template:"foo", model:[foo:o]])
 
         when:
-        renderer.foo([o])
+        tmpl."/foo/foo"(o)
+
+        then:
+        1 * mockViewHelper.render([template:"/foo/foo", model:[foo:o]])
+
+        when:
+        tmpl."/foo/foo"(null)
+
+        then:
+        0 * mockViewHelper.render([template:"/foo/foo", model:[foo:o]])
+
+        when:
+        tmpl.foo(null)
+
+        then:
+        0 * mockViewHelper.render([template:"foo", model:[foo:null]])
+
+        when:
+        tmpl.foo([o])
 
         then:
         1 * mockViewHelper.render([template:"foo", var:'foo', collection:[o]])
 
         when:
-        renderer."/foo/foo"([o])
+        tmpl."/foo/foo"([o])
 
         then:
         1 * mockViewHelper.render([template:"/foo/foo", var:'foo', collection:[o]])

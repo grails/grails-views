@@ -28,6 +28,9 @@ class TemplateRenderer {
         int len = argArray.length
         if(len == 1) {
             def val = argArray[0]
+            if(val == null) {
+                return null
+            }
             if(val instanceof Map) {
                 return jsonViewHelper.render(template:name, model:val)
             }
