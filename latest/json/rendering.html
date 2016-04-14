@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Untitled</title>
+<title>Basics of Domain Class Rendering</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -422,10 +422,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-
+<ul class="sectlevel3">
+<li><a href="#_basics_of_domain_class_rendering">Basics of Domain Class Rendering</a></li>
+<li><a href="#_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</a></li>
+<li><a href="#_domain_class_rendering_and_templates">Domain Class Rendering and Templates</a></li>
+</ul>
 </div>
 </div>
 <div id="content">
+<div class="sect3">
+<h4 id="_basics_of_domain_class_rendering">Basics of Domain Class Rendering</h4>
 <div class="paragraph">
 <p>Typically your model may involve one or many domain instances. JSON views provide a <code>render</code> method for rendering these.</p>
 </div>
@@ -455,7 +461,7 @@ json g.render(book)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">{id:1,"title":"The Stand"}</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{"id":1,"title":"The Stand"}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -487,9 +493,95 @@ json g.render(book)</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</h4>
+<div class="paragraph">
+<p>Typically the <code>g.render(..)</code> method will only render objects one level deep. In other words if you have a domain class such as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">class Book {
+    String title
+    Author author
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting output will be something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{"id":1,"title":"The Stand","author":{id:1}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you wish for the <code>author</code> to be included as part of the rendering, there are two requirements, first you must make sure the association is initialized.</p>
+</div>
+<div class="paragraph">
+<p>If the <code>render</code> method encounters a proxy, it will not traverse into the relationship to avoid N+1 query performance problems.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The same applies to one-to-many collection associations. If the association has not been initialized the <code>render</code> method will not traverse through the collection!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>So you must make sure your query uses a join:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.findByTitle("The Stand", [fetch:[author:"join"]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Secondly when calling the <code>render</code> method you should pass the <code>deep</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [deep:true])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively if you prefer to handle the rendering yourself you can do by excluding the property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [excludes:['author']) {
+    author {
+        name book.author.name
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_domain_class_rendering_and_templates">Domain Class Rendering and Templates</h4>
+<div class="paragraph">
+<p>An alternative to the default behaviour of the <code>render</code> method is to rely on templates.</p>
+</div>
+<div class="paragraph">
+<p>In other words if you create a <code>/author/_author.gson</code> template and then use the <code>g.render</code> method on an instance of <code>book</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Whenever the <code>author</code> association is encountered the <code>g.render</code> method will automatically render the <code>/author/_author.gson</code> template instead.</p>
+</div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-13 14:21:19 UTC
+Last updated 2016-04-14 10:25:49 UTC
 </div>
 </div>
 </body>
