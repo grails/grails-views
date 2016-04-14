@@ -152,18 +152,7 @@ class JsonViewHelperSpec extends Specification {
 
     void "Test render object method"() {
         given:"A view helper"
-        def jsonView = Mock(JsonView)
-        def mappingContext = Mock(MappingContext)
-
-        def dc1 = new DefaultGrailsDomainClass(Test)
-        GrailsDomainConfigurationUtil.configureDomainClassRelationships([dc1] as GrailsClass[], [(dc1.fullName):dc1])
-
-        def entity = new GrailsDomainClassPersistentEntity(dc1, Mock(GrailsDomainClassMappingContext))
-        entity.initialize()
-        mappingContext.getPersistentEntity(Test.name) >> entity
-        jsonView.getMappingContext() >> mappingContext
-
-        def viewHelper = new JsonGrailsViewHelper(jsonView)
+        def viewHelper = mockViewHelper(Test)
 
         when:"We render an object"
 
@@ -181,17 +170,7 @@ class JsonViewHelperSpec extends Specification {
 
     void "Test render object method with plain object"() {
         given:"A view helper"
-        def jsonView = Mock(JsonView)
-        def mappingContext = Mock(MappingContext)
-
-        def dc = new DefaultGrailsDomainClass(Test)
-
-        def entity = new GrailsDomainClassPersistentEntity(dc, Mock(GrailsDomainClassMappingContext))
-        entity.initialize()
-        mappingContext.getPersistentEntity(Test.name) >> entity
-        jsonView.getMappingContext() >> mappingContext
-
-        def viewHelper = new JsonGrailsViewHelper(jsonView)
+        def viewHelper = mockViewHelper(Test)
 
         when:"We render an object"
         def result = viewHelper.render(new Test2(title:"The Stand", author:"Stephen King"))
@@ -226,6 +205,9 @@ class JsonViewHelperSpec extends Specification {
         jsonView.getMappingContext() >> mappingContext
 
         def viewHelper = new JsonGrailsViewHelper(jsonView)
+
+        def binding = new Binding()
+        jsonView.getBinding() >> binding
         viewHelper
     }
 }
