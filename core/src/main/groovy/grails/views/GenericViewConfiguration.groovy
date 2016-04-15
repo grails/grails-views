@@ -58,6 +58,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
             readConfiguration(config)
         }
     }
+
     public void readConfiguration(ConfigMap config) {
         def moduleName = viewModuleName
         GroovyObject configObject = (GroovyObject)this

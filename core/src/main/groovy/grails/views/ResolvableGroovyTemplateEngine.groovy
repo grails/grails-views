@@ -138,7 +138,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         this.messageSource = messageSource
     }
 
-    @Autowired
+    @Autowired(required = false)
     void setMimeUtility(MimeUtility mimeUtility) {
         this.mimeUtility = mimeUtility
     }
