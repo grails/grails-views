@@ -5,6 +5,7 @@ grails.plugin.json.view.api
 grails.plugin.json.view.api.internal
 grails.plugin.json.view.internal
 grails.plugin.json.view.mvc
+grails.plugin.json.view.test
 grails.plugin.markup.view
 grails.plugin.markup.view.api
 grails.plugin.markup.view.internal
