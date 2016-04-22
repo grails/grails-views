@@ -2,6 +2,10 @@
 
 include::introduction.adoc[]
 
+=== Version History
+
+include::history.adoc[]
+
 === Installation
 
 include::installation.adoc[]
