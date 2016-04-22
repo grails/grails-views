@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:views-gradle:1.0.0-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.0.8"
     }
 }
 
@@ -25,7 +25,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.plugins.views-json"
+//apply plugin: "org.grails.plugins.views-json"
 //apply plugin: "org.grails.plugins.views-markup"
 
 ext {
