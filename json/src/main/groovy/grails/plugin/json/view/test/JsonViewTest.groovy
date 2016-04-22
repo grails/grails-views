@@ -10,6 +10,7 @@ import grails.web.mime.MimeUtility
 import groovy.json.JsonSlurper
 import groovy.text.Template
 import groovy.transform.CompileStatic
+import org.grails.datastore.mapping.keyvalue.mapping.config.KeyValueMappingContext
 import org.grails.datastore.mapping.model.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
@@ -29,7 +30,11 @@ trait JsonViewTest {
     MessageSource messageSource
 
     @Autowired(required = false)
-    MappingContext mappingContext
+    MappingContext mappingContext = {
+        def ctx = new KeyValueMappingContext("test")
+        ctx.setCanInitializeEntities(true)
+        return ctx
+    }()
 
     @Autowired(required = false)
     MimeUtility mimeUtility
