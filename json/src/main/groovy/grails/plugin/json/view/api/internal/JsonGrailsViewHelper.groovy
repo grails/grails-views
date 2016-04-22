@@ -157,7 +157,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                                     componentType = MappingUtils.getGenericType(desc.propertyType)
                                 }
 
-                                if(MappingFactory.isSimpleType(componentType.name) || componentType.isEnum()) {
+                                if(!Object.is(componentType) && MappingFactory.isSimpleType(componentType.name) || componentType.isEnum()) {
                                     jsonDelegate.call(name, value)
                                 }
                                 else {
