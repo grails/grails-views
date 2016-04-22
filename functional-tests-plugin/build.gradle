@@ -25,7 +25,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
-//apply plugin: "org.grails.plugins.views-json"
+apply plugin: "org.grails.plugins.views-json"
 //apply plugin: "org.grails.plugins.views-markup"
 
 ext {
