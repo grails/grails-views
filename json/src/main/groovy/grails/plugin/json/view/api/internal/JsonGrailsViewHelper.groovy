@@ -19,6 +19,7 @@ import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.mapping.collection.PersistentCollection
+import org.grails.datastore.mapping.engine.internal.MappingUtils
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.types.Association
@@ -148,10 +149,23 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                             }
 
                             else if(isArray || (value instanceof Iterable)) {
-                                Iterable iterable = isArray ? value as List : (Iterable)value
-                                jsonDelegate.call(name, iterable) { child ->
-                                    StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                    processSimple(embeddedDelegate, child, processedObjects, incs, excs,"${path}${name}.")
+                                Class componentType
+                                if(isArray) {
+                                    componentType = desc.propertyType.componentType
+                                }
+                                else {
+                                    componentType = MappingUtils.getGenericType(desc.propertyType)
+                                }
+
+                                if(MappingFactory.isSimpleType(componentType.name) || componentType.isEnum()) {
+                                    jsonDelegate.call(name, value)
+                                }
+                                else {
+                                    Iterable iterable = isArray ? value as List : (Iterable)value
+                                    jsonDelegate.call(name, iterable) { child ->
+                                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                                        processSimple(embeddedDelegate, child, processedObjects, incs, excs,"${path}${name}.")
+                                    }
                                 }
                             }
                             else {
