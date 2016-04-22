@@ -25,6 +25,8 @@ import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Embedded
 import org.grails.datastore.mapping.model.types.ToOne
 
+import java.beans.PropertyDescriptor
+
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
  *
@@ -141,7 +143,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                         def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
                             boolean isArray = value.getClass().isArray()
-                            if(MappingFactory.isSimpleType(desc.propertyType.name) || (value instanceof Map)) {
+                            if(isSimpleType(desc, value)) {
                                 jsonDelegate.call name, value
                             }
 
@@ -165,6 +167,10 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                 }
             }
         }
+    }
+
+    protected boolean isSimpleType(PropertyDescriptor desc, value) {
+        MappingFactory.isSimpleType(desc.propertyType.name) || (value instanceof Enum) || (value instanceof Map)
     }
 
     protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Set processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep) {
