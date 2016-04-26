@@ -524,16 +524,17 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_json_views">2. JSON Views</a>
 <ul class="sectlevel2">
 <li><a href="#_introduction_2">2.1. Introduction</a></li>
-<li><a href="#_installation">2.2. Installation</a></li>
-<li><a href="#_templates">2.3. Templates</a></li>
-<li><a href="#_rendering_domain_classes">2.4. Rendering Domain Classes</a></li>
-<li><a href="#_json_view_api">2.5. JSON View API</a></li>
-<li><a href="#_content_negotiation">2.6. Content Negotiation</a></li>
-<li><a href="#_hal_support">2.7. HAL Support</a></li>
-<li><a href="#_the_jsontemplateengine">2.8. The JsonTemplateEngine</a></li>
-<li><a href="#_static_compilation">2.9. Static Compilation</a></li>
-<li><a href="#_configuration">2.10. Configuration</a></li>
-<li><a href="#_intellij_support">2.11. IntelliJ Support</a></li>
+<li><a href="#_version_history">2.2. Version History</a></li>
+<li><a href="#_installation">2.3. Installation</a></li>
+<li><a href="#_templates">2.4. Templates</a></li>
+<li><a href="#_rendering_domain_classes">2.5. Rendering Domain Classes</a></li>
+<li><a href="#_json_view_api">2.6. JSON View API</a></li>
+<li><a href="#_content_negotiation">2.7. Content Negotiation</a></li>
+<li><a href="#_hal_support">2.8. HAL Support</a></li>
+<li><a href="#_the_jsontemplateengine">2.9. The JsonTemplateEngine</a></li>
+<li><a href="#_static_compilation">2.10. Static Compilation</a></li>
+<li><a href="#_configuration">2.11. Configuration</a></li>
+<li><a href="#_intellij_support">2.12. IntelliJ Support</a></li>
 </ul>
 </li>
 <li><a href="#_markup_views">3. Markup Views</a>
@@ -604,7 +605,23 @@ json([<span class="integer">1</span>,<span class="integer">2</span>,<span class=
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installation">2.2. Installation</h3>
+<h3 id="_version_history">2.2. Version History</h3>
+<div class="paragraph">
+<p>The current release is 1.1.0-SNAPSHOT. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>1.0.0</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Initial 1.0.0 GA Release</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installation">2.3. Installation</h3>
 <div class="paragraph">
 <p>To activate JSON views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
@@ -642,9 +659,9 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 </div>
 <div class="sect2">
-<h3 id="_templates">2.3. Templates</h3>
+<h3 id="_templates">2.4. Templates</h3>
 <div class="sect3">
-<h4 id="_template_basics">2.3.1. Template Basics</h4>
+<h4 id="_template_basics">2.4.1. Template Basics</h4>
 <div class="paragraph">
 <p>You can define templates starting with underscore <code>_</code>. For example given the following template called <code>_person.gson</code>:</p>
 </div>
@@ -686,7 +703,7 @@ json g.render(<span class="key">template</span>:<span class="string"><span class
 </div>
 </div>
 <div class="sect3">
-<h4 id="_template_namespace">2.3.2. Template Namespace</h4>
+<h4 id="_template_namespace">2.4.2. Template Namespace</h4>
 <div class="paragraph">
 <p>The previous example can be simplified using the template namespace:</p>
 </div>
@@ -763,7 +780,7 @@ json tmpl.person(<span class="key">people</span>:people)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_more_ways_to_render_templates">2.3.3. More Ways to Render Templates</h4>
+<h4 id="_more_ways_to_render_templates">2.4.3. More Ways to Render Templates</h4>
 <div class="paragraph">
 <p>The <code>g.render</code> method is flexible, you can render templates in many forms:</p>
 </div>
@@ -799,7 +816,9 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_rendering_domain_classes">2.4. Rendering Domain Classes</h3>
+<h3 id="_rendering_domain_classes">2.5. Rendering Domain Classes</h3>
+<div class="sect3">
+<h4 id="_basics_of_domain_class_rendering">2.5.1. Basics of Domain Class Rendering</h4>
 <div class="paragraph">
 <p>Typically your model may involve one or many domain instances. JSON views provide a <code>render</code> method for rendering these.</p>
 </div>
@@ -829,7 +848,7 @@ json g.render(book)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="javascript">{<span class="key">id</span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">The Stand</span><span class="delimiter">&quot;</span></span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="javascript">{<span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">The Stand</span><span class="delimiter">&quot;</span></span>}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -861,8 +880,94 @@ json g.render(book)</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_deep_rendering_of_domain_classes">2.5.2. Deep Rendering of Domain Classes</h4>
+<div class="paragraph">
+<p>Typically the <code>g.render(..)</code> method will only render objects one level deep. In other words if you have a domain class such as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">Book</span> {
+    <span class="predefined-type">String</span> title
+    Author author
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting output will be something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">{<span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>:<span class="integer">1</span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">The Stand</span><span class="delimiter">&quot;</span></span>,<span class="key"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>:{<span class="key">id</span>:<span class="integer">1</span>}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you wish for the <code>author</code> to be included as part of the rendering, there are two requirements, first you must make sure the association is initialized.</p>
+</div>
+<div class="paragraph">
+<p>If the <code>render</code> method encounters a proxy, it will not traverse into the relationship to avoid N+1 query performance problems.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The same applies to one-to-many collection associations. If the association has not been initialized the <code>render</code> method will not traverse through the collection!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>So you must make sure your query uses a join:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="predefined-type">Book</span>.findByTitle(<span class="string"><span class="delimiter">&quot;</span><span class="content">The Stand</span><span class="delimiter">&quot;</span></span>, [<span class="key">fetch</span>:[<span class="key">author</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">join</span><span class="delimiter">&quot;</span></span>]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Secondly when calling the <code>render</code> method you should pass the <code>deep</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">deep</span>:<span class="predefined-constant">true</span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively if you prefer to handle the rendering yourself you can do by excluding the property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">excludes</span>:[<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>]) {
+    author {
+        name book.author.name
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_domain_class_rendering_and_templates">2.5.3. Domain Class Rendering and Templates</h4>
+<div class="paragraph">
+<p>An alternative to the default behaviour of the <code>render</code> method is to rely on templates.</p>
+</div>
+<div class="paragraph">
+<p>In other words if you create a <code>/author/_author.gson</code> template and then use the <code>g.render</code> method on an instance of <code>book</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Whenever the <code>author</code> association is encountered the <code>g.render</code> method will automatically render the <code>/author/_author.gson</code> template instead.</p>
+</div>
+</div>
+</div>
 <div class="sect2">
-<h3 id="_json_view_api">2.5. JSON View API</h3>
+<h3 id="_json_view_api">2.6. JSON View API</h3>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -873,7 +978,7 @@ json g.render(book)</code></pre>
 <p>Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.</p>
 </div>
 <div class="sect3">
-<h4 id="_creating_links">2.5.1. Creating Links</h4>
+<h4 id="_creating_links">2.6.1. Creating Links</h4>
 <div class="paragraph">
 <p>Links can be generated using the <code>g.link(..)</code> method:</p>
 </div>
@@ -890,7 +995,7 @@ json g.render(book)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_altering_the_response_headers">2.5.2. Altering the Response Headers</h4>
+<h4 id="_altering_the_response_headers">2.6.2. Altering the Response Headers</h4>
 <div class="paragraph">
 <p>To customize content types and headers use the <code>response</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -920,7 +1025,7 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_default_static_imports">2.5.3. Default Static Imports</h4>
+<h4 id="_default_static_imports">2.6.3. Default Static Imports</h4>
 <div class="paragraph">
 <p>The following classes' static properties are imported by default:</p>
 </div>
@@ -955,7 +1060,7 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_i18n_locale_integration">2.5.4. I18n &amp; Locale Integration</h4>
+<h4 id="_i18n_locale_integration">2.6.4. I18n &amp; Locale Integration</h4>
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
 </div>
@@ -984,7 +1089,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect2">
-<h3 id="_content_negotiation">2.6. Content Negotiation</h3>
+<h3 id="_content_negotiation">2.7. Content Negotiation</h3>
 <div class="paragraph">
 <p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
 </div>
@@ -1003,7 +1108,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 <p>In addition, if the client sends a request with the <code>Accept</code> header containing <code>application/json</code> the <code>show.gson</code> view will be rendered.</p>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_domain_classes">2.6.1. Content Negotiation and Domain Classes</h4>
+<h4 id="_content_negotiation_and_domain_classes">2.7.1. Content Negotiation and Domain Classes</h4>
 <div class="paragraph">
 <p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
 </div>
@@ -1019,7 +1124,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_versioned_apis">2.6.2. Content Negotiation and Versioned APIs</h4>
+<h4 id="_content_negotiation_and_versioned_apis">2.7.2. Content Negotiation and Versioned APIs</h4>
 <div class="paragraph">
 <p>A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.</p>
 </div>
@@ -1034,7 +1139,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_view_resolving_strategy">2.6.3. Content Negotiation and View Resolving Strategy</h4>
+<h4 id="_content_negotiation_and_view_resolving_strategy">2.7.3. Content Negotiation and View Resolving Strategy</h4>
 <div class="paragraph">
 <p>Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
 </div>
@@ -1077,7 +1182,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect3">
-<h4 id="mimeTypes">2.6.4. Content Negotiation and Custom Mime Types</h4>
+<h4 id="mimeTypes">2.7.4. Content Negotiation and Custom Mime Types</h4>
 <div class="paragraph">
 <p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
 </div>
@@ -1097,7 +1202,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hal_support">2.7. HAL Support</h3>
+<h3 id="_hal_support">2.8. HAL Support</h3>
 <div class="paragraph">
 <p><a href="http://stateless.co/hal_specification.html">HAL</a> is a standard format for representing JSON that has gained traction for its ability to represent links between resources and provide navigable APIs.</p>
 </div>
@@ -1165,7 +1270,7 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 </div>
 <div class="sect3">
-<h4 id="_generating_hal_links">2.7.1. Generating HAL Links</h4>
+<h4 id="_generating_hal_links">2.8.1. Generating HAL Links</h4>
 <div class="paragraph">
 <p>The above example uses the <code>hal.links(..)</code> method to render links for a domain resource and the <code>hal.embedded(..)</code> method to define any embedded objects that form part of the HAL response.</p>
 </div>
@@ -1202,7 +1307,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rendering_domain_classes_as_hal">2.7.2. Rendering Domain Classes as HAL</h4>
+<h4 id="_rendering_domain_classes_as_hal">2.8.2. Rendering Domain Classes as HAL</h4>
 <div class="paragraph">
 <p>If you prefer to let the plugin handle the rendering of your object you can use the <code>hal.render(..)</code> method:</p>
 </div>
@@ -1219,7 +1324,7 @@ json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_specifying_the_hal_content_type">2.7.3. Specifying the HAL Content Type</h4>
+<h4 id="_specifying_the_hal_content_type">2.8.3. Specifying the HAL Content Type</h4>
 <div class="paragraph">
 <p>The default HAL response content type is <code>application/hal+json</code>, however as discussed in the section on <a href="#mimeTypes">Custom Mime Type</a> you can define your own response content types to represent your resources.</p>
 </div>
@@ -1252,7 +1357,7 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_jsontemplateengine">2.8. The JsonTemplateEngine</h3>
+<h3 id="_the_jsontemplateengine">2.9. The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
@@ -1277,7 +1382,7 @@ JsonViewTemplateEngine templateEngine
 </div>
 </div>
 <div class="sect2">
-<h3 id="_static_compilation">2.9. Static Compilation</h3>
+<h3 id="_static_compilation">2.10. Static Compilation</h3>
 <div class="paragraph">
 <p>JSON views are statically compiled. You can disable static compilation if you prefer by setting <code>grails.views.json.compileStatic</code>:</p>
 </div>
@@ -1317,7 +1422,7 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration">2.10. Configuration</h3>
+<h3 id="_configuration">2.11. Configuration</h3>
 <div class="paragraph">
 <p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. For example:</p>
 </div>
@@ -1351,7 +1456,7 @@ json {
 <p>See the API for <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html">GroovyForkOptions</a> for more information.</p>
 </div>
 <div class="sect3">
-<h4 id="_changing_the_view_base_class">2.10.1. Changing the view base class</h4>
+<h4 id="_changing_the_view_base_class">2.11.1. Changing the view base class</h4>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -1369,7 +1474,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_adding_new_helper_methods_via_traits">2.10.2. Adding New Helper Methods via Traits</h4>
+<h4 id="_adding_new_helper_methods_via_traits">2.11.2. Adding New Helper Methods via Traits</h4>
 <div class="paragraph">
 <p>Alternatively, rather than modifying the base class, you can instead just add new methods via traits.</p>
 </div>
@@ -1415,7 +1520,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_intellij_support">2.11. IntelliJ Support</h3>
+<h3 id="_intellij_support">2.12. IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
@@ -1579,7 +1684,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-15 15:43:24 UTC
+Last updated 2016-04-26 15:15:14 UTC
 </div>
 </div>
 </body>
