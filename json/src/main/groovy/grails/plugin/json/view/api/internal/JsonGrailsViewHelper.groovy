@@ -38,6 +38,9 @@ import java.beans.PropertyDescriptor
 class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
 
     private static final String DEEP = "deep"
+    private static final Set<String> TO_STRING_TYPES = [
+        "org.bson.types.ObjectId"
+    ] as Set
     public static final String BEFORE_CLOSURE = "beforeClosure"
     public static final String PROCESSED_OBJECT_VARIABLE = "org.json.views.RENDER_PROCESSED_OBJECTS"
 
@@ -137,24 +140,28 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
             def descriptors = cpf.getPropertyDescriptors()
             for (desc in descriptors) {
                 def readMethod = desc.readMethod
-                if (readMethod && desc.writeMethod) {
+                if (readMethod != null && desc.writeMethod != null) {
                     def name = desc.name
                     String qualified = "${path}${name}"
                     if (includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                         def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
-                            boolean isArray = value.getClass().isArray()
-                            if(isSimpleType(desc, value)) {
+                            def propertyType = desc.propertyType
+                            boolean isArray = propertyType.isArray()
+                            if(isStringType(propertyType)) {
+                                jsonDelegate.call name, value.toString()
+                            }
+                            else if(isSimpleType(propertyType, value)) {
                                 jsonDelegate.call name, value
                             }
-
-                            else if(isArray || (value instanceof Iterable)) {
+                            else if(isArray || Iterable.isAssignableFrom(propertyType)) {
                                 Class componentType
+
                                 if(isArray) {
-                                    componentType = desc.propertyType.componentType
+                                    componentType = propertyType.componentType
                                 }
                                 else {
-                                    componentType = MappingUtils.getGenericType(desc.propertyType)
+                                    componentType = MappingUtils.getGenericType(propertyType)
                                 }
 
                                 if(!Object.is(componentType) && MappingFactory.isSimpleType(componentType.name) || componentType.isEnum()) {
@@ -183,8 +190,11 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
         }
     }
 
-    protected boolean isSimpleType(PropertyDescriptor desc, value) {
-        MappingFactory.isSimpleType(desc.propertyType.name) || (value instanceof Enum) || (value instanceof Map)
+    protected boolean isStringType(Class propertyType) {
+        return TO_STRING_TYPES.contains(propertyType.name)
+    }
+    protected boolean isSimpleType(Class propertyType, value) {
+        MappingFactory.isSimpleType(propertyType.name) || (value instanceof Enum) || (value instanceof Map)
     }
 
     protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Set processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep) {
@@ -213,7 +223,12 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
             if(value == null) continue
 
             if (!(prop instanceof Association)) {
-                jsonDelegate.call(propertyName, value)
+                if(isStringType(prop.type)) {
+                    jsonDelegate.call propertyName, value.toString()
+                }
+                else {
+                    jsonDelegate.call(propertyName, value)
+                }
             } else {
                 Association ass = (Association) prop
                 def associatedEntity = ass.associatedEntity
