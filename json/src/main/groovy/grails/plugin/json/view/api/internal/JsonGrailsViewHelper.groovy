@@ -25,8 +25,12 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Embedded
 import org.grails.datastore.mapping.model.types.ToOne
+import org.springframework.util.ReflectionUtils
 
 import java.beans.PropertyDescriptor
+import java.lang.reflect.Field
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -136,7 +140,9 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
         if(!processedObjects.contains(object)) {
             processedObjects.add(object)
 
-            def cpf = ClassPropertyFetcher.forClass(object.getClass())
+
+            def declaringClass = object.getClass()
+            def cpf = ClassPropertyFetcher.forClass(declaringClass)
             def descriptors = cpf.getPropertyDescriptors()
             for (desc in descriptors) {
                 def readMethod = desc.readMethod
@@ -161,7 +167,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                                     componentType = propertyType.componentType
                                 }
                                 else {
-                                    componentType = MappingUtils.getGenericType(propertyType)
+                                    componentType = getGenericType(declaringClass, desc)
                                 }
 
                                 if(!Object.is(componentType) && MappingFactory.isSimpleType(componentType.name) || componentType.isEnum()) {
@@ -188,6 +194,24 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                 }
             }
         }
+    }
+
+    protected Class getGenericType(Class declaringClass, PropertyDescriptor descriptor) {
+        def field = ReflectionUtils.findField(declaringClass, descriptor.getName())
+        if(field != null) {
+
+            def type = field.genericType
+            if(type instanceof ParameterizedType) {
+                def args = ((ParameterizedType) type).getActualTypeArguments()
+                if(args.length > 0) {
+                    def t = args[0]
+                    if(t instanceof Class) {
+                        return (Class)t
+                    }
+                }
+            }
+        }
+        return Object
     }
 
     protected boolean isStringType(Class propertyType) {
