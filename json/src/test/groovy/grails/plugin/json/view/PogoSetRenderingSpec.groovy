@@ -27,5 +27,5 @@ json g.render(object)
 
 class SetClass {
     String name
-    Set stuff = []
+    Set<String> stuff = []
 }
