@@ -233,7 +233,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 if(template.is(NULL_ENTRY)) {
                     return null
                 }
-                else if(!((GrailsViewTemplate)template).wasModified()) {
+                else if( !enableReloading || !((GrailsViewTemplate)template).wasModified()) {
                     return template
                 }
                 else {
