@@ -5,6 +5,7 @@ import grails.plugin.json.view.JsonViewConfiguration
 import grails.plugin.json.view.JsonViewTemplateEngine
 import grails.plugin.json.view.api.JsonView
 import grails.views.api.HttpView
+import grails.views.api.http.Response
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeUtility
 import groovy.json.JsonSlurper
@@ -170,7 +171,7 @@ trait JsonViewTest {
         return result
     }
 
-    static class TestHttpResponse implements HttpView.Response {
+    static class TestHttpResponse implements Response {
         final JsonRenderResult result
 
         TestHttpResponse(JsonRenderResult result) {

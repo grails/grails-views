@@ -3,6 +3,8 @@ package grails.views.mvc
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.api.GrailsView
 import grails.views.api.HttpView
+import grails.views.api.http.Request
+import grails.views.api.http.Response
 import grails.web.http.HttpHeaders
 import grails.web.mime.MimeType
 import groovy.text.Template
@@ -97,7 +99,7 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         }
     }
 
-    private static class HttpViewRequest implements HttpView.Request {
+    private static class HttpViewRequest implements Request {
         @Delegate final HttpServletRequest request;
 
         HttpViewRequest(HttpServletRequest request) {
@@ -110,7 +112,7 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         }
 
     }
-    private static class HttpViewResponse implements HttpView.Response {
+    private static class HttpViewResponse implements Response {
         final @Delegate HttpServletResponse httpServletResponse
 
         HttpViewResponse(HttpServletResponse httpServletResponse) {

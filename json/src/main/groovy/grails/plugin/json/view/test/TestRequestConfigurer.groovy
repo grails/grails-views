@@ -2,6 +2,7 @@ package grails.plugin.json.view.test
 
 import grails.plugin.json.view.api.JsonView
 import grails.views.api.HttpView
+import grails.views.api.http.Request
 import groovy.transform.CompileStatic
 import org.springframework.http.HttpMethod
 
@@ -12,7 +13,7 @@ import org.springframework.http.HttpMethod
  * @since 1.1
  */
 @CompileStatic
-class TestRequestConfigurer implements HttpView.Request{
+class TestRequestConfigurer implements Request{
 
     final JsonView jsonView
 
