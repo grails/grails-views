@@ -13,6 +13,7 @@ grails.plugin.markup.view.mvc
 grails.plugin.markup.view.renderer
 grails.views
 grails.views.api
+grails.views.api.http
 grails.views.api.internal
 grails.views.compiler
 grails.views.gradle
