@@ -30,6 +30,10 @@ include::contentNegotiation.adoc[]
 
 include::hal.adoc[]
 
+=== Pagination
+
+include::pagination.adoc[]
+
 === The JsonTemplateEngine
 
 include::templateEngine.adoc[]
