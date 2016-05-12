@@ -89,7 +89,7 @@ class ProductSpec extends GebSpec {
                     json {
                         name = "Product $productNumber"
                         description = "product ${productNumber} description"
-                        price = productNumber + (productNumber/100)
+                        price = productNumber + (productNumber / 100)
                     }
                 }
                 assert createResp.status == 201
@@ -121,7 +121,7 @@ class ProductSpec extends GebSpec {
             resp.json._embedded.products.size() == 10
 
         cleanup:
-            productsIds.each{id ->
+            productsIds.each { id ->
                 def delResp = builder.delete("$baseUrl/products/${id}")
                 assert delResp.status == 204
             }
@@ -136,7 +136,7 @@ class ProductSpec extends GebSpec {
                     json {
                         name = "Product $productNumber"
                         description = "product ${productNumber} description"
-                        price = productNumber + (productNumber/100)
+                        price = productNumber + (productNumber / 100)
                     }
                 }
                 assert createResp.status == 201
@@ -169,7 +169,7 @@ class ProductSpec extends GebSpec {
             resp.json._embedded.products.size() == 10
 
         cleanup:
-            productsIds.each{id ->
+            productsIds.each { id ->
                 def delResp = builder.delete("$baseUrl/products/${id}")
                 assert delResp.status == 204
             }

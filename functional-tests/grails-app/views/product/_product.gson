@@ -1,7 +1,7 @@
 import functional.tests.Product
 
 model {
-	Product product
+    Product product
 }
 
 json g.render(product)
