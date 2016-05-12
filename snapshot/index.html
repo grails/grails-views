@@ -531,10 +531,11 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_json_view_api">2.6. JSON View API</a></li>
 <li><a href="#_content_negotiation">2.7. Content Negotiation</a></li>
 <li><a href="#_hal_support">2.8. HAL Support</a></li>
-<li><a href="#_the_jsontemplateengine">2.9. The JsonTemplateEngine</a></li>
-<li><a href="#_static_compilation">2.10. Static Compilation</a></li>
-<li><a href="#_configuration">2.11. Configuration</a></li>
-<li><a href="#_intellij_support">2.12. IntelliJ Support</a></li>
+<li><a href="#_pagination">2.9. Pagination</a></li>
+<li><a href="#_the_jsontemplateengine">2.10. The JsonTemplateEngine</a></li>
+<li><a href="#_static_compilation">2.11. Static Compilation</a></li>
+<li><a href="#_configuration">2.12. Configuration</a></li>
+<li><a href="#_intellij_support">2.13. IntelliJ Support</a></li>
 </ul>
 </li>
 <li><a href="#_markup_views">3. Markup Views</a>
@@ -1357,7 +1358,91 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_jsontemplateengine">2.9. The JsonTemplateEngine</h3>
+<h3 id="_pagination">2.9. Pagination</h3>
+<div class="paragraph">
+<p>The JSON views plugin for Grails provides navigable pagination support.
+Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Iterable</span>&lt;<span class="predefined-type">Book</span>&gt; bookList
+    <span class="predefined-type">Integer</span> bookCount
+    <span class="predefined-type">Integer</span> max
+    <span class="predefined-type">Integer</span> offset
+    <span class="predefined-type">String</span> sort
+    <span class="predefined-type">String</span> order
+}
+json {
+    hal.paginate(<span class="predefined-type">Book</span>, bookCount, max, offset, sort, order)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Similar to <code>hal.links()</code> the <code>hal.paginate()</code> has to be the first element within the <code>json{}</code> closure.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When accessing <code>http://localhost:8080/book?offset=10</code> this produces the navigable output like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">_links</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/index?offset=10&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">hreflang</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en_US</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/hal+json</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">first</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/index?offset=0&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">hreflang</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en_US</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">prev</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/index?offset=0&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">hreflang</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en_US</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">next</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/index?offset=20&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">hreflang</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en_US</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">last</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/index?offset=40&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">hreflang</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en_US</span><span class="delimiter">&quot;</span></span>
+    }
+  },
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If there aren&#8217;t enough results to paginate the navigation links will not appear.
+Likewise the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_jsontemplateengine">2.10. The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
@@ -1382,7 +1467,7 @@ JsonViewTemplateEngine templateEngine
 </div>
 </div>
 <div class="sect2">
-<h3 id="_static_compilation">2.10. Static Compilation</h3>
+<h3 id="_static_compilation">2.11. Static Compilation</h3>
 <div class="paragraph">
 <p>JSON views are statically compiled. You can disable static compilation if you prefer by setting <code>grails.views.json.compileStatic</code>:</p>
 </div>
@@ -1422,7 +1507,7 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration">2.11. Configuration</h3>
+<h3 id="_configuration">2.12. Configuration</h3>
 <div class="paragraph">
 <p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. For example:</p>
 </div>
@@ -1456,7 +1541,7 @@ json {
 <p>See the API for <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html">GroovyForkOptions</a> for more information.</p>
 </div>
 <div class="sect3">
-<h4 id="_changing_the_view_base_class">2.11.1. Changing the view base class</h4>
+<h4 id="_changing_the_view_base_class">2.12.1. Changing the view base class</h4>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -1474,7 +1559,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_adding_new_helper_methods_via_traits">2.11.2. Adding New Helper Methods via Traits</h4>
+<h4 id="_adding_new_helper_methods_via_traits">2.12.2. Adding New Helper Methods via Traits</h4>
 <div class="paragraph">
 <p>Alternatively, rather than modifying the base class, you can instead just add new methods via traits.</p>
 </div>
@@ -1520,7 +1605,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_intellij_support">2.12. IntelliJ Support</h3>
+<h3 id="_intellij_support">2.13. IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
@@ -1684,7 +1769,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-12 15:04:49 UTC
+Last updated 2016-05-12 15:59:38 UTC
 </div>
 </div>
 </body>

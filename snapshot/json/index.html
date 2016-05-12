@@ -431,6 +431,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_json_view_api">JSON View API</a></li>
 <li><a href="#_content_negotiation">Content Negotiation</a></li>
 <li><a href="#_hal_support">HAL Support</a></li>
+<li><a href="#_pagination">Pagination</a></li>
 <li><a href="#_the_jsontemplateengine">The JsonTemplateEngine</a></li>
 <li><a href="#_static_compilation">Static Compilation</a></li>
 <li><a href="#_configuration">Configuration</a></li>
@@ -1227,6 +1228,90 @@ json {
 </div>
 </div>
 <div class="sect2">
+<h3 id="_pagination">Pagination</h3>
+<div class="paragraph">
+<p>The JSON views plugin for Grails provides navigable pagination support.
+Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Iterable&lt;Book&gt; bookList
+    Integer bookCount
+    Integer max
+    Integer offset
+    String sort
+    String order
+}
+json {
+    hal.paginate(Book, bookCount, max, offset, sort, order)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Similar to <code>hal.links()</code> the <code>hal.paginate()</code> has to be the first element within the <code>json{}</code> closure.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When accessing <code>http://localhost:8080/book?offset=10</code> this produces the navigable output like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/book/index?offset=10&amp;max=10",
+      "hreflang": "en_US",
+      "type": "application/hal+json"
+    },
+    "first": {
+      "href": "http://localhost:8080/book/index?offset=0&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "prev": {
+      "href": "http://localhost:8080/book/index?offset=0&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "next": {
+      "href": "http://localhost:8080/book/index?offset=20&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "last": {
+      "href": "http://localhost:8080/book/index?offset=40&amp;max=10",
+      "hreflang": "en_US"
+    }
+  },
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If there aren&#8217;t enough results to paginate the navigation links will not appear.
+Likewise the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_the_jsontemplateengine">The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
@@ -1407,7 +1492,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-12 15:04:49 UTC
+Last updated 2016-05-12 15:59:38 UTC
 </div>
 </div>
 </body>
