@@ -1,0 +1,7 @@
+import functional.tests.Product
+
+model {
+    Product product
+}
+
+json g.render(product)
