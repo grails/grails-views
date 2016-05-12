@@ -249,8 +249,8 @@ class HalViewHelper {
      */
     protected Map<String, Object> paramsWithOffset(Map<String, Object> originalParameters, Integer offset) {
         Map<String, Object> params = [:]
-        originalParameters.each{String k, Object v ->
-            params.put(k,v)
+        originalParameters.each { String k, Object v ->
+            params.put(k, v)
         }
         params.offset = offset
         return params
@@ -270,12 +270,11 @@ class HalViewHelper {
         return offset + max
     }
 
-    @CompileDynamic
     protected Integer getLastOffset(Integer total, Integer max) {
         if (total <= 0) {
             return null
         }
-        Integer laststep = Math.round(Math.ceil(total / max)).toInteger() - 1
+        Integer laststep = ((int) Math.round(Math.ceil(total / max))) - 1
         return Math.max((laststep * max), 0)
     }
 
