@@ -5,6 +5,7 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.rest.Link
 import grails.views.api.HttpView
+import grails.views.api.http.Parameters
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -128,8 +129,14 @@ class HalViewHelper {
      * @param sort The field to sort on (defaults to null)
      * @param order The order in which the results are to be sorted eg: DESC or ASC
      */
-    void paginate(Object object, Integer total, Integer offset = 0, Integer max = 10,  String sort = null, String order = null) {
+    void paginate(Object object, Integer total, Integer offset = null, Integer max = null,  String sort = null, String order = null) {
         Map<String, Object> linkParams = buildPaginateParams(max, offset, sort, order)
+
+        def httpParams = view.params
+        offset = offset ?: httpParams.int('offset', 0)
+        max = max ?: httpParams.int('max', 10)
+        sort = sort ?: httpParams.get('sort')
+        order = order ?: httpParams.get('order')
 
         String contentType = this.contentType
         def locale = view.locale ?: Locale.ENGLISH
