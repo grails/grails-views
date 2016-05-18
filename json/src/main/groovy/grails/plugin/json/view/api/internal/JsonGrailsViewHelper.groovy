@@ -316,7 +316,7 @@ class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJson
                         PersistentCollection pc = (PersistentCollection)value
                         if(!pc.isInitialized()) continue
                     }
-                    def propertyType = ass.type
+                    def propertyType = ass.associatedEntity.javaClass
                     def childTemplate = view.templateEngine?.resolveTemplate(DefaultViewRenderer.templateNameForClass(propertyType), view.locale)
                     if(childTemplate != null) {
                         def writer = new FastStringWriter()
