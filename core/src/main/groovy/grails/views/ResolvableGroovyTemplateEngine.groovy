@@ -48,7 +48,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                                                                             .maximumWeightedCapacity(150)
                                                                             .build()
 
-    protected Map<String, Template> cachedTemplates = new ConcurrentHashMap<String, Template>()
+    protected Map<String, Template> cachedTemplates = new ConcurrentLinkedHashMap.Builder<String, Template>()
+            .maximumWeightedCapacity(150)
+            .build()
             .withDefault { String path ->
         def cls = templateResolver.resolveTemplateClass(path)
         if(cls != null) {
@@ -257,11 +259,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             Queue<String> qualifierQueue = new ArrayDeque<String>()
             qualifierQueue.addAll(qualifiers)
 
-            boolean first = true
-            while(first || qualifierQueue.peekLast() != null) {
-                first = false
-
-
+            while(qualifierQueue.peekLast() != null) {
                 boolean isEmpty = qualifierQueue.isEmpty()
                 String qualified = !isEmpty ? "_${qualifierQueue.join('_')}" : ""
                 String qualifiedLanguageSpecificPath = "${originalPath}_${language}${qualified}${extensionSuffix}"
@@ -275,6 +273,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                     if(template.is(NULL_ENTRY) && !isEmpty) {
                         qualifierQueue.removeLast()
                     }
+                    else {
+                        break
+                    }
                 }
                 else {
                     break
@@ -282,11 +283,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             }
 
             qualifierQueue.addAll(qualifiers.reverse())
-            first = true
-            while(first || qualifierQueue.peekLast() != null) {
-                first = false
-
-
+            while(qualifierQueue.peekLast() != null) {
                 boolean isEmpty = qualifierQueue.isEmpty()
                 String qualified = !isEmpty ? "_${qualifierQueue.join('_')}" : ""
                 String qualifiedLanguageSpecificPath = "${originalPath}_${language}${qualified}${extensionSuffix}"
@@ -299,6 +296,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                     template = cachedTemplates[qualifiedPath]
                     if(template.is(NULL_ENTRY) && !isEmpty) {
                         qualifierQueue.removeLast()
+                    }
+                    else {
+                        break
                     }
                 }
                 else {
