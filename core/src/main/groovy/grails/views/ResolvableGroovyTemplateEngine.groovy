@@ -282,27 +282,29 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 }
             }
 
-            qualifierQueue.addAll(qualifiers.reverse())
-            while(qualifierQueue.peekLast() != null) {
-                boolean isEmpty = qualifierQueue.isEmpty()
-                String qualified = !isEmpty ? "_${qualifierQueue.join('_')}" : ""
-                String qualifiedLanguageSpecificPath = "${originalPath}_${language}${qualified}${extensionSuffix}"
-                String qualifiedPath = "${originalPath}${qualified}${extensionSuffix}"
-                qualifiedPaths.add qualifiedPath
-                qualifiedPaths.add qualifiedLanguageSpecificPath
+            if(template == null || template.is(NULL_ENTRY)) {
+                qualifierQueue.addAll(qualifiers.reverse())
+                while(qualifierQueue.peekLast() != null) {
+                    boolean isEmpty = qualifierQueue.isEmpty()
+                    String qualified = !isEmpty ? "_${qualifierQueue.join('_')}" : ""
+                    String qualifiedLanguageSpecificPath = "${originalPath}_${language}${qualified}${extensionSuffix}"
+                    String qualifiedPath = "${originalPath}${qualified}${extensionSuffix}"
+                    qualifiedPaths.add qualifiedPath
+                    qualifiedPaths.add qualifiedLanguageSpecificPath
 
-                template = cachedTemplates[qualifiedLanguageSpecificPath]
-                if(template.is(NULL_ENTRY)) {
-                    template = cachedTemplates[qualifiedPath]
-                    if(template.is(NULL_ENTRY) && !isEmpty) {
-                        qualifierQueue.removeLast()
+                    template = cachedTemplates[qualifiedLanguageSpecificPath]
+                    if(template.is(NULL_ENTRY)) {
+                        template = cachedTemplates[qualifiedPath]
+                        if(template.is(NULL_ENTRY) && !isEmpty) {
+                            qualifierQueue.removeLast()
+                        }
+                        else {
+                            break
+                        }
                     }
                     else {
                         break
                     }
-                }
-                else {
-                    break
                 }
             }
         }
