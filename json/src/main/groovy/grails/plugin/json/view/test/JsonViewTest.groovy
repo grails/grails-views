@@ -104,6 +104,20 @@ trait JsonViewTest {
         def template = templateEngine.createTemplate(source)
         return produceResult(template, model, configurer)
     }
+
+    /**
+     * Render a template for the given source
+     *
+     * @param source The raw source of the template
+     * @param model The model
+     * @param configurer The configurer
+     *
+     * @return The result
+     */
+    JsonRenderResult render(String source, @DelegatesTo(TestRequestConfigurer) Closure configurer) {
+        def template = templateEngine.createTemplate(source)
+        return produceResult(template, Collections.emptyMap(), configurer)
+    }
     /**
      * Render one of the GSON views in the grails-app/views directory for the given arguments
      *

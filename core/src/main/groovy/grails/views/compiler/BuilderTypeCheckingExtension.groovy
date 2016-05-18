@@ -10,6 +10,7 @@ import org.codehaus.groovy.ast.expr.ClosureExpression
 import org.codehaus.groovy.ast.expr.ConstantExpression
 import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
+import org.codehaus.groovy.ast.expr.PropertyExpression
 import org.codehaus.groovy.ast.expr.TupleExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.control.SourceUnit
@@ -32,6 +33,8 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
 
         def modelTypesClassNodes = null
 
+
+
         beforeVisitClass { classNode ->
             modelTypesClassNodes = classNode.getNodeMetaData(Views.MODEL_TYPES)
             if (modelTypesClassNodes==null) {
@@ -43,6 +46,12 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
             newScope {
                 dynamicMethods = [] as Set
                 builderCalls = [] as Set
+            }
+        }
+
+        unresolvedProperty { PropertyExpression pe ->
+            if(isPropertyDynamic(pe)) {
+                return makeDynamic(pe)
             }
         }
         methodNotFound { receiver, name, argList, argTypes, call ->
@@ -84,6 +93,10 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
     }
 
     boolean isMethodDynamic(receiver, name, argList, argTypes, call) {
+        return false
+    }
+
+    boolean isPropertyDynamic(PropertyExpression propertyExpression) {
         return false
     }
 

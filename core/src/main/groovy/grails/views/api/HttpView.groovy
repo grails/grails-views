@@ -1,10 +1,9 @@
 package grails.views.api
 
-import grails.artefact.Enhances
-import grails.views.Views
+import grails.views.api.http.Parameters
 import grails.views.api.http.Request
 import grails.views.api.http.Response
-import org.springframework.http.HttpStatus
+import grails.views.api.internal.EmptyParameters
 
 /**
  * A view that is rendered in the context of an HTTP request
@@ -31,4 +30,8 @@ trait HttpView extends View {
         request
     }
 
+    /**
+     * The parameters
+     */
+    Parameters params = new EmptyParameters()
 }

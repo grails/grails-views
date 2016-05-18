@@ -12,7 +12,7 @@ model {
 response.contentType "application/hal+json"
 
 json {
-    hal.paginate(Product, productCount, max, offset, sort, order)
+    hal.paginate(Product, productCount, offset, max, sort, order)
     _embedded {
         products tmpl.product(productList ?: [])
     }

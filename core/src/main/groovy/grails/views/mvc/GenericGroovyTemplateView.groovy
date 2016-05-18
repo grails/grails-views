@@ -5,6 +5,7 @@ import grails.views.api.GrailsView
 import grails.views.api.HttpView
 import grails.views.api.http.Request
 import grails.views.api.http.Response
+import grails.views.mvc.http.DelegatingParameters
 import grails.web.http.HttpHeaders
 import grails.web.mime.MimeType
 import groovy.text.Template
@@ -76,13 +77,13 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
     }
 
     protected void prepareWritable(Writable writable, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale) {
+        final webRequest = GrailsWebRequest.lookup(httpServletRequest)
         if (writable instanceof GrailsView) {
             def grailsView = (GrailsView) writable
             grailsView.setLocale(
                 locale
             )
 
-            final webRequest = GrailsWebRequest.lookup(httpServletRequest)
             if (webRequest != null) {
                 grailsView.setActionName(
                         webRequest.actionName
@@ -96,11 +97,14 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             def httpView = (HttpView) writable
             httpView.setResponse(new HttpViewResponse(httpServletResponse))
             httpView.setRequest(new HttpViewRequest(httpServletRequest))
+            if(webRequest != null) {
+                httpView.setParams(new DelegatingParameters(webRequest.getParams()))
+            }
         }
     }
 
     private static class HttpViewRequest implements Request {
-        @Delegate final HttpServletRequest request;
+        @Delegate(excludes = ['getHeaders'], interfaces = false) final HttpServletRequest request;
 
         HttpViewRequest(HttpServletRequest request) {
             this.request = request
@@ -111,9 +115,19 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             return request.getRequestURI()
         }
 
+        @Override
+        Collection<String> getHeaders(String name) {
+            request.getHeaders(name).toList()
+        }
+        /**
+         * @return The header for the request
+         */
+        @Lazy Collection<String> headerNames =  {
+            request.getHeaderNames().toList()
+        }()
     }
     private static class HttpViewResponse implements Response {
-        final @Delegate HttpServletResponse httpServletResponse
+        final @Delegate(interfaces = false) HttpServletResponse httpServletResponse
 
         HttpViewResponse(HttpServletResponse httpServletResponse) {
             this.httpServletResponse = httpServletResponse

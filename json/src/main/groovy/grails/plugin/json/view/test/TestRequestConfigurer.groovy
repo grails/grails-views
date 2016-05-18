@@ -1,8 +1,10 @@
 package grails.plugin.json.view.test
 
 import grails.plugin.json.view.api.JsonView
+import grails.util.TypeConvertingMap
 import grails.views.api.HttpView
 import grails.views.api.http.Request
+import grails.views.mvc.http.DelegatingParameters
 import groovy.transform.CompileStatic
 import org.springframework.http.HttpMethod
 
@@ -13,7 +15,7 @@ import org.springframework.http.HttpMethod
  * @since 1.1
  */
 @CompileStatic
-class TestRequestConfigurer implements Request{
+class TestRequestConfigurer implements Request {
 
     final JsonView jsonView
 
@@ -22,6 +24,9 @@ class TestRequestConfigurer implements Request{
     String uri
     String contentType = 'application/json'
     String characterEncoding = 'UTF-8'
+    Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>().withDefault { String name ->
+        return []
+    }
 
     TestRequestConfigurer(JsonView jsonView) {
         this.jsonView = jsonView
@@ -54,9 +59,37 @@ class TestRequestConfigurer implements Request{
         return this
     }
 
+    TestRequestConfigurer header(String name, String value) {
+        this.headers.get(name).add(value)
+        return this
+    }
+
+    TestRequestConfigurer params(Map parameters) {
+        this.jsonView.setParams( new DelegatingParameters(new TypeConvertingMap(parameters)))
+        return this
+    }
+
     TestRequestConfigurer method(HttpMethod method) {
         this.method = method.toString()
         return this
     }
 
+    @Override
+    Collection<String> getHeaderNames() {
+        return headers.keySet()
+    }
+
+    @Override
+    String getHeader(String name) {
+        def headerValues = headers.get(name)
+        if(headerValues) {
+            return headerValues.get(0)
+        }
+        return null
+    }
+
+    @Override
+    Collection<String> getHeaders(String name) {
+        headers.get(name)
+    }
 }

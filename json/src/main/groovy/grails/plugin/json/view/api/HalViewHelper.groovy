@@ -123,12 +123,12 @@ class HalViewHelper {
      *
      * @param object The object to create links for
      * @param total The total number of objects to be paginated
-     * @param max The maximum number of objects to be shown
-     * @param offset The numerical offset where the page starts
-     * @param sort The field to sort on
+     * @param offset The numerical offset where the page starts (defaults to 0)
+     * @param max The maximum number of objects to be shown (defaults to 10)
+     * @param sort The field to sort on (defaults to null)
      * @param order The order in which the results are to be sorted eg: DESC or ASC
      */
-    void paginate(Object object, Integer total, Integer max, Integer offset, String sort = null, String order = null) {
+    void paginate(Object object, Integer total, Integer offset = 0, Integer max = 10,  String sort = null, String order = null) {
         Map<String, Object> linkParams = buildPaginateParams(max, offset, sort, order)
 
         String contentType = this.contentType
