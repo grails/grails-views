@@ -39,7 +39,7 @@ import java.lang.reflect.Type
  */
 @CompileStatic
 @InheritConstructors
-class JsonGrailsViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
+class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
 
     private static final String DEEP = "deep"
     private static final Set<String> TO_STRING_TYPES = [

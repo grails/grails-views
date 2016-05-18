@@ -1,12 +1,10 @@
 package grails.plugin.json.view
 
 import grails.core.DefaultGrailsApplication
-import grails.core.GrailsClass
 import grails.core.GrailsDomainClass
 import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
-import grails.plugin.json.view.api.internal.JsonGrailsViewHelper
-import org.grails.core.DefaultGrailsDomainClass
+import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.core.support.GrailsDomainConfigurationUtil
 import org.grails.datastore.gorm.config.GrailsDomainClassMappingContext
@@ -36,7 +34,7 @@ import spock.lang.Specification
 class JsonViewHelperSpec extends Specification {
     void "test render toMany association"() {
         given:"A view helper"
-        JsonGrailsViewHelper viewHelper = mockViewHelper(Team, Player)
+        DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)
         def player1 = new Player(name: "Iniesta")
         def player2 = new Player(name: "Messi")
         def team = new Team(name:"Barcelona", players: [player1, player2])
@@ -69,7 +67,7 @@ class JsonViewHelperSpec extends Specification {
     }
     void "test render toOne association"() {
         given:"A view helper"
-        JsonGrailsViewHelper viewHelper = mockViewHelper(Team, Player)
+        DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)
 
         when:"We render an object without deep argument and no child id"
 
@@ -122,7 +120,7 @@ class JsonViewHelperSpec extends Specification {
 
     void "Test render object method with customizer"() {
         given:"A view helper"
-        JsonGrailsViewHelper viewHelper = mockViewHelper(Test)
+        DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Test)
 
         when:"We render an object"
 
@@ -137,7 +135,7 @@ class JsonViewHelperSpec extends Specification {
 
     void "Test render object method with customizer when not configured as a domain"() {
         given:"A view helper"
-        JsonGrailsViewHelper viewHelper = mockViewHelper()
+        DefaultGrailsJsonViewHelper viewHelper = mockViewHelper()
 
         when:"We render an object"
 
@@ -183,7 +181,7 @@ class JsonViewHelperSpec extends Specification {
         result.toString() == '{"title":"The Stand"}'
     }
 
-    protected JsonGrailsViewHelper mockViewHelper(Class...classes) {
+    protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
         def jsonView = Mock(JsonView)
         def mappingContext = Mock(MappingContext)
 
@@ -204,7 +202,7 @@ class JsonViewHelperSpec extends Specification {
         }
         jsonView.getMappingContext() >> mappingContext
 
-        def viewHelper = new JsonGrailsViewHelper(jsonView)
+        def viewHelper = new DefaultGrailsJsonViewHelper(jsonView)
 
         def binding = new Binding()
         jsonView.getBinding() >> binding
