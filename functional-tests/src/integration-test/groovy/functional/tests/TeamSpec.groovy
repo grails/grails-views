@@ -20,7 +20,7 @@ class TeamSpec extends GebSpec{
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football"}'
+        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
     }
 
     void "Test deep association template rendering"() {
@@ -33,7 +33,7 @@ class TeamSpec extends GebSpec{
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta"},{"id":2,"name":"Messi"}],"sport":"football"}'
+        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
     }
 
     void "Test HAL rendering"() {
@@ -46,7 +46,7 @@ class TeamSpec extends GebSpec{
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
-        resp.text == '{"_links":{"self":{"href":"http://localhost:8080/teams/1","hreflang":"en_US","type":"application/hal+json"}},"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football","another":{"foo":"bar"}}'
+        resp.text == '{"_links":{"self":{"href":"http://localhost:8080/teams/1","hreflang":"en_US","type":"application/hal+json"}},"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football","another":{"foo":"bar"}}'
 
     }
 }

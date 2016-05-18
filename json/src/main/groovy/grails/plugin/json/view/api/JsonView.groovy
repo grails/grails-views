@@ -1,7 +1,7 @@
 package grails.plugin.json.view.api
 
 import grails.plugin.json.builder.StreamingJsonBuilder
-import grails.plugin.json.view.api.internal.JsonGrailsViewHelper
+import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.TemplateRenderer
 import grails.views.api.GrailsView
 
@@ -21,7 +21,7 @@ trait JsonView extends GrailsView {
     /**
      * Overrides the default helper with new methods specific to JSON building
      */
-    private GrailsJsonViewHelper viewHelper = new JsonGrailsViewHelper(this)
+    private GrailsJsonViewHelper viewHelper = new DefaultGrailsJsonViewHelper(this)
 
     /**
      * @return The default view helper
