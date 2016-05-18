@@ -22,6 +22,7 @@ import grails.web.mime.MimeUtility
 import groovy.text.TemplateEngine
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
+import org.grails.datastore.gorm.proxy.ProxyHandlerAdapter
 import org.grails.datastore.mapping.model.MappingContext
 import org.springframework.context.MessageSource
 
@@ -41,7 +42,14 @@ class GrailsViewTemplate extends WritableScriptTemplate {
     /**
      * Handlers for proxies
      */
-    ProxyHandler proxyHandler = new DefaultProxyHandler()
+    @Lazy ProxyHandler proxyHandler =  {
+        if(mappingContext != null ) {
+            return (ProxyHandler)new ProxyHandlerAdapter(mappingContext.getProxyHandler())
+        }
+        else {
+            return (ProxyHandler)new DefaultProxyHandler()
+        }
+    }()
 
     /**
      * The link generator

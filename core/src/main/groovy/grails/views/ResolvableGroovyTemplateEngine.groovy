@@ -201,7 +201,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         template.setMimeUtility(mimeUtility)
         template.setLinkGenerator(linkGenerator)
         template.setMappingContext(mappingContext)
-        template.setProxyHandler(proxyHandler)
         template.setTemplateEngine(this)
         return template
     }
