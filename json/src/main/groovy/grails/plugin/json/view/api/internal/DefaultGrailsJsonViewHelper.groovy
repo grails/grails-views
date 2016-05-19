@@ -169,18 +169,18 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             for (desc in descriptors) {
                 def readMethod = desc.readMethod
                 if (readMethod != null && desc.writeMethod != null) {
-                    def name = desc.name
-                    String qualified = "${path}${name}"
+                    def propertyName = desc.name
+                    String qualified = "${path}${propertyName}"
                     if (includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                         def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
                             def propertyType = desc.propertyType
                             boolean isArray = propertyType.isArray()
                             if(isStringType(propertyType)) {
-                                jsonDelegate.call name, value.toString()
+                                jsonDelegate.call propertyName, value.toString()
                             }
                             else if(isSimpleType(propertyType, value)) {
-                                jsonDelegate.call name, value
+                                jsonDelegate.call propertyName, value
                             }
                             else if(isArray || Iterable.isAssignableFrom(propertyType)) {
                                 Class componentType
@@ -193,22 +193,31 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                 }
 
                                 if(!Object.is(componentType) && MappingFactory.isSimpleType(componentType.name) || componentType.isEnum()) {
-                                    jsonDelegate.call(name, value)
+                                    jsonDelegate.call(propertyName, value)
                                 }
                                 else {
                                     Iterable iterable = isArray ? value as List : (Iterable)value
-                                    jsonDelegate.call(name, iterable) { child ->
+                                    jsonDelegate.call(propertyName, iterable) { child ->
                                         StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                        processSimple(embeddedDelegate, child, processedObjects, incs, excs,"${path}${name}.")
+                                        processSimple(embeddedDelegate, child, processedObjects, incs, excs,"${path}${propertyName}.")
                                     }
                                 }
                             }
                             else {
                                 if(!processedObjects.containsKey(value)) {
-                                    jsonDelegate.call( name ) {
-                                        jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                        processSimple(jsonDelegate, value, processedObjects, incs, excs,"${path}${name}.")
+                                    ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
+                                    def childTemplate = templateEngine.resolveTemplate(propertyType, view.locale)
+                                    if(childTemplate != null) {
+                                        JsonOutput.JsonUnescaped jsonUnescaped = renderChildTemplate(childTemplate, propertyType, value)
+                                        jsonDelegate.call(propertyName, jsonUnescaped)
                                     }
+                                    else {
+                                        jsonDelegate.call( propertyName ) {
+                                            jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                                            processSimple(jsonDelegate, value, processedObjects, incs, excs,"${path}${propertyName}.")
+                                        }
+                                    }
+
                                 }
                             }
                         }
