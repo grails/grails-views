@@ -101,8 +101,7 @@ dependencies {
 integrationTest {
     testLogging {
         showStandardStreams = true
-        events "failed"
-        exceptionFormat "short"
+        exceptionFormat = 'full'
     }
 }
 task wrapper(type: Wrapper) {
