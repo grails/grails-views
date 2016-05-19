@@ -4,6 +4,7 @@ import grails.util.BuildSettings
 import grails.views.TemplateResolver
 import groovy.text.Template
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.grails.io.support.GrailsResourceUtils
 
 /**
@@ -12,6 +13,7 @@ import org.grails.io.support.GrailsResourceUtils
  * @author Graeme Rocher
  */
 @CompileStatic
+@Slf4j
 class GenericGroovyTemplateResolver implements TemplateResolver {
     /**
      * The base directory to load templates in development mode
@@ -51,9 +53,10 @@ class GenericGroovyTemplateResolver implements TemplateResolver {
 
     @Override
     Class<? extends Template> resolveTemplateClass(String packageName, String path) {
-        path = resolveTemplateName(packageName, path)
+        String className = resolveTemplateName(packageName, path)
         try {
-            def cls = classLoader.loadClass(path)
+            log.debug("Attempting to load class [$className] for template [$path]")
+            def cls = classLoader.loadClass(className)
             return (Class<? extends Template>)cls
         } catch (Throwable e) {
         }

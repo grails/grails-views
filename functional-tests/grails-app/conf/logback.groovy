@@ -26,3 +26,5 @@ if(Environment.current == Environment.DEVELOPMENT) {
         logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false )
     }
 }
+
+logger "grails.views.resolve", DEBUG, ['STDOUT']
