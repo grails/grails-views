@@ -15,11 +15,11 @@
  */
 package grails.views.mvc
 
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
 import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.resolve.TemplateResolverUtils
 import grails.web.http.HttpHeaders
-import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
-import grails.web.mime.MimeUtility
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
@@ -27,10 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.servlet.LocaleResolver
 import org.springframework.web.servlet.View
 
-import javax.annotation.PreDestroy
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import java.util.concurrent.ConcurrentHashMap
 /**
  * Spring's default view resolving mechanism only accepts the view name and locale, this forces you to code around its limitations when you want to add intelligent features such as
  * version and mime type awareness.
@@ -53,7 +51,9 @@ class SmartViewResolver  {
     LocaleResolver localeResolver
 
 
-    private Map<String, GenericGroovyTemplateView> viewCache = new ConcurrentHashMap<String, GenericGroovyTemplateView>().withDefault { String path ->
+    private Map<String, GenericGroovyTemplateView> viewCache = new ConcurrentLinkedHashMap.Builder<String, GenericGroovyTemplateView>()
+                                                                                            .maximumWeightedCapacity(150)
+                                                                                            .build().withDefault { String path ->
         GenericGroovyTemplateView view = BeanUtils.instantiateClass(viewClass)
         String contentType = getContentType()
         if (contentType != null) {
@@ -71,7 +71,7 @@ class SmartViewResolver  {
     }
 
     View resolveView(String viewName, Locale locale) {
-        def url = "${viewName}${suffix}"
+        String url = "${viewName}${suffix}"
         View v = viewCache.containsKey(url) ? viewCache.get(url) : null
         if(v == null) {
             def template = resolveTemplate(url, locale)
@@ -88,21 +88,42 @@ class SmartViewResolver  {
         if(v == null) {
 
             def locale = localeResolver?.resolveLocale(request) ?: request.locale
-            def qualifiers = []
-            def version = request.getHeader(HttpHeaders.ACCEPT_VERSION)
-            MimeType mimeType = response.getMimeType()
-            if(mimeType != null && mimeType != MimeType.ALL) {
-                qualifiers.add(mimeType.extension)
-            }
-            if(version != null) {
-                qualifiers.add(version)
-            }
+            List qualifiers = buildQualifiers(request, response)
             def template = resolveTemplate(url, locale, qualifiers as String[])
             if(template != null) {
                 return viewCache.get(url)
             }
         }
         return v
+    }
+
+    View resolveView(Class type, HttpServletRequest request, HttpServletResponse response) {
+        View v = resolveView(TemplateResolverUtils.fullTemplateNameForClass(type), request, response)
+        if(v == null) {
+            v = resolveView(TemplateResolverUtils.shortTemplateNameForClass(type), request, response)
+        }
+        return v
+    }
+
+    View resolveView(Class type, Locale locale) {
+        View v = resolveView(TemplateResolverUtils.fullTemplateNameForClass(type), locale)
+        if(v == null) {
+            v = resolveView(TemplateResolverUtils.shortTemplateNameForClass(type), locale)
+        }
+        return v
+    }
+
+    protected List buildQualifiers(HttpServletRequest request, HttpServletResponse response) {
+        def qualifiers = []
+        def version = request.getHeader(HttpHeaders.ACCEPT_VERSION)
+        MimeType mimeType = response.getMimeType()
+        if (mimeType != null && mimeType != MimeType.ALL) {
+            qualifiers.add(mimeType.extension)
+        }
+        if (version != null) {
+            qualifiers.add(version)
+        }
+        qualifiers
     }
 
 

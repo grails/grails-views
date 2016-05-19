@@ -4,17 +4,14 @@ import grails.core.support.proxy.ProxyHandler
 import grails.rest.render.RenderContext
 import grails.rest.render.Renderer
 import grails.rest.render.RendererRegistry
-import grails.util.GrailsNameUtils
 import grails.views.mvc.SmartViewResolver
+import grails.views.resolve.TemplateResolverUtils
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.plugins.web.rest.render.ServletRenderContext
 import org.grails.plugins.web.rest.render.html.DefaultHtmlRenderer
 import org.springframework.web.servlet.View
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 /**
  * A renderer implementation that looks up a view from the ViewResolver
@@ -80,14 +77,9 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
 
             def cls = object.getClass()
             // Try resolve template. Example /book/_book
-            viewUri = templateNameForClass(cls)
-            view = viewResolver.resolveView(viewUri, request, response)
-
-            if(view == null) {
-                viewUri = "/${cls.name.replace('.','/')}"
-                view = viewResolver.resolveView(viewUri, request, response)
-            }
+            view = viewResolver.resolveView(cls, request, response)
         }
+
         if(view != null) {
             Map<String, Object> model = [(resolveModelVariableName(object)): object]
 
@@ -99,7 +91,6 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
     }
 
     public static String templateNameForClass(Class<?> cls) {
-        def propertyName = GrailsNameUtils.getPropertyName(cls)
-        return "/$propertyName/_$propertyName"
+        TemplateResolverUtils.shortTemplateNameForClass(cls)
     }
 }

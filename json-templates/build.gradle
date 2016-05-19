@@ -1,0 +1,51 @@
+plugins {
+    id "com.jfrog.bintray" version "1.2"
+}
+
+apply plugin:"java"
+apply plugin: 'maven-publish'
+
+ext {
+    grailsVersion = project.grailsVersion
+    gradleWrapperVersion = project.gradleWrapperVersion
+    userOrg = 'grails'
+    repo = 'grails-core'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencies {
+    compile project(':views-json')
+    compileOnly "org.grails:grails-plugin-rest:$grailsVersion"
+    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
+    compileOnly "org.grails:grails-datastore-gorm-mongodb:5.0.6.RELEASE"
+}
+
+task('compileViews', type:JavaExec) {
+    inputs.files 'src/templates'
+    outputs.files 'build/classes/main'
+    main "grails.plugin.json.view.JsonViewCompiler"
+    classpath configurations.compile + configurations.compileOnly
+    args "src/templates", "build/classes/main", "1.7", "", "", "none", "UTF-8"
+}
+
+task sourcesJar(type:Jar) {
+    classifier = 'sources'
+    from 'src/templates'
+}
+
+// no javadocs, just a workaround
+task javadocJar(type:Jar) {
+    classifier = 'javadoc'
+    from 'src/templates'
+}
+
+classes.dependsOn(compileViews)
+
+// Used for publishing to central repository, remove if not needed
+apply from:'../publishing/grailsCentralPublishing.gradle'
+apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'

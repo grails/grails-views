@@ -4,7 +4,7 @@ import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.rest.render.ContainerRenderer
 import grails.rest.render.RenderContext
 import grails.util.GrailsNameUtils
-import grails.views.mvc.renderer.DefaultViewRenderer
+import grails.views.resolve.TemplateResolverUtils
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.plugins.web.rest.render.ServletRenderContext
@@ -31,8 +31,7 @@ abstract class AbstractJsonViewContainerRenderer<C,T> extends DefaultJsonRendere
             String viewUri = "/${context.controllerName}/_${GrailsNameUtils.getPropertyName(targetType)}"
             def view = jsonViewResolver.resolveView(viewUri, context.locale)
             if(view == null) {
-                viewUri = DefaultViewRenderer.templateNameForClass(targetType)
-                view = jsonViewResolver.resolveView(viewUri, context.locale)
+                view = jsonViewResolver.resolveView(targetType, context.locale)
             }
 
             if(view != null) {

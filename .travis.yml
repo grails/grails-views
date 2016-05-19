@@ -1,5 +1,7 @@
 language: groovy
 sudo: false
+services:
+- mongodb
 cache:
   directories:
     - $HOME/.gradle

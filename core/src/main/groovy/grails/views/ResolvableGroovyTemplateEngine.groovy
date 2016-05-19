@@ -8,6 +8,7 @@ import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
 import grails.views.resolve.GenericGroovyTemplateResolver
 import grails.views.resolve.GenericViewUriResolver
+import grails.views.resolve.TemplateResolverUtils
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeUtility
 import groovy.text.Template
@@ -18,15 +19,11 @@ import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.codehaus.groovy.control.customizers.ImportCustomizer
 import org.grails.datastore.mapping.model.MappingContext
-import org.grails.io.watch.DirectoryWatcher
 import org.grails.web.mime.DefaultMimeUtility
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.MessageSource
 import org.springframework.context.support.StaticMessageSource
-
-import javax.annotation.PreDestroy
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A TemplateEngine that can resolve templates using the configured TemplateResolver
@@ -45,11 +42,11 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
     }
 
     protected Map<List, Template> resolveCache = new ConcurrentLinkedHashMap.Builder<List, Template>()
-                                                                            .maximumWeightedCapacity(150)
+                                                                            .maximumWeightedCapacity(250)
                                                                             .build()
 
     protected Map<String, Template> cachedTemplates = new ConcurrentLinkedHashMap.Builder<String, Template>()
-            .maximumWeightedCapacity(150)
+            .maximumWeightedCapacity(250)
             .build()
             .withDefault { String path ->
         def cls = templateResolver.resolveTemplateClass(path)
@@ -203,6 +200,22 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         template.setMappingContext(mappingContext)
         template.setTemplateEngine(this)
         return template
+    }
+
+    /**
+     * Resolves a template for the given object
+     *
+     * @param object The object
+     * @param qualifiers One or many qualifiers to scope the view (for example the locale, the version etc.)
+     *
+     * @return The template or null if it doesn't exist
+     */
+    Template resolveTemplate(Class type, Locale locale, String...qualifiers) {
+        Template t = resolveTemplate(TemplateResolverUtils.fullTemplateNameForClass(type), locale, qualifiers)
+        if(t == null) {
+            t = resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(type), locale, qualifiers)
+        }
+        return t
     }
 
     /**

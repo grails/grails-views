@@ -8,29 +8,29 @@ import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
 import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
+import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewException
 import grails.views.api.GrailsView
 import grails.views.api.internal.DefaultGrailsViewHelper
-import grails.views.mvc.renderer.DefaultViewRenderer
+import grails.views.resolve.TemplateResolverUtils
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
+import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.collection.PersistentCollection
-import org.grails.datastore.mapping.engine.internal.MappingUtils
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.model.types.Custom
 import org.grails.datastore.mapping.model.types.Embedded
 import org.grails.datastore.mapping.model.types.ToOne
 import org.springframework.util.ReflectionUtils
 
 import java.beans.PropertyDescriptor
-import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -76,7 +76,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             return JsonOutput.unescaped("null")
         }
 
-        def entity = jsonView.mappingContext?.getPersistentEntity(object.getClass().name)
+        def entity = findEntity(object)
         def writer = new FastStringWriter()
         List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
         List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
@@ -145,6 +145,15 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             if(rootRender) {
                 bindingVariables.remove(PROCESSED_OBJECT_VARIABLE)
             }
+        }
+    }
+
+    protected PersistentEntity findEntity(Object object) {
+        def clazz = object.getClass()
+        try {
+            return GormEnhancer.findEntity(clazz)
+        } catch (Throwable e) {
+            return ((JsonView)view)?.mappingContext?.getPersistentEntity(clazz.name)
         }
     }
 
@@ -250,6 +259,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                 jsonDelegate.call(idName, idValue)
             }
         }
+        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
 
         for (prop in entity.persistentProperties) {
             def propertyName = prop.name
@@ -259,12 +269,26 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             def value = ((GroovyObject) object).getProperty(propertyName)
             if(value == null) continue
 
+            def locale = view.locale
             if (!(prop instanceof Association)) {
-                if(isStringType(prop.type)) {
-                    jsonDelegate.call propertyName, value.toString()
+                if(prop instanceof Custom) {
+                    def propertyType = value.getClass()
+                    def childTemplate = templateEngine.resolveTemplate(propertyType, locale)
+                    if(childTemplate != null) {
+                        JsonOutput.JsonUnescaped jsonUnescaped = renderChildTemplate(childTemplate, propertyType, value)
+                        jsonDelegate.call(propertyName, jsonUnescaped)
+                    }
+                    else {
+                        jsonDelegate.call(propertyName, value)
+                    }
                 }
                 else {
-                    jsonDelegate.call(propertyName, value)
+                    if(isStringType(prop.type)) {
+                        jsonDelegate.call propertyName, value.toString()
+                    }
+                    else {
+                        jsonDelegate.call(propertyName, value)
+                    }
                 }
             } else {
                 Association ass = (Association) prop
@@ -272,12 +296,10 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
                 if (ass instanceof Embedded) {
                     def propertyType = ass.type
-                    def childTemplate = view.templateEngine?.resolveTemplate(DefaultViewRenderer.templateNameForClass(propertyType), view.locale)
+                    def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
                     if(childTemplate != null) {
-                        def childView = prepareWritable(childTemplate, [(GrailsNameUtils.getPropertyName(propertyType)): value])
-                        def writer = new FastStringWriter()
-                        childView.writeTo(writer)
-                        jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                        JsonOutput.JsonUnescaped jsonUnescaped = renderChildTemplate(childTemplate, propertyType, value)
+                        jsonDelegate.call(propertyName, jsonUnescaped)
                     }
                     else {
                         jsonDelegate.call(propertyName) {
@@ -300,7 +322,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         ProxyHandler proxyHandler = jsonView.proxyHandler
                         def associatedId = ((GroovyObject)value).getProperty(associationIdName)
 
-                        def childTemplate = view.templateEngine?.resolveTemplate(DefaultViewRenderer.templateNameForClass(propertyType), view.locale)
+                        def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
                         if(childTemplate != null) {
                             def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
                             def childView = prepareWritable(childTemplate, model)
@@ -335,7 +357,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         }
                     }
                     def propertyType = ass.associatedEntity.javaClass
-                    def childTemplate = view.templateEngine?.resolveTemplate(DefaultViewRenderer.templateNameForClass(propertyType), view.locale)
+                    def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
                     if(childTemplate != null) {
                         def writer = new FastStringWriter()
                         def iterator = ((Iterable) value).iterator()
@@ -379,6 +401,14 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
             }
         }
+    }
+
+    protected JsonOutput.JsonUnescaped renderChildTemplate(Template childTemplate, Class propertyType, value) {
+        def childView = prepareWritable(childTemplate, [(GrailsNameUtils.getPropertyName(propertyType)): value])
+        def writer = new FastStringWriter()
+        childView.writeTo(writer)
+        def jsonUnescaped = JsonOutput.unescaped(writer.toString())
+        jsonUnescaped
     }
 
     @Override

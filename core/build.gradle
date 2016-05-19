@@ -54,6 +54,8 @@ dependencies {
     compile "org.grails:grails-web-url-mappings:$grailsVersion"
     provided "org.grails:grails-plugin-rest:$grailsVersion"
     provided 'javax.servlet:javax.servlet-api:3.1.0'
+
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
 }
 
 task sourcesJar(type:Jar) {

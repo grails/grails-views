@@ -3,7 +3,11 @@ publishing {
         maven(MavenPublication) {
             pom.withXml {
                 def pomNode = asNode()
-                pomNode.dependencyManagement.replaceNode {}
+                try {
+                    pomNode.dependencyManagement.replaceNode {}
+                } catch (Throwable e) {
+                    // ignore
+                }
 
                 // simply remove dependencies without a version
                 // version-less dependencies are handled with dependencyManagement
@@ -11,7 +15,11 @@ publishing {
                 pomNode.dependencies.dependency.findAll {
                     it.version.text().isEmpty()
                 }.each {
-                    it.replaceNode {}
+                    try {
+                        it.replaceNode {}
+                    } catch (Throwable e) {
+                        // ignore
+                    }
                 }
             }
             artifactId project.name

@@ -53,6 +53,13 @@ dependencyManagement {
     }
     applyMavenExclusions false
 }
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if(details.requested.group == 'org.grails' && details.requested.name.startsWith('grails-datastore')) {
+            details.useVersion("5.0.7.BUILD-SNAPSHOT")
+        }
+    }
+}
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-logging"
@@ -62,15 +69,22 @@ dependencies {
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
 
-    compile "org.grails.plugins:hibernate"
+    compile "org.grails.plugins:hibernate4:5.0.7.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:mongodb:5.0.7.BUILD-SNAPSHOT"
     compile "org.grails.plugins:cache"
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
+
+
+//    compile "org.grails:grails-datastore-gorm-mongodb:5.0.6.RELEASE"
+
     compile project(":views-json")
     compile project(":views-markup")
     compile project(":views-functional-tests-plugin")
 
     runtime "org.grails.plugins:asset-pipeline"
+
+    runtime project(":views-json-templates")
 
     testCompile 'org.grails:grails-datastore-rest-client:4.0.6.RELEASE'
 
