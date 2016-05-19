@@ -1,0 +1,11 @@
+Since JSON views are compiled all of a plugin's views and templates are available for use in your applications.
+
+==== Customizing the Compile Task
+NOTE: Unless otherwise configured, the project name of the plugin (the gradle `project.name`) is used as the `packageName`.  The view/template resolution mechanism attempts to use the Plugin's short name (`plugin.fileSystemShortName`) to resolve the resource.  If the two do not match it is neccesary to configure this package name to match the plugins' short name.
+You would accomplish this by customizing the `compileGsonViews` task in the plugin's `build.gradle`
+[source,groovy]
+----
+compileGsonViews {
+    packageName = "my-plugin-name"
+}
+----
