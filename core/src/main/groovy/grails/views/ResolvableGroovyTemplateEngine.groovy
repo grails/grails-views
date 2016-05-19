@@ -324,9 +324,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 return resolveTemplate(path, locale, qualifiers)
             }
             else {
-                for(p in qualifiedPaths) {
-                    cachedTemplates.put(p, template)
-                }
                 if(shouldCache) {
                     resolveCache.put(cacheKey, template)
                 }
