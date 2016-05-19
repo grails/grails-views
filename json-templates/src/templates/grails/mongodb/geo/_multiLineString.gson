@@ -1,0 +1,13 @@
+/**
+ * A template for rendering a GeoJSON MultiLineString in MongoDB
+ */
+import grails.mongodb.geo.*
+
+model {
+    MultiLineString multiLineString
+}
+
+json {
+    type "MultiLineString"
+    coordinates multiLineString.asList()
+}

@@ -1,0 +1,13 @@
+/**
+ * A template for rendering a GeoJSON MultiPoint in MongoDB
+ */
+import grails.mongodb.geo.*
+
+model {
+    MultiPolygon multiPolygon
+}
+
+json {
+    type "MultiPolygon"
+    coordinates multiPolygon.asList()
+}

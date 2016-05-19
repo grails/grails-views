@@ -1,0 +1,13 @@
+/**
+ * A template for rendering a GeoJSON Polygon in MongoDB
+ */
+import grails.mongodb.geo.*
+
+model {
+    Polygon polygon
+}
+
+json {
+    type "Polygon"
+    coordinates polygon.asList()
+}
