@@ -269,7 +269,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
         def idName = entity.identity?.name
         String idQualified = "${path}${idName}"
-        if(includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
+        if(idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
 
             def idValue = ((GroovyObject) object).getProperty(idName)
             if(idValue != null) {
