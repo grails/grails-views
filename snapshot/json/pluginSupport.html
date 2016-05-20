@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Untitled</title>
+<title>Customizing the Compile Task</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -422,21 +422,42 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-
+<ul class="sectlevel3">
+<li><a href="#_customizing_the_compile_task">Customizing the Compile Task</a></li>
+</ul>
 </div>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails Views project provides additional view technologies to the Grails framework, including JSON and Markup views.</p>
+<p>Since JSON views are compiled all of a plugin&#8217;s views and templates are available for use in your applications.</p>
 </div>
 <div class="paragraph">
-<p>JSON views allow rendering of JSON responses using Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
+<p>The view resolution will look through all of the application&#8217;s configured plugins for views that match a particular name.</p>
+</div>
+<div class="sect3">
+<h4 id="_customizing_the_compile_task">Customizing the Compile Task</h4>
+<div class="paragraph">
+<p>Unless otherwise configured, the project name of the plugin (the gradle <code>project.name</code>) is used as the <code>packageName</code> when compiling JSON views.</p>
 </div>
 <div class="paragraph">
-<p>Markup views allow rendering of XML responses using Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/text/markup/MarkupTemplateEngine.html">MarkupTemplateEngine</a>.</p>
+<p>In Gradle <code>project.name</code> is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.</p>
 </div>
 <div class="paragraph">
-<p>However the core of the project is extensible for potentially any kind of view implementation that is based on a Groovy DSL. The following sections cover usage of Groovy JSON views.</p>
+<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views with that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
+</div>
+<div class="paragraph">
+<p>To resolve this issue you can customize the <code>compileGsonViews</code> task in the plugin&#8217;s <code>build.gradle</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compileGsonViews {
+    packageName = "foo-bar"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By setting the <code>packageName</code> property to correctly match the convention of the plugin named (<code>FooBarGrailsPlugin</code> maps to <code>foo-bar</code>) view resolution will succeed.</p>
+</div>
 </div>
 </div>
 <div id="footer">

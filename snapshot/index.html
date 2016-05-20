@@ -531,11 +531,12 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_json_view_api">2.6. JSON View API</a></li>
 <li><a href="#_content_negotiation">2.7. Content Negotiation</a></li>
 <li><a href="#_hal_support">2.8. HAL Support</a></li>
-<li><a href="#_pagination">2.9. Pagination</a></li>
-<li><a href="#_the_jsontemplateengine">2.10. The JsonTemplateEngine</a></li>
-<li><a href="#_static_compilation">2.11. Static Compilation</a></li>
-<li><a href="#_configuration">2.12. Configuration</a></li>
-<li><a href="#_intellij_support">2.13. IntelliJ Support</a></li>
+<li><a href="#_the_jsontemplateengine">2.9. The JsonTemplateEngine</a></li>
+<li><a href="#_static_compilation">2.10. Static Compilation</a></li>
+<li><a href="#_testing">2.11. Testing</a></li>
+<li><a href="#_plugin_support">2.12. Plugin Support</a></li>
+<li><a href="#_configuration">2.13. Configuration</a></li>
+<li><a href="#_intellij_support">2.14. IntelliJ Support</a></li>
 </ul>
 </li>
 <li><a href="#_markup_views">3. Markup Views</a>
@@ -609,6 +610,25 @@ json([<span class="integer">1</span>,<span class="integer">2</span>,<span class=
 <h3 id="_version_history">2.2. Version History</h3>
 <div class="paragraph">
 <p>The current release is 1.1.0-SNAPSHOT. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>1.1.0</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Support for easily testing JSON views with <code>JsonViewTest</code></p>
+</li>
+<li>
+<p>Pagination support in HAL</p>
+</li>
+<li>
+<p>Ability to access HTTP parameters and headers</p>
+</li>
+<li>
+<p>Global template support</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>1.0.0</strong></p>
@@ -1026,7 +1046,33 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_default_static_imports">2.6.3. Default Static Imports</h4>
+<h4 id="_accessing_the_request">2.6.3. Accessing the Request</h4>
+<div class="paragraph">
+<p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json.person {
+ name <span class="string"><span class="delimiter">&quot;</span><span class="content">bob</span><span class="delimiter">&quot;</span></span>
+ userAgent request.getHeader(<span class="string"><span class="delimiter">'</span><span class="content">User-Agent</span><span class="delimiter">'</span></span>)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Parameters can be accessed via the <code>params</code> object which is an instance of <a href="api/grails/views/api/http/Parameters.html">Parameters</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json.person {
+ name <span class="string"><span class="delimiter">&quot;</span><span class="content">bob</span><span class="delimiter">&quot;</span></span>
+ first params.int(<span class="string"><span class="delimiter">'</span><span class="content">offset</span><span class="delimiter">'</span></span>, <span class="integer">0</span>)
+ sort params.get(<span class="string"><span class="delimiter">'</span><span class="content">sort</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_default_static_imports">2.6.4. Default Static Imports</h4>
 <div class="paragraph">
 <p>The following classes' static properties are imported by default:</p>
 </div>
@@ -1061,7 +1107,7 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_i18n_locale_integration">2.6.4. I18n &amp; Locale Integration</h4>
+<h4 id="_i18n_locale_integration">2.6.5. I18n &amp; Locale Integration</h4>
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
 </div>
@@ -1356,9 +1402,8 @@ json {
 </div>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_pagination">2.9. Pagination</h3>
+<div class="sect3">
+<h4 id="_hal_pagination">2.8.4. HAL Pagination</h4>
 <div class="paragraph">
 <p>The JSON views plugin for Grails provides navigable pagination support.
 Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
@@ -1371,10 +1416,10 @@ Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>
 <pre class="CodeRay highlight"><code data-lang="groovy">model {
     <span class="predefined-type">Iterable</span>&lt;<span class="predefined-type">Book</span>&gt; bookList
     <span class="predefined-type">Integer</span> bookCount
-    <span class="predefined-type">Integer</span> max
-    <span class="predefined-type">Integer</span> offset
-    <span class="predefined-type">String</span> sort
-    <span class="predefined-type">String</span> order
+    <span class="predefined-type">Integer</span> max <span class="comment">// optional, defaults to 10</span>
+    <span class="predefined-type">Integer</span> offset <span class="comment">// optional, defaults to 0</span>
+    <span class="predefined-type">String</span> sort <span class="comment">// optional</span>
+    <span class="predefined-type">String</span> order <span class="comment">// optional</span>
 }
 json {
     hal.paginate(<span class="predefined-type">Book</span>, bookCount, max, offset, sort, order)
@@ -1441,8 +1486,9 @@ Likewise the <code>prev</code> and <code>next</code> links are only present when
 </table>
 </div>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_the_jsontemplateengine">2.10. The JsonTemplateEngine</h3>
+<h3 id="_the_jsontemplateengine">2.9. The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
@@ -1467,7 +1513,7 @@ JsonViewTemplateEngine templateEngine
 </div>
 </div>
 <div class="sect2">
-<h3 id="_static_compilation">2.11. Static Compilation</h3>
+<h3 id="_static_compilation">2.10. Static Compilation</h3>
 <div class="paragraph">
 <p>JSON views are statically compiled. You can disable static compilation if you prefer by setting <code>grails.views.json.compileStatic</code>:</p>
 </div>
@@ -1507,7 +1553,119 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration">2.12. Configuration</h3>
+<h3 id="_testing">2.11. Testing</h3>
+<div class="paragraph">
+<p>Although generally testing can be done using functional tests via an HTTP client, the JSON views plugin also provides a trait which helps in writing either unit or integration tests.</p>
+</div>
+<div class="paragraph">
+<p>To use the trait import the <code>grails.plugin.json.view.test.JsonViewTest</code> class and apply it to any Spock or JUnit test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">grails.plugin.json.view.test.*</span>
+<span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
+<span class="type">class</span> <span class="class">MySpec</span> <span class="directive">extends</span> Specification <span class="directive">implements</span> JsonViewTest {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The trait provides a number of different <code>render</code> method implementations that can either render a JSON view found in <code>grails-app/views</code> or render an inline String. For example to render an inline template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">void</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Test render a raw GSON view</span><span class="delimiter">&quot;</span></span>() {
+    <span class="key">when</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A gson view is rendered</span><span class="delimiter">&quot;</span></span>
+    JsonRenderResult result = render <span class="string"><span class="delimiter">'''</span><span class="content">
+        model {
+            String person
+        }
+        json.person {
+            name person
+        }
+</span><span class="delimiter">'''</span></span>, [<span class="key">person</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">bob</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="key">then</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">The json is correct</span><span class="delimiter">&quot;</span></span>
+    result.json.person.name == <span class="string"><span class="delimiter">'</span><span class="content">bob</span><span class="delimiter">'</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the <code>render</code> method to return a <code>JsonRenderResult</code> passing in a String that is the inline template and a map that is the model</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Assert the parsed JSON, represented by the <code>json</code> property, is correct</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To render an existing view or template pass use named arguments to specify an absolute path to either a template or a view:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">when</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A gson view is rendered</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> result = render(<span class="key">template</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/template</span><span class="delimiter">&quot;</span></span>, <span class="key">model</span>:[<span class="key">age</span>:<span class="integer">10</span>])
+
+<span class="key">then</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">The json is correct</span><span class="delimiter">&quot;</span></span>
+result.json.name == <span class="string"><span class="delimiter">'</span><span class="content">Fred</span><span class="delimiter">'</span></span>
+result.json.age == <span class="integer">10</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are writing a unit test, and the model involves a domain class, you may need to add the domain class to the <code>mappingContext</code> object in order for it to be rendered correctly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">when</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">A gson view is rendered for a domain class</span><span class="delimiter">&quot;</span></span>
+mappingContext.addPersistentEntity(MyDomain)
+<span class="keyword">def</span> result = render(<span class="key">template</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/template</span><span class="delimiter">&quot;</span></span>, <span class="key">model</span>:[<span class="key">myDomain</span>:MyDomain])
+
+<span class="key">then</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">The json is correct</span><span class="delimiter">&quot;</span></span>
+result.json.name == <span class="string"><span class="delimiter">'</span><span class="content">Fred</span><span class="delimiter">'</span></span>
+result.json.age == <span class="integer">10</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plugin_support">2.12. Plugin Support</h3>
+<div class="paragraph">
+<p>Since JSON views are compiled all of a plugin&#8217;s views and templates are available for use in your applications.</p>
+</div>
+<div class="paragraph">
+<p>The view resolution will look through all of the application&#8217;s configured plugins for views that match a particular name.</p>
+</div>
+<div class="sect3">
+<h4 id="_customizing_the_compile_task">2.12.1. Customizing the Compile Task</h4>
+<div class="paragraph">
+<p>Unless otherwise configured, the project name of the plugin (the gradle <code>project.name</code>) is used as the <code>packageName</code> when compiling JSON views.</p>
+</div>
+<div class="paragraph">
+<p>In Gradle <code>project.name</code> is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.</p>
+</div>
+<div class="paragraph">
+<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views with that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
+</div>
+<div class="paragraph">
+<p>To resolve this issue you can customize the <code>compileGsonViews</code> task in the plugin&#8217;s <code>build.gradle</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">compileGsonViews {
+    packageName = <span class="string"><span class="delimiter">&quot;</span><span class="content">foo-bar</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By setting the <code>packageName</code> property to correctly match the convention of the plugin named (<code>FooBarGrailsPlugin</code> maps to <code>foo-bar</code>) view resolution will succeed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">2.13. Configuration</h3>
 <div class="paragraph">
 <p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. For example:</p>
 </div>
@@ -1541,7 +1699,7 @@ json {
 <p>See the API for <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html">GroovyForkOptions</a> for more information.</p>
 </div>
 <div class="sect3">
-<h4 id="_changing_the_view_base_class">2.12.1. Changing the view base class</h4>
+<h4 id="_changing_the_view_base_class">2.13.1. Changing the view base class</h4>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -1559,7 +1717,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_adding_new_helper_methods_via_traits">2.12.2. Adding New Helper Methods via Traits</h4>
+<h4 id="_adding_new_helper_methods_via_traits">2.13.2. Adding New Helper Methods via Traits</h4>
 <div class="paragraph">
 <p>Alternatively, rather than modifying the base class, you can instead just add new methods via traits.</p>
 </div>
@@ -1605,7 +1763,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_intellij_support">2.13. IntelliJ Support</h3>
+<h3 id="_intellij_support">2.14. IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
@@ -1769,7 +1927,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-19 07:11:25 UTC
+Last updated 2016-05-20 08:24:16 UTC
 </div>
 </div>
 </body>

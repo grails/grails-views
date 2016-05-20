@@ -427,16 +427,79 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails Views project provides additional view technologies to the Grails framework, including JSON and Markup views.</p>
+<p>Although generally testing can be done using functional tests via an HTTP client, the JSON views plugin also provides a trait which helps in writing either unit or integration tests.</p>
 </div>
 <div class="paragraph">
-<p>JSON views allow rendering of JSON responses using Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
+<p>To use the trait import the <code>grails.plugin.json.view.test.JsonViewTest</code> class and apply it to any Spock or JUnit test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.plugin.json.view.test.*
+import spock.lang.Specification
+class MySpec extends Specification implements JsonViewTest {
+    ...
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Markup views allow rendering of XML responses using Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/text/markup/MarkupTemplateEngine.html">MarkupTemplateEngine</a>.</p>
+<p>The trait provides a number of different <code>render</code> method implementations that can either render a JSON view found in <code>grails-app/views</code> or render an inline String. For example to render an inline template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">void "Test render a raw GSON view"() {
+    when:"A gson view is rendered"
+    JsonRenderResult result = render '''
+        model {
+            String person
+        }
+        json.person {
+            name person
+        }
+''', [person:"bob"] <i class="conum" data-value="1"></i><b>(1)</b>
+
+    then:"The json is correct"
+    result.json.person.name == 'bob' <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the <code>render</code> method to return a <code>JsonRenderResult</code> passing in a String that is the inline template and a map that is the model</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Assert the parsed JSON, represented by the <code>json</code> property, is correct</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>However the core of the project is extensible for potentially any kind of view implementation that is based on a Groovy DSL. The following sections cover usage of Groovy JSON views.</p>
+<p>To render an existing view or template pass use named arguments to specify an absolute path to either a template or a view:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">when:"A gson view is rendered"
+def result = render(template: "/path/to/template", model:[age:10])
+
+then:"The json is correct"
+result.json.name == 'Fred'
+result.json.age == 10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are writing a unit test, and the model involves a domain class, you may need to add the domain class to the <code>mappingContext</code> object in order for it to be rendered correctly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">when:"A gson view is rendered for a domain class"
+mappingContext.addPersistentEntity(MyDomain)
+def result = render(template: "/path/to/template", model:[myDomain:MyDomain])
+
+then:"The json is correct"
+result.json.name == 'Fred'
+result.json.age == 10</code></pre>
+</div>
 </div>
 </div>
 <div id="footer">
