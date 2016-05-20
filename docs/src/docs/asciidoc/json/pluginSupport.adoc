@@ -1,11 +1,27 @@
+
+
 Since JSON views are compiled all of a plugin's views and templates are available for use in your applications.
 
+The view resolution will look through all of the application's configured plugins for views that match a particular name.
+
+
 ==== Customizing the Compile Task
-NOTE: Unless otherwise configured, the project name of the plugin (the gradle `project.name`) is used as the `packageName`.  The view/template resolution mechanism attempts to use the Plugin's short name (`plugin.fileSystemShortName`) to resolve the resource.  If the two do not match it is neccesary to configure this package name to match the plugins' short name.
-You would accomplish this by customizing the `compileGsonViews` task in the plugin's `build.gradle`
+
+
+Unless otherwise configured, the project name of the plugin (the gradle `project.name`) is used as the `packageName` when compiling JSON views.
+
+
+In Gradle `project.name` is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.
+
+For example consider a plugin named `FooBarGrailsPlugin`, in this case Grails will search for views with that match the plugin name `foo-bar`. However, if the directory where the plugin is located is called `fooBar` instead of `foo-bar` then view resolution will fail and the view will not be found when the plugin is installed into an application.
+
+To resolve this issue you can customize the `compileGsonViews` task in the plugin's `build.gradle`
+
 [source,groovy]
 ----
 compileGsonViews {
-    packageName = "my-plugin-name"
+    packageName = "foo-bar"
 }
 ----
+
+By setting the `packageName` property to correctly match the convention of the plugin named (`FooBarGrailsPlugin` maps to `foo-bar`) view resolution will succeed.
