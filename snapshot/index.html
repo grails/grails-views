@@ -1679,32 +1679,32 @@ result.json.age == <span class="integer">10</span></code></pre>
 <pre class="CodeRay highlight"><code data-lang="groovy">buildscript {
     repositories {
         mavenLocal()
-        maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://repo.grails.org/grails/core</span><span class="delimiter">&quot;</span></span> }
+        maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:views-gradle:{version}</span><span class="delimiter">&quot;</span></span>
+        classpath "org.grails.plugins:views-gradle:1.1.0-SNAPSHOT"
     }
 }
 
-<span class="keyword">import</span> <span class="include">grails.views.gradle.json.*</span>
+import grails.views.gradle.json.*
 
-apply <span class="key">plugin</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">java</span><span class="delimiter">&quot;</span></span>
+apply plugin:"java"
 
 repositories {
     mavenLocal()
-    maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://repo.grails.org/grails/core</span><span class="delimiter">&quot;</span></span> }
+    maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencies {
-    compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:views-json:{version}</span><span class="delimiter">&quot;</span></span>
-    compileOnly <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails:grails-plugin-rest:3.1.7</span><span class="delimiter">&quot;</span></span>
-    compileOnly <span class="string"><span class="delimiter">&quot;</span><span class="content">javax.servlet:javax.servlet-api:3.0.1</span><span class="delimiter">&quot;</span></span>
+    compile "org.grails.plugins:views-json:1.1.0-SNAPSHOT"
+    compileOnly "org.grails:grails-plugin-rest:3.1.7"
+    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
 
-task( compileViews, <span class="key">type</span>:JsonViewCompilerTask ) {
-    source = project.file(<span class="string"><span class="delimiter">'</span><span class="content">src/main/gson</span><span class="delimiter">'</span></span>)
-    destinationDir = project.file(<span class="string"><span class="delimiter">'</span><span class="content">build/classes/main</span><span class="delimiter">'</span></span>)
-    packageName = <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+task( compileViews, type:JsonViewCompilerTask ) {
+    source = project.file('src/main/gson')
+    destinationDir = project.file('build/classes/main')
+    packageName = ""
     classpath = configurations.compile + configurations.compileOnly
 }
 classes.dependsOn compileViews</code></pre>
@@ -1990,7 +1990,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-20 12:26:12 UTC
+Last updated 2016-05-20 14:21:19 UTC
 </div>
 </div>
 </body>
