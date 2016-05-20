@@ -54,7 +54,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
     protected void compile() {
         def projectPackageNames = getProjectPackageNames(project.projectDir)
 
-        if(!packageName) {
+        if(packageName == null) {
             packageName = project.name
             if(!packageName) {
                 packageName = project.projectDir.canonicalFile.name
