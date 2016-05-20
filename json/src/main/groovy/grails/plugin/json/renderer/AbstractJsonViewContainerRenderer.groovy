@@ -4,6 +4,7 @@ import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.rest.render.ContainerRenderer
 import grails.rest.render.RenderContext
 import grails.util.GrailsNameUtils
+import grails.views.Views
 import grails.views.resolve.TemplateResolverUtils
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
@@ -36,6 +37,11 @@ abstract class AbstractJsonViewContainerRenderer<C,T> extends DefaultJsonRendere
 
             if(view != null) {
                 Map<String, Object> model = [(resolveModelName()): object]
+                def contextArguments = context.getArguments()
+                def contextModel = contextArguments?.get(Views.MODEL)
+                if(contextModel instanceof Map) {
+                    model.putAll((Map)contextModel)
+                }
                 def webRequest = ((ServletRenderContext) context).getWebRequest()
 
                 def request = webRequest.currentRequest
