@@ -206,7 +206,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                             else {
                                 if(!processedObjects.containsKey(value)) {
                                     ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
-                                    def childTemplate = templateEngine.resolveTemplate(propertyType, view.locale)
+                                    def childTemplate = templateEngine?.resolveTemplate(propertyType, view.locale)
                                     if(childTemplate != null) {
                                         JsonOutput.JsonUnescaped jsonUnescaped = renderChildTemplate(childTemplate, propertyType, value)
                                         jsonDelegate.call(propertyName, jsonUnescaped)
