@@ -91,6 +91,9 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
                 grailsView.setControllerName(
                         webRequest.controllerName
                 )
+                grailsView.setControllerNamespace(
+                        webRequest.controllerNamespace
+                )
             }
         }
         if (writable instanceof HttpView) {
