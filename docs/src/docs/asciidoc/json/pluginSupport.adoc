@@ -33,7 +33,7 @@ You can create global templates that should apply to all types of a particular c
 
 Below is an example Gradle build that adds a `compileViews` task for templates located into `src/main/gson`:
 
-[source,groovy]
+[source,groovy,subs="attributes"]
 ----
 buildscript {
     repositories {
