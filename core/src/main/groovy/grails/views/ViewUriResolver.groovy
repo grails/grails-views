@@ -17,4 +17,16 @@ interface ViewUriResolver {
      * @return The template URI
      */
     String resolveTemplateUri(String controllerName, String templateName)
+
+    /**
+     * Resolves a template URI for the given path
+     *
+     * Example: assert resolveTemplateUri('api', 'foo', 'bar') == /api/foo/_bar.gson
+     *
+     * @param controllerNamespace The controller controllerNamespace
+     * @param controllerName The controller name
+     * @param path The path to the template
+     * @return The template URI
+     */
+    String resolveTemplateUri(String controllerNamespace, String controllerName, String templateName)
 }
