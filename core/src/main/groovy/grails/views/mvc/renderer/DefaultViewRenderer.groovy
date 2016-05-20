@@ -67,6 +67,9 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
 
         String viewUri = "/${context.controllerName}/${viewName}"
         def webRequest = ((ServletRenderContext) context).getWebRequest()
+        if (webRequest.controllerNamespace) {
+            viewUri = "/${webRequest.controllerNamespace}" + viewUri
+        }
 
         def request = webRequest.currentRequest
         def response = webRequest.currentResponse
