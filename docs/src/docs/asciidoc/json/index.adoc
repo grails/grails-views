@@ -42,6 +42,10 @@ include::staticCompilation.adoc[]
 
 include::testing.adoc[]
 
+=== Plugin Support
+
+include::pluginSupport.adoc[]
+
 === Configuration
 
 include::configuration.adoc[]
