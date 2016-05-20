@@ -19,6 +19,8 @@ import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
 import org.grails.datastore.mapping.model.types.Custom
+import org.grails.datastore.mapping.model.types.Embedded
+import org.grails.datastore.mapping.model.types.EmbeddedCollection
 import org.grails.datastore.mapping.model.types.Simple
 import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
@@ -222,9 +224,8 @@ class DefaultHalViewHelper implements HalViewHelper {
                             excs.add(propertyName)
                             jsonDelegate.call(propertyName) {
                                 writeLinks(delegate, embeddedObject, this.contentType)
-                                for(prop in associatedEntity.persistentProperties) {
-                                    renderProperty(embeddedObject, prop, associationReflector, (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate())
-                                }
+                                def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                                renderEntityProperties(associatedEntity, embeddedObject, associationReflector, associationJsonDelegate)
                             }
 
                         }
@@ -232,9 +233,8 @@ class DefaultHalViewHelper implements HalViewHelper {
                             if(embeddedObject instanceof Iterable) {
                                 excs.add(propertyName)
                                 jsonDelegate.call(propertyName, (Iterable)embeddedObject) { e ->
-                                    for(prop in associatedEntity.persistentProperties) {
-                                        renderProperty(e, prop, associationReflector, (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate())
-                                    }
+                                    def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                                    renderEntityProperties(associatedEntity, e, associationReflector, associationJsonDelegate)
                                 }
                             }
                         }
@@ -274,6 +274,12 @@ class DefaultHalViewHelper implements HalViewHelper {
         }
     }
 
+    protected void renderEntityProperties(PersistentEntity entity, Object instance, EntityReflector entityReflector, StreamingJsonDelegate associationJsonDelegate) {
+        for (prop in entity.persistentProperties) {
+            renderProperty(instance, prop, entityReflector, associationJsonDelegate)
+        }
+    }
+
     protected void renderProperty(Object embeddedObject, PersistentProperty prop,  EntityReflector associationReflector, StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate) {
         def propertyName = prop.name
         def propVal = associationReflector.getProperty(embeddedObject, propertyName)
@@ -293,7 +299,44 @@ class DefaultHalViewHelper implements HalViewHelper {
                 } else {
                     jsonDelegate.call(propertyName, propVal)
                 }
+            } else if(prop instanceof Embedded) {
+                Embedded embedded = (Embedded)prop
+                def childTemplate = view.templateEngine.resolveTemplate(propertyType, view.locale)
+                if (childTemplate != null) {
+                    JsonOutput.JsonUnescaped jsonUnescaped = ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, propertyType, propVal)
+                    jsonDelegate.call(propertyName, jsonUnescaped)
+                } else {
+                    jsonDelegate.call(propertyName) {
+                        def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                        def associatedEntity = embedded.associatedEntity
+                        def embeddedReflector = associatedEntity.getMappingContext().getEntityReflector(associatedEntity)
+                        renderEntityProperties(associatedEntity, propVal, embeddedReflector , associationJsonDelegate)
+                    }
+                }
+            } else if(prop instanceof EmbeddedCollection) {
+                EmbeddedCollection embedded = (EmbeddedCollection)prop
+                def associatedEntity = embedded.associatedEntity
+                def associatedType = associatedEntity.javaClass
+                def embeddedReflector = associatedEntity.getMappingContext().getEntityReflector(associatedEntity)
+                def childTemplate = view.templateEngine.resolveTemplate(associatedType, view.locale)
+                if (childTemplate != null) {
+                    if(propVal instanceof Iterable) {
+                        def childResults = ((Iterable) propVal).collect() { eo ->
+                            ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, associatedType, eo)
+                        }.toList()
+                        jsonDelegate.call(embedded.name, (List<Object>) childResults)
+                    }
+                }
+                else {
+                    if(propVal instanceof Iterable) {
+                        jsonDelegate.call(embedded.name, (Iterable)propVal) { eo ->
+                            def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                            renderEntityProperties(associatedEntity, eo, embeddedReflector , associationJsonDelegate)
+                        }
+                    }
+                }
             }
+
         }
     }
 
