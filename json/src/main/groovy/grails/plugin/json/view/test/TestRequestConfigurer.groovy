@@ -43,6 +43,10 @@ class TestRequestConfigurer implements Request {
         jsonView.setControllerName(controllerName)
     }
 
+    void setControllerNamespace(String controllerNamespace) {
+        jsonView.setControllerNamespace(controllerNamespace)
+    }
+
 
     TestRequestConfigurer actionName(String actionName) {
         this.actionName = actionName
@@ -51,6 +55,11 @@ class TestRequestConfigurer implements Request {
 
     TestRequestConfigurer controllerName(String controllerName) {
         this.controllerName = controllerName
+        return this
+    }
+
+    TestRequestConfigurer controllerNamespace(String controllerNamespace) {
+        this.controllerNamespace = controllerNamespace
         return this
     }
 

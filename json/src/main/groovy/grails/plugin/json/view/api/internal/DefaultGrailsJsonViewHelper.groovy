@@ -548,6 +548,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         writable.locale = view.locale
         writable.response = view.response
         writable.request = view.request
+        writable.controllerNamespace = view.controllerNamespace
         writable.controllerName = view.controllerName
         writable.actionName = view.actionName
         return writable
