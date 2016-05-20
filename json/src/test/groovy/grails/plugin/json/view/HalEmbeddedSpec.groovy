@@ -8,6 +8,30 @@ import spock.lang.Specification
  * Created by graemerocher on 20/05/16.
  */
 class HalEmbeddedSpec extends Specification implements JsonViewTest {
+    void "test hal render method for one-to-many associations"() {
+        mappingContext.addPersistentEntities(Team, Player)
+        when:"A GSON view that renders hal.render(..) is rendered"
+
+
+        def player = new Player(id: 1L, name: "Cantona")
+        player.id = 1L
+
+        def captain = new Player(name: "Keane")
+        captain.id = 2L
+        def team = new Team( captain: captain, name: "Manchester United", players: [player])
+        team.id = 1L
+        def result = render('''
+import grails.plugin.json.view.*
+model {
+    Team team
+}
+json hal.render(team)
+''', [team: team])
+
+        then:'the result is correct'
+        result.jsonText == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:8080/player/2","hreflang":"en","type":"application/hal+json"}},"name":"Keane"},"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"_links":{"self":{"href":"http://localhost:8080/team/1","hreflang":"en","type":"application/hal+json"}},"id":1,"name":"Manchester United"}'
+        result.json.'_embedded'
+    }
 
     void "test hal embedded method for one-to-many associations"() {
         mappingContext.addPersistentEntities(Team, Player)
@@ -16,7 +40,10 @@ class HalEmbeddedSpec extends Specification implements JsonViewTest {
 
         def player = new Player(id: 1L, name: "Cantona")
         player.id = 1L
-        def team = new Team( name: "Manchester United", players: [player])
+
+        def captain = new Player(name: "Keane")
+        captain.id == 1L
+        def team = new Team( captain: captain, name: "Manchester United", players: [player])
         team.id = 1L
         def result = render('''
 import grails.plugin.json.view.*
@@ -30,7 +57,7 @@ json {
 ''', [team: team])
 
         then:'the result is correct'
-        result.jsonText == '{"_embedded":{"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"name":"Manchester United"}'
+        result.jsonText == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:8080/player","hreflang":"en","type":"application/hal+json"}},"name":"Keane"},"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"name":"Manchester United"}'
         result.json.'_embedded'
     }
 

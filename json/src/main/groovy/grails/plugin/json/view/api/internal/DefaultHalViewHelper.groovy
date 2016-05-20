@@ -56,15 +56,21 @@ class DefaultHalViewHelper implements HalViewHelper {
      */
     @Override
     JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer) {
-        arguments.put("beforeClosure", createlinksRenderingClosure(object))
+        if(arguments == null) {
+            arguments = new LinkedHashMap()
+        }
+
+        if(!arguments.containsKey("beforeClosure")) {
+            arguments.put("beforeClosure", createlinksRenderingClosure(object, arguments))
+        }
+
         viewHelper.render(object, arguments, customizer)
     }
 
 
     @Override
     JsonOutput.JsonUnescaped render(Object object, Map arguments) {
-        arguments.put("beforeClosure", createlinksRenderingClosure(object))
-        viewHelper.render(object, arguments, null)
+        render(object, arguments, null)
     }
 
     /**
@@ -72,12 +78,12 @@ class DefaultHalViewHelper implements HalViewHelper {
      */
     @Override
     JsonOutput.JsonUnescaped render(Object object,  @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer ) {
-        viewHelper.render(object, [beforeClosure:createlinksRenderingClosure(object)], customizer)
+        render(object, (Map)null, customizer)
     }
 
     @Override
     JsonOutput.JsonUnescaped render(Object object) {
-        viewHelper.render(object, [beforeClosure:createlinksRenderingClosure(object)], null)
+        render(object, (Map)null, (Closure)null)
     }
 
     /**
@@ -113,32 +119,8 @@ class DefaultHalViewHelper implements HalViewHelper {
      * @param object The object to create links for
      */
     void links(Object object, String contentType = this.contentType, boolean writeComma = true) {
-        def locale = view.locale ?: Locale.ENGLISH
-        contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
-        new StreamingJsonDelegate(view.out, true).call(LINKS_ATTRIBUTE) {
-            call(SELF_ATTRIBUTE) {
-                call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true)
-                call HREFLANG_ATTRIBUTE, locale.toString()
-
-                call TYPE_ATTRIBUTE, contentType
-            }
-
-            Set<Link> links = getLinks(object)
-            for(link in links) {
-                call(link.rel) {
-                    call HREF_ATTRIBUTE, link.href
-                    call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
-                    def linkType = link.contentType
-                    if(linkType) {
-                        call TYPE_ATTRIBUTE, linkType
-                    }
-                }
-            }
-
-        }
-        if(writeComma) {
-            view.out.write(JsonOutput.COMMA)
-        }
+        def jsonDelegate = new StreamingJsonDelegate(view.out, true)
+        writeLinks(jsonDelegate, object, contentType, writeComma)
     }
 
     /**
@@ -186,7 +168,7 @@ class DefaultHalViewHelper implements HalViewHelper {
         view.out.write(JsonOutput.COMMA)
     }
 
-    void embedded(Object object, Map<String,Object> arguments = Collections.emptyMap()) {
+    void embedded(Object object, Map<String,Object> arguments = [:]) {
 
         MappingContext mappingContext = view.mappingContext
         def proxyHandler = mappingContext.proxyHandler
@@ -195,6 +177,8 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
         List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+
+        arguments.put(IncludeExcludeSupport.EXCLUDES_PROPERTY, excs)
         def includeExcludeSupport = ((DefaultGrailsJsonViewHelper) viewHelper).includeExcludeSupport
         if(entity != null) {
             EntityReflector entityReflector = mappingContext.getEntityReflector(entity)
@@ -230,20 +214,23 @@ class DefaultHalViewHelper implements HalViewHelper {
                         Association association = entry.key
                         def associatedEntity = association.associatedEntity
                         def associationReflector = mappingContext.getEntityReflector(associatedEntity)
-
+                        def propertyName = association.name
                         if(association instanceof ToOne) {
-                            jsonDelegate.call(association.name) {
-                                links(embeddedObject, this.contentType, false)
+                            excs.add(propertyName)
+                            jsonDelegate.call(propertyName) {
+                                writeLinks(delegate, embeddedObject, this.contentType)
                                 for(prop in associatedEntity.persistentProperties) {
-                                    renderProperty(embeddedObject, prop, associationReflector, jsonDelegate)
+                                    renderProperty(embeddedObject, prop, associationReflector, (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate())
                                 }
                             }
+
                         }
                         else if(association instanceof ToMany) {
                             if(embeddedObject instanceof Iterable) {
-                                jsonDelegate.call(association.name, (Iterable)embeddedObject) { e ->
+                                excs.add(propertyName)
+                                jsonDelegate.call(propertyName, (Iterable)embeddedObject) { e ->
                                     for(prop in associatedEntity.persistentProperties) {
-                                        renderProperty(e, prop, associationReflector, jsonDelegate)
+                                        renderProperty(e, prop, associationReflector, (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate())
                                     }
                                 }
                             }
@@ -253,6 +240,35 @@ class DefaultHalViewHelper implements HalViewHelper {
             }
         }
 
+    }
+
+    protected void writeLinks(StreamingJsonDelegate jsonDelegate, object, String contentType, boolean writeComma = false) {
+        def locale = view.locale ?: Locale.ENGLISH
+        contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
+        jsonDelegate.call(LINKS_ATTRIBUTE) {
+            call(SELF_ATTRIBUTE) {
+                call HREF_ATTRIBUTE, viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true)
+                call HREFLANG_ATTRIBUTE, locale.toString()
+
+                call TYPE_ATTRIBUTE, contentType
+            }
+
+            Set<Link> links = getLinks(object)
+            for (link in links) {
+                call(link.rel) {
+                    call HREF_ATTRIBUTE, link.href
+                    call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
+                    def linkType = link.contentType
+                    if (linkType) {
+                        call TYPE_ATTRIBUTE, linkType
+                    }
+                }
+            }
+
+        }
+        if (writeComma) {
+            view.out.write(JsonOutput.COMMA)
+        }
     }
 
     protected void renderProperty(Object embeddedObject, PersistentProperty prop,  EntityReflector associationReflector, StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate) {
@@ -455,11 +471,13 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         @Override
         void call(String name, List<Object> list) throws IOException {
+            first = false
             delegate.call(name, list)
         }
 
         @Override
         void call(String name, Object... array) throws IOException {
+            first = false
             delegate.call(name, array)
         }
 
@@ -485,6 +503,7 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         @Override
         void call(String name, Object value) throws IOException {
+            first = false
             delegate.call(name, value)
         }
 
@@ -505,23 +524,26 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         @Override
         void call(String name, @DelegatesTo(StreamingJsonDelegate.class) Closure value) throws IOException {
+            first = false
             delegate.call(name, value)
         }
 
         @Override
         void call(String name, JsonOutput.JsonUnescaped json) throws IOException {
+            first = false
             delegate.call(name, json)
         }
     }
 
     @CompileDynamic
-    protected Closure<Void> createlinksRenderingClosure(object) {
+    protected Closure<Void> createlinksRenderingClosure(object, Map<String, Object> arguments = [:]) {
         return {
             StreamingJsonDelegate local = (StreamingJsonDelegate) getDelegate()
 
             def previous = view.getOut()
             view.setOut(local.writer)
             try {
+                embedded(object, arguments)
                 links(object)
             } finally {
                 view.setOut(previous)

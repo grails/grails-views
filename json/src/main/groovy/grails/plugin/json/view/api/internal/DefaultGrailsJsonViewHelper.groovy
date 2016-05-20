@@ -82,8 +82,6 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
         def entity = findEntity(object)
         def writer = new FastStringWriter()
-        List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
-        List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
 
         boolean isDeep = GrailsClassUtils.getBooleanFromMap(DEEP, arguments)
         Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
@@ -117,6 +115,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         beforeClosure.setDelegate(jsonDelegate)
                         beforeClosure.call()
                     }
+                    List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
+                    List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+
                     process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep)
                     if(customizer != null) {
                         customizer.setDelegate(jsonDelegate)
@@ -131,6 +132,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         beforeClosure.setDelegate(jsonDelegate)
                         beforeClosure.call()
                     }
+                    List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
+                    List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+
                     processSimple(jsonDelegate, object, processedObjects, incs, excs, "")
                     if(customizer != null) {
                         customizer.setDelegate(jsonDelegate)
