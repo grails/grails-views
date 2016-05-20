@@ -425,6 +425,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_generating_hal_links">Generating HAL Links</a></li>
 <li><a href="#_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</a></li>
+<li><a href="#_embedded_association_and_hal">Embedded Association and HAL</a></li>
 <li><a href="#_specifying_the_hal_content_type">Specifying the HAL Content Type</a></li>
 <li><a href="#_hal_pagination">HAL Pagination</a></li>
 </ul>
@@ -548,7 +549,58 @@ json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same argument, the difference being it will output HAL links for the object via <code>hal.links</code>.</p>
+<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same arguments, the difference being it will output HAL links for the object via <code>hal.links</code> and also output associations fetched via a join query for <code>hal.embedded</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example you can also customize the content of the generated HAL with a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book) {
+    pages 1000
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_embedded_association_and_hal">Embedded Association and HAL</h4>
+<div class="paragraph">
+<p>Generally, when using the <code>hal.render(..)</code> method, <code>_embedded</code> associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.get(params.id)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, this query will render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.get(params.id, [fetch:[authors:'eager']])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is by design and to prevent unexpected performance degradation due to N+1 query loading. If you wish to force the <code>render</code> method to render <code>_embedded</code> associations for HAL you can do see using the <code>deep</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json hal.render(book, [deep:true])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can prevent HAL <code>_embedded</code> associations from being rendering using the <code>embedded:false</code> parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book, [embedded:false])</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -670,7 +722,7 @@ Likewise the <code>prev</code> and <code>next</code> links are only present when
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-20 14:21:19 UTC
+Last updated 2016-05-20 15:13:16 UTC
 </div>
 </div>
 </body>

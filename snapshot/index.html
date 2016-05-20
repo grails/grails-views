@@ -623,6 +623,9 @@ json([<span class="integer">1</span>,<span class="integer">2</span>,<span class=
 <p>Pagination support in HAL</p>
 </li>
 <li>
+<p>Better Embedded support in HAL</p>
+</li>
+<li>
 <p>Ability to access HTTP parameters and headers</p>
 </li>
 <li>
@@ -1370,11 +1373,62 @@ json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same argument, the difference being it will output HAL links for the object via <code>hal.links</code>.</p>
+<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same arguments, the difference being it will output HAL links for the object via <code>hal.links</code> and also output associations fetched via a join query for <code>hal.embedded</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example you can also customize the content of the generated HAL with a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json hal.render(book) {
+    pages <span class="integer">1000</span>
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_specifying_the_hal_content_type">2.8.3. Specifying the HAL Content Type</h4>
+<h4 id="_embedded_association_and_hal">2.8.3. Embedded Association and HAL</h4>
+<div class="paragraph">
+<p>Generally, when using the <code>hal.render(..)</code> method, <code>_embedded</code> associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="predefined-type">Book</span>.get(params.id)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, this query will render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="predefined-type">Book</span>.get(params.id, [<span class="key">fetch</span>:[<span class="key">authors</span>:<span class="string"><span class="delimiter">'</span><span class="content">eager</span><span class="delimiter">'</span></span>]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is by design and to prevent unexpected performance degradation due to N+1 query loading. If you wish to force the <code>render</code> method to render <code>_embedded</code> associations for HAL you can do see using the <code>deep</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json hal.render(book, [<span class="key">deep</span>:<span class="predefined-constant">true</span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can prevent HAL <code>_embedded</code> associations from being rendering using the <code>embedded:false</code> parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json hal.render(book, [<span class="key">embedded</span>:<span class="predefined-constant">false</span>])</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_specifying_the_hal_content_type">2.8.4. Specifying the HAL Content Type</h4>
 <div class="paragraph">
 <p>The default HAL response content type is <code>application/hal+json</code>, however as discussed in the section on <a href="#mimeTypes">Custom Mime Type</a> you can define your own response content types to represent your resources.</p>
 </div>
@@ -1406,7 +1460,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_hal_pagination">2.8.4. HAL Pagination</h4>
+<h4 id="_hal_pagination">2.8.5. HAL Pagination</h4>
 <div class="paragraph">
 <p>The JSON views plugin for Grails provides navigable pagination support.
 Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
@@ -1990,7 +2044,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-20 14:21:19 UTC
+Last updated 2016-05-20 15:13:16 UTC
 </div>
 </div>
 </body>
