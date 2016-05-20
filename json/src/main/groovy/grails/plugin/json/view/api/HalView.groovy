@@ -2,6 +2,7 @@ package grails.plugin.json.view.api
 
 import grails.artefact.Enhances
 import grails.plugin.json.view.JsonViewTemplate
+import grails.plugin.json.view.api.internal.DefaultHalViewHelper
 
 /**
  * Extends default view API with additional methods for rendering HAL responses
@@ -12,5 +13,8 @@ import grails.plugin.json.view.JsonViewTemplate
 @Enhances(JsonViewTemplate.TYPE)
 trait HalView extends JsonView {
 
-	HalViewHelper hal = new HalViewHelper(this, getG())
+	/**
+	 * The HAL view helper
+	 */
+	HalViewHelper hal = new DefaultHalViewHelper(this, getG())
 }

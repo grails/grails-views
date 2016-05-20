@@ -1,17 +1,18 @@
 package grails.plugin.json.view.api
 
 import grails.plugin.json.view.Book
+import grails.plugin.json.view.api.internal.DefaultHalViewHelper
 import grails.rest.Link
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class HalViewHelperSpec extends Specification {
-    HalViewHelper halViewHelper
+    DefaultHalViewHelper halViewHelper
 
     def setup() {
         JsonView view = Mock()
         GrailsJsonViewHelper viewHelper = Mock()
-        halViewHelper = new HalViewHelper(view, viewHelper)
+        halViewHelper = new DefaultHalViewHelper(view, viewHelper)
     }
 
     void "test Pagination links without anything to paginate"() {

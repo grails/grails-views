@@ -22,7 +22,7 @@ contributor([gdslScriptContext]) {
     property name: "params", type: "grails.views.api.http.Parameters"
     property name: "json", type: "groovy.json.StreamingJsonBuilder"
     property name: "g", type: "grails.plugin.json.view.api.GrailsJsonViewHelper"
-    property name: "hal", type: "grails.plugin.json.view.api.HalViewHelper"
+    property name: "hal", type: "grails.plugin.json.view.api.internal.DefaultHalViewHelper"
     property name: "tmpl", type: "grails.plugin.json.view.api.internal.TemplateRenderer"
     property name: "mappingContext", type: "org.grails.datastore.mapping.model.MappingContext"
     property name: "messageSource", type: "org.springframework.context.MessageSource"
