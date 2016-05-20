@@ -112,4 +112,58 @@ json {
     ...
 }
 
+==== HAL Pagination
 
+The JSON views plugin for Grails provides navigable pagination support.
+Like the GSP `<g:paginate>` tag, the parameters include: `total`, `max`, `offset`, `sort` and `order`.
+
+For example:
+
+[source,groovy]
+model {
+    Iterable<Book> bookList
+    Integer bookCount
+    Integer max // optional, defaults to 10
+    Integer offset // optional, defaults to 0
+    String sort // optional
+    String order // optional
+}
+json {
+    hal.paginate(Book, bookCount, max, offset, sort, order)
+    ...
+}
+
+NOTE: Similar to `hal.links()` the `hal.paginate()` has to be the first element within the `json{}` closure.
+
+When accessing `http://localhost:8080/book?offset=10` this produces the navigable output like:
+
+[source,javascript]
+{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/book/index?offset=10&max=10",
+      "hreflang": "en_US",
+      "type": "application/hal+json"
+    },
+    "first": {
+      "href": "http://localhost:8080/book/index?offset=0&max=10",
+      "hreflang": "en_US"
+    },
+    "prev": {
+      "href": "http://localhost:8080/book/index?offset=0&max=10",
+      "hreflang": "en_US"
+    },
+    "next": {
+      "href": "http://localhost:8080/book/index?offset=20&max=10",
+      "hreflang": "en_US"
+    },
+    "last": {
+      "href": "http://localhost:8080/book/index?offset=40&max=10",
+      "hreflang": "en_US"
+    }
+  },
+  ...
+}
+
+NOTE: If there aren't enough results to paginate the navigation links will not appear.
+Likewise the `prev` and `next` links are only present when there is a previous or next page.

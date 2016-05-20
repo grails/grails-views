@@ -1,5 +1,12 @@
 The current release is {version}. Below is a version history.
 
+*1.1.0*
+
+* Support for easily testing JSON views with `JsonViewTest`
+* Pagination support in HAL
+* Ability to access HTTP parameters and headers
+* Global template support
+
 *1.0.0*
 
 * Initial 1.0.0 GA Release

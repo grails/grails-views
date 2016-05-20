@@ -29,7 +29,26 @@ json.person {
 
 The `HttpView` trait defines a variety of methods for inspecting the request and altering the response. 
 
-NOTE: The methods available are only a subset of the methods available via the `HttpServletRequest` and `HttpServletResponse` objects, this is by design as view logic should be limited and logic performed in the controller instead. 
+NOTE: The methods available are only a subset of the methods available via the `HttpServletRequest` and `HttpServletResponse` objects, this is by design as view logic should be limited and logic performed in the controller instead.
+
+==== Accessing the Request
+
+Various aspects of the request can be accessed by the `request` object defined by the link:api/grails/views/api/HttpView.html[HttpView] trait:
+
+[source,groovy]
+json.person {
+ name "bob"
+ userAgent request.getHeader('User-Agent')
+}
+
+Parameters can be accessed via the `params` object which is an instance of link:api/grails/views/api/http/Parameters.html[Parameters]:
+
+[source,groovy]
+json.person {
+ name "bob"
+ first params.int('offset', 0)
+ sort params.get('sort', 'name')
+}
 
 ==== Default Static Imports
 

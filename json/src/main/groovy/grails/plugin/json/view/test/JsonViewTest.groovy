@@ -15,6 +15,7 @@ import org.grails.datastore.mapping.keyvalue.mapping.config.KeyValueMappingConte
 import org.grails.datastore.mapping.model.MappingContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
+import org.springframework.context.support.StaticMessageSource
 import org.springframework.http.HttpStatus
 
 /**
@@ -28,7 +29,7 @@ import org.springframework.http.HttpStatus
 trait JsonViewTest {
 
     @Autowired(required = false)
-    MessageSource messageSource
+    MessageSource messageSource = new StaticMessageSource()
 
     @Autowired(required = false)
     MappingContext mappingContext = {
