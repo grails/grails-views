@@ -8,6 +8,7 @@ import grails.plugin.json.view.api.HalViewHelper
 import grails.plugin.json.view.api.JsonView
 import grails.rest.Link
 import grails.views.api.HttpView
+import grails.views.utils.ViewUtils
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -22,6 +23,7 @@ import org.grails.datastore.mapping.model.types.Simple
 import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
 import org.grails.datastore.mapping.proxy.ProxyHandler
+import org.grails.datastore.mapping.reflect.ClassUtils
 import org.grails.datastore.mapping.reflect.EntityReflector
 import org.springframework.http.HttpMethod
 
@@ -41,6 +43,7 @@ class DefaultHalViewHelper implements HalViewHelper {
     public static final String HREFLANG_ATTRIBUTE = "hreflang"
     public static final String TYPE_ATTRIBUTE = "type"
     public static final String EMBEDDED_ATTRIBUTE = "_embedded"
+    public static final String EMBEDDED_PARAMETER = "embedded"
 
     JsonView view
     GrailsJsonViewHelper viewHelper
@@ -177,7 +180,7 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
         List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
-
+        boolean deep = ViewUtils.getBooleanFromMap(GrailsJsonViewHelper.DEEP, arguments)
         arguments.put(IncludeExcludeSupport.EXCLUDES_PROPERTY, excs)
         def includeExcludeSupport = ((DefaultGrailsJsonViewHelper) viewHelper).includeExcludeSupport
         if(entity != null) {
@@ -192,12 +195,12 @@ class DefaultHalViewHelper implements HalViewHelper {
                         if(value != null) {
 
                             if(association instanceof ToMany && !( association instanceof Basic)) {
-                                if(proxyHandler == null || proxyHandler.isInitialized(value)) {
+                                if(deep || proxyHandler == null || proxyHandler.isInitialized(value)) {
                                     embeddedValues.put(association, value)
                                 }
                             }
                             else if(association instanceof ToOne) {
-                                if(proxyHandler == null || proxyHandler.isInitialized(value)) {
+                                if(deep || proxyHandler == null || proxyHandler.isInitialized(value)) {
                                     embeddedValues.put(association, value)
                                 }
                             }
@@ -543,7 +546,11 @@ class DefaultHalViewHelper implements HalViewHelper {
             def previous = view.getOut()
             view.setOut(local.writer)
             try {
-                embedded(object, arguments)
+
+                def shouldRenderEmbedded = ViewUtils.getBooleanFromMap(EMBEDDED_PARAMETER, arguments, true)
+                if(shouldRenderEmbedded) {
+                    embedded(object, arguments)
+                }
                 links(object)
             } finally {
                 view.setOut(previous)

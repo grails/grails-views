@@ -12,6 +12,8 @@ import grails.views.api.GrailsViewHelper
  */
 interface GrailsJsonViewHelper extends GrailsViewHelper {
 
+    String DEEP = "deep"
+
     /**
      * Renders a template and returns the output
      *

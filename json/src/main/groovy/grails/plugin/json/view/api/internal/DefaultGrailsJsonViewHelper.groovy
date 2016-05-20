@@ -45,7 +45,7 @@ import java.lang.reflect.ParameterizedType
 @InheritConstructors
 class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
 
-    private static final String DEEP = "deep"
+
     private static final Set<String> TO_STRING_TYPES = [
         "org.bson.types.ObjectId"
     ] as Set
