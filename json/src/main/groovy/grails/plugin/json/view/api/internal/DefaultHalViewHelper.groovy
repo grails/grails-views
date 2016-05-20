@@ -11,6 +11,18 @@ import grails.views.api.HttpView
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import org.grails.core.util.IncludeExcludeSupport
+import org.grails.datastore.mapping.model.MappingContext
+import org.grails.datastore.mapping.model.PersistentEntity
+import org.grails.datastore.mapping.model.PersistentProperty
+import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.model.types.Basic
+import org.grails.datastore.mapping.model.types.Custom
+import org.grails.datastore.mapping.model.types.Simple
+import org.grails.datastore.mapping.model.types.ToMany
+import org.grails.datastore.mapping.model.types.ToOne
+import org.grails.datastore.mapping.proxy.ProxyHandler
+import org.grails.datastore.mapping.reflect.EntityReflector
 import org.springframework.http.HttpMethod
 
 /**
@@ -100,7 +112,7 @@ class DefaultHalViewHelper implements HalViewHelper {
      *
      * @param object The object to create links for
      */
-    void links(Object object, String contentType = this.contentType) {
+    void links(Object object, String contentType = this.contentType, boolean writeComma = true) {
         def locale = view.locale ?: Locale.ENGLISH
         contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
         new StreamingJsonDelegate(view.out, true).call(LINKS_ATTRIBUTE) {
@@ -124,7 +136,9 @@ class DefaultHalViewHelper implements HalViewHelper {
             }
 
         }
-        view.out.write(JsonOutput.COMMA)
+        if(writeComma) {
+            view.out.write(JsonOutput.COMMA)
+        }
     }
 
     /**
@@ -170,6 +184,98 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         }
         view.out.write(JsonOutput.COMMA)
+    }
+
+    void embedded(Object object, Map<String,Object> arguments = Collections.emptyMap()) {
+
+        MappingContext mappingContext = view.mappingContext
+        def proxyHandler = mappingContext.proxyHandler
+        object = proxyHandler != null ? proxyHandler.unwrap(object) : object
+        PersistentEntity entity = mappingContext.getPersistentEntity(object.getClass().name)
+
+        List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
+        List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+        def includeExcludeSupport = ((DefaultGrailsJsonViewHelper) viewHelper).includeExcludeSupport
+        if(entity != null) {
+            EntityReflector entityReflector = mappingContext.getEntityReflector(entity)
+            def associations = entity.associations
+            Map<Association, Object> embeddedValues = [:]
+            for(Association association in associations) {
+                if(!association.isEmbedded()) {
+                    def propertyName = association.name
+                    if (includeExcludeSupport.shouldInclude(incs, excs, propertyName)) {
+                        def value = entityReflector.getProperty(object, propertyName)
+                        if(value != null) {
+
+                            if(association instanceof ToMany && !( association instanceof Basic)) {
+                                if(proxyHandler == null || proxyHandler.isInitialized(value)) {
+                                    embeddedValues.put(association, value)
+                                }
+                            }
+                            else if(association instanceof ToOne) {
+                                if(proxyHandler == null || proxyHandler.isInitialized(value)) {
+                                    embeddedValues.put(association, value)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!embeddedValues.isEmpty()) {
+                embedded {
+                    StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                    for(entry in embeddedValues) {
+                        def embeddedObject = entry.value
+                        Association association = entry.key
+                        def associatedEntity = association.associatedEntity
+                        def associationReflector = mappingContext.getEntityReflector(associatedEntity)
+
+                        if(association instanceof ToOne) {
+                            jsonDelegate.call(association.name) {
+                                links(embeddedObject, this.contentType, false)
+                                for(prop in associatedEntity.persistentProperties) {
+                                    renderProperty(embeddedObject, prop, associationReflector, jsonDelegate)
+                                }
+                            }
+                        }
+                        else if(association instanceof ToMany) {
+                            if(embeddedObject instanceof Iterable) {
+                                jsonDelegate.call(association.name, (Iterable)embeddedObject) { e ->
+                                    for(prop in associatedEntity.persistentProperties) {
+                                        renderProperty(e, prop, associationReflector, jsonDelegate)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    protected void renderProperty(Object embeddedObject, PersistentProperty prop,  EntityReflector associationReflector, StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate) {
+        def propertyName = prop.name
+        def propVal = associationReflector.getProperty(embeddedObject, propertyName)
+        def propertyType = prop.type
+        if (propVal != null) {
+            if ((prop instanceof Simple) || (prop instanceof Basic)) {
+                if (DefaultGrailsJsonViewHelper.isStringType(propertyType)) {
+                    jsonDelegate.call(propertyName, propVal.toString())
+                } else {
+                    jsonDelegate.call(propertyName, propVal)
+                }
+            } else if (prop instanceof Custom) {
+                def childTemplate = view.templateEngine.resolveTemplate(propertyType, view.locale)
+                if (childTemplate != null) {
+                    JsonOutput.JsonUnescaped jsonUnescaped = ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, propertyType, propVal)
+                    jsonDelegate.call(propertyName, jsonUnescaped)
+                } else {
+                    jsonDelegate.call(propertyName, propVal)
+                }
+            }
+        }
     }
 
     /**

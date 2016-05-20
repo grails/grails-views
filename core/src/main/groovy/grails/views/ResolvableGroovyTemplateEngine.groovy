@@ -14,6 +14,7 @@ import grails.web.mime.MimeUtility
 import groovy.text.Template
 import groovy.text.TemplateEngine
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
@@ -32,6 +33,7 @@ import org.springframework.context.support.StaticMessageSource
  * @since 1.0
  */
 @CompileStatic
+@Slf4j
 abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
 
     private static final Template NULL_ENTRY = new Template() {
@@ -51,6 +53,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             .withDefault { String path ->
         def cls = templateResolver.resolveTemplateClass(path)
         if(cls != null) {
+            log.debug("Found template class [${cls.name}] for path [$path]")
             return createTemplate( (Class<? extends Template>)cls )
         }
         else {
@@ -59,6 +62,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 url = templateResolver.resolveTemplate("${path}.${extension}")
             }
             if(url != null) {
+                log.debug("Found template URL [${url}] for path [$path]")
                 return createTemplate(path, url)
             }
         }
@@ -245,12 +249,15 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             template = resolveCache.get(cacheKey)
             if(template != null) {
                 if(template.is(NULL_ENTRY)) {
+                    log.debug("No template found for path [$path] and locale [$locale]")
                     return null
                 }
                 else if( !enableReloading || !((GrailsViewTemplate)template).wasModified()) {
+                    log.debug("Found cached template for path [$path] and locale [$locale]")
                     return template
                 }
                 else {
+                    log.debug("Reloading template modified for path [$path] and locale [$locale]. ")
                     cachedTemplates.remove(path)
                     resolveCache.remove(cacheKey)
                     template = null

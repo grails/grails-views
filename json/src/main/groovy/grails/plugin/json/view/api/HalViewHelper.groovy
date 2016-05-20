@@ -104,6 +104,22 @@ interface HalViewHelper {
 
 
     /**
+     * Render embedded links for the associations of the given object (if any)
+     *
+     * @param object The domain object
+     */
+    void embedded(Object object)
+
+
+    /**
+     * Render embedded links for the associations of the given object (if any)
+     *
+     * @param object The domain object
+     * @param arguments Arguments to the embedded method
+     */
+    void embedded(Object object, Map<String, Object> arguments)
+
+    /**
      * Outputs a HAL embedded entry for the given closure
      *
      * @param callable The callable

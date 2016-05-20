@@ -220,6 +220,7 @@ class Team {
 @Entity
 class Player {
     String name
+    static belongsTo = [team:Team]
 }
 
 @Entity

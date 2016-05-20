@@ -10,7 +10,7 @@ import grails.views.api.GrailsViewHelper
  * @author Graeme Rocher
  * @since 1.0
  */
-interface GrailsJsonViewHelper extends GrailsViewHelper{
+interface GrailsJsonViewHelper extends GrailsViewHelper {
 
     /**
      * Renders a template and returns the output

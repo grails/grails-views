@@ -1,6 +1,8 @@
 package grails.plugin.json.view.test
 
+import grails.util.GrailsNameUtils
 import grails.web.mapping.LinkGenerator
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.grails.web.util.WebUtils
 
@@ -31,22 +33,39 @@ class TestLinkGenerator implements LinkGenerator{
                 urlObject = (Map)params.url
             }
 
-            String controller = urlObject.resource ?: urlObject.controller
+
+            def resource = urlObject.resource
+            if( resource != null &&  !(resource instanceof CharSequence)) {
+                resource = GrailsNameUtils.getPropertyName(resource.getClass())
+            }
+            String controller = resource ?: urlObject.controller
             if(controller) {
                 url.append("/$controller")
 
                 if(urlObject.action) {
                     url.append("/$urlObject.action")
-                    if(urlObject.id) {
-                        url.append("/$urlObject.id")
-                    }
                 }
+                if(urlObject.id) {
+                    url.append("/$urlObject.id")
+                }
+                else if(urlObject.resource?.hasProperty('id')) {
+                    appendObjectId(url, urlObject)
+                }
+
             }
         }
         if(params.params instanceof Map) {
             url.append WebUtils.toQueryString((Map)params.params, encoding)
         }
         return url.toString()
+    }
+
+    @CompileDynamic
+    protected StringBuilder appendObjectId(StringBuilder url, Map urlObject) {
+        def obj = urlObject.resource
+        if(obj?.id) {
+            url.append("/${obj.id}")
+        }
     }
 
     @Override

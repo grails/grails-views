@@ -23,9 +23,13 @@ import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.collection.PersistentCollection
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
+import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.model.types.Basic
 import org.grails.datastore.mapping.model.types.Custom
 import org.grails.datastore.mapping.model.types.Embedded
+import org.grails.datastore.mapping.model.types.EmbeddedCollection
+import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
 import org.springframework.util.ReflectionUtils
 
@@ -245,10 +249,10 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         return Object
     }
 
-    protected boolean isStringType(Class propertyType) {
+    public static boolean isStringType(Class propertyType) {
         return TO_STRING_TYPES.contains(propertyType.name)
     }
-    protected boolean isSimpleType(Class propertyType, value) {
+    public static boolean isSimpleType(Class propertyType, value) {
         MappingFactory.isSimpleType(propertyType.name) || (value instanceof Enum) || (value instanceof Map)
     }
 
@@ -280,25 +284,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
             def locale = view.locale
             if (!(prop instanceof Association)) {
-                if(prop instanceof Custom) {
-                    def propertyType = value.getClass()
-                    def childTemplate = templateEngine.resolveTemplate(propertyType, locale)
-                    if(childTemplate != null) {
-                        JsonOutput.JsonUnescaped jsonUnescaped = renderChildTemplate(childTemplate, propertyType, value)
-                        jsonDelegate.call(propertyName, jsonUnescaped)
-                    }
-                    else {
-                        jsonDelegate.call(propertyName, value)
-                    }
-                }
-                else {
-                    if(isStringType(prop.type)) {
-                        jsonDelegate.call propertyName, value.toString()
-                    }
-                    else {
-                        jsonDelegate.call(propertyName, value)
-                    }
-                }
+                processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value, templateEngine, locale)
             } else {
                 Association ass = (Association) prop
                 def associatedEntity = ass.associatedEntity
@@ -353,67 +339,100 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
                     }
                 }
-                else if(Iterable.isAssignableFrom(ass.type)) {
+                else if((ass instanceof ToMany) && Iterable.isAssignableFrom(ass.type)) {
 
-                    if(!isDeep) {
-                        def proxyHandler = ((JsonView) view).getProxyHandler()
-                        if(proxyHandler?.isProxy(value) && !proxyHandler.isInitialized(value)) {
-                            continue
-                        }
-                        if(value instanceof PersistentCollection) {
-                            PersistentCollection pc = (PersistentCollection)value
-                            if(!pc.isInitialized()) continue
-                        }
-                    }
-                    def propertyType = ass.associatedEntity.javaClass
-                    def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
-                    if(childTemplate != null) {
-                        def writer = new FastStringWriter()
-                        def iterator = ((Iterable) value).iterator()
-                        writer.write(JsonOutput.OPEN_BRACKET)
-                        def childPropertyName = GrailsNameUtils.getPropertyName(propertyType)
-
-                        while(iterator.hasNext()) {
-                            def o = iterator.next()
-
-                            def model = [(childPropertyName): o]
-                            def childView = prepareWritable(childTemplate, model)
-                            childView.writeTo(writer)
-                            if(iterator.hasNext()) {
-                                writer.write(JsonOutput.COMMA)
-                            }
-                        }
-                        writer.write(JsonOutput.CLOSE_BRACKET)
-                        jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                    if(ass instanceof Basic) {
+                        // basic collection types like lists of strings etc. just render directly
+                        jsonDelegate.call(propertyName, value)
                     }
                     else {
-                        def associationIdName = associatedEntity.identity.name
-                        jsonDelegate.call(propertyName, (Iterable)value) { child ->
-                            if(isDeep) {
-                                StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep)
+                        if(!isDeep) {
+                            def proxyHandler = ((JsonView) view).getProxyHandler()
+                            if(proxyHandler?.isProxy(value) && !proxyHandler.isInitialized(value)) {
+                                continue
                             }
-                            else {
-                                def associatedId = ((GroovyObject)child).getProperty(associationIdName)
-                                if(associatedId != null) {
-                                    call(associationIdName, associatedId)
+                            if(value instanceof PersistentCollection) {
+                                PersistentCollection pc = (PersistentCollection)value
+                                if(!pc.isInitialized()) continue
+                            }
+                        }
+                        def propertyType = ass.associatedEntity.javaClass
+                        def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
+                        if(childTemplate != null) {
+                            def writer = new FastStringWriter()
+                            def iterator = ((Iterable) value).iterator()
+                            writer.write(JsonOutput.OPEN_BRACKET)
+                            def childPropertyName = GrailsNameUtils.getPropertyName(propertyType)
+
+                            while(iterator.hasNext()) {
+                                def o = iterator.next()
+
+                                def model = [(childPropertyName): o]
+                                def childView = prepareWritable(childTemplate, model)
+                                childView.writeTo(writer)
+                                if(iterator.hasNext()) {
+                                    writer.write(JsonOutput.COMMA)
                                 }
-                                else {
+                            }
+                            writer.write(JsonOutput.CLOSE_BRACKET)
+                            jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                        }
+                        else {
+                            def associationIdName = associatedEntity.identity.name
+                            jsonDelegate.call(propertyName, (Iterable)value) { child ->
+                                if(isDeep) {
                                     StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
                                     process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep)
+                                }
+                                else {
+                                    def associatedId = ((GroovyObject)child).getProperty(associationIdName)
+                                    if(associatedId != null) {
+                                        call(associationIdName, associatedId)
+                                    }
+                                    else {
+                                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                                        process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep)
+                                    }
                                 }
                             }
                         }
                     }
 
                 }
+                else if(ass instanceof EmbeddedCollection) {
+                    if(Iterable.isAssignableFrom(ass.type) && associatedEntity != null) {
+                        jsonDelegate.call(propertyName, (Iterable)value) { child ->
+                            StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                            process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep)
+                        }
+                    }
+                }
 
             }
         }
     }
 
-    protected JsonOutput.JsonUnescaped renderChildTemplate(Template childTemplate, Class propertyType, value) {
-        def childView = prepareWritable(childTemplate, [(GrailsNameUtils.getPropertyName(propertyType)): value])
+    protected void processSimpleProperty(StreamingJsonDelegate jsonDelegate, PersistentProperty prop, String propertyName, Object value, ResolvableGroovyTemplateEngine templateEngine, Locale locale) {
+        if (prop instanceof Custom) {
+            def propertyType = value.getClass()
+            def childTemplate = templateEngine.resolveTemplate(propertyType, locale)
+            if (childTemplate != null) {
+                JsonOutput.JsonUnescaped jsonUnescaped = renderChildTemplate(childTemplate, propertyType, value)
+                jsonDelegate.call(propertyName, jsonUnescaped)
+            } else {
+                jsonDelegate.call(propertyName, value)
+            }
+        } else {
+            if (isStringType(prop.type)) {
+                jsonDelegate.call propertyName, value.toString()
+            } else {
+                jsonDelegate.call(propertyName, value)
+            }
+        }
+    }
+
+    JsonOutput.JsonUnescaped renderChildTemplate(Template template, Class modelType, modelValue) {
+        def childView = prepareWritable(template, [(GrailsNameUtils.getPropertyName(modelType)): modelValue])
         def writer = new FastStringWriter()
         childView.writeTo(writer)
         def jsonUnescaped = JsonOutput.unescaped(writer.toString())

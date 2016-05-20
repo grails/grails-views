@@ -27,4 +27,4 @@ if(Environment.current == Environment.DEVELOPMENT) {
     }
 }
 
-logger "grails.views.resolve", DEBUG, ['STDOUT']
+//logger "grails.views.resolve", DEBUG, ['STDOUT']
