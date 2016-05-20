@@ -42,6 +42,10 @@ include::templateEngine.adoc[]
 
 include::staticCompilation.adoc[]
 
+=== Plugin Support
+
+include::pluginSupport.adoc[]
+
 === Configuration
 
 include::configuration.adoc[]
