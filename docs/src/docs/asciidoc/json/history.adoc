@@ -4,6 +4,7 @@ The current release is {version}. Below is a version history.
 
 * Support for easily testing JSON views with `JsonViewTest`
 * Pagination support in HAL
+* Better Embedded support in HAL
 * Ability to access HTTP parameters and headers
 * Global template support
 * Global templates for GORM for MongoDB / GeoJSON
