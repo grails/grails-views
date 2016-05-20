@@ -5,11 +5,13 @@ plugins {
 apply plugin:"java"
 apply plugin: 'maven-publish'
 
+group "org.grails.plugins"
+
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = 'grails'
-    repo = 'grails-core'
+    repo = 'plugins'
 }
 
 repositories {
