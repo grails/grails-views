@@ -33,7 +33,7 @@ void "Test render a raw GSON view"() {
 <1> Use the `render` method to return a `JsonRenderResult` passing in a String that is the inline template and a map that is the model
 <2> Assert the parsed JSON, represented by the `json` property, is correct
 
-To render an existing view or template pass use named arguments to specify an absolute path to either a template or a view:
+To render an existing view or template use named arguments to specify an absolute path to either a template or a view:
 
 [source,groovy]
 ----

@@ -71,4 +71,4 @@ classes.dependsOn compileViews
 
 Once this is in place if you want to render all instances of type `foo.bar.Birthday` create a template called `src/templates/foo/bar/_birthday.gson` then compile the template and place it on the classpath of your application.
 
-NOTE: See the GeoJSON templates for MongoDB for example of global templates in action.
+NOTE: See the https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo[GeoJSON templates] for MongoDB for example of global templates in action.
