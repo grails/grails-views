@@ -12,4 +12,8 @@ class BookController {
     def index() {
         respond new Book(title: 'API - The Shining')
     }
+
+    def nested() {
+        respond new Book(title: 'API - The Shining')
+    }
 }
