@@ -602,6 +602,32 @@ json hal.render(book) {
 json hal.render(book, [embedded:false])</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can also render embedded associations without using the <code>hal.render(..)</code> method, by using the <code>hal.embedded(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(book)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Like the <code>hal.links(..)</code> method, the <code>hal.embedded(..)</code> method should come first, before any other attributes, in your JSON output
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_specifying_the_hal_content_type">Specifying the HAL Content Type</h4>
@@ -722,7 +748,7 @@ Likewise the <code>prev</code> and <code>next</code> links are only present when
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-20 15:13:16 UTC
+Last updated 2016-05-23 09:50:39 UTC
 </div>
 </div>
 </body>

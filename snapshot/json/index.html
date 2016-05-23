@@ -1296,6 +1296,32 @@ json hal.render(book) {
 json hal.render(book, [embedded:false])</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can also render embedded associations without using the <code>hal.render(..)</code> method, by using the <code>hal.embedded(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(book)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Like the <code>hal.links(..)</code> method, the <code>hal.embedded(..)</code> method should come first, before any other attributes, in your JSON output
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_specifying_the_hal_content_type">Specifying the HAL Content Type</h4>
@@ -1530,7 +1556,7 @@ class MySpec extends Specification implements JsonViewTest {
 </table>
 </div>
 <div class="paragraph">
-<p>To render an existing view or template pass use named arguments to specify an absolute path to either a template or a view:</p>
+<p>To render an existing view or template use named arguments to specify an absolute path to either a template or a view:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1644,7 +1670,7 @@ classes.dependsOn compileViews</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-See the GeoJSON templates for MongoDB for example of global templates in action.
+See the <a href="https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo">GeoJSON templates</a> for MongoDB for example of global templates in action.
 </td>
 </tr>
 </table>
@@ -1767,7 +1793,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-20 15:13:16 UTC
+Last updated 2016-05-23 09:50:39 UTC
 </div>
 </div>
 </body>
