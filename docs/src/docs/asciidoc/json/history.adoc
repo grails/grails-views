@@ -10,6 +10,7 @@ The current release is {version}. Below is a version history.
 * Global templates for GORM for MongoDB / GeoJSON
 * Resource expansion with the `expand` parameter
 * Controller namespace support
+* Support for a default `/object/_object.gson` template
 
 *1.0.0*
 

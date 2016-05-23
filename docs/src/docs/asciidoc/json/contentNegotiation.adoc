@@ -21,6 +21,14 @@ def show() {
     respond Book.get(params.id) 
 }
 
+You can also define a `/object/_object` template that is rendered by default if no other template is found during content negotiation. To do this create a file called `/grails-app/views/object/_object.gson` where the name of the model is `object`, for example:
+
+[source,groovy]
+model {
+    Object object
+}
+json g.render(object)
+
 ==== Content Negotiation and Versioned APIs
 
 A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.
