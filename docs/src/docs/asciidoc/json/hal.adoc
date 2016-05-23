@@ -138,6 +138,44 @@ json {
 
 NOTE: Like the `hal.links(..)` method, the `hal.embedded(..)` method should come first, before any other attributes, in your JSON output
 
+You can also control which associations should be embedded by using a map argument instead:
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    title book.title
+}
+
+And you can inline the contents of the book without any associations using the `hal.inline(..)` method:
+
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book)
+}
+
+To customize the contents of the inlined JSON output use a closure:
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}
+
+NOTE: You cannot include additional content after the call to `hal.inline(..)` as this will produce invalid JSON
+
 ==== Specifying the HAL Content Type
 
 The default HAL response content type is `application/hal+json`, however as discussed in the section on <<json/contentNegotiation.adoc#mimeTypes,Custom Mime Type>> you can define your own response content types to represent your resources. 
