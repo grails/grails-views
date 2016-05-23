@@ -91,6 +91,18 @@ class DefaultHalViewHelper implements HalViewHelper {
         render(object, (Map)null, (Closure)null)
     }
 
+    @Override
+    void inline(Object object, Map arguments = [:], @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
+        arguments.put(GrailsJsonViewHelper.ASSOCIATIONS, false)
+        viewHelper.inline(object, arguments, customizer)
+    }
+
+
+    @Override
+    void inline(Object object, @DelegatesTo(StreamingJsonDelegate) Closure customizer) {
+        inline(object, [:], customizer)
+    }
+
     /**
      * @param name Sets the HAL response type
      */
@@ -179,7 +191,7 @@ class DefaultHalViewHelper implements HalViewHelper {
      * @param object The object
      * @param arguments Any arguments. Supported arguments: 'includes', 'excludes', 'deep'
      */
-    void embedded(Object object, Map<String,Object> arguments = [:]) {
+    void embedded(Object object, Map arguments = [:]) {
 
         MappingContext mappingContext = view.mappingContext
         def proxyHandler = mappingContext.proxyHandler
@@ -231,8 +243,8 @@ class DefaultHalViewHelper implements HalViewHelper {
                         def propertyName = association.name
                         if(association instanceof ToOne) {
                             jsonDelegate.call(propertyName) {
-                                writeLinks(delegate, embeddedObject, this.contentType)
                                 def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                                writeLinks(associationJsonDelegate, embeddedObject, this.contentType)
                                 renderEntityProperties(associatedEntity, embeddedObject, associationReflector, associationJsonDelegate)
                             }
 
@@ -241,6 +253,7 @@ class DefaultHalViewHelper implements HalViewHelper {
                             if(embeddedObject instanceof Iterable) {
                                 jsonDelegate.call(propertyName, (Iterable)embeddedObject) { e ->
                                     def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                                    writeLinks(associationJsonDelegate, e, this.contentType)
                                     renderEntityProperties(associatedEntity, e, associationReflector, associationJsonDelegate)
                                 }
                             }
@@ -250,6 +263,49 @@ class DefaultHalViewHelper implements HalViewHelper {
             }
         }
 
+    }
+
+    /**
+     * Render the given embedded objects
+     *
+     * @param model The embedded model
+     */
+    @Override
+    void embedded(Map model) {
+        if(!model?.isEmpty()) {
+            MappingContext mappingContext = view.mappingContext
+            def proxyHandler = mappingContext.proxyFactory
+
+            embedded {
+                StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                for(entry in model.entrySet()) {
+                    Object embeddedObject = proxyHandler.unwrap( entry.value )
+
+                    if(Iterable.isInstance(embeddedObject)) {
+                        jsonDelegate.call(entry.key.toString(), (Iterable)embeddedObject) { e ->
+                            PersistentEntity entity = mappingContext.getPersistentEntity(e.getClass().name)
+                            def entityReflector = mappingContext.getEntityReflector(entity)
+                            def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                            writeLinks(associationJsonDelegate, e, this.contentType)
+                            renderEntityProperties(entity, e, entityReflector, associationJsonDelegate)
+                        }
+                    }
+                    else {
+                        PersistentEntity entity = mappingContext.getPersistentEntity(embeddedObject.getClass().name)
+                        if(entity != null) {
+                            def entityReflector = mappingContext.getEntityReflector(entity)
+                            jsonDelegate.call(entry.key.toString()) {
+                                if(entity != null) {
+                                    def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                                    writeLinks(associationJsonDelegate, embeddedObject, this.contentType)
+                                    renderEntityProperties(entity, embeddedObject, entityReflector, associationJsonDelegate)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected void writeLinks(StreamingJsonDelegate jsonDelegate, object, String contentType, boolean writeComma = false) {

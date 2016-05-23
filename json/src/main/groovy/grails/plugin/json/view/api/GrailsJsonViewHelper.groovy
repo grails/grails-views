@@ -23,6 +23,11 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
     String EXPAND = "expand"
 
     /**
+     * The associations parameter
+     */
+    String ASSOCIATIONS = "associations"
+
+    /**
      * Renders a template and returns the output
      *
      * @param arguments The named arguments: 'template', 'collection', 'model', 'var' and 'bean'
@@ -65,4 +70,35 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
      * @return The unescaped JSON
      */
     JsonOutput.JsonUnescaped render(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+
+    /**
+     * Renders the given object inline within the current JSON object instead of creating a new JSON object
+     *
+     * @param object The object to render
+     * @param arguments The arguments
+     * @param customizer The customizer
+     */
+    void inline(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+
+    /**
+     * Renders the given object inline within the current JSON object instead of creating a new JSON object
+     *
+     * @param object The object to render
+     * @param arguments The arguments
+     */
+    void inline(Object object, Map arguments)
+    /**
+     * Renders the given object inline within the current JSON object instead of creating a new JSON object
+     *
+     * @param object The object to render
+     * @param customizer The customizer
+     */
+    void inline(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer )
+
+    /**
+     * Renders the given object inline within the current JSON object instead of creating a new JSON object
+     *
+     * @param object The object to render
+     */
+    void inline(Object object)
 }

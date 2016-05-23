@@ -13,6 +13,7 @@ import grails.views.ViewException
 import grails.views.api.GrailsView
 import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.resolve.TemplateResolverUtils
+import grails.views.utils.ViewUtils
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
@@ -21,6 +22,7 @@ import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.collection.PersistentCollection
+import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -71,6 +73,43 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     }
 
     @Override
+    void inline(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
+        JsonView jsonView = (JsonView)view
+        def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
+        Map<Object, String> processedObjects = initializeProcessedObjects(jsonView.binding)
+        boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
+        boolean includeAssociations = ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
+        List<String> expandProperties = (List<String>)(jsonView.params.list(EXPAND) ?: arguments.get(EXPAND) ?: Collections.emptyList())
+        List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
+        List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+
+
+        def mappingContext = jsonView.mappingContext
+        object = mappingContext.proxyHandler.unwrap(object)
+
+        PersistentEntity entity = mappingContext.getPersistentEntity(object.getClass().name)
+
+        if(entity != null) {
+            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, expandProperties, includeAssociations)
+        }
+        else {
+            processSimple(jsonDelegate, object, processedObjects, incs, excs, "")
+        }
+
+        if(customizer != null) {
+            customizer.setDelegate(jsonDelegate)
+            customizer.call()
+        }
+
+    }
+
+    @Override
+    void inline(Object object, @DelegatesTo(StreamingJsonDelegate) Closure customizer) {
+        inline(object, Collections.emptyMap(), customizer)
+    }
+
+
+    @Override
     JsonOutput.JsonUnescaped render(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
         JsonView jsonView = (JsonView)view
 
@@ -80,31 +119,22 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             return JsonOutput.unescaped("null")
         }
 
-        Map<Object, String> processedObjects
-        boolean rootRender = false
+        Map<Object, String> processedObjects = initializeProcessedObjects(binding)
 
-        def bindingVariables = binding.variables
-        if(bindingVariables.containsKey(PROCESSED_OBJECT_VARIABLE)) {
-            processedObjects = (Map<Object,String>)binding.getVariable(PROCESSED_OBJECT_VARIABLE)
-            if(processedObjects.containsKey(object)) {
+        boolean rootRender = processedObjects.isEmpty()
 
-                def existingOutput = processedObjects.get(object)
-                if(!NULL_OUTPUT.equals(existingOutput)) {
-                    return JsonOutput.unescaped(existingOutput)
-                }
+        if(!rootRender && processedObjects.containsKey(object)) {
+            def existingOutput = processedObjects.get(object)
+            if(!NULL_OUTPUT.equals(existingOutput)) {
+                return JsonOutput.unescaped(existingOutput)
             }
-        }
-        else {
-            processedObjects = new LinkedHashMap<Object, String>()
-            binding.setVariable(PROCESSED_OBJECT_VARIABLE, processedObjects)
-            rootRender = true
         }
 
         def entity = findEntity(object)
         def writer = new FastStringWriter()
 
-        boolean isDeep = GrailsClassUtils.getBooleanFromMap(DEEP, arguments)
-        List<String> expandProperties = (List<String>)(view.params.list(EXPAND) ?: arguments.get(EXPAND) ?: Collections.emptyList())
+        boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
+        List<String> expandProperties = (List<String>)(jsonView.params.list(EXPAND) ?: arguments.get(EXPAND) ?: Collections.emptyList())
         Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
         StreamingJsonBuilder builder = new StreamingJsonBuilder(writer)
 
@@ -153,9 +183,21 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         } finally {
 
             if(rootRender) {
-                bindingVariables.remove(PROCESSED_OBJECT_VARIABLE)
+                binding.variables.remove(PROCESSED_OBJECT_VARIABLE)
             }
         }
+    }
+
+    protected Map<Object, String> initializeProcessedObjects(Binding binding) {
+        Map<Object, String> processedObjects
+
+        if (binding.hasVariable(PROCESSED_OBJECT_VARIABLE)) {
+            processedObjects = (Map<Object, String>) binding.getVariable(PROCESSED_OBJECT_VARIABLE)
+        } else {
+            processedObjects = new LinkedHashMap<Object, String>()
+            binding.setVariable(PROCESSED_OBJECT_VARIABLE, processedObjects)
+        }
+        processedObjects
     }
 
     protected PersistentEntity findEntity(Object object) {
@@ -262,7 +304,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         MappingFactory.isSimpleType(propertyType.name) || (value instanceof Enum) || (value instanceof Map)
     }
 
-    protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Map<Object, String> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties = []) {
+    protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Map<Object, String> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties = [], boolean includeAssociations = true) {
 
         if(processedObjects.containsKey(object)) {
             return
@@ -291,7 +333,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             def locale = view.locale
             if (!(prop instanceof Association)) {
                 processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value, templateEngine, locale)
-            } else {
+            } else if(includeAssociations) {
                 Association ass = (Association) prop
                 def associatedEntity = ass.associatedEntity
 

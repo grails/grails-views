@@ -27,6 +27,25 @@ interface HalViewHelper {
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object)} but renders HAL links too
      */
     JsonOutput.JsonUnescaped render(Object object)
+
+    /**
+     * Same as {@link GrailsJsonViewHelper#inline(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
+     */
+    void inline(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+
+    /**
+     * Same as {@link GrailsJsonViewHelper#inline(java.lang.Object, java.util.Map)} but renders HAL links too
+     */
+    void inline(Object object, Map arguments)
+    /**
+     * Same as {@link GrailsJsonViewHelper#inline(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
+     */
+    void inline(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer )
+
+    /**
+     * Same as {@link GrailsJsonViewHelper#inline(java.lang.Object)} but renders HAL links too
+     */
+    void inline(Object object)
     /**
      * @param name Sets the HAL response type
      */
@@ -110,14 +129,19 @@ interface HalViewHelper {
      */
     void embedded(Object object)
 
-
+    /**
+     * Render embedded links for the given model
+     *
+     * @param model The embedded model
+     */
+    void embedded(Map model)
     /**
      * Render embedded links for the associations of the given object (if any)
      *
      * @param object The domain object
      * @param arguments Arguments to the embedded method
      */
-    void embedded(Object object, Map<String, Object> arguments)
+    void embedded(Object object, Map arguments)
 
     /**
      * Outputs a HAL embedded entry for the given closure
