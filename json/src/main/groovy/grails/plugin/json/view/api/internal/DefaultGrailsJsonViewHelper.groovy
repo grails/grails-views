@@ -502,7 +502,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             def var = arguments.var ?: 'it'
             def templateUri = templateEngine
                     .viewUriResolver
-                    .resolveTemplateUri(view.getControllerName(), template.toString())
+                    .resolveTemplateUri(view.getControllerNamespace(), view.getControllerName(), template.toString())
             def childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             if(childTemplate != null) {
                 FastStringWriter stringWriter = new FastStringWriter()
