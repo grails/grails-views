@@ -253,7 +253,7 @@ class DefaultHalViewHelper implements HalViewHelper {
                             if(embeddedObject instanceof Iterable) {
                                 jsonDelegate.call(propertyName, (Iterable)embeddedObject) { e ->
                                     def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
-                                    writeLinks(associationJsonDelegate, e, this.contentType)
+//                                    writeLinks(associationJsonDelegate, e, this.contentType)
                                     renderEntityProperties(associatedEntity, e, associationReflector, associationJsonDelegate)
                                 }
                             }
