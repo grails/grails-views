@@ -628,6 +628,62 @@ Like the <code>hal.links(..)</code> method, the <code>hal.embedded(..)</code> me
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>You can also control which associations should be embedded by using a map argument instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you can inline the contents of the book without any associations using the <code>hal.inline(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To customize the contents of the inlined JSON output use a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You cannot include additional content after the call to <code>hal.inline(..)</code> as this will produce invalid JSON
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_specifying_the_hal_content_type">Specifying the HAL Content Type</h4>
@@ -748,7 +804,7 @@ Likewise the <code>prev</code> and <code>next</code> links are only present when
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-23 16:01:08 UTC
+Last updated 2016-05-23 16:38:42 UTC
 </div>
 </div>
 </body>
