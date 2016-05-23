@@ -24,9 +24,9 @@ class ExpandSpec extends Specification implements JsonViewTest {
 
         def templateText = '''
 import grails.plugin.json.view.*
-model {
-    Player player
-}
+
+@Field Player player
+
 json g.render(player)
 '''
         when:"The domain is rendered"

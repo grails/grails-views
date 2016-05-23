@@ -1,4 +1,6 @@
-model {
-    Object object
-}
+@Field Object object
+
 json g.render(object)
+
+
+

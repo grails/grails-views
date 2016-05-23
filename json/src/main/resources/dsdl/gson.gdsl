@@ -1,8 +1,8 @@
 def gdslScriptContext = context(scope: scriptScope(), filetypes: ["gson"])
 
 contributor([gdslScriptContext]) {
-    // methods
-    method name:'model', type:void, params:[callable:"groovy.lang.Closure"]
+    // the delegate type
+    delegatesTo(findClass("grails.plugin.json.view.api.JsonView"))
 
     // constants
     property name:"GET", type:"org.springframework.http.HttpMethod.GET"
@@ -14,20 +14,4 @@ contributor([gdslScriptContext]) {
     property name:"HEAD", type:"org.springframework.http.HttpMethod.HEAD"
     property name:"TRACE", type:"org.springframework.http.HttpMethod.TRACE"
 
-    // scopes
-    property name: "locale", type: "java.util.Locale"
-    property name: "out", type: "java.io.Writer"
-    property name: "response", type: "grails.views.api.http.Response"
-    property name: "request", type: "grails.views.api.http.Request"
-    property name: "params", type: "grails.views.api.http.Parameters"
-    property name: "json", type: "groovy.json.StreamingJsonBuilder"
-    property name: "g", type: "grails.plugin.json.view.api.GrailsJsonViewHelper"
-    property name: "hal", type: "grails.plugin.json.view.api.internal.DefaultHalViewHelper"
-    property name: "tmpl", type: "grails.plugin.json.view.api.internal.TemplateRenderer"
-    property name: "mappingContext", type: "org.grails.datastore.mapping.model.MappingContext"
-    property name: "messageSource", type: "org.springframework.context.MessageSource"
-    property name: "controllerName", type: "java.lang.String"
-    property name: "actionName", type: "java.lang.String"
-    property name: "templateEngine", type: "grails.plugin.json.view.JsonViewTemplateEngine"
-    property name: "mimeUtility", type: "grails.web.mime.MimeUtility"
 }

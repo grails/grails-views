@@ -11,11 +11,34 @@ The above JSON view results in the output:
 [source,javascript]
 {"message":{ "hello":"world"}}
 
-There is an implicit `json` variable which is an instance of http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html[StreamingJsonBuilder].
+The `json` variable is an instance of http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html[StreamingJsonBuilder].
 
 More example usages:
 
 [source,groovy]
 json(1,2,3) == "[1,2,3]"
 json { name "Bob" } == '{"name":"Bob"}'
-json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'    
+json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'
+
+
+You can specify a model to view in one of two ways. Either with a `model` block:
+
+[source,groovy]
+.`grails-app/views/hello.gson`
+model {
+    String message
+}
+json.message {
+    hello message
+}
+
+Or with the `@Field` transformation provided by Groovy:
+
+[source,groovy]
+.`grails-app/views/hello.gson`
+@Field String message
+json.message {
+    hello message
+}
+
+NOTE: Although an import isn't required to use `@Field`, the IDE may prompt you to do so.

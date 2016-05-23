@@ -152,6 +152,11 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
             super.visitClass(node)
         }
 
+        @Override
+        void visitField(FieldNode node) {
+            super.visitField(node)
+            modelTypes.put(node.name, node.type)
+        }
 
         @Override
         void visitMethodCallExpression(MethodCallExpression call) {

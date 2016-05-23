@@ -6,6 +6,7 @@ import groovy.text.Template
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.springframework.cglib.reflect.FastMethod
+import org.springframework.util.ReflectionUtils
 
 import java.beans.Introspector
 import java.beans.PropertyDescriptor
@@ -24,7 +25,7 @@ class WritableScriptTemplate implements Template {
     boolean prettyPrint = false
     long lastModified = -1
 
-    protected final Map<String, Method> modelSetters = [:]
+    protected final Map<String, VariableSetter> modelSetters = [:]
 
     WritableScriptTemplate(Class<? extends GrailsView> templateClass) {
         this(templateClass, null)
@@ -50,22 +51,33 @@ class WritableScriptTemplate implements Template {
     }
 
     protected void initModelTypes(Class<? extends WritableScript> templateClass) {
-        try {
-            def field = templateClass.getDeclaredField(Views.MODEL_TYPES_FIELD)
+        def field = ReflectionUtils.findField(templateClass, Views.MODEL_TYPES_FIELD)
+
+        if(field != null) {
+
             field.setAccessible(true)
 
             def modelTypes = (Map<String, Class>) field.get(templateClass)
             if(modelTypes != null) {
                 for(mt in modelTypes) {
                     def propertyName = mt.key
-                    def setterName = GrailsNameUtils.getSetterName(propertyName)
-                    def method = templateClass.getDeclaredMethod(setterName, mt.value)
-                    method.setAccessible(true)
-                    modelSetters[propertyName] = method
+                    def propertyField = ReflectionUtils.findField(templateClass, propertyName)
+                    if(propertyField != null) {
+                        propertyField.setAccessible(true)
+                        modelSetters.put(propertyName, new FieldSetter(propertyField) )
+                    }
+                    else {
+
+                        def setterName = GrailsNameUtils.getSetterName(propertyName)
+                        def method = ReflectionUtils.findMethod(templateClass, setterName, mt.value)
+                        if(method != null) {
+                            method.setAccessible(true)
+                            modelSetters.put(propertyName, new MethodSetter(mt.value, method))
+                        }
+                    }
+
                 }
             }
-        } catch (Throwable e) {
-            // ignore
         }
     }
 
@@ -84,10 +96,10 @@ class WritableScriptTemplate implements Template {
         if(!binding.isEmpty()) {
             writableTemplate.binding = new Binding(binding)
             for(modelSetter in modelSetters.entrySet()) {
-                def value = binding[modelSetter.key]
+                def value = binding.get(modelSetter.key)
                 if(value != null) {
-                    def setMethod = modelSetter.value
-                    def exceptedType = setMethod.parameterTypes[0]
+                    VariableSetter setMethod = modelSetter.value
+                    def exceptedType = setMethod.type
                     if( exceptedType.isInstance(value) || value == null ) {
                         setMethod.invoke(writableTemplate, value)
                     }
@@ -99,5 +111,44 @@ class WritableScriptTemplate implements Template {
         }
         writableTemplate.setSourceFile(sourceFile)
         return writableTemplate
+    }
+
+    private static interface VariableSetter {
+        Class getType()
+        void invoke(WritableScript template, value)
+    }
+
+    @CompileStatic
+    private static class FieldSetter implements VariableSetter {
+
+        final Class type
+        final Field field
+
+        FieldSetter(Field field) {
+            this.type = field.type
+            this.field = field
+        }
+
+        @Override
+        void invoke(WritableScript template, Object value) {
+            field.set(template, value)
+        }
+    }
+
+    @CompileStatic
+    private static class MethodSetter implements VariableSetter {
+
+        final Class type
+        final Method method
+
+        MethodSetter(Class type, Method method) {
+            this.type = type
+            this.method = method
+        }
+
+        @Override
+        void invoke(WritableScript template, Object value) {
+            method.invoke(template, value)
+        }
     }
 }

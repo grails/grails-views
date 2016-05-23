@@ -85,7 +85,19 @@ trait GrailsView extends HttpView implements WriterProvider, WritableScript {
 
     private GrailsViewHelper viewHelper = new DefaultGrailsViewHelper(this)
 
+    /**
+     * @return Obtain the view helper
+     */
     GrailsViewHelper getG() {
         return this.viewHelper
+    }
+
+    /**
+     * Defines the model
+     *
+     * @param modelDefinition
+     */
+    void model(Closure modelDefinition) {
+        // no-op, added at compile time
     }
 }
