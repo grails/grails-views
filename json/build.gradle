@@ -64,6 +64,8 @@ dependencies {
 
     testCompile "org.grails:grails-plugin-testing"
 
+    testRuntime "org.javassist:javassist:3.18.1-GA"
+
     console "org.grails:grails-console"
 }
 

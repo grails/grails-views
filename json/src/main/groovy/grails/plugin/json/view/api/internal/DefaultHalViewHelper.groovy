@@ -173,6 +173,12 @@ class DefaultHalViewHelper implements HalViewHelper {
         view.out.write(JsonOutput.COMMA)
     }
 
+    /**
+     * Renders embedded associations for the given entity
+     *
+     * @param object The object
+     * @param arguments Any arguments. Supported arguments: 'includes', 'excludes', 'deep'
+     */
     void embedded(Object object, Map<String,Object> arguments = [:]) {
 
         MappingContext mappingContext = view.mappingContext
@@ -182,6 +188,7 @@ class DefaultHalViewHelper implements HalViewHelper {
 
         List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
         List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+        List<String> expandProperties = (List<String>)(view.params.list(GrailsJsonViewHelper.EXPAND) ?: arguments.get(GrailsJsonViewHelper.EXPAND) ?: Collections.emptyList())
         boolean deep = ViewUtils.getBooleanFromMap(GrailsJsonViewHelper.DEEP, arguments)
         arguments.put(IncludeExcludeSupport.EXCLUDES_PROPERTY, excs)
         def includeExcludeSupport = ((DefaultGrailsJsonViewHelper) viewHelper).includeExcludeSupport
@@ -197,14 +204,16 @@ class DefaultHalViewHelper implements HalViewHelper {
                         if(value != null) {
 
                             if(association instanceof ToMany && !( association instanceof Basic)) {
-                                if(deep || proxyHandler == null || proxyHandler.isInitialized(value)) {
+                                if(deep || expandProperties.contains(propertyName) || proxyHandler == null || proxyHandler.isInitialized(value)) {
                                     embeddedValues.put(association, value)
                                 }
+                                excs.add(propertyName)
                             }
                             else if(association instanceof ToOne) {
-                                if(deep || proxyHandler == null || proxyHandler.isInitialized(value)) {
+                                if(deep || expandProperties.contains(propertyName) || proxyHandler == null || proxyHandler.isInitialized(value)) {
                                     embeddedValues.put(association, value)
                                 }
+                                excs.add(propertyName)
                             }
                         }
                     }
@@ -221,7 +230,6 @@ class DefaultHalViewHelper implements HalViewHelper {
                         def associationReflector = mappingContext.getEntityReflector(associatedEntity)
                         def propertyName = association.name
                         if(association instanceof ToOne) {
-                            excs.add(propertyName)
                             jsonDelegate.call(propertyName) {
                                 writeLinks(delegate, embeddedObject, this.contentType)
                                 def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
@@ -231,7 +239,6 @@ class DefaultHalViewHelper implements HalViewHelper {
                         }
                         else if(association instanceof ToMany) {
                             if(embeddedObject instanceof Iterable) {
-                                excs.add(propertyName)
                                 jsonDelegate.call(propertyName, (Iterable)embeddedObject) { e ->
                                     def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
                                     renderEntityProperties(associatedEntity, e, associationReflector, associationJsonDelegate)

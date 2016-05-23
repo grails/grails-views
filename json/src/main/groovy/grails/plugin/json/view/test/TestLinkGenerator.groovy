@@ -4,6 +4,7 @@ import grails.util.GrailsNameUtils
 import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import org.grails.datastore.mapping.model.MappingContext
 import org.grails.web.util.WebUtils
 
 /**
@@ -14,6 +15,12 @@ import org.grails.web.util.WebUtils
  */
 @CompileStatic
 class TestLinkGenerator implements LinkGenerator{
+    final MappingContext mappingContext
+
+    TestLinkGenerator(MappingContext mappingContext) {
+        this.mappingContext = mappingContext
+    }
+
     @Override
     String resource(Map params) {
         return null
@@ -36,7 +43,8 @@ class TestLinkGenerator implements LinkGenerator{
 
             def resource = urlObject.resource
             if( resource != null &&  !(resource instanceof CharSequence)) {
-                resource = GrailsNameUtils.getPropertyName(resource.getClass())
+                def clazz = mappingContext.getProxyFactory().getProxiedClass(resource)
+                resource = GrailsNameUtils.getPropertyName(clazz)
             }
             String controller = resource ?: urlObject.controller
             if(controller) {

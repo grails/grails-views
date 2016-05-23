@@ -5,6 +5,7 @@ import grails.core.GrailsDomainClass
 import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
+import grails.views.api.internal.EmptyParameters
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.core.support.GrailsDomainConfigurationUtil
 import org.grails.datastore.gorm.config.GrailsDomainClassMappingContext
@@ -183,6 +184,7 @@ class JsonViewHelperSpec extends Specification {
 
     protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
         def jsonView = Mock(JsonView)
+        jsonView.getParams() >> new EmptyParameters()
         def mappingContext = Mock(MappingContext)
 
         def app = new DefaultGrailsApplication(classes)

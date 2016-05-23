@@ -42,7 +42,7 @@ trait JsonViewTest {
     MimeUtility mimeUtility
 
     @Autowired(required = false)
-    LinkGenerator linkGenerator = new TestLinkGenerator()
+    LinkGenerator linkGenerator = new TestLinkGenerator(mappingContext)
 
     @Autowired(required = false)
     JsonViewConfiguration viewConfiguration = new JsonViewConfiguration()

@@ -12,7 +12,15 @@ import grails.views.api.GrailsViewHelper
  */
 interface GrailsJsonViewHelper extends GrailsViewHelper {
 
+    /**
+     * The deep parameter
+     */
     String DEEP = "deep"
+
+    /**
+     * The expand parameter
+     */
+    String EXPAND = "expand"
 
     /**
      * Renders a template and returns the output
