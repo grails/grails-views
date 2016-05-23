@@ -463,7 +463,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/views/ViewRenderException.html#getFileName()" title="Method in ViewRenderException">getFileName()</a></span> - Method in <a href="grails/views/ViewRenderException.html">ViewRenderException</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/api/GrailsView.html#getG()" title="Method in GrailsView">getG()</a></span> - Method in <a href="grails/views/api/GrailsView.html">GrailsView</a>
-</dt><dd> <div class="block"></div></dd>
+</dt><dd> <div class="block">@return Obtain the view helper</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/JsonView.html#getG()" title="Method in JsonView">getG()</a></span> - Method in <a href="grails/plugin/json/view/api/JsonView.html">JsonView</a>
 </dt><dd> <div class="block">@return The default view helper</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#getGenericType(java.lang.Class, java.beans.PropertyDescriptor)" title="Method in DefaultGrailsJsonViewHelper">getGenericType(Class, PropertyDescriptor)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
@@ -577,8 +577,6 @@ if (location.href.indexOf('is-external=true') == -1) {
 <h2 class="title">H</h2>
 <dl>
 
-<dt><span class="strong"><a href="grails/plugin/json/view/api/HalView.html" title="Trait in grails.plugin.json.view.api">HalView</a></span> - Trait in <a href="./grails/plugin/json/view/api/package-summary.html">grails.plugin.json.view.api</a>
-</dt><dd><div class="block">Extends default view API with additional methods for rendering HAL responses</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/HalViewHelper.html" title="Interface in grails.plugin.json.view.api">HalViewHelper</a></span> - Interface in <a href="./grails/plugin/json/view/api/package-summary.html">grails.plugin.json.view.api</a>
 </dt><dd><div class="block">@author Graeme Rocher</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/test/JsonViewTest.TestHttpResponse.html#header(Map<String, String>)" title="Method in JsonViewTest.TestHttpResponse">header(Map&lt;String, String&gt;)</a></span> - Method in <a href="grails/plugin/json/view/test/JsonViewTest.TestHttpResponse.html">JsonViewTest.TestHttpResponse</a>
@@ -608,10 +606,20 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/markup/view/mvc/MarkupViewResolver.html#initialize()" title="Method in MarkupViewResolver">initialize()</a></span> - Method in <a href="grails/plugin/markup/view/mvc/MarkupViewResolver.html">MarkupViewResolver</a>
 </dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#initializeProcessedObjects(groovy.lang.Binding)" title="Method in DefaultGrailsJsonViewHelper">initializeProcessedObjects(Binding)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
+</dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/ResolvableGroovyTemplateEngine.html#initializeTemplate(grails.views.GrailsViewTemplate, java.io.File)" title="Method in ResolvableGroovyTemplateEngine">initializeTemplate(GrailsViewTemplate, File)</a></span> - Method in <a href="grails/views/ResolvableGroovyTemplateEngine.html">ResolvableGroovyTemplateEngine</a>
 </dt><dd> <div class="block">Initialises a template instance</div></dd>
 <dt><span class="strong"><a href="grails/views/WritableScriptTemplate.html#initModelTypes(Class<? extends WritableScript>)" title="Method in WritableScriptTemplate">initModelTypes(Class&lt;? extends WritableScript&gt;)</a></span> - Method in <a href="grails/views/WritableScriptTemplate.html">WritableScriptTemplate</a>
 </dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#inline(java.lang.Object, groovy.lang.Closure)" title="Method in DefaultGrailsJsonViewHelper">inline(Object, Closure)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
+</dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultHalViewHelper.html#inline(java.lang.Object, groovy.lang.Closure)" title="Method in DefaultHalViewHelper">inline(Object, Closure)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultHalViewHelper.html">DefaultHalViewHelper</a>
+</dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/GrailsJsonViewHelper.html#inline(java.lang.Object)" title="Method in GrailsJsonViewHelper">inline(Object)</a></span> - Method in <a href="grails/plugin/json/view/api/GrailsJsonViewHelper.html">GrailsJsonViewHelper</a>
+</dt><dd> <div class="block">Renders the given object inline within the current JSON object instead of creating a new JSON object</div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/HalViewHelper.html#inline(java.lang.Object)" title="Method in HalViewHelper">inline(Object)</a></span> - Method in <a href="grails/plugin/json/view/api/HalViewHelper.html">HalViewHelper</a>
+</dt><dd> <div class="block">Same as <a href='../../../../../grails/plugin/json/view/api/GrailsJsonViewHelper.html#inline(java.lang.Object)' title='GrailsJsonViewHelper.inline'>GrailsJsonViewHelper.inline</a> but renders HAL links too</div></dd>
 <dt><span class="strong"><a href="grails/views/mvc/http/DelegatingParameters.html#int(java.lang.String, java.lang.Integer)" title="Method in DelegatingParameters">int(String, Integer)</a></span> - Method in <a href="grails/views/mvc/http/DelegatingParameters.html">DelegatingParameters</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/api/internal/EmptyParameters.html#int(java.lang.String, java.lang.Integer)" title="Method in EmptyParameters">int(String, Integer)</a></span> - Method in <a href="grails/views/api/internal/EmptyParameters.html">EmptyParameters</a>
@@ -667,6 +675,13 @@ if (location.href.indexOf('is-external=true') == -1) {
 <h2 class="title">J</h2>
 <dl>
 
+<dt><span class="strong"><a href="grails/plugin/json/view/api/JsonView.html#json(java.lang.String, java.util.Map, groovy.lang.Closure)" title="Method in JsonView">json(String, Map, Closure)</a></span> - Method in <a href="grails/plugin/json/view/api/JsonView.html">JsonView</a>
+</dt><dd> <div class="block">If you use named arguments and a closure as last argument,
+ the key/value pairs of the map (as named arguments)
+ and the key/value pairs represented in the closure
+ will be merged together &mdash;
+ the closure properties overriding the map key/values
+ in case the same key is used.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/JsonViewTemplate.html#json(java.lang.Object)" title="Method in JsonViewTemplate">json(Object)</a></span> - Method in <a href="grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/mvc/JsonViewResolver.html#JSON_VIEW_SUFFIX" title="Field in JsonViewResolver">JSON_VIEW_SUFFIX</a></span> - Field in <a href="grails/plugin/json/view/mvc/JsonViewResolver.html">JsonViewResolver</a>
@@ -815,6 +830,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/AbstractWritableScript.html#model(java.lang.String, Class<T>)" title="Method in AbstractWritableScript">model(String, Class&lt;T&gt;)</a></span> - Method in <a href="grails/views/AbstractWritableScript.html">AbstractWritableScript</a>
 </dt><dd> <div class="block">Obtains a model value for the given name and type</div></dd>
+<dt><span class="strong"><a href="grails/views/api/GrailsView.html#model(groovy.lang.Closure)" title="Method in GrailsView">model(Closure)</a></span> - Method in <a href="grails/views/api/GrailsView.html">GrailsView</a>
+</dt><dd> <div class="block">Defines the model</div></dd>
 <dt><span class="strong"><a href="grails/views/mvc/renderer/DefaultViewRenderer.html#MODEL_OBJECT" title="Field in DefaultViewRenderer">MODEL_OBJECT</a></span> - Field in <a href="grails/views/mvc/renderer/DefaultViewRenderer.html">DefaultViewRenderer</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/WritableScriptTemplate.html#modelSetters" title="Field in WritableScriptTemplate">modelSetters</a></span> - Field in <a href="grails/views/WritableScriptTemplate.html">WritableScriptTemplate</a>
@@ -899,7 +916,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonOutput.html#prettyPrint(java.lang.String)" title="Method in JsonOutput">prettyPrint(String)</a></span> - Method in <a href="grails/plugin/json/builder/JsonOutput.html">JsonOutput</a>
 </dt><dd> <div class="block">Pretty print a JSON payload.</div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#process(grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate, org.grails.datastore.mapping.model.PersistentEntity, java.lang.Object, Map<Object, String>, List<String>, List<String>, java.lang.String, boolean, List<String>)" title="Method in DefaultGrailsJsonViewHelper">process(StreamingJsonDelegate, PersistentEntity, Object, Map&lt;Object, String&gt;, List&lt;String&gt;, List&lt;String&gt;, String, boolean, List&lt;String&gt;)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#process(grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate, org.grails.datastore.mapping.model.PersistentEntity, java.lang.Object, Map<Object, String>, List<String>, List<String>, java.lang.String, boolean, List<String>, boolean)" title="Method in DefaultGrailsJsonViewHelper">process(StreamingJsonDelegate, PersistentEntity, Object, Map&lt;Object, String&gt;, List&lt;String&gt;, List&lt;String&gt;, String, boolean, List&lt;String&gt;, boolean)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#PROCESSED_OBJECT_VARIABLE" title="Field in DefaultGrailsJsonViewHelper">PROCESSED_OBJECT_VARIABLE</a></span> - Field in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
@@ -1175,6 +1192,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/views/compiler/ViewsTransform.ModelTypesVisitor.html#visitClass(org.codehaus.groovy.ast.ClassNode)" title="Method in ViewsTransform.ModelTypesVisitor">visitClass(ClassNode)</a></span> - Method in <a href="grails/views/compiler/ViewsTransform.ModelTypesVisitor.html">ViewsTransform.ModelTypesVisitor</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/compiler/BuilderTypeCheckingExtension.BuilderMethodReplacer.html#visitClosureExpression(org.codehaus.groovy.ast.expr.ClosureExpression)" title="Method in BuilderTypeCheckingExtension.BuilderMethodReplacer">visitClosureExpression(ClosureExpression)</a></span> - Method in <a href="grails/views/compiler/BuilderTypeCheckingExtension.BuilderMethodReplacer.html">BuilderTypeCheckingExtension.BuilderMethodReplacer</a>
+</dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/views/compiler/ViewsTransform.ModelTypesVisitor.html#visitField(org.codehaus.groovy.ast.FieldNode)" title="Method in ViewsTransform.ModelTypesVisitor">visitField(FieldNode)</a></span> - Method in <a href="grails/views/compiler/ViewsTransform.ModelTypesVisitor.html">ViewsTransform.ModelTypesVisitor</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/compiler/ViewsTransform.ModelTypesVisitor.html#visitMethodCallExpression(org.codehaus.groovy.ast.expr.MethodCallExpression)" title="Method in ViewsTransform.ModelTypesVisitor">visitMethodCallExpression(MethodCallExpression)</a></span> - Method in <a href="grails/views/compiler/ViewsTransform.ModelTypesVisitor.html">ViewsTransform.ModelTypesVisitor</a>
 </dt><dd> <div class="block"></div></dd>

@@ -593,7 +593,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 </div>
 <div class="paragraph">
-<p>There is an implicit <code>json</code> variable which is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
+<p>The <code>json</code> variable is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
 </div>
 <div class="paragraph">
 <p>More example usages:</p>
@@ -604,6 +604,44 @@ table.CodeRay td.code>pre{padding:0}
 json { name <span class="string"><span class="delimiter">&quot;</span><span class="content">Bob</span><span class="delimiter">&quot;</span></span> } == <span class="string"><span class="delimiter">'</span><span class="content">{&quot;name&quot;:&quot;Bob&quot;}</span><span class="delimiter">'</span></span>
 json([<span class="integer">1</span>,<span class="integer">2</span>,<span class="integer">3</span>]) { n <span class="local-variable">it</span> } == <span class="string"><span class="delimiter">'</span><span class="content">[{&quot;n&quot;:1},{&quot;n&quot;:2},{&quot;n&quot;:3}]</span><span class="delimiter">'</span></span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can specify a model to view in one of two ways. Either with a <code>model</code> block:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">String</span> message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with the <code>@Field</code> transformation provided by Groovy:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Field</span> <span class="predefined-type">String</span> message
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may prompt you to do so.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -2110,7 +2148,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-23 11:51:37 UTC
+Last updated 2016-05-23 16:01:08 UTC
 </div>
 </div>
 </body>
