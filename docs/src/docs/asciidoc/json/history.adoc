@@ -8,6 +8,8 @@ The current release is {version}. Below is a version history.
 * Ability to access HTTP parameters and headers
 * Global template support
 * Global templates for GORM for MongoDB / GeoJSON
+* Resource expansion with the `expand` parameter
+* Controller namespace support
 
 *1.0.0*
 

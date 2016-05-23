@@ -72,7 +72,14 @@ Secondly when calling the `render` method you should pass the `deep` argument:
 [source,groovy]
 json g.render(book, [deep:true])
 
-Alternatively if you prefer to handle the rendering yourself you can do by excluding the property:
+Alternatively, to only expand a single association you can use the `expand` argument:
+
+[source,groovy]
+json g.render(book, [expand:['author']])
+
+NOTE: request parameters can also be used to expand associations (eg. `?expand=author`), if you do not want to allow this, then yes `includes` or `excludes` to include only the properties you want.
+
+Finally, if you prefer to handle the rendering yourself you can do by excluding the property:
 
 [source,groovy]
 json g.render(book, [excludes:['author']) {
