@@ -125,6 +125,19 @@ model {
 json hal.render(book, [embedded:false])
 
 
+You can also render embedded associations without using the `hal.render(..)` method, by using the `hal.embedded(..)` method:
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.embedded(book)
+    title book.title
+}
+
+NOTE: Like the `hal.links(..)` method, the `hal.embedded(..)` method should come first, before any other attributes, in your JSON output
+
 ==== Specifying the HAL Content Type
 
 The default HAL response content type is `application/hal+json`, however as discussed in the section on <<json/contentNegotiation.adoc#mimeTypes,Custom Mime Type>> you can define your own response content types to represent your resources. 
