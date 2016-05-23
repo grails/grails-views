@@ -634,6 +634,15 @@ json([<span class="integer">1</span>,<span class="integer">2</span>,<span class=
 <li>
 <p>Global templates for GORM for MongoDB / GeoJSON</p>
 </li>
+<li>
+<p>Resource expansion with the <code>expand</code> parameter</p>
+</li>
+<li>
+<p>Controller namespace support</p>
+</li>
+<li>
+<p>Support for a default <code>/object/_object.gson</code> template</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -963,7 +972,27 @@ The same applies to one-to-many collection associations. If the association has 
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively if you prefer to handle the rendering yourself you can do by excluding the property:</p>
+<p>Alternatively, to only expand a single association you can use the <code>expand</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">expand</span>:[<span class="string"><span class="delimiter">'</span><span class="content">author</span><span class="delimiter">'</span></span>]])</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+request parameters can also be used to expand associations (eg. <code>?expand=author</code>), if you do not want to allow this, then yes <code>includes</code> or <code>excludes</code> to include only the properties you want.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Finally, if you prefer to handle the rendering yourself you can do by excluding the property:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1173,6 +1202,17 @@ For more complex message lookups the <code>messageSource</code> property is an i
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> <span class="function">show</span>() {
     respond <span class="predefined-type">Book</span>.get(params.id)
 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also define a <code>/object/_object</code> template that is rendered by default if no other template is found during content negotiation. To do this create a file called <code>/grails-app/views/object/_object.gson</code> where the name of the model is <code>object</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Object</span> object
+}
+json g.render(object)</code></pre>
 </div>
 </div>
 </div>
@@ -2070,7 +2110,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-23 09:50:39 UTC
+Last updated 2016-05-23 11:51:37 UTC
 </div>
 </div>
 </body>
