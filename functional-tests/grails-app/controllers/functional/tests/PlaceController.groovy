@@ -7,7 +7,13 @@ import grails.mongodb.geo.Point
  */
 class PlaceController {
 
+    static responseFormats = ['json']
+
     def show() {
+        respond new Place(name: "London", location: Point.valueOf(10,10))
+    }
+
+    def test() {
         respond new Place(name: "London", location: Point.valueOf(10,10))
     }
 }

@@ -12,6 +12,7 @@ import groovy.transform.InheritConstructors
 import org.grails.plugins.web.rest.render.ServletRenderContext
 import org.grails.plugins.web.rest.render.html.DefaultHtmlRenderer
 import org.springframework.web.servlet.View
+import org.springframework.web.servlet.view.AbstractUrlBasedView
 
 /**
  * A renderer implementation that looks up a view from the ViewResolver
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.View
 @InheritConstructors
 @CompileStatic
 abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
+    public static final String MODEL_OBJECT = 'object'
     final SmartViewResolver viewResolver
 
     final ProxyHandler proxyHandler
@@ -69,7 +71,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         def request = webRequest.currentRequest
         def response = webRequest.currentResponse
 
-        View view = viewResolver.resolveView(viewUri, request, response)
+        AbstractUrlBasedView view = (AbstractUrlBasedView)viewResolver.resolveView(viewUri, request, response)
         if(view == null) {
             if(proxyHandler != null) {
                 object = (T)proxyHandler.unwrapIfProxy(object)
@@ -77,12 +79,14 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
 
             def cls = object.getClass()
             // Try resolve template. Example /book/_book
-            view = viewResolver.resolveView(cls, request, response)
+            view = (AbstractUrlBasedView)viewResolver.resolveView(cls, request, response)
         }
 
         if(view != null) {
             Map<String, Object> model = [(resolveModelVariableName(object)): object]
-
+            if(view.url == SmartViewResolver.OBJECT_TEMPLATE_NAME) {
+                model.put(MODEL_OBJECT, object)
+            }
             view.render(model, request, response)
         }
         else {

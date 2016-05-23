@@ -41,6 +41,8 @@ import javax.servlet.http.HttpServletResponse
 @CompileStatic
 class SmartViewResolver  {
 
+    public static final String OBJECT_TEMPLATE_NAME = "/object/_object"
+
     @Delegate(methodAnnotations = true) ResolvableGroovyTemplateEngine templateEngine
 
     Class<? extends GenericGroovyTemplateView> viewClass = GenericGroovyTemplateView
@@ -50,6 +52,7 @@ class SmartViewResolver  {
     @Autowired
     LocaleResolver localeResolver
 
+    final View objectView
 
     private Map<String, GenericGroovyTemplateView> viewCache = new ConcurrentLinkedHashMap.Builder<String, GenericGroovyTemplateView>()
                                                                                             .maximumWeightedCapacity(150)
@@ -68,6 +71,7 @@ class SmartViewResolver  {
 
     SmartViewResolver(ResolvableGroovyTemplateEngine templateEngine) {
         this.templateEngine = templateEngine
+        this.objectView = resolveView(OBJECT_TEMPLATE_NAME, Locale.ENGLISH)
     }
 
     View resolveView(String viewName, Locale locale) {
@@ -102,7 +106,7 @@ class SmartViewResolver  {
         if(v == null) {
             v = resolveView(TemplateResolverUtils.shortTemplateNameForClass(type), request, response)
         }
-        return v
+        return v != null ? v : objectView
     }
 
     View resolveView(Class type, Locale locale) {
@@ -110,7 +114,7 @@ class SmartViewResolver  {
         if(v == null) {
             v = resolveView(TemplateResolverUtils.shortTemplateNameForClass(type), locale)
         }
-        return v
+        return v != null ? v : objectView
     }
 
     protected List buildQualifiers(HttpServletRequest request, HttpServletResponse response) {
