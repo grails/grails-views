@@ -116,7 +116,7 @@ json {
 
 ==== Template Inheritance
 
-JSON templates can inherit from one in other in certain cases. For example consider the following parent template:
+JSON templates can inherit from a parent template. For example consider the following parent template:
 
 
 [source,groovy]
