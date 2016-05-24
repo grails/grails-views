@@ -114,3 +114,44 @@ json {
     children tmpl.person( family.children )
 }
 
+==== Template Inheritance
+
+JSON templates can inherit from one in other in certain cases. For example consider the following parent template:
+
+
+[source,groovy]
+.`grails-app/views/_parent.gson`
+model {
+    Object object
+}
+json {
+    hal.links(object)
+    version "1.0"
+}
+
+A child template can inherit from the above template by using the `inherits` method:
+
+[source,groovy]
+.`grails-app/views/_person.gson`
+inherits template:"parent"
+model {
+    Person person
+}
+json {
+    name person.name
+}
+
+The JSON from the parent and the child template will be combined so that the output is:
+
+[source,json]
+ {
+   "_links": {
+     "self": {
+       "href": "http://localhost:8080/person/1",
+       "hreflang": "en",
+       "type": "application/hal+json"
+     }
+   },
+   "version": "1.0",
+   "name": "Fred"
+ }

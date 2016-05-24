@@ -2,12 +2,13 @@ The current release is {version}. Below is a version history.
 
 *1.1.0*
 
+* Global template support
+* Template inheritance
+* Global templates for GORM for MongoDB / GeoJSON
 * Support for easily testing JSON views with `JsonViewTest`
 * Pagination support in HAL
 * Better Embedded support in HAL
 * Ability to access HTTP parameters and headers
-* Global template support
-* Global templates for GORM for MongoDB / GeoJSON
 * Resource expansion with the `expand` parameter
 * Controller namespace support
 * Support for a default `/object/_object.gson` template
