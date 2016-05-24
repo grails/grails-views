@@ -155,3 +155,22 @@ The JSON from the parent and the child template will be combined so that the out
    "version": "1.0",
    "name": "Fred"
  }
+
+The parent template's model will be formulated from the child templates model and the super class name. For example if the model is `Person person` where `Person` extends from `Object` then the final model passed to the parent template will look like:
+
+[source,groovy]
+[person:person, object:person]
+
+If the `Person` class extended from a class called `Mammal` then the model passed to the parent would be:
+
+[source,groovy]
+-----
+[person:person, mammal:person]
+-----
+
+This allows you to design your templates around object inheritance.
+
+You can customize the model passed to the parent template using the `model` argument:
+
+[source,groovy]
+inherits template:"parent", model:[person:person]
