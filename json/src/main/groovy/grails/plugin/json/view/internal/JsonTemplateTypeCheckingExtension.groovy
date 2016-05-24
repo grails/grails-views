@@ -32,8 +32,16 @@ class JsonTemplateTypeCheckingExtension extends BuilderTypeCheckingExtension {
 
     @Override
     void beforeMethodCallExpression(MethodCallExpression methodCallExpression) {
-        if(methodCallExpression.methodAsString == 'json') {
-            insideScope = true
+        if(!insideScope) {
+            if(methodCallExpression.methodAsString == 'json') {
+                insideScope = true
+            }
+            else if(methodCallExpression.objectExpression instanceof VariableExpression) {
+                VariableExpression ve = methodCallExpression.objectExpression
+                if(ve.name == 'json') {
+                    insideScope = true
+                }
+            }
         }
     }
 

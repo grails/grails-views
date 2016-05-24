@@ -33,8 +33,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
      * @param arguments The named arguments: 'template', 'collection', 'model', 'var' and 'bean'
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Map arguments)
-
+    JsonOutput.JsonWritable render(Map arguments)
 
     /**
      * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
@@ -44,7 +43,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
      * @param customizer Used to customize the contents
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+    JsonOutput.JsonWritable render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
     /**
      * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
      *
@@ -52,7 +51,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
      * @param arguments The supported named arguments: 'includes' or 'excludes' list
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Object object, Map arguments)
+    JsonOutput.JsonWritable render(Object object, Map arguments)
 
     /**
      * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
@@ -60,7 +59,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
      * @param object The object to render
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Object object)
+    JsonOutput.JsonWritable render(Object object)
 
     /**
      * Renders the given object to JSON, typically a domain class, ignoring lazy and internal properties
@@ -69,7 +68,7 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
      * @param customizer the customizer
      * @return The unescaped JSON
      */
-    JsonOutput.JsonUnescaped render(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+    JsonOutput.JsonWritable render(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
 
     /**
      * Renders the given object inline within the current JSON object instead of creating a new JSON object

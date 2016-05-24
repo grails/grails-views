@@ -9,7 +9,6 @@ import grails.plugin.json.view.api.JsonView
 import grails.rest.Link
 import grails.views.api.HttpView
 import grails.views.utils.ViewUtils
-import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -17,16 +16,7 @@ import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
-import org.grails.datastore.mapping.model.types.Association
-import org.grails.datastore.mapping.model.types.Basic
-import org.grails.datastore.mapping.model.types.Custom
-import org.grails.datastore.mapping.model.types.Embedded
-import org.grails.datastore.mapping.model.types.EmbeddedCollection
-import org.grails.datastore.mapping.model.types.Simple
-import org.grails.datastore.mapping.model.types.ToMany
-import org.grails.datastore.mapping.model.types.ToOne
-import org.grails.datastore.mapping.proxy.ProxyHandler
-import org.grails.datastore.mapping.reflect.ClassUtils
+import org.grails.datastore.mapping.model.types.*
 import org.grails.datastore.mapping.reflect.EntityReflector
 import org.springframework.http.HttpMethod
 
@@ -42,7 +32,6 @@ class DefaultHalViewHelper implements HalViewHelper {
     public static final String LINKS_ATTRIBUTE = "_links"
     public static final String SELF_ATTRIBUTE = "self"
     public static final String HREF_ATTRIBUTE = "href"
-    public static final char COMMA = ','
     public static final String HREFLANG_ATTRIBUTE = "hreflang"
     public static final String TYPE_ATTRIBUTE = "type"
     public static final String EMBEDDED_ATTRIBUTE = "_embedded"
@@ -61,7 +50,7 @@ class DefaultHalViewHelper implements HalViewHelper {
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
     @Override
-    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer) {
+    JsonOutput.JsonWritable render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer) {
         if(arguments == null) {
             arguments = new LinkedHashMap()
         }
@@ -75,7 +64,7 @@ class DefaultHalViewHelper implements HalViewHelper {
 
 
     @Override
-    JsonOutput.JsonUnescaped render(Object object, Map arguments) {
+    JsonOutput.JsonWritable render(Object object, Map arguments) {
         render(object, arguments, null)
     }
 
@@ -83,12 +72,12 @@ class DefaultHalViewHelper implements HalViewHelper {
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
     @Override
-    JsonOutput.JsonUnescaped render(Object object,  @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer ) {
+    JsonOutput.JsonWritable render(Object object,  @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer ) {
         render(object, (Map)null, customizer)
     }
 
     @Override
-    JsonOutput.JsonUnescaped render(Object object) {
+    JsonOutput.JsonWritable render(Object object) {
         render(object, (Map)null, (Closure)null)
     }
 
@@ -425,8 +414,8 @@ class DefaultHalViewHelper implements HalViewHelper {
             } else if (prop instanceof Custom) {
                 def childTemplate = view.templateEngine.resolveTemplate(propertyType, view.locale)
                 if (childTemplate != null) {
-                    JsonOutput.JsonUnescaped jsonUnescaped = ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, propertyType, propVal)
-                    jsonDelegate.call(propertyName, jsonUnescaped)
+                    JsonOutput.JsonWritable jsonWritable = ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, propertyType, propVal)
+                    jsonDelegate.call(propertyName, jsonWritable)
                 } else {
                     jsonDelegate.call(propertyName, propVal)
                 }
@@ -434,8 +423,8 @@ class DefaultHalViewHelper implements HalViewHelper {
                 Embedded embedded = (Embedded)prop
                 def childTemplate = view.templateEngine.resolveTemplate(propertyType, view.locale)
                 if (childTemplate != null) {
-                    JsonOutput.JsonUnescaped jsonUnescaped = ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, propertyType, propVal)
-                    jsonDelegate.call(propertyName, jsonUnescaped)
+                    JsonOutput.JsonWritable jsonWritable = ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, propertyType, propVal)
+                    jsonDelegate.call(propertyName, jsonWritable)
                 } else {
                     jsonDelegate.call(propertyName) {
                         def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()

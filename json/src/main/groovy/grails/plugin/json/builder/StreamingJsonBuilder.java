@@ -22,6 +22,7 @@ import groovy.json.JsonException;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import groovy.lang.GroovyObjectSupport;
+import groovy.lang.Writable;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -85,6 +86,17 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
         writer.write(JsonOutput.toJson(m));
 
         return m;
+    }
+
+    /**
+     * Invokes the given writable against the writer
+     *
+     * @param writable a map of key / value pairs
+     * @return a map of key / value pairs
+     */
+    public Object call(Writable writable) throws IOException {
+        writable.writeTo(writer);
+        return writable;
     }
 
     /**
@@ -459,6 +471,9 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
                             if(value instanceof Closure) {
                                 call(name, (Closure)value);
                             }
+                            else if(value instanceof Writable) {
+                                call(name, (Writable) value);
+                            }
                             else {
                                 call(name, value);
                             }
@@ -603,6 +618,19 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             writeName(name);
             verifyValue();
             writer.write(json.toString());
+        }
+
+        /**
+         * Writes an unescaped value. Note: can cause invalid JSON if passed JSON is invalid
+         *
+         * @param name The attribute name
+         * @param json The value
+         * @throws IOException
+         */
+        public void call(String name, Writable json) throws IOException {
+            writeName(name);
+            verifyValue();
+            json.writeTo(writer);
         }
 
 

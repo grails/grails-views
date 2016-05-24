@@ -25,11 +25,12 @@ import groovy.json.JsonToken;
 import groovy.json.internal.CharBuf;
 import groovy.json.internal.Chr;
 import groovy.lang.Closure;
+import groovy.lang.Writable;
 import groovy.util.Expando;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.grails.buffer.FastStringWriter;
 
-import java.io.File;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
@@ -62,7 +63,7 @@ public class JsonOutput {
 
     private static final char[] EMPTY_STRING_CHARS = Chr.array(QUOTE, QUOTE);
 
-    private static final String NULL_VALUE = "null";
+    public static final String NULL_VALUE = "null";
     private static final String JSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
     private static final String DEFAULT_TIMEZONE = "GMT";
 
@@ -603,4 +604,46 @@ public class JsonOutput {
         }
     }
 
+    /**
+     * Represents unescaped JSON
+     */
+    public static abstract class JsonWritable implements Writable, CharSequence {
+
+        protected boolean inline = false;
+        protected boolean first = true;
+
+        public void setInline(boolean inline) {
+            this.inline = inline;
+        }
+
+        public void setFirst(boolean first) {
+            this.first = first;
+        }
+
+        @Override
+        public String toString() {
+            FastStringWriter out = new FastStringWriter();
+            try {
+                writeTo(out);
+            } catch (IOException e) {
+                throw new JsonException("Error writing JSON writable: " + e.getMessage(), e);
+            }
+            return out.toString();
+        }
+
+        @Override
+        public int length() {
+            return toString().length();
+        }
+
+        @Override
+        public char charAt(int index) {
+            return toString().charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return toString().subSequence(start, end);
+        }
+    }
 }

@@ -29,4 +29,28 @@ class ViewUtils {
         }
         return defaultValue
     }
+
+    /**
+     * Obtains a list of strings from the map for the given key
+     *
+     * @param key The key
+     * @param map The map
+     * @return A list of strings
+     */
+    public static List<String> getStringListFromMap(String key, Map map, List<String> defaultValue = []) {
+        if(map == null) return defaultValue
+
+        if(map.containsKey(key)) {
+            def o = map.get(key)
+            if(o instanceof Iterable) {
+                return (List<String>)((Iterable)o).toList()
+            }
+            else {
+                return Arrays.asList(o.toString())
+            }
+        }
+        else {
+            return defaultValue
+        }
+    }
 }

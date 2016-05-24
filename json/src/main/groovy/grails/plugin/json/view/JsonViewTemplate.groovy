@@ -3,8 +3,10 @@ package grails.plugin.json.view
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.JsonView
+import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
+import grails.util.GrailsNameUtils
 import grails.views.AbstractWritableScript
-import grails.views.Views
+import grails.views.api.GrailsView
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.buffer.FastStringWriter
@@ -24,6 +26,7 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
 
 
     Object root
+    boolean inline = false
 
     @Override
     Writer doWrite(Writer out) throws IOException {
@@ -43,6 +46,7 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
         }
     }
 
+
     /**
      * TODO: When Groovy 2.4.5 go back to JsonBuilder from groovy-json
      *
@@ -51,7 +55,14 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
      */
     StreamingJsonBuilder json(@DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure callable) {
         this.root = callable
-        json.call callable
+        if(inline) {
+            def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, true)
+            callable.setDelegate(jsonDelegate)
+            callable.call()
+        }
+        else {
+            json.call callable
+        }
         return json
     }
 
@@ -80,6 +91,31 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
     }
 
     /**
+     * Print unescaped json directly
+     *
+     * @param writable The unescaped JSON produced from templates
+     *
+     * @return The json builder
+     */
+    StreamingJsonBuilder json(JsonOutput.JsonWritable writable) {
+        if(parentTemplate != null) {
+            out.write(JsonOutput.OPEN_BRACE)
+            def parentWritable = prepareParentWritable()
+            parentWritable.writeTo(out)
+            resetProcessedObjects()
+            writable.setInline(true)
+            writable.setFirst(false)
+            writable.writeTo(out)
+            out.write(JsonOutput.CLOSE_BRACE)
+        }
+        else {
+            writable.setInline(inline)
+            writable.writeTo(out)
+        }
+        return json
+    }
+
+    /**
      * TODO: When Groovy 2.4.5 go back to JsonBuilder from groovy-json
      *
      * @param callable
@@ -94,7 +130,10 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
         if(args.length == 1) {
             def val = args[0]
             if(val instanceof JsonOutput.JsonUnescaped) {
-                json((JsonOutput.JsonUnescaped)val)
+                this.json((JsonOutput.JsonUnescaped)val)
+            }
+            else if(val instanceof JsonOutput.JsonWritable) {
+                this.json((JsonOutput.JsonWritable)val)
             }
             else {
                 json.call val
@@ -106,5 +145,27 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
         return json
     }
 
+    private GrailsView prepareParentWritable() {
+        parentModel.putAll(binding.variables)
+        for(o in binding.variables.values()) {
+            parentModel.put(GrailsNameUtils.getPropertyName(o.getClass().getSuperclass().getName()), o)
+        }
+        JsonViewTemplate writable = (JsonViewTemplate) parentTemplate.make((Map) parentModel)
+        writable.inline = true
+        writable.locale = locale
+        writable.response = response
+        writable.request = request
+        writable.controllerNamespace = controllerNamespace
+        writable.controllerName = controllerName
+        writable.actionName = actionName
+        return writable
+    }
 
+
+    private void resetProcessedObjects() {
+        if (binding.hasVariable(DefaultGrailsJsonViewHelper.PROCESSED_OBJECT_VARIABLE)) {
+            Map processed = (Map) binding.getVariable(DefaultGrailsJsonViewHelper.PROCESSED_OBJECT_VARIABLE)
+            processed.clear()
+        }
+    }
 }

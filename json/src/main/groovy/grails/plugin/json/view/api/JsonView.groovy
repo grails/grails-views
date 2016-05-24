@@ -1,10 +1,15 @@
 package grails.plugin.json.view.api
 
 import grails.plugin.json.builder.StreamingJsonBuilder
+import grails.plugin.json.view.JsonViewTemplate
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.DefaultHalViewHelper
 import grails.plugin.json.view.api.internal.TemplateRenderer
+import grails.views.GrailsViewTemplate
+import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.ViewException
 import grails.views.api.GrailsView
+import groovy.transform.CompileStatic
 
 /**
  * Extends default view API with additional methods
@@ -12,6 +17,7 @@ import grails.views.api.GrailsView
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 trait JsonView extends GrailsView {
 
     /**
@@ -20,11 +26,18 @@ trait JsonView extends GrailsView {
     StreamingJsonBuilder json
 
     /**
+     * The parent template if any
+     */
+    GrailsViewTemplate parentTemplate
+
+    /**
+     * The parent model, if any
+     */
+    Map parentModel
+    /**
      * Overrides the default helper with new methods specific to JSON building
      */
     private GrailsJsonViewHelper viewHelper = new DefaultGrailsJsonViewHelper(this)
-
-
 
     /**
      * @return The default view helper
@@ -44,7 +57,39 @@ trait JsonView extends GrailsView {
      */
     TemplateRenderer tmpl = new TemplateRenderer(viewHelper)
 
+    /**
+     * Specify a template that this template inherits from
+     *
+     * @param arguments The arguments
+     */
+    void inherits(Map arguments) {
+        ResolvableGroovyTemplateEngine templateEngine = (ResolvableGroovyTemplateEngine)viewTemplate.templateEngine
 
+        def template = arguments.template
+
+        if(template) {
+            Map model = (Map)arguments.model ?: [:]
+            def templateUri = templateEngine
+                    .viewUriResolver
+                    .resolveTemplateUri(getControllerNamespace(), getControllerName(), template.toString())
+            GrailsViewTemplate parentTemplate = (GrailsViewTemplate)templateEngine.resolveTemplate(templateUri, locale)
+            if(parentTemplate != null) {
+                this.parentTemplate = parentTemplate
+                this.parentModel = model
+            }
+            else {
+                throw new ViewException("Template not found for name $template")
+            }
+        }
+    }
+
+    /**
+     * Output JSON for the given map
+     *
+     * @param m The JSON map
+     * @return
+     * @throws IOException
+     */
     public Object json(Map m) throws IOException {
         json.call m
     }

@@ -20,7 +20,9 @@ class TeamSpec extends GebSpec{
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
+
+        // Note current behaviour is that the captain is not rendered twice
+        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
     }
 
     void "Test deep association template rendering"() {
@@ -33,7 +35,7 @@ class TeamSpec extends GebSpec{
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
+        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
     }
 
     void "Test HAL rendering"() {

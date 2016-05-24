@@ -12,21 +12,21 @@ interface HalViewHelper {
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
-    JsonOutput.JsonUnescaped render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
+    JsonOutput.JsonWritable render(Object object, Map arguments, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer)
 
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map)} but renders HAL links too
      */
-    JsonOutput.JsonUnescaped render(Object object, Map arguments)
+    JsonOutput.JsonWritable render(Object object, Map arguments)
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
-    JsonOutput.JsonUnescaped render(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer )
+    JsonOutput.JsonWritable render(Object object, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure customizer )
 
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object)} but renders HAL links too
      */
-    JsonOutput.JsonUnescaped render(Object object)
+    JsonOutput.JsonWritable render(Object object)
 
     /**
      * Same as {@link GrailsJsonViewHelper#inline(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
