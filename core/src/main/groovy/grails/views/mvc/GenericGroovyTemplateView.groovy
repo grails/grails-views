@@ -106,16 +106,42 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         }
     }
 
+    @CompileStatic
     private static class HttpViewRequest implements Request {
-        @Delegate(excludes = ['getHeaders'], interfaces = false) final HttpServletRequest request;
+        final HttpServletRequest request;
 
         HttpViewRequest(HttpServletRequest request) {
             this.request = request
         }
 
         @Override
+        String getContextPath() {
+            request.contextPath
+        }
+
+        @Override
+        String getMethod() {
+            request.method
+        }
+
+        @Override
         String getUri() {
             return request.getRequestURI()
+        }
+
+        @Override
+        String getContentType() {
+            return request.contentType
+        }
+
+        @Override
+        String getCharacterEncoding() {
+            return request.getCharacterEncoding()
+        }
+
+        @Override
+        String getHeader(String name) {
+            return request.getHeader(name)
         }
 
         @Override
@@ -129,8 +155,10 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             request.getHeaderNames().toList()
         }()
     }
+
+    @CompileStatic
     private static class HttpViewResponse implements Response {
-        final @Delegate(interfaces = false) HttpServletResponse httpServletResponse
+        final HttpServletResponse httpServletResponse
 
         HttpViewResponse(HttpServletResponse httpServletResponse) {
             this.httpServletResponse = httpServletResponse
