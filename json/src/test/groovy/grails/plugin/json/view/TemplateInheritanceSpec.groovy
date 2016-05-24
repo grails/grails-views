@@ -25,4 +25,13 @@ class TemplateInheritanceSpec extends Specification implements JsonViewTest {
         then:
         result.jsonText == '{"id":1,"name":"Cantona"}'
     }
+
+    void "test extending another template and rendering a JSON block"() {
+        when:
+
+        def result = render(template:'child4', model:[player: new Player(name: "Cantona")])
+        then:
+        result.jsonText == '{"_links":{"self":{"href":"http://localhost:8080/player","hreflang":"en","type":"application/hal+json"}},"foo":"bar","name":"Cantona"}'
+    }
+
 }

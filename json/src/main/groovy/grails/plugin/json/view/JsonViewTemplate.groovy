@@ -54,14 +54,27 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
      * @return
      */
     StreamingJsonBuilder json(@DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure callable) {
-        this.root = callable
-        if(inline) {
-            def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, true)
+        if(parentTemplate != null) {
+            out.write(JsonOutput.OPEN_BRACE)
+            def parentWritable = prepareParentWritable()
+            parentWritable.writeTo(out)
+            resetProcessedObjects()
+            def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, false)
             callable.setDelegate(jsonDelegate)
             callable.call()
+            out.write(JsonOutput.CLOSE_BRACE)
         }
         else {
-            json.call callable
+
+            this.root = callable
+            if(inline) {
+                def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, true)
+                callable.setDelegate(jsonDelegate)
+                callable.call()
+            }
+            else {
+                json.call callable
+            }
         }
         return json
     }
