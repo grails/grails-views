@@ -1417,7 +1417,21 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 <p>The link will then be included in the HAL output.</p>
 </div>
 <div class="paragraph">
-<p>If you prefer to define the HAL links yourself then you can do so by passing a closure to the <code>hal.links</code> method:</p>
+<p>If you wish to be specific about which links to include you can do so by passing a map of objects to link to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json {
+    hal.links(<span class="key">self</span>:book, <span class="key">author</span>: book.author)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, if you prefer to define the HAL links yourself then you can do so by passing a closure to the <code>hal.links</code> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1585,6 +1599,23 @@ You cannot include additional content after the call to <code>hal.inline(..)</co
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>You can combine <code>hal.embeddded(..)</code> and <code>hal.links(..)</code> to obtain exactly the links and the embedded content you want:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json {
+    hal.links(<span class="key">self</span>: book )
+    hal.embedded(<span class="key">authors</span>: book.authors)
+    hal.inline(book) {
+        pages <span class="integer">300</span>
+    }
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2204,7 +2235,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 06:35:33 UTC
+Last updated 2016-05-24 07:22:25 UTC
 </div>
 </div>
 </body>
