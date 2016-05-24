@@ -58,7 +58,18 @@ book.link(rel:"publisher", href:"http://foo.com/books")
 
 The link will then be included in the HAL output. 
 
-If you prefer to define the HAL links yourself then you can do so by passing a closure to the `hal.links` method:
+If you wish to be specific about which links to include you can do so by passing a map of objects to link to:
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.links(self:book, author: book.author)
+    ...
+}
+
+Alternatively, if you prefer to define the HAL links yourself then you can do so by passing a closure to the `hal.links` method:
 
 [source,groovy]
 model {
@@ -175,6 +186,21 @@ json {
 }
 
 NOTE: You cannot include additional content after the call to `hal.inline(..)` as this will produce invalid JSON
+
+
+You can combine `hal.embeddded(..)` and `hal.links(..)` to obtain exactly the links and the embedded content you want:
+
+[source,groovy]
+model {
+    Book book
+}
+json {
+    hal.links(self: book )
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}
 
 ==== Specifying the HAL Content Type
 

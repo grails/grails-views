@@ -71,6 +71,21 @@ interface HalViewHelper {
      */
     void links(Object object)
 
+
+    /**
+     * Creates HAL links for the given model
+     *
+     * @param object The model to create links for
+     */
+    void links(Map model)
+
+    /**
+     * Creates HAL links for the given model and pagination object
+     *
+     * @param object The model to create links for
+     */
+    void links(Map model, Object paginationObject, Number total)
+
     /**
      * Pagination support which outputs hal links to the resulting pages
      *

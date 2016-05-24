@@ -11,6 +11,34 @@ class HalEmbeddedSpec extends Specification implements JsonViewTest {
     void setup() {
         mappingContext.addPersistentEntities(Team, Player)
     }
+
+    void "test hal links method that takes an explicit model"() {
+        given:"A model"
+        def player = new Player(id: 1L, name: "Cantona")
+        player.id = 1L
+
+        def captain = new Player(name: "Keane")
+        captain.id = 2L
+        def team = new Team( captain: captain, name: "Manchester United", players: [player])
+        team.id = 1L
+
+        when:"hal.embedded(..) is used with a map"
+        def result = render('''
+import grails.plugin.json.view.*
+
+@Field Team team
+
+json {
+    hal.links(self: team, captain: team.captain)
+    hal.inline(team)
+}
+
+''', [players:team.players, team:team])
+        then:"The output is correct"
+        result.jsonText == '{"_links":{"self":{"href":"http://localhost:8080/team/1","hreflang":"en","type":"application/hal+json"},"captain":{"href":"http://localhost:8080/player/2","hreflang":"en","type":"application/hal+json"}},"id":1,"name":"Manchester United"}'
+
+    }
+
     void "test hal embedded with explicit model and inline rendering"() {
         given:"A model"
         def player = new Player(id: 1L, name: "Cantona")

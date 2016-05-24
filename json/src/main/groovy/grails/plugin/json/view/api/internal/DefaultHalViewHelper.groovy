@@ -9,6 +9,7 @@ import grails.plugin.json.view.api.JsonView
 import grails.rest.Link
 import grails.views.api.HttpView
 import grails.views.utils.ViewUtils
+import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -140,6 +141,72 @@ class DefaultHalViewHelper implements HalViewHelper {
         writeLinks(jsonDelegate, object, contentType, writeComma)
     }
 
+    void links(Map model, Object paginationObject, Number total, String contentType = this.contentType) {
+        def jsonView = view
+        def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
+        jsonDelegate.call(LINKS_ATTRIBUTE) {
+            def linkGenerator = jsonView.linkGenerator
+            def locale = jsonView.locale
+            for(entry in model.entrySet()) {
+                def object = entry.value
+                if(object instanceof Iterable) {
+                    call(entry.key.toString(), (Iterable)object) { o ->
+                        call HREF_ATTRIBUTE, linkGenerator.link(resource:o, absolute:true)
+                        if(locale != null) {
+                            call HREFLANG_ATTRIBUTE, locale.toString()
+                        }
+                        def linkType = contentType
+                        if (linkType) {
+                            call TYPE_ATTRIBUTE, linkType
+                        }
+                    }
+                }
+                else if(object instanceof Map) {
+                    call(entry.key.toString(), (Map)object)
+                }
+                else {
+                    call(entry.key.toString()) {
+                        call HREF_ATTRIBUTE, linkGenerator.link(resource:object, absolute:true)
+                        if(locale != null) {
+                            call HREFLANG_ATTRIBUTE, locale.toString()
+                        }
+                        def linkType = contentType
+                        if (linkType) {
+                            call TYPE_ATTRIBUTE, linkType
+                        }
+
+                    }
+
+                }
+
+                if(paginationObject != null) {
+                    def httpParams = jsonView.params
+                    int offset = httpParams.int('offset', 0)
+                    int max = httpParams.int('max', 10)
+                    String sort = httpParams.get('sort')
+                    String order = httpParams.get('order')
+                    List<Link> links = getPaginationLinks(paginationObject, total.intValue(), max, offset, sort, order)
+                    for(link in links) {
+                        call(link.rel) {
+                            call HREF_ATTRIBUTE, link.href
+                            call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
+                            def linkType = link.contentType
+                            if(linkType) {
+                                call TYPE_ATTRIBUTE, linkType
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        jsonView.out.write(JsonOutput.COMMA)
+    }
+
+    void links(Map model, String contentType = this.contentType) {
+        links(model, null, 0)
+    }
+
     /**
      * Pagination support which outputs hal links to the resulting pages
      *
@@ -153,16 +220,17 @@ class DefaultHalViewHelper implements HalViewHelper {
     void paginate(Object object, Integer total, Integer offset = null, Integer max = null,  String sort = null, String order = null) {
         Map<String, Object> linkParams = buildPaginateParams(max, offset, sort, order)
 
-        def httpParams = view.params
+        def jsonView = view
+        def httpParams = jsonView.params
         offset = offset ?: httpParams.int('offset', 0)
         max = max ?: httpParams.int('max', 10)
         sort = sort ?: httpParams.get('sort')
         order = order ?: httpParams.get('order')
 
         String contentType = this.contentType
-        def locale = view.locale ?: Locale.ENGLISH
-        contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
-        new StreamingJsonDelegate(view.out, true).call(LINKS_ATTRIBUTE) {
+        def locale = jsonView.locale ?: Locale.ENGLISH
+        contentType = jsonView.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
+        new StreamingJsonDelegate(jsonView.out, true).call(LINKS_ATTRIBUTE) {
             call(SELF_ATTRIBUTE) {
                 call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true, params: linkParams)  //TODO handle the max/offset here
                 call HREFLANG_ATTRIBUTE, locale.toString()
@@ -182,7 +250,7 @@ class DefaultHalViewHelper implements HalViewHelper {
             }
 
         }
-        view.out.write(JsonOutput.COMMA)
+        jsonView.out.write(JsonOutput.COMMA)
     }
 
     /**
