@@ -3,6 +3,10 @@ To activate JSON views, add the following dependency to the `dependencies` block
 [source,groovy,subs="attributes"]
 compile "org.grails.plugins:views-json:{version}"
 
+If you are also using MongoDB you may want to add the `views-json-templates` dependency too which includes support for GeoJSON:
+
+[source,groovy,subs="attributes"]
+compile "org.grails.plugins:views-json-templates:{version}"
 
 To enable Gradle compilation of JSON views for production environment add the following to the `buildscript` `dependencies` block:
 
