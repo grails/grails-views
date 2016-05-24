@@ -444,7 +444,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>In Gradle <code>project.name</code> is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.</p>
 </div>
 <div class="paragraph">
-<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views with that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
+<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
 </div>
 <div class="paragraph">
 <p>To resolve this issue you can customize the <code>compileGsonViews</code> task in the plugin&#8217;s <code>build.gradle</code></p>
@@ -505,7 +505,7 @@ classes.dependsOn compileViews</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once this is in place if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/templates/foo/bar/_birthday.gson</code> then compile the template and place it on the classpath of your application.</p>
+<p>Once this is in place if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/main/gson/foo/bar/_birthday.gson</code> then compile the template and place the JAR on the classpath of your application.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -523,7 +523,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 14:59:14 UTC
+Last updated 2016-05-24 21:02:09 UTC
 </div>
 </div>
 </body>

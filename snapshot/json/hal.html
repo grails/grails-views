@@ -831,11 +831,28 @@ Likewise the <code>prev</code> and <code>next</code> links are only present when
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>If you have other links that you want to include along with the pagination links then you can use the <code>hal.links(..)</code> method with pagination arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Author author
+    Iterable&lt;Book&gt; bookList
+    Integer bookCount
+}
+json {
+    // the model, type to paginate, and the total count
+    hal.links([author:author], Book, bookCount)
+    ...
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 14:59:14 UTC
+Last updated 2016-05-24 21:02:09 UTC
 </div>
 </div>
 </body>

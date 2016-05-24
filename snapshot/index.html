@@ -593,7 +593,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>json</code> variable is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
+<p>The <code>json</code> variable is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>. See the <a href="http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_streamingjsonbuilder">documentation</a> in the Groovy user guide for more information on <code>StreamingJsonBuilder</code>.</p>
 </div>
 <div class="paragraph">
 <p>More example usages:</p>
@@ -705,6 +705,14 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:1.1.0-SNAPSHOT"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are also using MongoDB you may want to add the <code>views-json-templates</code> dependency too which includes support for GeoJSON:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.0-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -894,7 +902,7 @@ json {
 <div class="sect3">
 <h4 id="_template_inheritance">2.4.4. Template Inheritance</h4>
 <div class="paragraph">
-<p>JSON templates can inherit from one in other in certain cases. For example consider the following parent template:</p>
+<p>JSON templates can inherit from a parent template. For example consider the following parent template:</p>
 </div>
 <div class="listingblock">
 <div class="title"><code>grails-app/views/_parent.gson</code></div>
@@ -939,6 +947,28 @@ json {
    <span class="key"><span class="delimiter">&quot;</span><span class="content">version</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
    <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Fred</span><span class="delimiter">&quot;</span></span>
  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The parent template&#8217;s model will be formulated from the child templates model and the super class name. For example if the model is <code>Person person</code> where <code>Person</code> extends from <code>Object</code> then the final model passed to the parent template will look like:</p>
+</div>
+<div class="paragraph">
+<p>If the <code>Person</code> class extended from a class called <code>Mammal</code> then the model passed to the parent would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">[<span class="key">person</span>:person, <span class="key">mammal</span>:person]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This allows you to design your templates around object inheritance.</p>
+</div>
+<div class="paragraph">
+<p>You can customize the model passed to the parent template using the <code>model</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">inherits <span class="key">template</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">parent</span><span class="delimiter">&quot;</span></span>, <span class="key">model</span>:[<span class="key">person</span>:person]</code></pre>
 </div>
 </div>
 </div>
@@ -1787,6 +1817,23 @@ Likewise the <code>prev</code> and <code>next</code> links are only present when
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>If you have other links that you want to include along with the pagination links then you can use the <code>hal.links(..)</code> method with pagination arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    Author author
+    <span class="predefined-type">Iterable</span>&lt;<span class="predefined-type">Book</span>&gt; bookList
+    <span class="predefined-type">Integer</span> bookCount
+}
+json {
+    <span class="comment">// the model, type to paginate, and the total count</span>
+    hal.links([<span class="key">author</span>:author], <span class="predefined-type">Book</span>, bookCount)
+    ...
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1949,7 +1996,7 @@ result.json.age == <span class="integer">10</span></code></pre>
 <p>In Gradle <code>project.name</code> is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.</p>
 </div>
 <div class="paragraph">
-<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views with that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
+<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
 </div>
 <div class="paragraph">
 <p>To resolve this issue you can customize the <code>compileGsonViews</code> task in the plugin&#8217;s <code>build.gradle</code></p>
@@ -2010,7 +2057,7 @@ classes.dependsOn compileViews</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once this is in place if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/templates/foo/bar/_birthday.gson</code> then compile the template and place it on the classpath of your application.</p>
+<p>Once this is in place if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/main/gson/foo/bar/_birthday.gson</code> then compile the template and place the JAR on the classpath of your application.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2289,7 +2336,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 14:59:14 UTC
+Last updated 2016-05-24 21:02:09 UTC
 </div>
 </div>
 </body>
