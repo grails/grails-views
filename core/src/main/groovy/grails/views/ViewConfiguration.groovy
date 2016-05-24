@@ -13,6 +13,11 @@ interface ViewConfiguration {
     boolean isCompileStatic()
 
     /**
+     * @return Whether to allow resource expansion
+     */
+    boolean isAllowResourceExpansion()
+
+    /**
      * @return Whether reloading is enabled
      */
     boolean isEnableReloading()

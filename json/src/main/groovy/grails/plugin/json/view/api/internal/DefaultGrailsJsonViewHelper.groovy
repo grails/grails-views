@@ -9,6 +9,7 @@ import grails.plugin.json.view.api.JsonView
 import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.ViewConfiguration
 import grails.views.ViewException
 import grails.views.api.GrailsView
 import grails.views.api.internal.DefaultGrailsViewHelper
@@ -86,9 +87,10 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(jsonView.binding)
         boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
         boolean includeAssociations = ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
-        List<String> expandProperties = (List<String>)(jsonView.params.list(EXPAND) ?: arguments.get(EXPAND) ?: Collections.emptyList())
-        List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
-        List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
+        List<String> expandProperties = getExpandProperties(jsonView, arguments)
+
+        List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
+        List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments)
 
 
         def mappingContext = jsonView.mappingContext
@@ -104,6 +106,18 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
 
 
+    }
+
+    private List<String> getExpandProperties(JsonView jsonView, Map arguments) {
+        List<String> expandProperties
+        def templateEngine = jsonView.templateEngine
+        def viewConfiguration = templateEngine?.viewConfiguration
+        if (viewConfiguration == null || viewConfiguration.isAllowResourceExpansion()) {
+            expandProperties = (List<String>) (jsonView.params.list(EXPAND) ?: ViewUtils.getStringListFromMap(EXPAND, arguments))
+        } else {
+            expandProperties = Collections.emptyList()
+        }
+        expandProperties
     }
 
     @Override
@@ -136,7 +150,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         def entity = findEntity(object)
 
         final boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
-        final List<String> expandProperties = (List<String>)(jsonView.params.list(EXPAND) ?: arguments.get(EXPAND) ?: Collections.emptyList())
+        List<String> expandProperties = getExpandProperties(jsonView, arguments)
         final Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
 
         Closure doProcessEntity = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->

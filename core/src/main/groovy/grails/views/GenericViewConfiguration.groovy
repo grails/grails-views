@@ -33,6 +33,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
     String extension
     Class baseTemplateClass
     boolean cache = !Environment.isDevelopmentMode()
+    boolean allowResourceExpansion = true
     String templatePath = {
         def current = Environment.current
         def pathToTemplates = current.hasReloadLocation() ? current.reloadLocation : BuildSettings.BASE_DIR?.path
