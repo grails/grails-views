@@ -11,7 +11,7 @@ subprojects {
         userOrg = "grails"
     }
     group "org.grails"
-    version "1.0.12 -SNAPSHOT"
+    version "1.0.12-SNAPSHOT"
     repositories {
         mavenLocal()
         mavenCentral()
