@@ -11,7 +11,7 @@ The above JSON view results in the output:
 [source,javascript]
 {"message":{ "hello":"world"}}
 
-The `json` variable is an instance of http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html[StreamingJsonBuilder].
+The `json` variable is an instance of http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html[StreamingJsonBuilder]. See the http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_streamingjsonbuilder[documentation] in the Groovy user guide for more information on `StreamingJsonBuilder`.
 
 More example usages:
 

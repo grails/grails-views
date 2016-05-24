@@ -13,7 +13,7 @@ Unless otherwise configured, the project name of the plugin (the gradle `project
 
 In Gradle `project.name` is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.
 
-For example consider a plugin named `FooBarGrailsPlugin`, in this case Grails will search for views with that match the plugin name `foo-bar`. However, if the directory where the plugin is located is called `fooBar` instead of `foo-bar` then view resolution will fail and the view will not be found when the plugin is installed into an application.
+For example consider a plugin named `FooBarGrailsPlugin`, in this case Grails will search for views that match the plugin name `foo-bar`. However, if the directory where the plugin is located is called `fooBar` instead of `foo-bar` then view resolution will fail and the view will not be found when the plugin is installed into an application.
 
 To resolve this issue you can customize the `compileGsonViews` task in the plugin's `build.gradle`
 
@@ -69,6 +69,6 @@ task( compileViews, type:JsonViewCompilerTask ) {
 classes.dependsOn compileViews
 ----
 
-Once this is in place if you want to render all instances of type `foo.bar.Birthday` create a template called `src/templates/foo/bar/_birthday.gson` then compile the template and place it on the classpath of your application.
+Once this is in place if you want to render all instances of type `foo.bar.Birthday` create a template called `src/main/gson/foo/bar/_birthday.gson` then compile the template and place the JAR on the classpath of your application.
 
 NOTE: See the https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo[GeoJSON templates] for MongoDB for example of global templates in action.
