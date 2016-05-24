@@ -281,3 +281,17 @@ When accessing `http://localhost:8080/book?offset=10` this produces the navigabl
 
 NOTE: If there aren't enough results to paginate the navigation links will not appear.
 Likewise the `prev` and `next` links are only present when there is a previous or next page.
+
+If you have other links that you want to include along with the pagination links then you can use the `hal.links(..)` method with pagination arguments:
+
+[source,groovy]
+model {
+    Author author
+    Iterable<Book> bookList
+    Integer bookCount
+}
+json {
+    // the model, type to paginate, and the total count
+    hal.links([author:author], Book, bookCount)
+    ...
+}
