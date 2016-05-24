@@ -26,6 +26,7 @@ import static org.codehaus.groovy.ast.ClassHelper.OBJECT_TYPE
  */
 abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionSupport.TypeCheckingDSL {
 
+    boolean insideScope = true
 
     @Override
     Object run() {
@@ -42,6 +43,9 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
                 context.pushErrorCollector()
             }
         }
+        beforeMethodCall { MethodCallExpression mec ->
+            beforeMethodCallExpression(mec)
+        }
         beforeVisitMethod {
             newScope {
                 dynamicMethods = [] as Set
@@ -55,7 +59,7 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
             }
         }
         methodNotFound { receiver, name, argList, argTypes, call ->
-            if (call.implicitThis) {
+            if (call.implicitThis && insideScope) {
                 currentScope.builderCalls << call
                 return makeDynamic(call, OBJECT_TYPE)
             }
@@ -88,6 +92,9 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
         }
     }
 
+    void beforeMethodCallExpression(MethodCallExpression methodCallExpression) {
+        // no-op
+    }
     void transformDynamicMethods(SourceUnit source, MethodNode mn, Set dynamicCalls) {
         // no-op
     }

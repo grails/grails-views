@@ -8,6 +8,7 @@ import org.codehaus.groovy.ast.ClassHelper
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.MethodNode
 import org.codehaus.groovy.ast.expr.Expression
+import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.PropertyExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.control.SourceUnit
@@ -24,6 +25,17 @@ class JsonTemplateTypeCheckingExtension extends BuilderTypeCheckingExtension {
     private static final ClassNode TEMPLATE_NAMESPACE = ClassHelper.make(TemplateRenderer)
     private static final ClassNode PARAMETERS = ClassHelper.make(Parameters)
     private static final MethodNode TEMPLATE_NAMESPACE_INVOKE_METHOD = ClassHelper.make(TemplateRenderer).getMethods('invokeMethod')[0]
+
+    JsonTemplateTypeCheckingExtension() {
+        insideScope = false
+    }
+
+    @Override
+    void beforeMethodCallExpression(MethodCallExpression methodCallExpression) {
+        if(methodCallExpression.methodAsString == 'json') {
+            insideScope = true
+        }
+    }
 
     @Override
     boolean isMethodDynamic(Object receiver, Object name, Object argList, Object argTypes, Object call) {
