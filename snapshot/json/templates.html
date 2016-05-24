@@ -426,6 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_template_basics">Template Basics</a></li>
 <li><a href="#_template_namespace">Template Namespace</a></li>
 <li><a href="#_more_ways_to_render_templates">More Ways to Render Templates</a></li>
+<li><a href="#_template_inheritance">Template Inheritance</a></li>
 </ul>
 </div>
 </div>
@@ -584,10 +585,61 @@ json {
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_template_inheritance">Template Inheritance</h4>
+<div class="paragraph">
+<p>JSON templates can inherit from one in other in certain cases. For example consider the following parent template:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/_parent.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Object object
+}
+json {
+    hal.links(object)
+    version "1.0"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A child template can inherit from the above template by using the <code>inherits</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/_person.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">inherits template:"parent"
+model {
+    Person person
+}
+json {
+    name person.name
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The JSON from the parent and the child template will be combined so that the output is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json"> {
+   "_links": {
+     "self": {
+       "href": "http://localhost:8080/person/1",
+       "hreflang": "en",
+       "type": "application/hal+json"
+     }
+   },
+   "version": "1.0",
+   "name": "Fred"
+ }</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 07:22:25 UTC
+Last updated 2016-05-24 14:01:13 UTC
 </div>
 </div>
 </body>

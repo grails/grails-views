@@ -655,6 +655,15 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="ulist">
 <ul>
 <li>
+<p>Global template support</p>
+</li>
+<li>
+<p>Template inheritance</p>
+</li>
+<li>
+<p>Global templates for GORM for MongoDB / GeoJSON</p>
+</li>
+<li>
 <p>Support for easily testing JSON views with <code>JsonViewTest</code></p>
 </li>
 <li>
@@ -665,12 +674,6 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </li>
 <li>
 <p>Ability to access HTTP parameters and headers</p>
-</li>
-<li>
-<p>Global template support</p>
-</li>
-<li>
-<p>Global templates for GORM for MongoDB / GeoJSON</p>
 </li>
 <li>
 <p>Resource expansion with the <code>expand</code> parameter</p>
@@ -885,6 +888,57 @@ json {
     oldestChild tmpl.person( family.children.max { Person p -&gt; p.age } ] )
     children tmpl.person( family.children )
 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_template_inheritance">2.4.4. Template Inheritance</h4>
+<div class="paragraph">
+<p>JSON templates can inherit from one in other in certain cases. For example consider the following parent template:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/_parent.gson</code></div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Object</span> object
+}
+json {
+    hal.links(object)
+    version <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A child template can inherit from the above template by using the <code>inherits</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/_person.gson</code></div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">inherits <span class="key">template</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">parent</span><span class="delimiter">&quot;</span></span>
+model {
+    Person person
+}
+json {
+    name person.name
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The JSON from the parent and the child template will be combined so that the output is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"> {
+   <span class="key"><span class="delimiter">&quot;</span><span class="content">_links</span><span class="delimiter">&quot;</span></span>: {
+     <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: {
+       <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/person/1</span><span class="delimiter">&quot;</span></span>,
+       <span class="key"><span class="delimiter">&quot;</span><span class="content">hreflang</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en</span><span class="delimiter">&quot;</span></span>,
+       <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/hal+json</span><span class="delimiter">&quot;</span></span>
+     }
+   },
+   <span class="key"><span class="delimiter">&quot;</span><span class="content">version</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+   <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Fred</span><span class="delimiter">&quot;</span></span>
+ }</code></pre>
 </div>
 </div>
 </div>
@@ -2235,7 +2289,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 07:22:25 UTC
+Last updated 2016-05-24 14:01:13 UTC
 </div>
 </div>
 </body>
