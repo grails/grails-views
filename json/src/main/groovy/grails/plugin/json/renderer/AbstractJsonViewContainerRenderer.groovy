@@ -30,6 +30,10 @@ abstract class AbstractJsonViewContainerRenderer<C,T> extends DefaultJsonRendere
     void render(T object, RenderContext context) {
         if(jsonViewResolver != null) {
             String viewUri = "/${context.controllerName}/_${GrailsNameUtils.getPropertyName(targetType)}"
+            def webRequest = ((ServletRenderContext) context).getWebRequest()
+            if (webRequest.controllerNamespace) {
+                viewUri = "/${webRequest.controllerNamespace}" + viewUri
+            }
             def view = jsonViewResolver.resolveView(viewUri, context.locale)
             if(view == null) {
                 view = jsonViewResolver.resolveView(targetType, context.locale)
@@ -42,7 +46,6 @@ abstract class AbstractJsonViewContainerRenderer<C,T> extends DefaultJsonRendere
                 if(contextModel instanceof Map) {
                     model.putAll((Map)contextModel)
                 }
-                def webRequest = ((ServletRenderContext) context).getWebRequest()
 
                 def request = webRequest.currentRequest
                 def response = webRequest.currentResponse

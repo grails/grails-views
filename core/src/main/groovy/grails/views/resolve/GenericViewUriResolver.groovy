@@ -24,6 +24,10 @@ class GenericViewUriResolver implements ViewUriResolver {
     }
 
     String resolveTemplateUri(String controllerName, String templateName, boolean includeExtension = true) {
+        return resolveTemplateUri(null, controllerName, templateName, includeExtension)
+    }
+
+    String resolveTemplateUri(String controllerNamespace, String controllerName, String templateName, boolean includeExtension = true) {
         if (templateName.startsWith(SLASH_STR)) {
             return getAbsoluteTemplateURI(templateName, includeExtension)
         }
@@ -35,6 +39,9 @@ class GenericViewUriResolver implements ViewUriResolver {
         if (lastSlash > -1) {
             pathToTemplate = templateName.substring(0, lastSlash + 1)
             templateName = templateName.substring(lastSlash + 1)
+        }
+        if(controllerNamespace != null) {
+            buf << SLASH << controllerNamespace
         }
         if(controllerName != null) {
             buf << SLASH << controllerName

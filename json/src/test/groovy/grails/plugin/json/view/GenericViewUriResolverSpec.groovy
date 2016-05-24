@@ -15,4 +15,12 @@ class GenericViewUriResolverSpec extends Specification{
         expect:
             resolver.resolveTemplateUri("foo", "bar") == '/foo/_bar.gson'
     }
+
+    void "test resolve template URIs with a namespace"() {
+        given:
+            def resolver = new GenericViewUriResolver(".gson")
+
+        expect:
+            resolver.resolveTemplateUri("namespace", "foo", "bar") == '/namespace/foo/_bar.gson'
+    }
 }

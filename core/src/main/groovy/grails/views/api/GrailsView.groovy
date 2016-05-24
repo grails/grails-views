@@ -74,6 +74,10 @@ trait GrailsView extends HttpView implements WriterProvider, WritableScript {
     }
 
     /**
+     * @return The current controller namespace
+     */
+    String controllerNamespace
+    /**
      * @return The current controller name
      */
     String controllerName
