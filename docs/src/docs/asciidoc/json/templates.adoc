@@ -159,7 +159,9 @@ The JSON from the parent and the child template will be combined so that the out
 The parent template's model will be formulated from the child templates model and the super class name. For example if the model is `Person person` where `Person` extends from `Object` then the final model passed to the parent template will look like:
 
 [source,groovy]
+-----
 [person:person, object:person]
+-----
 
 If the `Person` class extended from a class called `Mammal` then the model passed to the parent would be:
 
