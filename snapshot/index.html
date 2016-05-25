@@ -952,6 +952,11 @@ json {
 <div class="paragraph">
 <p>The parent template&#8217;s model will be formulated from the child templates model and the super class name. For example if the model is <code>Person person</code> where <code>Person</code> extends from <code>Object</code> then the final model passed to the parent template will look like:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">[<span class="key">person</span>:person, <span class="key">object</span>:person]</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>If the <code>Person</code> class extended from a class called <code>Mammal</code> then the model passed to the parent would be:</p>
 </div>
@@ -2336,7 +2341,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-24 21:02:09 UTC
+Last updated 2016-05-25 15:23:37 UTC
 </div>
 </div>
 </body>
