@@ -8,6 +8,7 @@ import grails.web.mime.MimeType
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.LocaleResolver
 import org.springframework.web.servlet.view.AbstractUrlBasedView
@@ -67,6 +68,8 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
                     // set back to HTML to errors are rendered correctly
                     httpServletResponse.setContentType(MimeType.HTML.name)
                 }
+                // clear model and view
+                httpServletRequest.removeAttribute(GrailsApplicationAttributes.MODEL_AND_VIEW)
                 throw e
             }
             writer.flush()
