@@ -425,7 +425,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_creating_links">Creating Links</a></li>
 <li><a href="#_altering_the_response_headers">Altering the Response Headers</a></li>
-<li><a href="#_accessing_the_request">Accessing the Request</a></li>
 <li><a href="#_default_static_imports">Default Static Imports</a></li>
 <li><a href="#_i18n_locale_integration">I18n &amp; Locale Integration</a></li>
 </ul>
@@ -486,32 +485,6 @@ The methods available are only a subset of the methods available via the <code>H
 </td>
 </tr>
 </table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_accessing_the_request">Accessing the Request</h4>
-<div class="paragraph">
-<p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
- name "bob"
- userAgent request.getHeader('User-Agent')
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Parameters can be accessed via the <code>params</code> object which is an instance of <a href="api/grails/views/api/http/Parameters.html">Parameters</a>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
- name "bob"
- first params.int('offset', 0)
- sort params.get('sort', 'name')
-}</code></pre>
-</div>
 </div>
 </div>
 <div class="sect3">
@@ -580,7 +553,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-27 08:02:06 UTC
+Last updated 2016-05-27 08:48:03 UTC
 </div>
 </div>
 </body>

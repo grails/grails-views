@@ -446,7 +446,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>json</code> variable is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>. See the <a href="http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_streamingjsonbuilder">documentation</a> in the Groovy user guide for more information on <code>StreamingJsonBuilder</code>.</p>
+<p>There is an implicit <code>json</code> variable which is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
 </div>
 <div class="paragraph">
 <p>More example usages:</p>
@@ -458,48 +458,10 @@ json { name "Bob" } == '{"name":"Bob"}'
 json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>You can specify a model to view in one of two ways. Either with a <code>model</code> block:</p>
-</div>
-<div class="listingblock">
-<div class="title"><code>grails-app/views/hello.gson</code></div>
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
-    String message
-}
-json.message {
-    hello message
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Or with the <code>@Field</code> transformation provided by Groovy:</p>
-</div>
-<div class="listingblock">
-<div class="title"><code>grails-app/views/hello.gson</code></div>
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Field String message
-json.message {
-    hello message
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may prompt you to do so.
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-27 08:02:06 UTC
+Last updated 2016-05-27 08:48:03 UTC
 </div>
 </div>
 </body>
