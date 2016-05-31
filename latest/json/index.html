@@ -433,6 +433,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_hal_support">HAL Support</a></li>
 <li><a href="#_the_jsontemplateengine">The JsonTemplateEngine</a></li>
 <li><a href="#_static_compilation">Static Compilation</a></li>
+<li><a href="#_testing">Testing</a></li>
+<li><a href="#_plugin_support">Plugin Support</a></li>
 <li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_intellij_support">IntelliJ Support</a></li>
 </ul>
@@ -461,7 +463,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>There is an implicit <code>json</code> variable which is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>.</p>
+<p>The <code>json</code> variable is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>. See the <a href="http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_streamingjsonbuilder">documentation</a> in the Groovy user guide for more information on <code>StreamingJsonBuilder</code>.</p>
 </div>
 <div class="paragraph">
 <p>More example usages:</p>
@@ -473,11 +475,86 @@ json { name "Bob" } == '{"name":"Bob"}'
 json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can specify a model to view in one of two ways. Either with a <code>model</code> block:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with the <code>@Field</code> transformation provided by Groovy:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Field String message
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may prompt you to do so.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.0.12. Below is a version history.</p>
+<p>The current release is 1.1.0.M2. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>1.1.0</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global template support</p>
+</li>
+<li>
+<p>Template inheritance</p>
+</li>
+<li>
+<p>Global templates for GORM for MongoDB / GeoJSON</p>
+</li>
+<li>
+<p>Support for easily testing JSON views with <code>JsonViewTest</code></p>
+</li>
+<li>
+<p>Pagination support in HAL</p>
+</li>
+<li>
+<p>Better Embedded support in HAL</p>
+</li>
+<li>
+<p>Ability to access HTTP parameters and headers</p>
+</li>
+<li>
+<p>Resource expansion with the <code>expand</code> parameter</p>
+</li>
+<li>
+<p>Controller namespace support</p>
+</li>
+<li>
+<p>Support for a default <code>/object/_object.gson</code> template</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>1.0.0</strong></p>
@@ -497,7 +574,15 @@ json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.0.12"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.1.0.M2"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are also using MongoDB you may want to add the <code>views-json-templates</code> dependency too which includes support for GeoJSON:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.0.M2"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -509,7 +594,7 @@ json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.0.12"
+        classpath "org.grails.plugins:views-gradle:1.1.0.M2"
     }
 }</code></pre>
 </div>
@@ -684,6 +769,84 @@ json {
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_template_inheritance">Template Inheritance</h4>
+<div class="paragraph">
+<p>JSON templates can inherit from a parent template. For example consider the following parent template:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/_parent.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Object object
+}
+json {
+    hal.links(object)
+    version "1.0"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A child template can inherit from the above template by using the <code>inherits</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/_person.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">inherits template:"parent"
+model {
+    Person person
+}
+json {
+    name person.name
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The JSON from the parent and the child template will be combined so that the output is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json"> {
+   "_links": {
+     "self": {
+       "href": "http://localhost:8080/person/1",
+       "hreflang": "en",
+       "type": "application/hal+json"
+     }
+   },
+   "version": "1.0",
+   "name": "Fred"
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The parent template&#8217;s model will be formulated from the child templates model and the super class name. For example if the model is <code>Person person</code> where <code>Person</code> extends from <code>Object</code> then the final model passed to the parent template will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">[person:person, object:person]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the <code>Person</code> class extended from a class called <code>Mammal</code> then the model passed to the parent would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">[person:person, mammal:person]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This allows you to design your templates around object inheritance.</p>
+</div>
+<div class="paragraph">
+<p>You can customize the model passed to the parent template using the <code>model</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">inherits template:"parent", model:[person:person]</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_rendering_domain_classes">Rendering Domain Classes</h3>
@@ -806,7 +969,27 @@ The same applies to one-to-many collection associations. If the association has 
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively if you prefer to handle the rendering yourself you can do by excluding the property:</p>
+<p>Alternatively, to only expand a single association you can use the <code>expand</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [expand:['author']])</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+request parameters can also be used to expand associations (eg. <code>?expand=author</code>), if you do not want to allow this, then use <code>includes</code> or <code>excludes</code> to include only the properties you want.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Finally, if you prefer to handle the rendering yourself you can do by excluding the property:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -892,6 +1075,32 @@ The methods available are only a subset of the methods available via the <code>H
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_accessing_the_request">Accessing the Request</h4>
+<div class="paragraph">
+<p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+ name "bob"
+ userAgent request.getHeader('User-Agent')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Parameters can be accessed via the <code>params</code> object which is an instance of <a href="api/grails/views/api/http/Parameters.html">Parameters</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+ name "bob"
+ first params.int('offset', 0)
+ sort params.get('sort', 'name')
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -990,6 +1199,17 @@ For more complex message lookups the <code>messageSource</code> property is an i
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
     respond Book.get(params.id)
 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also define a <code>/object/_object</code> template that is rendered by default if no other template is found during content negotiation. To do this create a file called <code>/grails-app/views/object/_object.gson</code> where the name of the model is <code>object</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Object object
+}
+json g.render(object)</code></pre>
 </div>
 </div>
 </div>
@@ -1156,7 +1376,21 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 <p>The link will then be included in the HAL output.</p>
 </div>
 <div class="paragraph">
-<p>If you prefer to define the HAL links yourself then you can do so by passing a closure to the <code>hal.links</code> method:</p>
+<p>If you wish to be specific about which links to include you can do so by passing a map of objects to link to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(self:book, author: book.author)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, if you prefer to define the HAL links yourself then you can do so by passing a closure to the <code>hal.links</code> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1190,7 +1424,157 @@ json hal.render(book)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same argument, the difference being it will output HAL links for the object via <code>hal.links</code>.</p>
+<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same arguments, the difference being it will output HAL links for the object via <code>hal.links</code> and also output associations fetched via a join query for <code>hal.embedded</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example you can also customize the content of the generated HAL with a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book) {
+    pages 1000
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_embedded_association_and_hal">Embedded Association and HAL</h4>
+<div class="paragraph">
+<p>Generally, when using the <code>hal.render(..)</code> method, <code>_embedded</code> associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.get(params.id)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, this query will render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.get(params.id, [fetch:[authors:'eager']])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is by design and to prevent unexpected performance degradation due to N+1 query loading. If you wish to force the <code>render</code> method to render <code>_embedded</code> associations for HAL you can do see using the <code>deep</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json hal.render(book, [deep:true])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can prevent HAL <code>_embedded</code> associations from being rendering using the <code>embedded:false</code> parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book, [embedded:false])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also render embedded associations without using the <code>hal.render(..)</code> method, by using the <code>hal.embedded(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(book)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Like the <code>hal.links(..)</code> method, the <code>hal.embedded(..)</code> method should come first, before any other attributes, in your JSON output
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can also control which associations should be embedded by using a map argument instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you can inline the contents of the book without any associations using the <code>hal.inline(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To customize the contents of the inlined JSON output use a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You cannot include additional content after the call to <code>hal.inline(..)</code> as this will produce invalid JSON
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can combine <code>hal.embeddded(..)</code> and <code>hal.links(..)</code> to obtain exactly the links and the embedded content you want:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(self: book )
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -1220,6 +1604,107 @@ json hal.render(book)</code></pre>
 }
 hal.type("book")
 json {
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_hal_pagination">HAL Pagination</h4>
+<div class="paragraph">
+<p>The JSON views plugin for Grails provides navigable pagination support.
+Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Iterable&lt;Book&gt; bookList
+    Integer bookCount
+    Integer max // optional, defaults to 10
+    Integer offset // optional, defaults to 0
+    String sort // optional
+    String order // optional
+}
+json {
+    hal.paginate(Book, bookCount, max, offset, sort, order)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Similar to <code>hal.links()</code> the <code>hal.paginate()</code> has to be the first element within the <code>json{}</code> closure.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When accessing <code>http://localhost:8080/book?offset=10</code> this produces the navigable output like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/book/index?offset=10&amp;max=10",
+      "hreflang": "en_US",
+      "type": "application/hal+json"
+    },
+    "first": {
+      "href": "http://localhost:8080/book/index?offset=0&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "prev": {
+      "href": "http://localhost:8080/book/index?offset=0&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "next": {
+      "href": "http://localhost:8080/book/index?offset=20&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "last": {
+      "href": "http://localhost:8080/book/index?offset=40&amp;max=10",
+      "hreflang": "en_US"
+    }
+  },
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If there aren&#8217;t enough results to paginate the navigation links will not appear.
+Likewise the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you have other links that you want to include along with the pagination links then you can use the <code>hal.links(..)</code> method with pagination arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Author author
+    Iterable&lt;Book&gt; bookList
+    Integer bookCount
+}
+json {
+    // the model, type to paginate, and the total count
+    hal.links([author:author], Book, bookCount)
     ...
 }</code></pre>
 </div>
@@ -1288,6 +1773,178 @@ json {
     name person.name
     age person.age
 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_testing">Testing</h3>
+<div class="paragraph">
+<p>Although generally testing can be done using functional tests via an HTTP client, the JSON views plugin also provides a trait which helps in writing either unit or integration tests.</p>
+</div>
+<div class="paragraph">
+<p>To use the trait import the <code>grails.plugin.json.view.test.JsonViewTest</code> class and apply it to any Spock or JUnit test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.plugin.json.view.test.*
+import spock.lang.Specification
+class MySpec extends Specification implements JsonViewTest {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The trait provides a number of different <code>render</code> method implementations that can either render a JSON view found in <code>grails-app/views</code> or render an inline String. For example to render an inline template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">void "Test render a raw GSON view"() {
+    when:"A gson view is rendered"
+    JsonRenderResult result = render '''
+        model {
+            String person
+        }
+        json.person {
+            name person
+        }
+''', [person:"bob"] <i class="conum" data-value="1"></i><b>(1)</b>
+
+    then:"The json is correct"
+    result.json.person.name == 'bob' <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the <code>render</code> method to return a <code>JsonRenderResult</code> passing in a String that is the inline template and a map that is the model</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Assert the parsed JSON, represented by the <code>json</code> property, is correct</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To render an existing view or template use named arguments to specify an absolute path to either a template or a view:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">when:"A gson view is rendered"
+def result = render(template: "/path/to/template", model:[age:10])
+
+then:"The json is correct"
+result.json.name == 'Fred'
+result.json.age == 10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are writing a unit test, and the model involves a domain class, you may need to add the domain class to the <code>mappingContext</code> object in order for it to be rendered correctly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">when:"A gson view is rendered for a domain class"
+mappingContext.addPersistentEntity(MyDomain)
+def result = render(template: "/path/to/template", model:[myDomain:MyDomain])
+
+then:"The json is correct"
+result.json.name == 'Fred'
+result.json.age == 10</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plugin_support">Plugin Support</h3>
+<div class="paragraph">
+<p>Since JSON views are compiled all of a plugin&#8217;s views and templates are available for use in your applications.</p>
+</div>
+<div class="paragraph">
+<p>The view resolution will look through all of the application&#8217;s configured plugins for views that match a particular name.</p>
+</div>
+<div class="sect3">
+<h4 id="_customizing_the_compile_task">Customizing the Compile Task</h4>
+<div class="paragraph">
+<p>Unless otherwise configured, the project name of the plugin (the gradle <code>project.name</code>) is used as the <code>packageName</code> when compiling JSON views.</p>
+</div>
+<div class="paragraph">
+<p>In Gradle <code>project.name</code> is generally calculated from the current directory. That means that if there is mismatch between the current directory and your plugin name view resolution from a plugin could fail.</p>
+</div>
+<div class="paragraph">
+<p>For example consider a plugin named <code>FooBarGrailsPlugin</code>, in this case Grails will search for views that match the plugin name <code>foo-bar</code>. However, if the directory where the plugin is located is called <code>fooBar</code> instead of <code>foo-bar</code> then view resolution will fail and the view will not be found when the plugin is installed into an application.</p>
+</div>
+<div class="paragraph">
+<p>To resolve this issue you can customize the <code>compileGsonViews</code> task in the plugin&#8217;s <code>build.gradle</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compileGsonViews {
+    packageName = "foo-bar"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By setting the <code>packageName</code> property to correctly match the convention of the plugin named (<code>FooBarGrailsPlugin</code> maps to <code>foo-bar</code>) view resolution will succeed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_global_templates">Global Templates</h4>
+<div class="paragraph">
+<p>You can create global templates that should apply to all types of a particular class (excluding primitive and simple types for performance reasons).</p>
+</div>
+<div class="paragraph">
+<p>Below is an example Gradle build that adds a <code>compileViews</code> task for templates located into <code>src/main/gson</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails.plugins:views-gradle:1.1.0.M2"
+    }
+}
+
+import grails.views.gradle.json.*
+
+apply plugin:"java"
+
+repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencies {
+    compile "org.grails.plugins:views-json:1.1.0.M2"
+    compileOnly "org.grails:grails-plugin-rest:3.1.7"
+    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
+}
+
+task( compileViews, type:JsonViewCompilerTask ) {
+    source = project.file('src/main/gson')
+    destinationDir = project.file('build/classes/main')
+    packageName = ""
+    classpath = configurations.compile + configurations.compileOnly
+}
+classes.dependsOn compileViews</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once this is in place if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/main/gson/foo/bar/_birthday.gson</code> then compile the template and place the JAR on the classpath of your application.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+See the <a href="https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo">GeoJSON templates</a> for MongoDB for example of global templates in action.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1407,7 +2064,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-27 08:48:03 UTC
+Last updated 2016-05-31 07:20:22 UTC
 </div>
 </div>
 </body>

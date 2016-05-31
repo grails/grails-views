@@ -431,7 +431,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.0.12"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.1.0.M2"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are also using MongoDB you may want to add the <code>views-json-templates</code> dependency too which includes support for GeoJSON:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.0.M2"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -443,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.0.12"
+        classpath "org.grails.plugins:views-gradle:1.1.0.M2"
     }
 }</code></pre>
 </div>
@@ -464,7 +472,7 @@ apply plugin: "org.grails.plugins.views-json"</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-27 08:48:03 UTC
+Last updated 2016-05-31 07:20:22 UTC
 </div>
 </div>
 </body>
