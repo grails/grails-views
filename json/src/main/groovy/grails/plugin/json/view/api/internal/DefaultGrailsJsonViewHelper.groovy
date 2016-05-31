@@ -370,16 +370,26 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
         processedObjects.put(object, NULL_OUTPUT)
 
-        def idName = entity.identity?.name
-        String idQualified = "${path}${idName}"
-        if(idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
 
+        def identity = entity.identity
+        def idName = identity?.name
+        String idQualified = "${path}${idName}"
+        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
+        Locale locale = view.locale
+        if(idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
             def idValue = ((GroovyObject) object).getProperty(idName)
             if(idValue != null) {
-                jsonDelegate.call(idName, idValue)
+                def idType = identity.type
+                def childTemplate = templateEngine?.resolveTemplate(idType, locale)
+                if(childTemplate != null) {
+                    JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, idType, idValue)
+                    jsonDelegate.call(idName, jsonWritable)
+                }
+                else {
+                    jsonDelegate.call(idName, idValue)
+                }
             }
         }
-        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
 
         for (prop in entity.persistentProperties) {
             def propertyName = prop.name
@@ -389,7 +399,6 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             def value = ((GroovyObject) object).getProperty(propertyName)
             if(value == null) continue
 
-            def locale = view.locale
             if (!(prop instanceof Association)) {
                 processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value, templateEngine, locale)
             } else if(includeAssociations) {
