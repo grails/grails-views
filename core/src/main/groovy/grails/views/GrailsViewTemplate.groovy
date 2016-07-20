@@ -76,4 +76,9 @@ class GrailsViewTemplate extends WritableScriptTemplate {
      * The message source object
      */
     MessageSource messageSource
+
+    /**
+     * Whether to use absolute links
+     */
+    boolean useAbsoluteLinks = false
 }

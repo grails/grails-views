@@ -27,6 +27,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
 
     String encoding = "UTF-8"
     boolean prettyPrint = false
+    boolean useAbsoluteLinks = false
     boolean enableReloading = ViewsEnvironment.isDevelopmentMode()
     String packageName = Metadata.getCurrent().getApplicationName() ?: ""
     boolean compileStatic = true

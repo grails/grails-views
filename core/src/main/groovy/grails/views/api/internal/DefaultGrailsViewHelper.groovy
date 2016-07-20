@@ -98,7 +98,7 @@ class DefaultGrailsViewHelper implements GrailsViewHelper {
 
     protected void ensureAbsolute(Map params) {
         if (!params.containsKey(ATTRIBUTE_ABSOLUTE)) {
-            params.put(ATTRIBUTE_ABSOLUTE, true)
+            params.put(ATTRIBUTE_ABSOLUTE, view.viewTemplate.useAbsoluteLinks)
         }
     }
 }

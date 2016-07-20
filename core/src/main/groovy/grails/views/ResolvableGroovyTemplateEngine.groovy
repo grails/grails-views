@@ -203,6 +203,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         template.setLinkGenerator(linkGenerator)
         template.setMappingContext(mappingContext)
         template.setTemplateEngine(this)
+        template.setUseAbsoluteLinks(viewConfiguration.useAbsoluteLinks)
         return template
     }
 

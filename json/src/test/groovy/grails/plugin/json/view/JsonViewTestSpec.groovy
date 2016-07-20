@@ -49,7 +49,7 @@ json.person {
 
         then:"The json is correct"
         result.json.person.name == 'bob'
-        result.json.person.homepage == 'http://localhost:8080/person'
+        result.json.person.homepage == '/person'
     }
 
     void "Test render a GSON view that sets headers"() {

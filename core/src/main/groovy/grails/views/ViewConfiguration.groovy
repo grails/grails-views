@@ -28,6 +28,11 @@ interface ViewConfiguration {
     boolean isPrettyPrint()
 
     /**
+     * @return Whether to use absolute links
+     */
+    boolean isUseAbsoluteLinks()
+
+    /**
      * @return The package name
      */
     String getPackageName()
