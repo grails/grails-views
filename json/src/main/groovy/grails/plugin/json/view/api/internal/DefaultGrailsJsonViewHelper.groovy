@@ -209,7 +209,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                     StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate) getDelegate()
                                     if (beforeClosure != null) {
                                         beforeClosure.setDelegate(jsonDelegate)
-                                        beforeClosure.call()
+                                        beforeClosure.call(object)
                                     }
                                     List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
                                     List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.EXCLUDES_PROPERTY, arguments)
@@ -223,7 +223,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                 StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, first)
                                 if (beforeClosure != null) {
                                     beforeClosure.setDelegate(jsonDelegate)
-                                    beforeClosure.call()
+                                    beforeClosure.call(object)
                                 }
                                 List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
                                 List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.EXCLUDES_PROPERTY, arguments)
@@ -236,7 +236,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                     StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate) getDelegate()
                                     if (beforeClosure != null) {
                                         beforeClosure.setDelegate(jsonDelegate)
-                                        beforeClosure.call()
+                                        beforeClosure.call(object)
                                     }
                                     List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
                                     List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.EXCLUDES_PROPERTY, arguments)

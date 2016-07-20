@@ -1,5 +1,6 @@
 package grails.plugin.json.view.api.internal
 
+import grails.gorm.PagedResultList
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
@@ -7,6 +8,7 @@ import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.HalViewHelper
 import grails.plugin.json.view.api.JsonView
 import grails.rest.Link
+import grails.util.GrailsNameUtils
 import grails.views.api.HttpView
 import grails.views.utils.ViewUtils
 import grails.web.mime.MimeType
@@ -56,10 +58,36 @@ class DefaultHalViewHelper implements HalViewHelper {
         }
 
         if(!arguments.containsKey("beforeClosure")) {
-            arguments.put("beforeClosure", createlinksRenderingClosure(object, arguments))
+            arguments.put("beforeClosure", createlinksRenderingClosure(arguments))
         }
 
-        viewHelper.render(object, arguments, customizer)
+        JsonOutput.JsonWritable jsonWritable = viewHelper.render(object, arguments, customizer)
+        if(object instanceof Iterable) {
+            Iterable iterable = (Iterable)object
+            int size = iterable.size()
+            Object firstObject = size > 0 ? iterable.first() : null
+            DefaultHalViewHelper helper = this
+            return new JsonOutput.JsonWritable() {
+                @Override
+                Writer writeTo(Writer out) throws IOException {
+                    StreamingJsonBuilder builder = new StreamingJsonBuilder(out)
+                    builder.call {
+
+                        if(firstObject != null) {
+                            helper.links( GrailsNameUtils.getPropertyName(firstObject.getClass()) )
+                        }
+                        call(EMBEDDED_ATTRIBUTE, jsonWritable)
+
+                        if(iterable instanceof PagedResultList) {
+                            call("totalCount", ((PagedResultList)iterable).getTotalCount())
+                        }
+                    }
+                    return out
+                }
+            }
+        } else {
+            return jsonWritable
+        }
     }
 
 
@@ -702,8 +730,8 @@ class DefaultHalViewHelper implements HalViewHelper {
     }
 
     @CompileDynamic
-    protected Closure<Void> createlinksRenderingClosure(object, Map<String, Object> arguments = [:]) {
-        return {
+    protected Closure<Void> createlinksRenderingClosure(Map<String, Object> arguments = [:]) {
+        return { Object object ->
             StreamingJsonDelegate local = (StreamingJsonDelegate) getDelegate()
 
             def previous = view.getOut()
