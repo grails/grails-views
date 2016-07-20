@@ -73,18 +73,18 @@ class JsonViewHelperSpec extends Specification {
         when:"We render an object without deep argument and no child id"
 
         def player = new Player(name: "Iniesta")
-        def team = new Team(name:"Barcelona", captain: player)
+        def team = new Team(name:"Barcelona",titles: ['La Liga'], captain: player)
         def result = viewHelper.render(team)
 
         then:"The result is correct"
-        result.toString() == '{"name":"Barcelona"}'
+        result.toString() == '{"name":"Barcelona","titles":["La Liga"]}'
 
         when:"We render an object with deep argument and no child id"
 
         result = viewHelper.render(team, [deep:true])
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"name":"Iniesta"},"name":"Barcelona"}'
+        result.toString() == '{"captain":{"name":"Iniesta"},"name":"Barcelona","titles":["La Liga"]}'
 
         when:"We render an object without deep argument and a child id"
 
@@ -92,7 +92,7 @@ class JsonViewHelperSpec extends Specification {
         result = viewHelper.render(team)
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"id":1},"name":"Barcelona"}'
+        result.toString() == '{"captain":{"id":1},"name":"Barcelona","titles":["La Liga"]}'
 
         when:"We render an object with deep argument and a child id"
 
@@ -100,7 +100,7 @@ class JsonViewHelperSpec extends Specification {
         result = viewHelper.render(team, [deep:true])
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"id":1,"name":"Iniesta"},"name":"Barcelona"}'
+        result.toString() == '{"captain":{"id":1,"name":"Iniesta"},"name":"Barcelona","titles":["La Liga"]}'
 
         when:"We render an object with deep argument and a child id and excludes"
 
@@ -108,7 +108,7 @@ class JsonViewHelperSpec extends Specification {
         result = viewHelper.render(team, [deep:true, excludes: ['captain.name']])
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"id":1},"name":"Barcelona"}'
+        result.toString() == '{"captain":{"id":1},"name":"Barcelona","titles":["La Liga"]}'
 
         when:"We render an object with deep argument and a child id and includes"
 
@@ -217,6 +217,7 @@ class Team {
     String name
     Player captain
     List players
+    List<String> titles
     static hasMany = [players:Player]
 }
 @Entity
