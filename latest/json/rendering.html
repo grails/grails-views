@@ -549,7 +549,27 @@ The same applies to one-to-many collection associations. If the association has 
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively if you prefer to handle the rendering yourself you can do by excluding the property:</p>
+<p>Alternatively, to only expand a single association you can use the <code>expand</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [expand:['author']])</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+request parameters can also be used to expand associations (eg. <code>?expand=author</code>), if you do not want to allow this, then use <code>includes</code> or <code>excludes</code> to include only the properties you want.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Finally, if you prefer to handle the rendering yourself you can do by excluding the property:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -581,7 +601,7 @@ The same applies to one-to-many collection associations. If the association has 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-27 08:48:03 UTC
+Last updated 2016-07-20 09:53:08 UTC
 </div>
 </div>
 </body>
