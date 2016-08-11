@@ -74,7 +74,6 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.COLON);
 
                 PersistentEntity entity = findEntity(object)
-                println entity?.dump()
                 out.write(JsonOutput.OPEN_BRACE)
 
                 out.write(JsonOutput.toJson('type'))
