@@ -10,9 +10,11 @@ class JsonApiSpec extends Specification implements JsonViewTest {
     }
 
     void 'test simple case'() {
-        when:
+        given:
             Widget theWidget = new Widget(name: 'One', width: 4, height: 7)
+            theWidget.id = 5
 
+        when:
             def result = render('''
 import grails.plugin.json.view.Widget
 model {
@@ -23,7 +25,7 @@ json jsonapi.render(widget)
 ''', [widget: theWidget])
 
         then:
-            result.jsonText == '''{"data": {"type":"widget","id":"/domain/50/widgets/4","attributes":{"height":7,"name":"One","width":4}}}'''
+            result.jsonText == '''{"data":{"type":"widget","id":"/widget/5","attributes":{"height":7,"name":"One","version":null,"width":4}}}'''
     }
 }
 
