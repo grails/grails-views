@@ -84,7 +84,9 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
                 out.write(JsonOutput.toJson('id'))
                 out.write(JsonOutput.COLON)
-                out.write(JsonOutput.toJson(123g)) //TODO Apply the linking strategy
+
+                def linkGenerator = view.linkGenerator
+                out.write(JsonOutput.toJson(linkGenerator.link(resource: object))) //TODO Use a linking strategy
 
                 if (entity.persistentProperties) {
                     out.write(JsonOutput.COMMA)
