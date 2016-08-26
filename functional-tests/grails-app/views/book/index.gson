@@ -1,8 +1,0 @@
-import functional.tests.Book
-
-model {
-	Iterable<Book> bookList
-}
-
-json tmpl.book(bookList ?: [])
-
