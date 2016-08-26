@@ -34,7 +34,7 @@ cars {
         writable.writeTo(sw)
 
         then:"The result is correct"
-        sw.toString() == '''<?xml version='1.0'?>
+        sw.toString().replace('\r','') == '''<?xml version='1.0'?>
 <cars>
     <car make='Audi' model='A5' href='http://localhost:8080/book/show/1'/>
 </cars>'''
@@ -68,7 +68,7 @@ cars {
         writable.writeTo(writer)
 
         then:"The output is correct"
-        writer.toString() == '''<?xml version='1.0'?>
+        writer.toString().replace('\r','') == '''<?xml version='1.0'?>
 <cars>
     <car make='Audi' model='A5'/>
 </cars>'''

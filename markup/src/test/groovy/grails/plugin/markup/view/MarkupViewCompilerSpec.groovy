@@ -39,7 +39,7 @@ class MarkupViewCompilerSpec extends Specification {
         writable.writeTo(writer)
 
         then:"The output is correct"
-        writer.toString() == '''<?xml version='1.0'?>
+        writer.toString().replace('\r','') == '''<?xml version='1.0'?>
 <cars><car make='Audi' model='A5'/></cars>'''
 
     }
