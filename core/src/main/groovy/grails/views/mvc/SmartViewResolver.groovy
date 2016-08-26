@@ -70,6 +70,12 @@ class SmartViewResolver  {
     }
 
     SmartViewResolver(ResolvableGroovyTemplateEngine templateEngine) {
+        this(templateEngine, "", null)
+    }
+
+    SmartViewResolver(ResolvableGroovyTemplateEngine templateEngine, String suffix, String contentType) {
+        this.suffix = suffix
+        this.contentType = contentType
         this.templateEngine = templateEngine
         this.objectView = resolveView(OBJECT_TEMPLATE_NAME, Locale.ENGLISH)
     }

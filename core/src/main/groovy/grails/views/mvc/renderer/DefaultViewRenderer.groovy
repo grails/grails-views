@@ -87,7 +87,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
 
         if(view != null) {
             Map<String, Object> model = [(resolveModelVariableName(object)): object]
-            if(view.url == SmartViewResolver.OBJECT_TEMPLATE_NAME) {
+            if(view == viewResolver.objectView) {
                 model.put(MODEL_OBJECT, object)
             }
             view.render(model, request, response)
