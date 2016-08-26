@@ -1,0 +1,7 @@
+model {
+    List books
+}
+
+json g.render(books, [excludes: 'title']) {
+    vendor "MyCompany"
+}

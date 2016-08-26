@@ -148,14 +148,15 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             return preProcessed
         }
 
-        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
-        Locale locale = view.locale
-        Template childTemplate = templateEngine?.resolveTemplate(object.class, locale)
-        if(childTemplate != null) {
-            return renderChildTemplate(childTemplate, object.class, object)
-        } else {
-            return renderDefault(object, arguments, customizer, processedObjects)
+        if (arguments == Collections.emptyMap() && customizer == null) {
+            ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
+            Locale locale = view.locale
+            Template childTemplate = templateEngine?.resolveTemplate(object.class, locale)
+            if(childTemplate != null) {
+                return renderChildTemplate(childTemplate, object.class, object)
+            }
         }
+        return renderDefault(object, arguments, customizer, processedObjects)
     }
 
     private JsonOutput.JsonWritable renderDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
@@ -614,7 +615,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     }
 
     JsonOutput.JsonWritable renderChildTemplate(Template template, Class modelType, modelValue) {
-        def childView = prepareWritable(template, [(GrailsNameUtils.getPropertyName(modelType)): modelValue])
+        def childView = (JsonView)prepareWritable(template, [(GrailsNameUtils.getPropertyName(modelType)): modelValue])
         return new JsonOutput.JsonWritable() {
 
             @Override

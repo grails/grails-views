@@ -9,4 +9,8 @@ class BookController extends RestfulController<Book> {
     BookController() {
         super(Book)
     }
+
+    def listExcludes() {
+        [books: listAllResources(params)]
+    }
 }
