@@ -64,7 +64,7 @@ public class JsonOutput {
     private static final char[] EMPTY_STRING_CHARS = Chr.array(QUOTE, QUOTE);
 
     public static final String NULL_VALUE = "null";
-    private static final String JSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    private static final String JSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private static final String DEFAULT_TIMEZONE = "GMT";
 
     /**
