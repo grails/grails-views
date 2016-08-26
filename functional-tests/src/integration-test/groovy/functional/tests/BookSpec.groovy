@@ -94,9 +94,9 @@ class BookSpec extends GebSpec {
         when:"A GET is issued for all books with excludes"
         resp = builder.get("$baseUrl/books/listExcludes")
 
-        then:"The response is correct"
+        then:"Access to config works"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '[{"id":1,"vendor":"MyCompany"}]'
+        resp.text == '[{"id":1,"vendor":"ConfigVendor"}]'
     }
 }

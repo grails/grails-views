@@ -171,6 +171,7 @@ abstract class JsonViewTemplate extends AbstractWritableScript implements JsonVi
         writable.controllerNamespace = controllerNamespace
         writable.controllerName = controllerName
         writable.actionName = actionName
+        writable.config = config
         return writable
     }
 

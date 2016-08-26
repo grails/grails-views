@@ -1,5 +1,7 @@
 package grails.views.mvc
 
+import grails.config.Config
+import grails.core.support.GrailsConfigurationAware
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.api.GrailsView
 import grails.views.api.HttpView
@@ -29,6 +31,7 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
     ResolvableGroovyTemplateEngine templateEngine
     LocaleResolver localeResolver
+    Config configuration
 
     private String defaultEncoding = "UTF-8"
 
@@ -86,7 +89,9 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             grailsView.setLocale(
                 locale
             )
-
+            grailsView.setConfig(
+                configuration
+            )
             if (webRequest != null) {
                 grailsView.setActionName(
                         webRequest.actionName
@@ -214,4 +219,5 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
             status(s.value(), message)
         }
     }
+
 }
