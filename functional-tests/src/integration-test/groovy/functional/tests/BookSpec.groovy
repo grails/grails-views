@@ -4,6 +4,7 @@ import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
 import grails.transaction.*
 import grails.web.http.HttpHeaders
+import org.springframework.beans.factory.annotation.Value
 import spock.lang.*
 import geb.spock.*
 
@@ -13,6 +14,9 @@ import geb.spock.*
 @Integration
 @Rollback
 class BookSpec extends GebSpec {
+
+    @Value('${local.server.port}')
+    Integer port
 
     def setup() {
     }
@@ -35,7 +39,7 @@ class BookSpec extends GebSpec {
         then:"The REST resource is created and the correct JSON is returned"
         resp.status == 422
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/vnd.error;charset=UTF-8'
-        resp.text == '{"message":"Property [title] of class [class functional.tests.Book] cannot be null","path":"/book/index","_links":{"self":{"href":"http://localhost:8080/book/index"}}}'
+        resp.text == '{"message":"Property [title] of class [class functional.tests.Book] cannot be null","path":"/book/index","_links":{"self":{"href":"http://localhost:'+port+'/book/index"}}}'
     }
 
     void "test REST view rendering"() {
@@ -92,11 +96,11 @@ class BookSpec extends GebSpec {
         resp.text == '[{"id":1,"title":"The Changeling","vendor":"MyCompany"}]'
 
         when:"A GET is issued for all books with excludes"
-        resp = builder.get("$baseUrl/books/listExcludes")
+        resp = builder.get("$baseUrl/books/listExcludes?testParam=3")
 
-        then:"Access to config works"
+        then:"Access to config and params works"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '[{"id":1,"vendor":"ConfigVendor"}]'
+        resp.text == '[{"id":1,"vendor":"ConfigVendor","fromParams":3}]'
     }
 }
