@@ -512,7 +512,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         ProxyHandler proxyHandler = jsonView.proxyHandler
                         def associatedId = ((GroovyObject)value).getProperty(associationIdName)
 
-                        if(isDeep || expandProperties.contains(propertyName)/* || proxyHandler?.isInitialized(value)*/) {
+                        if(!ass.circular && (isDeep || expandProperties.contains(propertyName))) {
                             def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
                             if(childTemplate != null) {
                                 def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]

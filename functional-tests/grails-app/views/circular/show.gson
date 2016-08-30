@@ -1,0 +1,7 @@
+import functional.tests.Circular
+
+model {
+    Circular circular
+}
+
+json g.render(circular, [deep: true])
