@@ -19,6 +19,7 @@ import groovy.text.Template
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
+import org.codehaus.groovy.runtime.StackTraceUtils
 import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
@@ -287,6 +288,27 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         }
                     }
                     out.append JsonOutput.CLOSE_BRACKET
+                }
+            }
+        }
+        else if(object instanceof Throwable) {
+            return new JsonOutput.JsonWritable() {
+                @Override
+                Writer writeTo(Writer out) throws IOException {
+                    Throwable e = (Throwable)object
+                    StackTraceUtils.sanitize(e)
+                    new StreamingJsonBuilder(out)
+                        .call {
+                        StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                        jsonDelegate.call("message", e.message)
+                        def cleanedElements = (List<Object>) e.stackTrace
+                                                              .findAll() { StackTraceElement element -> element.lineNumber > -1 }
+                                                              .collect() { StackTraceElement element ->
+                            "$element.lineNumber | ${element.className}.$element.methodName".toString()
+                        }.toList()
+                        jsonDelegate.call("stacktrace", cleanedElements)
+                    }
+                    return out
                 }
             }
         }

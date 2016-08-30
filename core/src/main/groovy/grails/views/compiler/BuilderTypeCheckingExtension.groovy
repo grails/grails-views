@@ -43,8 +43,10 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
                 context.pushErrorCollector()
             }
         }
-        beforeMethodCall { MethodCallExpression mec ->
-            beforeMethodCallExpression(mec)
+        beforeMethodCall { mec ->
+            if(mec instanceof MethodCallExpression) {
+                beforeMethodCallExpression(mec)
+            }
         }
         beforeVisitMethod {
             newScope {
