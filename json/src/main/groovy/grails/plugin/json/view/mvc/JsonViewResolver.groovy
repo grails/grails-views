@@ -32,13 +32,15 @@ class JsonViewResolver extends SmartViewResolver {
 
 
     JsonViewResolver(JsonViewConfiguration configuration = new JsonViewConfiguration()) {
-        super(new JsonViewTemplateEngine(configuration))
-        setSuffix(JSON_VIEW_SUFFIX)
-        setContentType(MimeType.JSON.name)
+        this(new JsonViewTemplateEngine(configuration), JSON_VIEW_SUFFIX, MimeType.JSON.name)
     }
 
     JsonViewResolver(JsonViewTemplateEngine templateEngine) {
         super(templateEngine)
+    }
+
+    JsonViewResolver(JsonViewTemplateEngine templateEngine, String suffix, String contentType) {
+        super(templateEngine, suffix, contentType)
     }
 
     @PostConstruct

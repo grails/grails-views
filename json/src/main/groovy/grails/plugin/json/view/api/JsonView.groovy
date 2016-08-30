@@ -4,6 +4,7 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.JsonViewTemplate
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.DefaultHalViewHelper
+import grails.plugin.json.view.api.internal.DefaultJsonApiViewHelper
 import grails.plugin.json.view.api.internal.TemplateRenderer
 import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
@@ -51,6 +52,11 @@ trait JsonView extends GrailsView {
      * The HAL view helper
      */
     HalViewHelper hal = new DefaultHalViewHelper(this, viewHelper)
+
+    /**
+     * The JSON API view helper
+     */
+    JsonApiViewHelper jsonapi = new DefaultJsonApiViewHelper(this, viewHelper)
 
     /**
      * The template namespace

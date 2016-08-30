@@ -32,7 +32,7 @@ task('compileViews', type:JavaExec) {
     outputs.files 'build/classes/main'
     main "grails.plugin.json.view.JsonViewCompiler"
     classpath configurations.compile + configurations.compileOnly
-    args "src/templates", "build/classes/main", "1.7", "", "", "none", "UTF-8"
+    args("src/templates", "build/classes/main", "1.7", ' ', ' ', "none", "UTF-8")
 }
 
 task sourcesJar(type:Jar) {

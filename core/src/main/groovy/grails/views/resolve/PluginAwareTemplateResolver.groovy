@@ -20,6 +20,8 @@ import grails.plugins.PluginManagerAware
 import grails.views.ViewConfiguration
 import groovy.text.Template
 import groovy.transform.CompileStatic
+import org.grails.io.support.GrailsResourceUtils
+import org.grails.plugins.BinaryGrailsPlugin
 
 
 /**
@@ -59,4 +61,25 @@ class PluginAwareTemplateResolver extends GenericGroovyTemplateResolver implemen
         }
         return applicationTemplate
     }
+
+    @Override
+    URL resolveTemplate(String path) {
+        URL applicationTemplate = super.resolveTemplate(path)
+        if(applicationTemplate == null && pluginManager != null) {
+            for( plugin in pluginManager.allPlugins ) {
+                if(plugin instanceof BinaryGrailsPlugin) {
+                    BinaryGrailsPlugin binaryGrailsPlugin = (BinaryGrailsPlugin) plugin
+                    File projectDirectory = binaryGrailsPlugin.getProjectDirectory()
+                    if (projectDirectory != null) {
+                        File f = new File(projectDirectory, GrailsResourceUtils.VIEWS_DIR_PATH + path.replaceFirst('/', ''))
+                        if (f.exists()) {
+                            return f.toURI().toURL()
+                        }
+                    }
+                }
+            }
+        }
+        return applicationTemplate
+    }
+
 }

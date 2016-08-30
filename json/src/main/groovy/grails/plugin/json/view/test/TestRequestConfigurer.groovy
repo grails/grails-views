@@ -1,5 +1,6 @@
 package grails.plugin.json.view.test
 
+import grails.config.Config
 import grails.plugin.json.view.api.JsonView
 import grails.util.TypeConvertingMap
 import grails.views.api.HttpView
@@ -47,6 +48,10 @@ class TestRequestConfigurer implements Request {
         jsonView.setControllerNamespace(controllerNamespace)
     }
 
+    void setConfig(Config config) {
+        jsonView.setConfig(config)
+    }
+
 
     TestRequestConfigurer actionName(String actionName) {
         this.actionName = actionName
@@ -60,6 +65,11 @@ class TestRequestConfigurer implements Request {
 
     TestRequestConfigurer controllerNamespace(String controllerNamespace) {
         this.controllerNamespace = controllerNamespace
+        return this
+    }
+
+    TestRequestConfigurer config(Config config) {
+        this.config = config
         return this
     }
 

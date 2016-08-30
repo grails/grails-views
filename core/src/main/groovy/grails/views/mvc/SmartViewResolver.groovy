@@ -16,6 +16,8 @@
 package grails.views.mvc
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
+import grails.config.Config
+import grails.core.support.GrailsConfigurationAware
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.resolve.TemplateResolverUtils
 import grails.web.http.HttpHeaders
@@ -39,7 +41,7 @@ import javax.servlet.http.HttpServletResponse
  * @since 1.0
  */
 @CompileStatic
-class SmartViewResolver  {
+class SmartViewResolver implements GrailsConfigurationAware {
 
     public static final String OBJECT_TEMPLATE_NAME = "/object/_object"
 
@@ -51,6 +53,8 @@ class SmartViewResolver  {
 
     @Autowired
     LocaleResolver localeResolver
+
+    Config configuration
 
     final View objectView
 
@@ -66,10 +70,17 @@ class SmartViewResolver  {
         view.url = path
         view.templateEngine = getTemplateEngine()
         view.localeResolver = getLocaleResolver()
+        view.configuration = getConfiguration()
         return view
     }
 
     SmartViewResolver(ResolvableGroovyTemplateEngine templateEngine) {
+        this(templateEngine, "", null)
+    }
+
+    SmartViewResolver(ResolvableGroovyTemplateEngine templateEngine, String suffix, String contentType) {
+        this.suffix = suffix
+        this.contentType = contentType
         this.templateEngine = templateEngine
         this.objectView = resolveView(OBJECT_TEMPLATE_NAME, Locale.ENGLISH)
     }

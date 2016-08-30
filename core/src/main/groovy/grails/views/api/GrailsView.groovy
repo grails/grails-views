@@ -1,5 +1,6 @@
 package grails.views.api
 
+import grails.config.Config
 import grails.core.support.proxy.ProxyHandler
 import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
@@ -86,6 +87,10 @@ trait GrailsView extends HttpView implements WriterProvider, WritableScript {
      */
     String actionName
 
+    /**
+     * @return The configuration
+     */
+    Config config
 
     private GrailsViewHelper viewHelper = new DefaultGrailsViewHelper(this)
 

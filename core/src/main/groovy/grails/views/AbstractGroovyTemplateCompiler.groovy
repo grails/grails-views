@@ -88,8 +88,8 @@ Usage: java -cp CLASSPATH ${compilerClass.name} [srcDir] [destDir] [targetCompat
         File srcDir = new File(args[0])
         File destinationDir = new File(args[1])
         String targetCompatibility = args[2]
-        String[] packageImports = args[3].split(',')
-        String packageName = args[4]
+        String[] packageImports = args[3].trim().split(',')
+        String packageName = args[4].trim()
         File configFile = new File(args[5])
         String encoding = new File(args[6])
 

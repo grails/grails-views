@@ -30,13 +30,16 @@ class MarkupViewResolver extends SmartViewResolver {
 
 
     MarkupViewResolver(MarkupViewConfiguration configuration) {
-        super(new MarkupViewTemplateEngine(configuration))
-        setSuffix(".$configuration.extension")
-        setContentType(MimeType.XML.name)
+        this(new MarkupViewTemplateEngine(configuration), ".$configuration.extension", MimeType.XML.name)
     }
 
     MarkupViewResolver(MarkupViewTemplateEngine templateEngine) {
         super(templateEngine)
+    }
+
+
+    MarkupViewResolver(MarkupViewTemplateEngine templateEngine, String suffix, String contentType) {
+        super(templateEngine, suffix, contentType)
     }
 
     @PostConstruct
