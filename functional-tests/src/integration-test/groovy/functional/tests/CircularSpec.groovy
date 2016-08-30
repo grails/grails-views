@@ -17,10 +17,15 @@ class CircularSpec extends GebSpec {
         when:"A GET is issued"
 
         def resp = builder.get("$baseUrl/circular/show/1")
+        def json = resp.json
 
         then:"The REST resource is retrieved and the correct JSON is returned"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"circulars":[{"id":3,"circulars":[],"name":"topLevel-3","parent":{"id":1}},{"id":2,"circulars":[],"name":"topLevel-2","parent":{"id":1}}],"name":"topLevel"}'
+        json.id == 1
+        json.name == "topLevel"
+        json.circulars.size() == 2
+        json.circulars.find { it.id == 3 }.parent.id == 1
+        json.circulars.find { it.id == 2 }.parent.id == 1
     }
 }
