@@ -1,9 +1,8 @@
 package grails.plugin.markup.view
 
-import grails.util.Environment
 import grails.views.GenericViewConfiguration
-import grails.views.ViewConfiguration
 import grails.views.ViewsEnvironment
+import grails.web.mime.MimeType
 import groovy.text.markup.TemplateConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
@@ -16,10 +15,12 @@ import java.beans.PropertyDescriptor
  * @since 1.0
  */
 @CompileStatic
-@ConfigurationProperties('grails.views.json')
+@ConfigurationProperties('grails.views.markup')
 class MarkupViewConfiguration extends TemplateConfiguration implements GenericViewConfiguration {
 
     public static final String MODULE_NAME = "markup"
+
+    List<String> mimeTypes = [MimeType.XML.name, MimeType.HAL_XML.name]
 
     MarkupViewConfiguration() {
         setExtension(MarkupViewTemplate.EXTENSION)

@@ -624,16 +624,18 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             if (childTemplate != null) {
                 JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, propertyType, value)
                 jsonDelegate.call(propertyName, jsonWritable)
-            } else {
-                jsonDelegate.call(propertyName, value)
-            }
-        } else {
-            if (isStringType(prop.type)) {
-                jsonDelegate.call propertyName, value.toString()
-            } else {
-                jsonDelegate.call(propertyName, value)
+                return
             }
         }
+
+        if (isStringType(prop.type)) {
+            jsonDelegate.call propertyName, value.toString()
+        } else if (prop.type.isEnum()) {
+            jsonDelegate.call propertyName, ((Enum)value).name()
+        } else {
+            jsonDelegate.call(propertyName, value)
+        }
+
     }
 
     JsonOutput.JsonWritable renderChildTemplate(Template template, Class modelType, modelValue) {

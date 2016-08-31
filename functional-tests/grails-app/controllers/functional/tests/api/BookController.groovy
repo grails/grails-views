@@ -7,7 +7,7 @@ class BookController {
 
     static namespace = 'api'
 
-    static responseFormats = ['json']
+    static responseFormats = ['json', 'hal']
 
     def index() {
         respond new Book(title: 'API - The Shining')

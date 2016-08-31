@@ -3,6 +3,7 @@ package functional.tests
 class Circular {
 
     String name
+    MyEnum myEnum
 
     static belongsTo = [parent: Circular]
 

@@ -24,6 +24,7 @@ class CircularSpec extends GebSpec {
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         json.id == 1
         json.name == "topLevel"
+        json.myEnum == "BAR"
         json.circulars.size() == 2
         json.circulars.find { it.id == 3 }.parent.id == 1
         json.circulars.find { it.id == 2 }.parent.id == 1

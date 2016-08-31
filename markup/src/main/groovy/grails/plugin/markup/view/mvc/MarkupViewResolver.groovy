@@ -5,13 +5,10 @@ import grails.plugin.markup.view.MarkupViewConfiguration
 import grails.plugin.markup.view.MarkupViewTemplateEngine
 import grails.plugin.markup.view.renderer.MarkupViewXmlRenderer
 import grails.rest.render.RendererRegistry
-import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.views.mvc.SmartViewResolver
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.servlet.ViewResolver
-
 import javax.annotation.PostConstruct
 
 /**
@@ -28,6 +25,7 @@ class MarkupViewResolver extends SmartViewResolver {
     @Autowired(required = false)
     RendererRegistry rendererRegistry
 
+    MarkupViewConfiguration viewConfiguration
 
     MarkupViewResolver(MarkupViewConfiguration configuration) {
         this(new MarkupViewTemplateEngine(configuration), ".$configuration.extension", MimeType.XML.name)
@@ -35,21 +33,24 @@ class MarkupViewResolver extends SmartViewResolver {
 
     MarkupViewResolver(MarkupViewTemplateEngine templateEngine) {
         super(templateEngine)
+        viewConfiguration = (MarkupViewConfiguration)templateEngine.viewConfiguration
     }
-
 
     MarkupViewResolver(MarkupViewTemplateEngine templateEngine, String suffix, String contentType) {
         super(templateEngine, suffix, contentType)
+        viewConfiguration = (MarkupViewConfiguration)templateEngine.viewConfiguration
     }
 
     @PostConstruct
     void initialize() {
         if(rendererRegistry != null) {
             def defaultXmlRenderer = rendererRegistry.findRenderer(MimeType.XML, Object.class)
-
-            rendererRegistry.addDefaultRenderer(
-                    new MarkupViewXmlRenderer<Object>(Object.class, this , proxyHandler, rendererRegistry, defaultXmlRenderer)
-            )
+            viewConfiguration.mimeTypes.each { String mimeTypeString ->
+                MimeType mimeType = new MimeType(mimeTypeString, "xml")
+                rendererRegistry.addDefaultRenderer(
+                    new MarkupViewXmlRenderer<Object>(Object.class, mimeType, this , proxyHandler, rendererRegistry, defaultXmlRenderer)
+                )
+            }
         }
     }
 }

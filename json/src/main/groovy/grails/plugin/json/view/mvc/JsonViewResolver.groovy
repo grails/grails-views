@@ -30,6 +30,7 @@ class JsonViewResolver extends SmartViewResolver {
     @Autowired(required = false)
     RendererRegistry rendererRegistry
 
+    JsonViewConfiguration viewConfiguration
 
     JsonViewResolver(JsonViewConfiguration configuration = new JsonViewConfiguration()) {
         this(new JsonViewTemplateEngine(configuration), JSON_VIEW_SUFFIX, MimeType.JSON.name)
@@ -37,23 +38,28 @@ class JsonViewResolver extends SmartViewResolver {
 
     JsonViewResolver(JsonViewTemplateEngine templateEngine) {
         super(templateEngine)
+        viewConfiguration = (JsonViewConfiguration)templateEngine.viewConfiguration
     }
 
     JsonViewResolver(JsonViewTemplateEngine templateEngine, String suffix, String contentType) {
         super(templateEngine, suffix, contentType)
+        viewConfiguration = (JsonViewConfiguration)templateEngine.viewConfiguration
     }
 
     @PostConstruct
     void initialize() {
         if(rendererRegistry != null) {
-            def defaultJsonRenderer = rendererRegistry.findRenderer(MimeType.JSON, Object.class)
-
             def errorsRenderer = new ErrorsJsonViewRenderer((Class)Errors)
             errorsRenderer.setJsonViewResolver(this)
             rendererRegistry.addRenderer(errorsRenderer)
-            rendererRegistry.addDefaultRenderer(
-                    new JsonViewJsonRenderer<Object>(Object.class, this , proxyHandler, rendererRegistry, defaultJsonRenderer)
-            )
+            def defaultJsonRenderer = rendererRegistry.findRenderer(MimeType.JSON, Object.class)
+            viewConfiguration.mimeTypes.each { String mimeTypeString ->
+                MimeType mimeType = new MimeType(mimeTypeString, "json")
+                rendererRegistry.addDefaultRenderer(
+                    new JsonViewJsonRenderer<Object>(Object.class, mimeType, this , proxyHandler, rendererRegistry, defaultJsonRenderer)
+                )
+            }
+
         }
     }
 }

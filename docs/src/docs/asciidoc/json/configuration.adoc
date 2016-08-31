@@ -63,3 +63,14 @@ response.header "Token", "foo"
 
 NOTE: The trait cannot be defined in the same project as you are compilation as it needs to be on the classpath of the project you are compiling. You will need to create a Grails plugin and use a multi-project build in this scenario.
 
+==== Default Mime Types
+
+The mime types that will be accepted by default for JSON view rendering is configurable.
+
+[source,yaml]
+grails:
+    views:
+        json:
+            mimeTypes:
+              - application/json
+              - application/hal+json
