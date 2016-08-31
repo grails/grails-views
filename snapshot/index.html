@@ -2175,6 +2175,22 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_default_mime_types">2.13.3. Default Mime Types</h4>
+<div class="paragraph">
+<p>The mime types that will be accepted by default for JSON view rendering is configurable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">grails</span>:
+    <span class="key">views</span>:
+        <span class="key">json</span>:
+            <span class="key">mimeTypes</span>:
+              - <span class="string"><span class="content">application/json</span></span>
+              - <span class="string"><span class="content">application/hal+json</span></span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_intellij_support">2.14. IntelliJ Support</h3>
@@ -2341,7 +2357,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-08-30 14:00:33 UTC
+Last updated 2016-08-31 17:20:11 UTC
 </div>
 </div>
 </body>
