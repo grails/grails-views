@@ -631,7 +631,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         if (isStringType(prop.type)) {
             jsonDelegate.call propertyName, value.toString()
         } else if (prop.type.isEnum()) {
-            jsonDelegate.call propertyName, ((Enum)value).name()
+            jsonDelegate.call propertyName, ((Enum) value).name()
+        } else if (value instanceof TimeZone) {
+            jsonDelegate.call propertyName, value.getID()
         } else {
             jsonDelegate.call(propertyName, value)
         }

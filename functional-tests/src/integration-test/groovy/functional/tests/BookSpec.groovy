@@ -65,7 +65,7 @@ class BookSpec extends GebSpec {
         then:"The REST resource is created and the correct JSON is returned"
         resp.status == 201
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"title":"The Stand","vendor":"MyCompany"}'
+        resp.text == '{"id":1,"timeZone":"America/New_York","title":"The Stand","vendor":"MyCompany"}'
 
         when:"A GET request is issued"
         resp = builder.get("$baseUrl/books/${resp.json.id}")
@@ -73,7 +73,7 @@ class BookSpec extends GebSpec {
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"title":"The Stand","vendor":"MyCompany"}'
+        resp.text == '{"id":1,"timeZone":"America/New_York","title":"The Stand","vendor":"MyCompany"}'
 
         when:"A PUT is issued"
         resp = builder.put("$baseUrl/books/${resp.json.id}") {
@@ -85,7 +85,7 @@ class BookSpec extends GebSpec {
         then:"The resource is updated"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"title":"The Changeling","vendor":"MyCompany"}'
+        resp.text == '{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"MyCompany"}'
 
         when:"A GET is issued for all books"
         resp = builder.get("$baseUrl/books")
@@ -93,7 +93,7 @@ class BookSpec extends GebSpec {
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '[{"id":1,"title":"The Changeling","vendor":"MyCompany"}]'
+        resp.text == '[{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"MyCompany"}]'
 
         when:"A GET is issued for all books with excludes"
         resp = builder.get("$baseUrl/books/listExcludes?testParam=3")
@@ -101,6 +101,6 @@ class BookSpec extends GebSpec {
         then:"Access to config and params works"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '[{"id":1,"vendor":"ConfigVendor","fromParams":3}]'
+        resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":3}]'
     }
 }
