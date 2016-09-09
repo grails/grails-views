@@ -1,16 +1,14 @@
 package grails.plugin.json.view.api
 
 import grails.persistence.Entity
-import grails.plugin.json.view.Team
 import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
-import grails.util.Holders
-import org.grails.support.MockApplicationContext
-import spock.lang.Ignore
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
 import spock.lang.Specification
 
-import javax.xml.ws.Holder
-@Ignore
+
+@TestMixin(GrailsUnitTestMixin)
 class JsonApiSpec extends Specification implements JsonViewTest {
     void setup() {
         mappingContext.addPersistentEntities(Widget, Author, Book)
@@ -34,7 +32,6 @@ json jsonapi.render(widget)
 
         then:
             result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}}}'''
-            1 * Holders.getApplicationContext() >> null
     }
 
     void 'test Relationships'() {
