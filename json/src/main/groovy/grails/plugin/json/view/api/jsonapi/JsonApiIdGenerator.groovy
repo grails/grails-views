@@ -1,4 +1,4 @@
-package grails.plugin.json.view.api.internal
+package grails.plugin.json.view.api.jsonapi
 
 import groovy.transform.CompileStatic
 

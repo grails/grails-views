@@ -1,6 +1,5 @@
-package grails.plugin.json.view.api.json
+package grails.plugin.json.view.api.jsonapi
 
-import grails.plugin.json.view.api.internal.JsonApiIdGenerator
 import groovy.transform.CompileStatic
 
 @CompileStatic

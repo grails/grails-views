@@ -5,7 +5,8 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonApiViewHelper
 import grails.plugin.json.view.api.JsonView
-import grails.plugin.json.view.api.json.DefaultJsonApiIdGenerator
+import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
+import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
 import grails.util.Holders
 import groovy.transform.CompileStatic
 import org.grails.datastore.gorm.GormEnhancer
