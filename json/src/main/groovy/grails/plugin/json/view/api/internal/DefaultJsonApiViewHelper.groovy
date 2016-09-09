@@ -5,12 +5,16 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonApiViewHelper
 import grails.plugin.json.view.api.JsonView
+import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
+import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
+import grails.util.Holders
 import groovy.transform.CompileStatic
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Simple
+import org.springframework.beans.factory.NoSuchBeanDefinitionException
 
 /**
  * @Author Colin Harrington
@@ -21,6 +25,8 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
     GrailsJsonViewHelper viewHelper
     String contentType = "application/vnd.api+json"
     boolean exposeJsonApi = false
+
+    JsonApiIdGenerator jsonApiIdGenerator
 
     public static final JsonOutput.JsonWritable NULL_OUTPUT = new JsonOutput.JsonWritable() {
         @Override
@@ -47,7 +53,6 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         if (object == null) {
             return NULL_OUTPUT
         }
-        //TODO impl
         JsonOutput.JsonWritable jsonWritable = new JsonOutput.JsonWritable() {
             @Override
             @CompileStatic
@@ -82,12 +87,11 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
                 out.write(JsonOutput.toJson('id'))
                 out.write(JsonOutput.COLON)
-
-                def linkGenerator = view.linkGenerator
-                out.write(JsonOutput.toJson(linkGenerator.link(resource: object))) //TODO Use a linking strategy
+                JsonApiIdGenerator idGenerator = getIdGenerator()
+                out.write(JsonOutput.toJson(idGenerator.generateId(object)))
 
                 if (entity.persistentProperties) {
-                    List<PersistentProperty> attributes = entity.persistentProperties.findAll{it instanceof Simple}
+                    List<PersistentProperty> attributes = entity.persistentProperties.findAll { it instanceof Simple }
                     if (attributes) {
                         out.write(JsonOutput.COMMA)
                         out.write(JsonOutput.toJson('attributes'))
@@ -132,7 +136,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
                                 out.write(JsonOutput.toJson('id'))
                                 out.write(JsonOutput.COLON)
-                                out.write(JsonOutput.toJson(linkGenerator.link(resource: association))) //TODO Use a linking strategy
+                                out.write(JsonOutput.toJson(idGenerator.generateId(object.properties[association.name])))
 
                                 out.write(JsonOutput.CLOSE_BRACE)
                             }
@@ -173,5 +177,16 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         } catch (Throwable e) {
             return ((JsonView) view)?.mappingContext?.getPersistentEntity(clazz.name)
         }
+    }
+
+    public JsonApiIdGenerator getIdGenerator() {
+        if (jsonApiIdGenerator == null) {
+            try {
+                this.jsonApiIdGenerator = Holders.getApplicationContext().getBean("jsonApiIdGenerator") as JsonApiIdGenerator
+            } catch (NoSuchBeanDefinitionException nsbde) {
+                this.jsonApiIdGenerator = new DefaultJsonApiIdGenerator()
+            }
+        }
+        return jsonApiIdGenerator
     }
 }
