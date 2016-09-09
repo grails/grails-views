@@ -13,19 +13,18 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Simple
+import org.springframework.beans.factory.NoSuchBeanDefinitionException
 
 /**
  * @Author Colin Harrington
  */
 @CompileStatic
-//@Configurable
 class DefaultJsonApiViewHelper implements JsonApiViewHelper {
     JsonView view
     GrailsJsonViewHelper viewHelper
     String contentType = "application/vnd.api+json"
     boolean exposeJsonApi = false
 
-//    @Autowired(required = false)
     JsonApiIdGenerator jsonApiIdGenerator
 
     public static final JsonOutput.JsonWritable NULL_OUTPUT = new JsonOutput.JsonWritable() {
@@ -181,8 +180,9 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
     public JsonApiIdGenerator getIdGenerator() {
         if (jsonApiIdGenerator == null) {
-            this.jsonApiIdGenerator = Holders.applicationContext.getBean("jsonApiIdGenerator") as JsonApiIdGenerator
-            if (jsonApiIdGenerator == null) {
+            try {
+                this.jsonApiIdGenerator = Holders.getApplicationContext().getBean("jsonApiIdGenerator") as JsonApiIdGenerator
+            } catch (NoSuchBeanDefinitionException nsbde) {
                 this.jsonApiIdGenerator = new DefaultJsonApiIdGenerator()
             }
         }
