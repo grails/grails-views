@@ -5,6 +5,8 @@ import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.validation.Validateable
+import grails.validation.ValidationErrors
 import spock.lang.Specification
 
 
@@ -62,6 +64,27 @@ json jsonapi.render(book)
             relationships.author.data.id
             relationships.author.data.type == "author"
     }
+    void 'test errors'() {
+        given:
+            SuperHero mutepool = new SuperHero()
+            mutepool.name = ""
+            mutepool.id = 5
+            mutepool.validate()
+
+        when:
+            def result = render('''
+import grails.plugin.json.view.api.SuperHero
+model {
+    SuperHero hero
+}
+
+json jsonapi.render(hero)
+''', [hero: mutepool])
+
+        then:
+            result.jsonText == '''{"errors":[{"code":"blank","detail":"Property [name] of class [class grails.plugin.json.view.api.SuperHero] cannot be blank","source":{"object":"grails.plugin.json.view.api.SuperHero","field":"name","rejectedValue":"","bindingError":false}}]}'''
+    }
+
 }
 
 @Entity
@@ -80,5 +103,14 @@ class Book {
 @Entity
 class Author {
     String name
+}
+
+@Entity
+class SuperHero implements Validateable {
+    String name
+
+    static constraints = {
+        name(blank: false)
+    }
 }
 

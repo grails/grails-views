@@ -15,6 +15,9 @@ import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Simple
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
+import org.springframework.validation.Errors
+import org.springframework.validation.FieldError
+import org.springframework.validation.ObjectError
 
 /**
  * @Author Colin Harrington
@@ -61,12 +64,28 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 if (exposeJsonApi) {
                     jsonapiMember().writeTo(out)
                 }
-                renderData(object).writeTo(out)
+                if (objectHasErrors(object)) {
+                    renderErrors(object).writeTo(out)
+                } else {
+                    renderData(object).writeTo(out)
+                }
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }
         }
         return jsonWritable
+    }
+
+    boolean objectHasErrors(Object subject) {
+        if (subject.hasProperty('errors')) {
+            Object errors = subject.getAt('errors')
+            if (errors instanceof Errors) {
+                return errors.hasErrors()
+            } else {
+                return errors.asBoolean()
+            }
+        }
+        return false
     }
 
     JsonOutput.JsonWritable renderData(Object object) {
@@ -147,6 +166,78 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
+            }
+        }
+        return writable
+    }
+
+    JsonOutput.JsonWritable renderErrors(Object object) {
+        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
+
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+                out.write(JsonOutput.toJson("errors"))
+                out.write(JsonOutput.COLON)
+
+                Errors errors = (Errors) object.getAt('errors')
+
+                out.write(JsonOutput.OPEN_BRACKET)
+
+                List<ObjectError> allErrors = errors.allErrors
+                allErrors.eachWithIndex { ObjectError error, int idx ->
+                    this.writeError(out, error)
+                    if (idx < allErrors.size() - 1) {
+                        out.write(JsonOutput.COMMA)
+                    }
+                }
+
+                out.write(JsonOutput.CLOSE_BRACKET)
+
+                return out
+            }
+
+            protected writeError(Writer out, ObjectError error) {
+                out.write(JsonOutput.OPEN_BRACE)
+
+                out.write(JsonOutput.toJson('code'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.toJson(error.code))
+                out.write(JsonOutput.COMMA)
+
+                out.write(JsonOutput.toJson('detail'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.toJson(viewHelper.message([error: error])))
+                out.write(JsonOutput.COMMA)
+
+                out.write(JsonOutput.toJson('source'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.OPEN_BRACE)
+
+                out.write(JsonOutput.toJson('object'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.toJson(error.getObjectName()))
+                out.write(JsonOutput.COMMA)
+
+                if (error instanceof FieldError) {
+                    FieldError fieldError = (FieldError) error
+
+                    out.write(JsonOutput.toJson('field'))
+                    out.write(JsonOutput.COLON)
+                    out.write(JsonOutput.toJson(fieldError.getField()))
+                    out.write(JsonOutput.COMMA)
+
+                    out.write(JsonOutput.toJson('rejectedValue'))
+                    out.write(JsonOutput.COLON)
+                    out.write(JsonOutput.toJson(fieldError.getRejectedValue()))
+                    out.write(JsonOutput.COMMA)
+
+                    out.write(JsonOutput.toJson('bindingError'))
+                    out.write(JsonOutput.COLON)
+                    out.write(JsonOutput.toJson(fieldError.isBindingFailure()))
+                }
+
+                out.write(JsonOutput.CLOSE_BRACE)//source
+                out.write(JsonOutput.CLOSE_BRACE)//error
             }
         }
         return writable
