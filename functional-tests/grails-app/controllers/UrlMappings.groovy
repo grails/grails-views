@@ -13,6 +13,7 @@ class UrlMappings {
 
         "/books"(resources:"book")
         "/books/listExcludes"(controller: "book", action: "listExcludes")
+        "/books/non-standard-template"(controller:"book", action:"nonStandardTemplate")
         "/teams"(resources:"team")
         "/products"(resources:"product")
         "/teams/deep/$id"(controller: "team", action:"deep")

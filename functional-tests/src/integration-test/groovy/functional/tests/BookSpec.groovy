@@ -103,4 +103,19 @@ class BookSpec extends GebSpec {
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":3}]'
     }
+
+    void "View parameter passed to the render method can be used for non-standard view locations"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:"A GET is issued to a request with a template at a non-standard location"
+
+        def resp = builder.get("$baseUrl/books/non-standard-template")
+
+        then:"The template was rendered successfully"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.text == '{"bookTitle":"template found"}'
+
+    }
 }
