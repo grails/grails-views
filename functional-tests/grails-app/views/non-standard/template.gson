@@ -1,0 +1,7 @@
+model {
+    Book book
+}
+
+json {
+    bookTitle book.title
+}

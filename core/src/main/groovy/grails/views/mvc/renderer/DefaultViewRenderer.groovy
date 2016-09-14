@@ -65,7 +65,13 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
             viewName = context.actionName
         }
 
-        String viewUri = "/${context.controllerName}/${viewName}"
+        String viewUri
+        if (viewName?.startsWith('/')) {
+            viewUri = viewName
+        } else {
+           viewUri = "/${context.controllerName}/${viewName}"
+        }
+
         def webRequest = ((ServletRenderContext) context).getWebRequest()
         if (webRequest.controllerNamespace) {
             viewUri = "/${webRequest.controllerNamespace}" + viewUri
