@@ -36,25 +36,30 @@ import org.springframework.context.support.StaticMessageSource
 @Slf4j
 abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
 
-    private static final Template NULL_ENTRY = new Template() {
+    private static final WritableScriptTemplate NULL_ENTRY = new WritableScriptTemplate(null) {
         @Override
         Writable make() {}
         @Override
         Writable make(Map binding) {}
+        @Override
+        protected void initModelTypes(Class<? extends WritableScript> templateClass) {
+        }
     }
 
-    protected Map<List, Template> resolveCache = new ConcurrentLinkedHashMap.Builder<List, Template>()
+    protected Map<List, WritableScriptTemplate> resolveCache = new ConcurrentLinkedHashMap.Builder<List, WritableScriptTemplate>()
                                                                             .maximumWeightedCapacity(250)
                                                                             .build()
 
-    protected Map<String, Template> cachedTemplates = new ConcurrentLinkedHashMap.Builder<String, Template>()
+    protected Map<String, WritableScriptTemplate> cachedTemplates = new ConcurrentLinkedHashMap.Builder<String, WritableScriptTemplate>()
             .maximumWeightedCapacity(250)
             .build()
             .withDefault { String path ->
-        def cls = templateResolver.resolveTemplateClass(path)
+        Class cls = templateResolver.resolveTemplateClass(path)
         if(cls != null) {
             log.debug("Found template class [${cls.name}] for path [$path]")
-            return createTemplate( (Class<? extends Template>)cls )
+            WritableScriptTemplate template = createTemplate((Class<? extends Template>) cls)
+            template.templatePath = path
+            return template
         }
         else {
             def url = templateResolver.resolveTemplate(path)
@@ -63,7 +68,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             }
             if(url != null) {
                 log.debug("Found template URL [${url}] for path [$path]")
-                return createTemplate(path, url)
+                WritableScriptTemplate template = createTemplate(path, url)
+                template.templatePath = path
+                return template
             }
         }
         return NULL_ENTRY
@@ -173,7 +180,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      * @param cls The class
      * @return The template
      */
-    protected Template createTemplate(Class<? extends Template> cls) {
+    protected WritableScriptTemplate createTemplate(Class<? extends Template> cls) {
         createTemplate(cls, null)
     }
 
@@ -183,7 +190,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      * @param cls The class
      * @return The template
      */
-    protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
+    protected WritableScriptTemplate createTemplate(Class<? extends Template> cls, File sourceFile) {
         def template = new GrailsViewTemplate((Class<? extends GrailsView>) cls, sourceFile)
         return initializeTemplate(template, sourceFile)
     }
@@ -195,7 +202,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      * @param sourceFile The source file
      * @return The initialized template
      */
-    protected GrailsViewTemplate initializeTemplate(GrailsViewTemplate template, File sourceFile) {
+    protected WritableScriptTemplate initializeTemplate(GrailsViewTemplate template, File sourceFile) {
         template.setSourceFile(sourceFile)
         template.setPrettyPrint(viewConfiguration.prettyPrint)
         template.setMessageSource(messageSource)
@@ -215,7 +222,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      *
      * @return The template or null if it doesn't exist
      */
-    Template resolveTemplate(Class type, Locale locale, String...qualifiers) {
+    WritableScriptTemplate resolveTemplate(Class type, Locale locale, String...qualifiers) {
         Template t = resolveTemplate(TemplateResolverUtils.fullTemplateNameForClass(type), locale, qualifiers)
         if(t == null) {
             t = resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(type), locale, qualifiers)
@@ -229,7 +236,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      *
      * @return The template or null if it doesn't exist
      */
-    Template resolveTemplate(String path) {
+    WritableScriptTemplate resolveTemplate(String path) {
         resolveTemplate(path, Locale.ENGLISH)
     }
     /**
@@ -239,13 +246,13 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      *
      * @return The template or null if it doesn't exist
      */
-    Template resolveTemplate(String path, Locale locale, String...qualifiers) {
+    WritableScriptTemplate resolveTemplate(String path, Locale locale, String...qualifiers) {
         if(locale == null) {
             locale = Locale.ENGLISH
         }
         def cacheKey = [path, locale.language]
         cacheKey.addAll(qualifiers)
-        Template template = null
+        WritableScriptTemplate template = null
         if(shouldCache) {
             template = resolveCache.get(cacheKey)
             if(template != null) {
@@ -253,7 +260,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                     log.debug("No template found for path [$path] and locale [$locale]")
                     return null
                 }
-                else if( !enableReloading || !((GrailsViewTemplate)template).wasModified()) {
+                else if( !enableReloading || !((WritableScriptTemplate)template).wasModified()) {
                     log.debug("Found cached template for path [$path] and locale [$locale]")
                     return template
                 }
@@ -337,7 +344,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         if(template != null) {
 
             boolean isNull = template.is(NULL_ENTRY)
-            if(!isNull && ((GrailsViewTemplate)template).wasModified()) {
+            if(!isNull && ((WritableScriptTemplate)template).wasModified()) {
                 for(p in qualifiedPaths) {
                     cachedTemplates.remove(p)
                     resolveCache.remove(cacheKey)
@@ -361,7 +368,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
     }
 
     @Override
-    Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
         def cc = new CompilerConfiguration(compilerConfiguration)
         prepareCustomizers(cc)
 
@@ -371,13 +378,13 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
     }
 
     @Override
-    Template createTemplate(URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         def file = url.file
         def basename = GrailsStringUtils.getFileBasename(file)
         createTemplate("/$basename", url)
     }
 
-    Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         // Had to do this hack because of a Groovy bug where ASTTransformationCustomizer are only applied once!?
         def file = new File(url.file)
         def cc = new CompilerConfiguration(compilerConfiguration)
@@ -398,7 +405,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
 
 
     @Override
-    Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
         def cc = new CompilerConfiguration(compilerConfiguration)
         prepareCustomizers(cc)
         // if we reach here, use a throw away child class loader for dynamic templates

@@ -11,6 +11,7 @@ import grails.util.GrailsNameUtils
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewConfiguration
 import grails.views.ViewException
+import grails.views.ViewUriResolver
 import grails.views.api.GrailsView
 import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.resolve.TemplateResolverUtils
@@ -19,6 +20,7 @@ import groovy.text.Template
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
+import groovy.util.logging.Slf4j
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
@@ -48,6 +50,7 @@ import java.lang.reflect.ParameterizedType
  */
 @CompileStatic
 @InheritConstructors
+@Slf4j
 class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
 
 
@@ -662,10 +665,30 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             Map model = (Map)arguments.model ?: [:]
             def collection = arguments.collection
             def var = arguments.var ?: 'it'
-            def templateUri = templateEngine
-                    .viewUriResolver
-                    .resolveTemplateUri(view.getControllerNamespace(), view.getControllerName(), template.toString())
-            def childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
+            String templateName = template.toString()
+            String namespace = view.getControllerNamespace()
+            String controllerName = view.getControllerName()
+
+
+            ViewUriResolver viewUriResolver = templateEngine
+                                                 .getViewUriResolver()
+
+            String templateUri
+
+            if(controllerName != null) {
+                log.debug("Resolving template [{}] for namespace [{}] and controller [{}]", templateName, namespace, controllerName)
+                templateUri = viewUriResolver
+                                .resolveTemplateUri(namespace, controllerName, templateName)
+            }
+            else {
+                String parentPath = view.viewTemplate.parentPath
+                log.debug("Resolving template [{}] for parent path [{}]", templateName, parentPath)
+
+                templateUri = viewUriResolver
+                                    .resolveTemplateUri(parentPath, templateName)
+            }
+
+            Template childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             if(childTemplate != null) {
                 return new JsonOutput.JsonWritable() {
 

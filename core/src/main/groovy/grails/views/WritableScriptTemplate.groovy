@@ -14,16 +14,36 @@ import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 /**
+ * A base template class that all Grails view templates should extend from
+ *
  * @author Graeme Rocher
  * @since 1.0
  */
 @CompileStatic
 class WritableScriptTemplate implements Template {
 
-    Class<? extends GrailsView> templateClass
+    /**
+     * The class of the template
+     */
+    final Class<? extends GrailsView> templateClass
+    /**
+     * The resolved template path
+     */
+    String templatePath
+    /**
+     * The source file of the template. Will be null in pre-compiled mode.
+     */
     File sourceFile
+    /**
+     * Whether to pretty print the template
+     */
     boolean prettyPrint = false
+    /**
+     * The last modified stamp of the source file. -1 if no source file.
+     */
     long lastModified = -1
+
+
 
     protected final Map<String, VariableSetter> modelSetters = [:]
 
@@ -40,6 +60,17 @@ class WritableScriptTemplate implements Template {
         initModelTypes(templateClass)
     }
 
+    /**
+     * The path to the parent directory that containers the template
+     */
+    String getParentPath() {
+        if(templatePath != null) {
+            return templatePath.substring(0, templatePath.lastIndexOf('/'))
+        }
+        else {
+            return "/"
+        }
+    }
     /**
      * @return Whether the template has been modified
      */

@@ -6,6 +6,7 @@ import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewCompilationException
 import grails.views.WritableScript
+import grails.views.WritableScriptTemplate
 import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
 import groovy.text.Template
@@ -58,7 +59,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
 
     @Override
-    Template createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(String path, URL url) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers(innerEngine.compilerConfiguration)
         def file = new File(url.file)
 
@@ -72,7 +73,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     }
 
     @Override
-    Template createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(File file) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers(innerEngine.compilerConfiguration)
         try {
             def template = innerEngine.createTemplate(file.toURI().toURL())
@@ -84,7 +85,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     }
 
     @Override
-    Template createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
+    WritableScriptTemplate createTemplate(Reader reader) throws CompilationFailedException, ClassNotFoundException, IOException {
         prepareCustomizers(innerEngine.compilerConfiguration)
         try {
 
@@ -112,7 +113,7 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     }
 
     @Override
-    protected Template createTemplate(Class<? extends Template> cls, File sourceFile) {
+    protected WritableScriptTemplate createTemplate(Class<? extends Template> cls, File sourceFile) {
         def template = new MarkupViewWritableScriptTemplate((Class<? extends GrailsView>) cls, sourceFile, innerEngine, (MarkupViewConfiguration) viewConfiguration)
         super.initializeTemplate(template, sourceFile)
     }

@@ -50,6 +50,7 @@ A plugin that allows rendering of JSON views
             jsonSmartViewResolver(JsonViewResolver, jsonViewConfiguration) {
                 templateResolver = bean(PluginAwareTemplateResolver, jsonViewConfiguration)
             }
+            jsonTemplateEngine(jsonSmartViewResolver:"getTemplateEngine")
             jsonViewResolver(GenericGroovyTemplateViewResolver,  jsonSmartViewResolver )
         }
     }
