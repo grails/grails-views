@@ -44,7 +44,12 @@ class GenericViewUriResolver implements ViewUriResolver {
             buf << SLASH << controllerNamespace
         }
         if(controllerName != null) {
-            buf << SLASH << controllerName
+            if(controllerName.startsWith(SLASH_STR)) {
+                buf << controllerName
+            }
+            else {
+                buf << SLASH << controllerName
+            }
         }
         buf << SLASH << pathToTemplate << UNDERSCORE << templateName
         if(includeExtension) {

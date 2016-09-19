@@ -1,6 +1,22 @@
 package functional.tests
 
+import grails.plugin.json.view.JsonViewTemplateEngine
+import groovy.text.Template
+import org.springframework.beans.factory.annotation.Autowired
+
 class TestGsonController {
+
+    @Autowired
+    JsonViewTemplateEngine templateEngine
+
+    def testTemplateEngine() {
+        Template t = templateEngine.resolveTemplate('/book/show')
+        def writable = t.make(book: new Book(title:"The Stand"))
+        def sw = new StringWriter()
+        writable.writeTo( sw )
+
+        render sw
+    }
 
     def testRespond() {
         def test = new Test(name:"Bob")
