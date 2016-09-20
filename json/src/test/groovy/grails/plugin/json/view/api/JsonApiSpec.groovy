@@ -33,7 +33,7 @@ json jsonapi.render(widget)
 ''', [widget: theWidget])
 
         then:
-            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}}}'''
+            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test Relationships'() {
@@ -56,14 +56,19 @@ model {
 json jsonapi.render(book)
 ''', [book: returnOfTheKing])
 
-        then:
+        then: 'The JSON relationships are in place'
             result.json
             def relationships = result.json.data.relationships
             relationships.size() == 1
             relationships.author
             relationships.author.data.id
             relationships.author.data.type == "author"
+
+        and: 'the links are in order '
+            result.json.links.self == '/book/3'
+            result.json.links.related.href == '/author/9'
     }
+
     void 'test errors'() {
         given:
             SuperHero mutepool = new SuperHero()

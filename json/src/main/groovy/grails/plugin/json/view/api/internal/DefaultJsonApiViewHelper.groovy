@@ -68,6 +68,8 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                     renderErrors(object).writeTo(out)
                 } else {
                     renderData(object).writeTo(out)
+                    out.write(JsonOutput.COMMA)
+                    renderLinks(object).writeTo(out)
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
@@ -238,6 +240,58 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
                 out.write(JsonOutput.CLOSE_BRACE)//source
                 out.write(JsonOutput.CLOSE_BRACE)//error
+            }
+        }
+        return writable
+    }
+
+    JsonOutput.JsonWritable renderLinks(Object object) {
+        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
+
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+                out.write(JsonOutput.toJson("links"))
+                out.write(JsonOutput.COLON)
+
+                out.write(JsonOutput.OPEN_BRACE)
+                PersistentEntity entity = findEntity(object)
+                out.write(JsonOutput.toJson('self'))
+                out.write(JsonOutput.COLON)
+
+                def linkGenerator = view.linkGenerator
+                out.write(JsonOutput.toJson(linkGenerator.link(resource: object)))
+                if (entity.associations) {
+                    out.write(JsonOutput.COMMA)
+                    out.write(JsonOutput.toJson('related'))
+                    out.write(JsonOutput.COLON)
+                    out.write(JsonOutput.OPEN_BRACE)
+                    entity.associations.eachWithIndex { Association association, int idx ->
+                        if (!association.isOwningSide()) {
+                            def instance = object.properties[association.name]
+
+                            out.write(JsonOutput.toJson("href"))
+                            out.write(JsonOutput.COLON)
+                            out.write(JsonOutput.toJson(linkGenerator.link(resource: instance)))
+
+                            if (instance instanceof Collection) {
+                                Collection instanceCollection = (Collection) instance
+                                out.write(JsonOutput.toJson("meta"))
+                                out.write(JsonOutput.COLON)
+                                out.write(JsonOutput.OPEN_BRACE)
+
+                                Integer count = instanceCollection.size()
+                                out.write(JsonOutput.toJson("count"))
+                                out.write(JsonOutput.COLON)
+                                out.write(JsonOutput.toJson(count))
+
+                                out.write(JsonOutput.CLOSE_BRACE)
+                            }
+                        }
+                    }
+                }
+
+                out.write(JsonOutput.CLOSE_BRACE)
+                return out
             }
         }
         return writable
