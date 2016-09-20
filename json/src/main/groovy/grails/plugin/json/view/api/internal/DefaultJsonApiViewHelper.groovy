@@ -288,6 +288,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                             }
                         }
                     }
+                    out.write(JsonOutput.CLOSE_BRACE)
                 }
 
                 out.write(JsonOutput.CLOSE_BRACE)
