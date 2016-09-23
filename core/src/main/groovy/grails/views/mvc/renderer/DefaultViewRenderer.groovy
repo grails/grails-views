@@ -92,7 +92,13 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         }
 
         if(view != null) {
-            Map<String, Object> model = [(resolveModelVariableName(object)): object]
+            Map<String, Object> model
+            if(object instanceof Map) {
+                model = (Map)object
+            }
+            else {
+                model = [(resolveModelVariableName(object)): object]
+            }
             if(view == viewResolver.objectView) {
                 model.put(MODEL_OBJECT, object)
             }
