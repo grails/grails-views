@@ -102,6 +102,14 @@ class BookSpec extends GebSpec {
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":3}]'
+
+        when:"A GET is issued for all books with excludes"
+        resp = builder.get("$baseUrl/books/listExcludesRespond?testParam=4")
+
+        then:"view rendering works with a map with respond"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":4}]'
     }
 
     void "View parameter passed to the render method can be used for non-standard view locations"() {
