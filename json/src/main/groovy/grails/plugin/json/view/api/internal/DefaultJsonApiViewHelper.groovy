@@ -13,7 +13,9 @@ import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
-import org.grails.datastore.mapping.model.types.Simple
+import org.grails.datastore.mapping.model.types.Basic
+import org.grails.datastore.mapping.model.types.Embedded
+import org.grails.datastore.mapping.model.types.EmbeddedCollection
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
@@ -90,6 +92,26 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         return false
     }
 
+    private boolean isAttributeAssociation(Association a) {
+        a instanceof EmbeddedCollection || a instanceof Embedded || a instanceof Basic
+    }
+
+    List<Association> getRelationships(PersistentEntity entity) {
+        entity.associations.findAll { Association a ->
+            !isAttributeAssociation(a)
+        }
+    }
+
+    List<PersistentProperty> getAttributes(PersistentEntity entity) {
+        entity.persistentProperties.findAll { PersistentProperty p ->
+            if (p instanceof Association) {
+                isAttributeAssociation((Association)p)
+            } else {
+                true
+            }
+        }
+    }
+
     JsonOutput.JsonWritable renderData(Object object) {
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
 
@@ -112,7 +134,9 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.toJson(idGenerator.generateId(object)))
 
                 if (entity.persistentProperties) {
-                    List<PersistentProperty> attributes = entity.persistentProperties.findAll { it instanceof Simple }
+                    List<PersistentProperty> attributes = getAttributes(entity)
+                    List<Association> relationShips = getRelationships(entity)
+
                     if (attributes) {
                         out.write(JsonOutput.COMMA)
                         out.write(JsonOutput.toJson('attributes'))
@@ -130,12 +154,12 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                         out.write(JsonOutput.CLOSE_BRACE)
                     }
                     //TODO Links
-                    if (entity.associations) {
+                    if (relationShips) {
                         out.write(JsonOutput.COMMA)
                         out.write(JsonOutput.toJson('relationships'))
                         out.write(JsonOutput.COLON)
                         out.write(JsonOutput.OPEN_BRACE)
-                        entity.associations.eachWithIndex { Association association, int idx ->
+                        relationShips.eachWithIndex { Association association, int idx ->
                             out.write(JsonOutput.toJson(association.name))
                             out.write(JsonOutput.COLON)
 
@@ -260,12 +284,13 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
                 def linkGenerator = view.linkGenerator
                 out.write(JsonOutput.toJson(linkGenerator.link(resource: object)))
-                if (entity.associations) {
+                List<Association> associations = getRelationships(entity)
+                if (associations) {
                     out.write(JsonOutput.COMMA)
                     out.write(JsonOutput.toJson('related'))
                     out.write(JsonOutput.COLON)
                     out.write(JsonOutput.OPEN_BRACE)
-                    entity.associations.eachWithIndex { Association association, int idx ->
+                    associations.eachWithIndex { Association association, int idx ->
                         if (!association.isOwningSide()) {
                             def instance = object.properties[association.name]
 

@@ -2,11 +2,11 @@ package grails.plugin.json.view
 
 import grails.persistence.Entity
 import grails.plugin.json.view.test.JsonViewTest
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
 import spock.lang.Specification
 
-/**
- * Created by graemerocher on 22/04/16.
- */
+@TestMixin(GrailsUnitTestMixin)
 class EnumRenderingSpec extends Specification implements JsonViewTest {
 
     void "Test the render method when a domain instance defines an enum"() {
@@ -34,6 +34,22 @@ json g.render(object)
         then:"the json is rendered correctly"
         result.json.bar == "BAR"
         result.json.name == "Fred"
+    }
+
+    void "Test the jsonapi render method when a domain instance defines an enum"() {
+        when:"rendering an object that defines an enum"
+        mappingContext.addPersistentEntity(EnumTest)
+        EnumTest enumTest = new EnumTest(name:"Fred", bar: TestEnum.BAR)
+        enumTest.id = 1
+        def result = render('''
+model {
+    Object object
+}
+json jsonapi.render(object)
+''', [object: enumTest])
+
+        then:"the json is rendered correctly"
+        result.jsonText == '''{"data":{"type":"enumTest","id":"1","attributes":{"bar":"BAR","name":"Fred","version":null}},"links":{"self":"/enumTest/1"}}'''
     }
 }
 
