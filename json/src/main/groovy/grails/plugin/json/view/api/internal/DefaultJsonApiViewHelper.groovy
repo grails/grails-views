@@ -14,8 +14,7 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
-import org.grails.datastore.mapping.model.types.Embedded
-import org.grails.datastore.mapping.model.types.EmbeddedCollection
+import org.grails.datastore.mapping.model.types.ToMany
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
@@ -93,7 +92,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
     }
 
     private boolean isAttributeAssociation(Association a) {
-        a instanceof EmbeddedCollection || a instanceof Embedded || a instanceof Basic
+        a.embedded || a instanceof Basic
     }
 
     List<Association> getRelationships(PersistentEntity entity) {
@@ -112,7 +111,104 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         }
     }
 
-    JsonOutput.JsonWritable renderData(Object object) {
+    private void writeKeyValue(Writer out, Object key, Object value) {
+        out.write(JsonOutput.toJson(key))
+        out.write(JsonOutput.COLON)
+        out.write(JsonOutput.toJson(value))
+    }
+
+    private void renderData(Object object, Writer out) {
+        PersistentEntity entity = findEntity(object)
+        out.write(JsonOutput.OPEN_BRACE)
+
+        writeKeyValue(out, 'type', entity.decapitalizedName)
+        out.write(JsonOutput.COMMA)
+
+        JsonApiIdGenerator idGenerator = getIdGenerator()
+        writeKeyValue(out, 'id', idGenerator.generateId(object))
+
+        if (entity.persistentProperties) {
+            List<PersistentProperty> attributes = getAttributes(entity)
+            List<Association> relationShips = getRelationships(entity)
+
+            if (attributes) {
+                out.write(JsonOutput.COMMA)
+                out.write(JsonOutput.toJson('attributes'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.OPEN_BRACE)
+
+                attributes.eachWithIndex { PersistentProperty persistentProperty, int idx ->
+                    out.write(JsonOutput.toJson(persistentProperty.name))
+                    out.write(JsonOutput.COLON)
+                    out.write(JsonOutput.toJson(((GroovyObject) object).getProperty(persistentProperty.name)))
+                    if (idx < attributes.size() - 1) {
+                        out.write(JsonOutput.COMMA)
+                    }
+                }
+                out.write(JsonOutput.CLOSE_BRACE)
+            }
+            //TODO Links
+            if (relationShips) {
+
+                out.write(JsonOutput.COMMA)
+                out.write(JsonOutput.toJson('relationships'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.OPEN_BRACE)
+                boolean firstRelationship = true
+                relationShips.eachWithIndex { Association association, int idx ->
+                    def value = ((GroovyObject) object).getProperty(association.name)
+                    if (!firstRelationship) {
+                        out.write(JsonOutput.COMMA)
+                    }
+                    firstRelationship = false
+                    out.write(JsonOutput.toJson(association.name))
+                    out.write(JsonOutput.COLON)
+
+                    out.write(JsonOutput.OPEN_BRACE)
+                    out.write(JsonOutput.toJson("data"))
+                    out.write(JsonOutput.COLON)
+                    if (association instanceof ToMany && Iterable.isAssignableFrom(association.type)) {
+                        out.write(JsonOutput.OPEN_BRACKET)
+                        Iterator iterator = ((Iterable) value).iterator()
+                        String type = association.associatedEntity.decapitalizedName
+
+                        while(iterator.hasNext()) {
+                            def o = iterator.next()
+                            out.write(JsonOutput.OPEN_BRACE)
+                            writeKeyValue(out, 'type', type)
+                            out.write(JsonOutput.COMMA)
+                            writeKeyValue(out, 'id', idGenerator.generateId(o))
+                            out.write(JsonOutput.CLOSE_BRACE)
+                            if (iterator.hasNext()) {
+                                out.write(JsonOutput.COMMA)
+                            }
+                        }
+
+                        out.write(JsonOutput.CLOSE_BRACKET)
+
+                    } else {
+                        out.write(JsonOutput.OPEN_BRACE)
+
+                        out.write(JsonOutput.toJson('type'))
+                        out.write(JsonOutput.COLON)
+                        out.write(JsonOutput.toJson(association.associatedEntity.decapitalizedName))
+                        out.write(JsonOutput.COMMA)
+
+                        out.write(JsonOutput.toJson('id'))
+                        out.write(JsonOutput.COLON)
+                        out.write(JsonOutput.toJson(idGenerator.generateId(value)))
+
+                        out.write(JsonOutput.CLOSE_BRACE)
+                    }
+                    out.write(JsonOutput.CLOSE_BRACE)
+                }
+                out.write(JsonOutput.CLOSE_BRACE)
+            }
+        }
+        out.write(JsonOutput.CLOSE_BRACE)
+    }
+
+    private JsonOutput.JsonWritable renderData(Object object) {
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
 
             @Override
@@ -120,77 +216,21 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.toJson("data"))
                 out.write(JsonOutput.COLON)
 
-                PersistentEntity entity = findEntity(object)
-                out.write(JsonOutput.OPEN_BRACE)
-
-                out.write(JsonOutput.toJson('type'))
-                out.write(JsonOutput.COLON)
-                out.write(JsonOutput.toJson(entity.decapitalizedName))
-                out.write(JsonOutput.COMMA)
-
-                out.write(JsonOutput.toJson('id'))
-                out.write(JsonOutput.COLON)
-                JsonApiIdGenerator idGenerator = getIdGenerator()
-                out.write(JsonOutput.toJson(idGenerator.generateId(object)))
-
-                if (entity.persistentProperties) {
-                    List<PersistentProperty> attributes = getAttributes(entity)
-                    List<Association> relationShips = getRelationships(entity)
-
-                    if (attributes) {
-                        out.write(JsonOutput.COMMA)
-                        out.write(JsonOutput.toJson('attributes'))
-                        out.write(JsonOutput.COLON)
-                        out.write(JsonOutput.OPEN_BRACE)
-
-                        attributes.eachWithIndex { PersistentProperty persistentProperty, int idx ->
-                            out.write(JsonOutput.toJson(persistentProperty.name))
-                            out.write(JsonOutput.COLON)
-                            out.write(JsonOutput.toJson(((GroovyObject) object).getProperty(persistentProperty.name)))
-                            if (idx < attributes.size() - 1) {
-                                out.write(JsonOutput.COMMA)
-                            }
+                if (object instanceof Collection) {
+                    out.write(JsonOutput.OPEN_BRACKET)
+                    boolean first = true
+                    for (o in object) {
+                        if (!first) {
+                            out.write(JsonOutput.COMMA)
                         }
-                        out.write(JsonOutput.CLOSE_BRACE)
+                        first = false
+                        renderData(o, out)
                     }
-                    //TODO Links
-                    if (relationShips) {
-                        out.write(JsonOutput.COMMA)
-                        out.write(JsonOutput.toJson('relationships'))
-                        out.write(JsonOutput.COLON)
-                        out.write(JsonOutput.OPEN_BRACE)
-                        relationShips.eachWithIndex { Association association, int idx ->
-                            out.write(JsonOutput.toJson(association.name))
-                            out.write(JsonOutput.COLON)
-
-                            out.write(JsonOutput.OPEN_BRACE)
-                            out.write(JsonOutput.toJson("data"))
-                            out.write(JsonOutput.COLON)
-                            if (association.isList()) {
-                                out.write(JsonOutput.OPEN_BRACKET)
-                                //TODO Refactor and handle list of associations
-                                out.write(JsonOutput.CLOSE_BRACKET)
-
-                            } else {
-                                out.write(JsonOutput.OPEN_BRACE)
-
-                                out.write(JsonOutput.toJson('type'))
-                                out.write(JsonOutput.COLON)
-                                out.write(JsonOutput.toJson(association.associatedEntity.decapitalizedName))
-                                out.write(JsonOutput.COMMA)
-
-                                out.write(JsonOutput.toJson('id'))
-                                out.write(JsonOutput.COLON)
-                                out.write(JsonOutput.toJson(idGenerator.generateId(object.properties[association.name])))
-
-                                out.write(JsonOutput.CLOSE_BRACE)
-                            }
-                            out.write(JsonOutput.CLOSE_BRACE)
-                        }
-                        out.write(JsonOutput.CLOSE_BRACE)
-                    }
+                    out.write(JsonOutput.CLOSE_BRACKET)
+                } else {
+                    renderData(object, out)
                 }
-                out.write(JsonOutput.CLOSE_BRACE)
+
                 return out
             }
         }
@@ -278,44 +318,47 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.COLON)
 
                 out.write(JsonOutput.OPEN_BRACE)
-                PersistentEntity entity = findEntity(object)
                 out.write(JsonOutput.toJson('self'))
                 out.write(JsonOutput.COLON)
 
-                def linkGenerator = view.linkGenerator
-                out.write(JsonOutput.toJson(linkGenerator.link(resource: object)))
-                List<Association> associations = getRelationships(entity)
-                if (associations) {
-                    out.write(JsonOutput.COMMA)
-                    out.write(JsonOutput.toJson('related'))
-                    out.write(JsonOutput.COLON)
-                    out.write(JsonOutput.OPEN_BRACE)
-                    associations.eachWithIndex { Association association, int idx ->
-                        if (!association.isOwningSide()) {
-                            def instance = object.properties[association.name]
+                if (object instanceof Collection) {
+                    out.write(JsonOutput.toJson(view.request.uri))
+                } else {
+                    PersistentEntity entity = findEntity(object)
+                    def linkGenerator = view.linkGenerator
+                    out.write(JsonOutput.toJson(linkGenerator.link(resource: object)))
+                    List<Association> associations = getRelationships(entity)
+                    if (associations) {
+                        out.write(JsonOutput.COMMA)
+                        out.write(JsonOutput.toJson('related'))
+                        out.write(JsonOutput.COLON)
+                        out.write(JsonOutput.OPEN_BRACE)
+                        associations.eachWithIndex { Association association, int idx ->
+                            if (!association.isOwningSide()) {
+                                def instance = object.properties[association.name]
 
-                            out.write(JsonOutput.toJson("href"))
-                            out.write(JsonOutput.COLON)
-                            out.write(JsonOutput.toJson(linkGenerator.link(resource: instance)))
-
-                            if (instance instanceof Collection) {
-                                Collection instanceCollection = (Collection) instance
-                                out.write(JsonOutput.toJson("meta"))
+                                out.write(JsonOutput.toJson("href"))
                                 out.write(JsonOutput.COLON)
-                                out.write(JsonOutput.OPEN_BRACE)
+                                out.write(JsonOutput.toJson(linkGenerator.link(resource: instance)))
 
-                                Integer count = instanceCollection.size()
-                                out.write(JsonOutput.toJson("count"))
-                                out.write(JsonOutput.COLON)
-                                out.write(JsonOutput.toJson(count))
+                                if (instance instanceof Collection) {
+                                    Collection instanceCollection = (Collection) instance
+                                    out.write(JsonOutput.toJson("meta"))
+                                    out.write(JsonOutput.COLON)
+                                    out.write(JsonOutput.OPEN_BRACE)
 
-                                out.write(JsonOutput.CLOSE_BRACE)
+                                    Integer count = instanceCollection.size()
+                                    out.write(JsonOutput.toJson("count"))
+                                    out.write(JsonOutput.COLON)
+                                    out.write(JsonOutput.toJson(count))
+
+                                    out.write(JsonOutput.CLOSE_BRACE)
+                                }
                             }
                         }
+                        out.write(JsonOutput.CLOSE_BRACE)
                     }
-                    out.write(JsonOutput.CLOSE_BRACE)
                 }
-
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }

@@ -5,6 +5,9 @@ import grails.core.GrailsDomainClass
 import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
+import grails.plugin.json.view.test.JsonViewTest
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.views.api.internal.EmptyParameters
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.core.support.GrailsDomainConfigurationUtil
@@ -32,7 +35,8 @@ import spock.lang.Specification
 /**
  * @author graemerocher
  */
-class JsonViewHelperSpec extends Specification {
+@TestMixin(GrailsUnitTestMixin)
+class JsonViewHelperSpec extends Specification implements JsonViewTest {
     void "test render toMany association"() {
         given:"A view helper"
         DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)
@@ -64,8 +68,33 @@ class JsonViewHelperSpec extends Specification {
 
         then:"The result is correct"
         result.toString() == '{"name":"Barcelona","players":[{"id":1,"name":"Iniesta"},{"id":2,"name":"Messi"}]}'
-
     }
+
+
+    void "test jsonapi render toMany association"() {
+        given:"A view helper"
+        mappingContext.addPersistentEntities(Player, Team)
+        def player1 = new Player(name: "Iniesta")
+        player1.id = 1
+        def player2 = new Player(name: "Messi")
+        player2.id = 2
+        def team = new Team(name:"Barcelona", players: [player1, player2])
+        team.id = 1
+
+        when:"We render an object without deep argument and no child id"
+        def renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team)
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null,"version":null},"relationships":{"captain":{"data":{"type":"player","id":null}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}}}'
+    }
+
     void "test render toOne association"() {
         given:"A view helper"
         DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)
