@@ -9,6 +9,8 @@ import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
 import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
 import grails.util.Holders
 import groovy.transform.CompileStatic
+import org.codehaus.groovy.runtime.StackTraceUtils
+import org.grails.buffer.FastStringPrintWriter
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -65,7 +67,9 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 if (exposeJsonApi) {
                     jsonapiMember().writeTo(out)
                 }
-                if (objectHasErrors(object)) {
+                if (object instanceof Throwable) {
+                    renderException(object).writeTo(out)
+                } else if (objectHasErrors(object)) {
                     renderErrors(object).writeTo(out)
                 } else {
                     renderData(object).writeTo(out)
@@ -378,6 +382,52 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                     writeValue([version: '1.0'])
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
+                return out
+            }
+        }
+        return writable
+    }
+
+    JsonOutput.JsonWritable renderException(Throwable object) {
+        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
+
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+
+                StackTraceUtils.sanitize(object)
+
+                out.write(JsonOutput.toJson("errors"))
+
+                out.write(JsonOutput.COLON)
+
+                out.write(JsonOutput.OPEN_BRACKET)
+
+                out.write(JsonOutput.OPEN_BRACE)
+
+                writeKeyValue(out, 'status', 500)
+                out.write(JsonOutput.COMMA)
+                writeKeyValue(out, 'title', object.class.name)
+                out.write(JsonOutput.COMMA)
+                writeKeyValue(out, 'detail', object.localizedMessage)
+                out.write(JsonOutput.COMMA)
+                out.write(JsonOutput.toJson('source'))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.OPEN_BRACE)
+
+                def cleanedElements = (List<Object>)object.stackTrace
+                        .findAll() { StackTraceElement element -> element.lineNumber > -1 }
+                        .collect() { StackTraceElement element ->
+                    "$element.lineNumber | ${element.className}.$element.methodName".toString()
+                }.toList()
+
+                writeKeyValue(out, 'stacktrace', cleanedElements)
+
+                out.write(JsonOutput.CLOSE_BRACE)//source
+
+                out.write(JsonOutput.CLOSE_BRACE)//error
+
+                out.write(JsonOutput.CLOSE_BRACKET)
+
                 return out
             }
         }

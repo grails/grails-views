@@ -29,5 +29,28 @@ catch(Throwable e) {
         renderResult.json.stacktrace[0] == '6 | JsonView0.run'
 
     }
+    void "Test render an exception type with jsonapi"() {
+
+        when:"An exception is rendered with jsonapi"
+            def renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        try {
+            throw new RuntimeException("bad")
+        }
+        catch(Throwable e) {
+            json jsonapi.render(e)
+        }
+
+        ''')
+
+        then:"The exception is rendered"
+        renderResult.json.errors[0].status == 500
+        renderResult.json.errors[0].title == 'java.lang.RuntimeException'
+        renderResult.json.errors[0].detail == 'bad'
+        renderResult.json.errors[0].source.stacktrace[0] == '6 | JsonView0.run'
+
+    }
 
 }
