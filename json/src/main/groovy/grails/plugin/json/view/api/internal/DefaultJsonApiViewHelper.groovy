@@ -202,36 +202,43 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                     out.write(JsonOutput.COLON)
                     if (association instanceof ToMany && Iterable.isAssignableFrom(association.type)) {
                         out.write(JsonOutput.OPEN_BRACKET)
-                        Iterator iterator = ((Iterable) value).iterator()
-                        String type = association.associatedEntity.decapitalizedName
 
-                        while (iterator.hasNext()) {
-                            def o = iterator.next()
-                            out.write(JsonOutput.OPEN_BRACE)
-                            writeKeyValue(out, 'type', type)
-                            out.write(JsonOutput.COMMA)
-                            writeKeyValue(out, 'id', idGenerator.generateId(o))
-                            out.write(JsonOutput.CLOSE_BRACE)
-                            if (iterator.hasNext()) {
+                        if (value != null) {
+                            Iterator iterator = ((Iterable) value).iterator()
+                            String type = association.associatedEntity.decapitalizedName
+
+                            while (iterator.hasNext()) {
+                                def o = iterator.next()
+                                out.write(JsonOutput.OPEN_BRACE)
+                                writeKeyValue(out, 'type', type)
                                 out.write(JsonOutput.COMMA)
+                                writeKeyValue(out, 'id', idGenerator.generateId(o))
+                                out.write(JsonOutput.CLOSE_BRACE)
+                                if (iterator.hasNext()) {
+                                    out.write(JsonOutput.COMMA)
+                                }
                             }
                         }
 
                         out.write(JsonOutput.CLOSE_BRACKET)
 
                     } else {
-                        out.write(JsonOutput.OPEN_BRACE)
+                        if (value != null) {
+                            out.write(JsonOutput.OPEN_BRACE)
 
-                        out.write(JsonOutput.toJson('type'))
-                        out.write(JsonOutput.COLON)
-                        out.write(JsonOutput.toJson(association.associatedEntity.decapitalizedName))
-                        out.write(JsonOutput.COMMA)
+                            out.write(JsonOutput.toJson('type'))
+                            out.write(JsonOutput.COLON)
+                            out.write(JsonOutput.toJson(association.associatedEntity.decapitalizedName))
+                            out.write(JsonOutput.COMMA)
 
-                        out.write(JsonOutput.toJson('id'))
-                        out.write(JsonOutput.COLON)
-                        out.write(JsonOutput.toJson(idGenerator.generateId(value)))
+                            out.write(JsonOutput.toJson('id'))
+                            out.write(JsonOutput.COLON)
+                            out.write(JsonOutput.toJson(idGenerator.generateId(value)))
 
-                        out.write(JsonOutput.CLOSE_BRACE)
+                            out.write(JsonOutput.CLOSE_BRACE)
+                        } else {
+                            NULL_OUTPUT.writeTo(out)
+                        }
                     }
                     out.write(JsonOutput.CLOSE_BRACE)
                 }

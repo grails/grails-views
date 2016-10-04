@@ -1,12 +1,13 @@
 package grails.plugin.json.view
 
+import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
 import org.grails.datastore.mapping.core.Session
 import spock.lang.Specification
 
-/**
- * Created by graemerocher on 23/05/16.
- */
+@TestMixin(GrailsUnitTestMixin)
 class ExpandSpec extends Specification implements JsonViewTest {
 
     void setup() {
@@ -74,5 +75,29 @@ json hal.render(player)
 
         then:"The association is expanded"
         result.jsonText == '{"_embedded":{"team":{"_links":{"self":{"href":"http://localhost:8080/team/1","hreflang":"en","type":"application/hal+json"}}}},"_links":{"self":{"href":"http://localhost:8080/player","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}'
+    }
+
+    void 'Test expand parameter allows expansion of child associations with JSON API'() {
+        given:
+        def mockSession = Mock(Session)
+        mockSession.getMappingContext() >> mappingContext
+        mockSession.retrieve(Team, 9L) >> new Team(name: "Manchester United")
+        def teamProxy = mappingContext.proxyFactory.createProxy(mockSession, Team, 9L)
+        Player player = new Player(name: "Cantona", team: teamProxy)
+        player.id = 3
+
+
+        when:
+        JsonRenderResult result = render('''
+import grails.plugin.json.view.*
+model {
+    Player player
+}
+
+json jsonapi.render(player, [expand: 'team'])
+''', [player: player])
+
+        then: 'The JSON relationships are in place'
+        result.jsonText == '{"data":{"type":"player","id":"3","attributes":{"name":"Cantona"},"relationships":{"team":{"data":{"type":"team","id":"9"}}}},"links":{"self":"/player/3","related":{"href":"/team/9"}},"included":[{"type":"team","id":"9","attributes":{"name":"Manchester United","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[]}},"links":{"self":"/team/9","related":{}}}]}'
     }
 }

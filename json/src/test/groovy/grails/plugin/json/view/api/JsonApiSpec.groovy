@@ -130,11 +130,7 @@ json jsonapi.render(book, [expand: 'author'])
 ''', [book: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-            result.json
-            def included = result.json.included
-            included.size() == 1
-            included.first().type == 'author'
-            included.first().links.self == '/author/9'
+            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3","related":{"href":"/author/9"}},"included":[{"type":"author","id":"9","attributes":{"name":"J.R.R. Tolkien"},"links":{"self":"/author/9"}}]}'
     }
 
 }
