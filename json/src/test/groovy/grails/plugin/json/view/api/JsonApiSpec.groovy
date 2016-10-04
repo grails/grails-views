@@ -109,6 +109,34 @@ json jsonapi.render(widget, [showJsonApiObject: true])
             result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}},"links":{"self":"/widget/5"}}'''
     }
 
+    void 'test compound documents object'() {
+        given:
+            Book returnOfTheKing = new Book(
+                title: 'The Return of the King',
+                author: new Author(name: "J.R.R. Tolkien")
+            )
+            returnOfTheKing.id = 3
+            returnOfTheKing.author.id = 9
+
+
+        when:
+            JsonRenderResult result = render('''
+import grails.plugin.json.view.api.Book
+model {
+    Book book
+}
+
+json jsonapi.render(book, [include: 'author'])
+''', [book: returnOfTheKing])
+
+        then: 'The JSON relationships are in place'
+            result.json
+            def included = result.json.included
+            included.size() == 1
+            included.first().type == 'author'
+            included.first().links.self == '/author/9'
+    }
+
 }
 
 @Entity

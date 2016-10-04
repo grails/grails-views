@@ -71,6 +71,10 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                     renderData(object).writeTo(out)
                     out.write(JsonOutput.COMMA)
                     renderLinks(object).writeTo(out)
+                    if (arguments.include) {
+                        out.write(JsonOutput.COMMA)
+                        renderIncluded(object, (String) arguments.include).writeTo(out)
+                    }
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
@@ -105,7 +109,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
     List<PersistentProperty> getAttributes(PersistentEntity entity) {
         entity.persistentProperties.findAll { PersistentProperty p ->
             if (p instanceof Association) {
-                isAttributeAssociation((Association)p)
+                isAttributeAssociation((Association) p)
             } else {
                 true
             }
@@ -123,7 +127,11 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         out.write(JsonOutput.toJson(value))
     }
 
-    private void renderData(Object object, Writer out) {
+    private void renderResource(Object object, Writer out) {
+        renderResource(object, out, false)
+    }
+
+    private void renderResource(Object object, Writer out, boolean showLinks) {
         PersistentEntity entity = findEntity(object)
         out.write(JsonOutput.OPEN_BRACE)
 
@@ -153,7 +161,6 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
             }
-            //TODO Links
             if (relationShips) {
 
                 out.write(JsonOutput.COMMA)
@@ -178,7 +185,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                         Iterator iterator = ((Iterable) value).iterator()
                         String type = association.associatedEntity.decapitalizedName
 
-                        while(iterator.hasNext()) {
+                        while (iterator.hasNext()) {
                             def o = iterator.next()
                             out.write(JsonOutput.OPEN_BRACE)
                             writeKeyValue(out, 'type', type)
@@ -210,6 +217,10 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
             }
+            if (showLinks) {
+                out.write(JsonOutput.COMMA)
+                renderLinks(object).writeTo(out)
+            }
         }
         out.write(JsonOutput.CLOSE_BRACE)
     }
@@ -230,11 +241,11 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                             out.write(JsonOutput.COMMA)
                         }
                         first = false
-                        renderData(o, out)
+                        renderResource(o, out)
                     }
                     out.write(JsonOutput.CLOSE_BRACKET)
                 } else {
-                    renderData(object, out)
+                    renderResource(object, out)
                 }
 
                 return out
@@ -372,6 +383,45 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         return writable
     }
 
+    JsonOutput.JsonWritable renderIncluded(Object object, String include) {
+        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
+
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+                writeKey(out, "included")
+                out.write(JsonOutput.OPEN_BRACKET)
+                String[] includes = include.split(',')
+
+                List includedItems = []
+
+                for (String includedProperty in includes) {
+                    if (object instanceof Collection && object.size() >= 1) {
+                        object.each { item ->
+                            if (item.hasProperty(includedProperty)) {
+                                includedItems << item.getAt(includedProperty)
+                            }
+                        }
+                    } else {
+                        if (object.hasProperty(includedProperty)) {
+                            includedItems << object.getAt(includedProperty)
+                        }
+                    }
+                }
+
+                for(int idx = 0; idx < includedItems.size(); idx++){
+                    Object itemToInclude = includedItems.get(idx)
+                    renderResource(itemToInclude, out, true)
+                    if (idx < includedItems.size() - 1) {
+                        out.write(JsonOutput.COMMA)
+                    }
+                }
+                out.write(JsonOutput.CLOSE_BRACKET)
+                return out
+            }
+        }
+        return writable
+    }
+
     JsonOutput.JsonWritable renderJsonApiMember() {
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
             @Override
@@ -413,9 +463,9 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.COLON)
                 out.write(JsonOutput.OPEN_BRACE)
 
-                def cleanedElements = (List<Object>)object.stackTrace
-                        .findAll() { StackTraceElement element -> element.lineNumber > -1 }
-                        .collect() { StackTraceElement element ->
+                def cleanedElements = (List<Object>) object.stackTrace
+                    .findAll() { StackTraceElement element -> element.lineNumber > -1 }
+                    .collect() { StackTraceElement element ->
                     "$element.lineNumber | ${element.className}.$element.methodName".toString()
                 }.toList()
 
