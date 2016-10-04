@@ -392,9 +392,9 @@ if (location.href.indexOf('is-external=true') == -1) {
 <h2 class="title">G</h2>
 <dl>
 
-<dt><span class="strong"><a href="grails/plugin/json/view/api/jsonapi/DefaultJsonApiIdGenerator.html#generateId(java.lang.Object)" title="Method in DefaultJsonApiIdGenerator">generateId(Object)</a></span> - Method in <a href="grails/plugin/json/view/api/jsonapi/DefaultJsonApiIdGenerator.html">DefaultJsonApiIdGenerator</a>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/jsonapi/DefaultJsonApiIdGenerator.html#generateId(java.lang.Object, java.lang.String)" title="Method in DefaultJsonApiIdGenerator">generateId(Object, String)</a></span> - Method in <a href="grails/plugin/json/view/api/jsonapi/DefaultJsonApiIdGenerator.html">DefaultJsonApiIdGenerator</a>
 </dt><dd> <div class="block"></div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/view/api/jsonapi/JsonApiIdGenerator.html#generateId(java.lang.Object)" title="Method in JsonApiIdGenerator">generateId(Object)</a></span> - Method in <a href="grails/plugin/json/view/api/jsonapi/JsonApiIdGenerator.html">JsonApiIdGenerator</a>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/jsonapi/JsonApiIdGenerator.html#generateId(java.lang.Object, java.lang.String)" title="Method in JsonApiIdGenerator">generateId(Object, String)</a></span> - Method in <a href="grails/plugin/json/view/api/jsonapi/JsonApiIdGenerator.html">JsonApiIdGenerator</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/resolve/GenericGroovyTemplateResolver.html" title="Class in grails.views.resolve">GenericGroovyTemplateResolver</a></span> - Class in <a href="./grails/views/resolve/package-summary.html">grails.views.resolve</a>
 </dt><dd><div class="block">A generic TemplateResolver for resolving Groovy templates that are compiled into classes</div></dd>
@@ -478,6 +478,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block">@return The default encoding to use to render views</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html#getExcludes(java.util.Map)" title="Method in DefaultJsonViewHelper">getExcludes(Map)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html">DefaultJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html#getExpandProperties(grails.plugin.json.view.api.JsonView, java.util.Map)" title="Method in DefaultJsonViewHelper">getExpandProperties(JsonView, Map)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html">DefaultJsonViewHelper</a>
+</dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/ViewConfiguration.html#getExtension()" title="Method in ViewConfiguration">getExtension()</a></span> - Method in <a href="grails/views/ViewConfiguration.html">ViewConfiguration</a>
 </dt><dd> <div class="block">@return The file extension</div></dd>
 <dt><span class="strong"><a href="grails/views/gradle/AbstractGroovyTemplateCompileTask.html#getFileExtension()" title="Method in AbstractGroovyTemplateCompileTask">getFileExtension()</a></span> - Method in <a href="grails/views/gradle/AbstractGroovyTemplateCompileTask.html">AbstractGroovyTemplateCompileTask</a>
@@ -507,6 +509,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/plugin/json/view/test/TestRequestConfigurer.html#getHeaders(java.lang.String)" title="Method in TestRequestConfigurer">getHeaders(String)</a></span> - Method in <a href="grails/plugin/json/view/test/TestRequestConfigurer.html">TestRequestConfigurer</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html#getIdGenerator()" title="Method in DefaultJsonApiViewHelper">getIdGenerator()</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html">DefaultJsonApiViewHelper</a>
+</dt><dd> <div class="block"></div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html#getIncludeAssociations(java.util.Map)" title="Method in DefaultJsonViewHelper">getIncludeAssociations(Map)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html">DefaultJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html#getIncludes(java.util.Map)" title="Method in DefaultJsonViewHelper">getIncludes(Map)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html">DefaultJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
@@ -1030,7 +1034,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html#renderException(java.lang.Throwable)" title="Method in DefaultJsonApiViewHelper">renderException(Throwable)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html">DefaultJsonApiViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html#renderIncluded(java.lang.Object, java.lang.String)" title="Method in DefaultJsonApiViewHelper">renderIncluded(Object, String)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html">DefaultJsonApiViewHelper</a>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html#renderIncluded(java.lang.Object, List<String>)" title="Method in DefaultJsonApiViewHelper">renderIncluded(Object, List&lt;String&gt;)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html">DefaultJsonApiViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html#renderJsonApiMember()" title="Method in DefaultJsonApiViewHelper">renderJsonApiMember()</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonApiViewHelper.html">DefaultJsonApiViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
