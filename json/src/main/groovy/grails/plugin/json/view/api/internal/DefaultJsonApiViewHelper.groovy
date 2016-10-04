@@ -42,13 +42,6 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         }
     }
 
-    public static final JsonOutput.JsonWritable NOOP_OUTPUT = new JsonOutput.JsonWritable() {
-        @Override
-        Writer writeTo(Writer out) throws IOException {
-            return out
-        }
-    }
-
     DefaultJsonApiViewHelper(JsonView view, GrailsJsonViewHelper viewHelper) {
         this.view = view
         this.viewHelper = viewHelper
