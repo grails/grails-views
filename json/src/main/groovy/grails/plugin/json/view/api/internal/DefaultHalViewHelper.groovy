@@ -434,7 +434,7 @@ class DefaultHalViewHelper implements HalViewHelper {
         def propertyType = prop.type
         if (propVal != null) {
             if ((prop instanceof Simple) || (prop instanceof Basic)) {
-                if (DefaultGrailsJsonViewHelper.isStringType(propertyType)) {
+                if (((DefaultGrailsJsonViewHelper)viewHelper).isStringType(propertyType)) {
                     jsonDelegate.call(propertyName, propVal.toString())
                 } else {
                     jsonDelegate.call(propertyName, propVal)

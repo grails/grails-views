@@ -26,21 +26,13 @@ import org.springframework.validation.ObjectError
  * @Author Colin Harrington
  */
 @CompileStatic
-class DefaultJsonApiViewHelper implements JsonApiViewHelper {
+class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiViewHelper {
     JsonView view
     GrailsJsonViewHelper viewHelper
     String contentType = "application/vnd.api+json"
     boolean exposeJsonApi = false
 
     JsonApiIdGenerator jsonApiIdGenerator
-
-    public static final JsonOutput.JsonWritable NULL_OUTPUT = new JsonOutput.JsonWritable() {
-        @Override
-        Writer writeTo(Writer out) throws IOException {
-            out.write(JsonOutput.NULL_VALUE)
-            return out
-        }
-    }
 
     public static final JsonOutput.JsonWritable NOOP_OUTPUT = new JsonOutput.JsonWritable() {
         @Override
@@ -50,7 +42,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
     }
 
     DefaultJsonApiViewHelper(JsonView view, GrailsJsonViewHelper viewHelper) {
-        this.view = view
+        super(view)
         this.viewHelper = viewHelper
     }
 
@@ -276,7 +268,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
                 out.write(JsonOutput.toJson('detail'))
                 out.write(JsonOutput.COLON)
-                out.write(JsonOutput.toJson(viewHelper.message([error: error])))
+                out.write(JsonOutput.toJson(message([error: error])))
                 out.write(JsonOutput.COMMA)
 
                 out.write(JsonOutput.toJson('source'))
@@ -414,13 +406,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.COLON)
                 out.write(JsonOutput.OPEN_BRACE)
 
-                def cleanedElements = (List<Object>)object.stackTrace
-                        .findAll() { StackTraceElement element -> element.lineNumber > -1 }
-                        .collect() { StackTraceElement element ->
-                    "$element.lineNumber | ${element.className}.$element.methodName".toString()
-                }.toList()
-
-                writeKeyValue(out, 'stacktrace', cleanedElements)
+                writeKeyValue(out, 'stacktrace', getJsonStackTrace(object))
 
                 out.write(JsonOutput.CLOSE_BRACE)//source
 
@@ -432,15 +418,6 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
             }
         }
         return writable
-    }
-
-    protected PersistentEntity findEntity(Object object) {
-        def clazz = object.getClass()
-        try {
-            return GormEnhancer.findEntity(clazz)
-        } catch (Throwable e) {
-            return ((JsonView) view)?.mappingContext?.getPersistentEntity(clazz.name)
-        }
     }
 
     public JsonApiIdGenerator getIdGenerator() {

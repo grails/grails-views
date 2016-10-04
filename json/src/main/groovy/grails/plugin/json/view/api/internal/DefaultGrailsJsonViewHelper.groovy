@@ -6,10 +6,8 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
-import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import grails.views.ResolvableGroovyTemplateEngine
-import grails.views.ViewConfiguration
 import grails.views.ViewException
 import grails.views.ViewUriResolver
 import grails.views.api.GrailsView
@@ -17,17 +15,13 @@ import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.resolve.TemplateResolverUtils
 import grails.views.utils.ViewUtils
 import groovy.text.Template
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
-import org.codehaus.groovy.runtime.StackTraceUtils
 import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
-import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.collection.PersistentCollection
-import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -38,10 +32,6 @@ import org.grails.datastore.mapping.model.types.Embedded
 import org.grails.datastore.mapping.model.types.EmbeddedCollection
 import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
-import org.springframework.util.ReflectionUtils
-
-import java.beans.PropertyDescriptor
-import java.lang.reflect.ParameterizedType
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -51,33 +41,10 @@ import java.lang.reflect.ParameterizedType
 @CompileStatic
 @InheritConstructors
 @Slf4j
-class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
+class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements GrailsJsonViewHelper {
 
-
-    private static final Set<String> TO_STRING_TYPES = [
-        "org.bson.types.ObjectId"
-    ] as Set
     public static final String BEFORE_CLOSURE = "beforeClosure"
     public static final String PROCESSED_OBJECT_VARIABLE = "org.json.views.RENDER_PROCESSED_OBJECTS"
-    public static final JsonOutput.JsonWritable NULL_OUTPUT = new JsonOutput.JsonWritable() {
-        @Override
-        Writer writeTo(Writer out) throws IOException {
-            out.write(JsonOutput.NULL_VALUE);
-            return out;
-        }
-    }
-
-    /**
-     * Default includes/excludes for GORM properties
-     */
-    IncludeExcludeSupport<String> includeExcludeSupport = new IncludeExcludeSupport<String>(null, ["class", 'metaClass', 'properties', "version", "attached", "errors", "dirty"]) {
-        @Override
-        boolean shouldInclude(List<String> incs, List excs, String object) {
-            def i = object.lastIndexOf('.')
-            String unqualified = i > -1 ? object.substring(i + 1) : null
-            return super.shouldInclude(incs, excs, object) && (unqualified == null || (includes(defaultIncludes, unqualified) && !excludes(defaultExcludes, unqualified)))
-        }
-    }
 
     @Override
     JsonOutput.JsonWritable render(Object object, @DelegatesTo(StreamingJsonDelegate) Closure customizer) {
@@ -93,9 +60,8 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         boolean includeAssociations = ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
         List<String> expandProperties = getExpandProperties(jsonView, arguments)
 
-        List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
-        List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments)
-
+        List<String> incs = getIncludes(arguments)
+        List<String> excs = getExcludes(arguments)
 
         def mappingContext = jsonView.mappingContext
         object = mappingContext.proxyHandler.unwrap(object)
@@ -295,21 +261,15 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             }
         }
         else if(object instanceof Throwable) {
+            Throwable e = (Throwable)object
+            List<Object> stacktrace = getJsonStackTrace(e)
             return new JsonOutput.JsonWritable() {
                 @Override
                 Writer writeTo(Writer out) throws IOException {
-                    Throwable e = (Throwable)object
-                    StackTraceUtils.sanitize(e)
-                    new StreamingJsonBuilder(out)
-                        .call {
+                    new StreamingJsonBuilder(out).call {
                         StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
                         jsonDelegate.call("message", e.message)
-                        def cleanedElements = (List<Object>) e.stackTrace
-                                                              .findAll() { StackTraceElement element -> element.lineNumber > -1 }
-                                                              .collect() { StackTraceElement element ->
-                            "$element.lineNumber | ${element.className}.$element.methodName".toString()
-                        }.toList()
-                        jsonDelegate.call("stacktrace", cleanedElements)
+                        jsonDelegate.call("stacktrace", stacktrace)
                     }
                     return out
                 }
@@ -331,15 +291,6 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             binding.setVariable(PROCESSED_OBJECT_VARIABLE, processedObjects)
         }
         processedObjects
-    }
-
-    protected PersistentEntity findEntity(Object object) {
-        def clazz = object.getClass()
-        try {
-            return GormEnhancer.findEntity(clazz)
-        } catch (Throwable e) {
-            return ((JsonView)view)?.mappingContext?.getPersistentEntity(clazz.name)
-        }
     }
 
     protected void processSimple(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, Object object, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, Closure customizer = null) {
@@ -418,30 +369,6 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
     }
 
-    protected Class getGenericType(Class declaringClass, PropertyDescriptor descriptor) {
-        def field = ReflectionUtils.findField(declaringClass, descriptor.getName())
-        if(field != null) {
-
-            def type = field.genericType
-            if(type instanceof ParameterizedType) {
-                def args = ((ParameterizedType) type).getActualTypeArguments()
-                if(args.length > 0) {
-                    def t = args[0]
-                    if(t instanceof Class) {
-                        return (Class)t
-                    }
-                }
-            }
-        }
-        return Object
-    }
-
-    public static boolean isStringType(Class propertyType) {
-        return TO_STRING_TYPES.contains(propertyType.name)
-    }
-    public static boolean isSimpleType(Class propertyType, value) {
-        MappingFactory.isSimpleType(propertyType.name) || (value instanceof Enum) || (value instanceof Map)
-    }
 
     protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties = [], boolean includeAssociations = true, Closure customizer = null) {
 
