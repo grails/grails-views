@@ -51,7 +51,7 @@ json jsonapi.render(person)
 ''', [person:p])
 
         then:"The result is correct"
-        result.jsonText == '''{"data":{"type":"person","id":"2","attributes":{"homeAddress":{"postCode":"12345"},"name":"Robert","nickNames":["Rob","Bob"],"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}],"version":null}},"links":{"self":"/person/2"}}'''
+        result.jsonText == '''{"data":{"type":"person","id":"2","attributes":{"homeAddress":{"postCode":"12345"},"name":"Robert","nickNames":["Rob","Bob"],"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}]}},"links":{"self":"/person/2"}}'''
 
     }
 }

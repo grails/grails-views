@@ -7,5 +7,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 public interface JsonApiIdGenerator {
+
     String generateId(Object object)
+
+    String generateId(Object object, String propertyName)
 }

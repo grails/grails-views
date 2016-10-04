@@ -18,16 +18,6 @@ interface GrailsJsonViewHelper extends GrailsViewHelper {
     String DEEP = "deep"
 
     /**
-     * The expand parameter
-     */
-    String EXPAND = "expand"
-
-    /**
-     * The associations parameter
-     */
-    String ASSOCIATIONS = "associations"
-
-    /**
      * Renders a template and returns the output
      *
      * @param arguments The named arguments: 'template', 'collection', 'model', 'var' and 'bean'

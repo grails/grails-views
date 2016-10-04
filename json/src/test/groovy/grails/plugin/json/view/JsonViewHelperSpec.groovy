@@ -92,7 +92,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null,"version":null},"relationships":{"captain":{"data":{"type":"player","id":null}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":{"type":"player","id":null}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}}}'
     }
 
     void "test render toOne association"() {

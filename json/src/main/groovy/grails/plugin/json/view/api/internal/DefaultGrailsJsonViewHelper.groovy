@@ -57,7 +57,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(jsonView.binding)
         boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
-        boolean includeAssociations = ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
+        boolean includeAssociations = getIncludeAssociations(arguments)
         List<String> expandProperties = getExpandProperties(jsonView, arguments)
 
         List<String> incs = getIncludes(arguments)
@@ -75,19 +75,6 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             processSimple(jsonDelegate, object, processedObjects, incs, excs, "", customizer)
         }
 
-
-    }
-
-    private List<String> getExpandProperties(JsonView jsonView, Map arguments) {
-        List<String> expandProperties
-        def templateEngine = jsonView.templateEngine
-        def viewConfiguration = templateEngine?.viewConfiguration
-        if (viewConfiguration == null || viewConfiguration.isAllowResourceExpansion()) {
-            expandProperties = (List<String>) (jsonView.params.list(EXPAND) ?: ViewUtils.getStringListFromMap(EXPAND, arguments))
-        } else {
-            expandProperties = Collections.emptyList()
-        }
-        expandProperties
     }
 
     @Override

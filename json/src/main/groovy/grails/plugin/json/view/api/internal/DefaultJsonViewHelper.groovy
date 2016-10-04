@@ -20,6 +20,16 @@ import java.lang.reflect.ParameterizedType
 @InheritConstructors
 class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
 
+    /**
+     * The expand parameter
+     */
+    String EXPAND = "expand"
+
+    /**
+     * The associations parameter
+     */
+    String ASSOCIATIONS = "associations"
+
     protected final Set<String> TO_STRING_TYPES = [
             "org.bson.types.ObjectId"
     ] as Set
@@ -95,6 +105,22 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
                 .collect() { StackTraceElement element ->
             "$element.lineNumber | ${element.className}.$element.methodName".toString()
         }.toList()
+    }
+
+    protected List<String> getExpandProperties(JsonView jsonView, Map arguments) {
+        List<String> expandProperties
+        def templateEngine = jsonView.templateEngine
+        def viewConfiguration = templateEngine?.viewConfiguration
+        if (viewConfiguration == null || viewConfiguration.isAllowResourceExpansion()) {
+            expandProperties = (List<String>) (jsonView.params.list(EXPAND) ?: ViewUtils.getStringListFromMap(EXPAND, arguments))
+        } else {
+            expandProperties = Collections.emptyList()
+        }
+        expandProperties
+    }
+
+    protected boolean getIncludeAssociations(Map arguments) {
+        ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
     }
 
 }

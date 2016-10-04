@@ -33,7 +33,7 @@ json jsonapi.render(widget)
 ''', [widget: theWidget])
 
         then:
-            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}},"links":{"self":"/widget/5"}}'''
+            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test Relationships'() {
@@ -106,7 +106,7 @@ json jsonapi.render(widget, [showJsonApiObject: true])
 ''', [widget: theWidget])
 
         then:
-            result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}},"links":{"self":"/widget/5"}}'''
+            result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test compound documents object'() {
@@ -126,7 +126,7 @@ model {
     Book book
 }
 
-json jsonapi.render(book, [include: 'author'])
+json jsonapi.render(book, [expand: 'author'])
 ''', [book: returnOfTheKing])
 
         then: 'The JSON relationships are in place'

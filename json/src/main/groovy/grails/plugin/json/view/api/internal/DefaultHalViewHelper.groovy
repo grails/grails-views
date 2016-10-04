@@ -29,7 +29,7 @@ import org.springframework.http.HttpMethod
  * @since 1.0
  */
 @CompileStatic
-class DefaultHalViewHelper implements HalViewHelper {
+class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelper {
 
     public static final String LINKS_ATTRIBUTE = "_links"
     public static final String SELF_ATTRIBUTE = "self"
@@ -39,12 +39,11 @@ class DefaultHalViewHelper implements HalViewHelper {
     public static final String EMBEDDED_ATTRIBUTE = "_embedded"
     public static final String EMBEDDED_PARAMETER = "embedded"
 
-    JsonView view
     GrailsJsonViewHelper viewHelper
     String contentType = MimeType.HAL_JSON.name
 
     DefaultHalViewHelper(JsonView view, GrailsJsonViewHelper viewHelper) {
-        this.view = view
+        super(view)
         this.viewHelper = viewHelper
     }
 
@@ -111,7 +110,7 @@ class DefaultHalViewHelper implements HalViewHelper {
 
     @Override
     void inline(Object object, Map arguments = [:], @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
-        arguments.put(GrailsJsonViewHelper.ASSOCIATIONS, false)
+        arguments.put(ASSOCIATIONS, false)
         viewHelper.inline(object, arguments, customizer)
     }
 
@@ -281,14 +280,13 @@ class DefaultHalViewHelper implements HalViewHelper {
         MappingContext mappingContext = view.mappingContext
         def proxyHandler = mappingContext.proxyHandler
         object = proxyHandler != null ? proxyHandler.unwrap(object) : object
-        PersistentEntity entity = mappingContext.getPersistentEntity(object.getClass().name)
+        PersistentEntity entity = findEntity(object)
 
-        List<String> incs = (List<String>)arguments.get(IncludeExcludeSupport.INCLUDES_PROPERTY) ?: null
-        List<String> excs = (List<String>)arguments.get(IncludeExcludeSupport.EXCLUDES_PROPERTY) ?: new ArrayList<String>()
-        List<String> expandProperties = (List<String>)(view.params.list(GrailsJsonViewHelper.EXPAND) ?: arguments.get(GrailsJsonViewHelper.EXPAND) ?: Collections.emptyList())
+        List<String> incs = getIncludes(arguments)
+        List<String> excs = getExcludes(arguments)
+        List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
         boolean deep = ViewUtils.getBooleanFromMap(GrailsJsonViewHelper.DEEP, arguments)
         arguments.put(IncludeExcludeSupport.EXCLUDES_PROPERTY, excs)
-        def includeExcludeSupport = ((DefaultGrailsJsonViewHelper) viewHelper).includeExcludeSupport
         if(entity != null) {
             EntityReflector entityReflector = mappingContext.getEntityReflector(entity)
             def associations = entity.associations

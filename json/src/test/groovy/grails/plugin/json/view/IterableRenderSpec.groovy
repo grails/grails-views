@@ -67,7 +67,7 @@ json jsonapi.render(players)
         }
 
         then: "The result is an array"
-        renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona","version":null},"relationships":{"team":{"data":{"type":"team","id":null}}}}],"links":{"self":"/foo"}}'
+        renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona"},"relationships":{"team":{"data":{"type":"team","id":null}}}}],"links":{"self":"/foo"}}'
     }
 
     void "Test render a collection type with JSON API"() {
@@ -92,6 +92,6 @@ json jsonapi.render(players)
         }
 
         then: "The result is an array"
-        renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona","version":null},"relationships":{"team":{"data":{"type":"team","id":null}}}},{"type":"player","id":"2","attributes":{"name":"Louis","version":null},"relationships":{"team":{"data":{"type":"team","id":null}}}}],"links":{"self":"/foo"}}'
+        renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona"},"relationships":{"team":{"data":{"type":"team","id":null}}}},{"type":"player","id":"2","attributes":{"name":"Louis"},"relationships":{"team":{"data":{"type":"team","id":null}}}}],"links":{"self":"/foo"}}'
     }
 }

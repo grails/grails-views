@@ -5,8 +5,12 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public class DefaultJsonApiIdGenerator implements JsonApiIdGenerator {
     String generateId(Object object) {
-        if (object && object.hasProperty('id')) {
-            return object.getAt('id').toString()
+        generateId(object, 'id')
+    }
+
+    String generateId(Object object, String propertyName) {
+        if (object && object.hasProperty(propertyName)) {
+            return object.getAt(propertyName).toString()
         }
     }
 }
