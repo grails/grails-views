@@ -90,6 +90,25 @@ json jsonapi.render(hero)
             result.jsonText == '''{"errors":[{"code":"blank","detail":"Property [name] of class [class grails.plugin.json.view.api.SuperHero] cannot be blank","source":{"object":"grails.plugin.json.view.api.SuperHero","field":"name","rejectedValue":"","bindingError":false}}]}'''
     }
 
+    void 'test jsonapi object'() {
+        given:
+            Widget theWidget = new Widget(name: 'One', width: 4, height: 7)
+            theWidget.id = 5
+
+        when:
+            def result = render('''
+import grails.plugin.json.view.api.Widget
+model {
+    Widget widget
+}
+
+json jsonapi.render(widget, [showJsonApiObject: true])
+''', [widget: theWidget])
+
+        then:
+            result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","version":null,"width":4}},"links":{"self":"/widget/5"}}'''
+    }
+
 }
 
 @Entity

@@ -1,7 +1,6 @@
 package grails.plugin.json.view.api.internal
 
 import grails.plugin.json.builder.JsonOutput
-import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonApiViewHelper
 import grails.plugin.json.view.api.JsonView
@@ -10,7 +9,6 @@ import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
 import grails.util.Holders
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
-import org.grails.buffer.FastStringPrintWriter
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -30,7 +28,6 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
     JsonView view
     GrailsJsonViewHelper viewHelper
     String contentType = "application/vnd.api+json"
-    boolean exposeJsonApi = false
 
     JsonApiIdGenerator jsonApiIdGenerator
 
@@ -49,6 +46,11 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
 
     @Override
     JsonOutput.JsonWritable render(Object object) {
+        return render(object, [:])
+    }
+
+    @Override
+    JsonOutput.JsonWritable render(Object object, Map arguments) {
         if (object == null) {
             return NULL_OUTPUT
         }
@@ -57,8 +59,9 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
             @CompileStatic
             Writer writeTo(Writer out) throws IOException {
                 out.write(JsonOutput.OPEN_BRACE)
-                if (exposeJsonApi) {
-                    jsonapiMember().writeTo(out)
+                if (arguments.showJsonApiObject) {
+                    renderJsonApiMember().writeTo(out)
+                    out.write(JsonOutput.COMMA)
                 }
                 if (object instanceof Throwable) {
                     renderException(object).writeTo(out)
@@ -72,6 +75,7 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }
+
         }
         return jsonWritable
     }
@@ -106,6 +110,11 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
                 true
             }
         }
+    }
+
+    private void writeKey(Writer out, Object key) {
+        out.write(JsonOutput.toJson(key))
+        out.write(JsonOutput.COLON)
     }
 
     private void writeKeyValue(Writer out, Object key, Object value) {
@@ -363,17 +372,14 @@ class DefaultJsonApiViewHelper implements JsonApiViewHelper {
         return writable
     }
 
-    JsonOutput.JsonWritable jsonapiMember() {
+    JsonOutput.JsonWritable renderJsonApiMember() {
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
             @Override
             @CompileStatic
             Writer writeTo(Writer out) throws IOException {
+                writeKey(out, "jsonapi")
                 out.write(JsonOutput.OPEN_BRACE)
-                StreamingJsonBuilder builder = new StreamingJsonBuilder(out)
-                builder.call {
-                    writeName("jsonapi")
-                    writeValue([version: '1.0'])
-                }
+                writeKeyValue(out, 'version', '1.0')
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }
