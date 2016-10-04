@@ -1,7 +1,6 @@
 package grails.plugin.json.view.api.internal
 
 import grails.plugin.json.builder.JsonOutput
-import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonApiViewHelper
 import grails.plugin.json.view.api.JsonView
@@ -10,7 +9,6 @@ import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
 import grails.util.Holders
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
-import org.grails.buffer.FastStringPrintWriter
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -30,7 +28,6 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
     JsonView view
     GrailsJsonViewHelper viewHelper
     String contentType = "application/vnd.api+json"
-    boolean exposeJsonApi = false
 
     JsonApiIdGenerator jsonApiIdGenerator
 
@@ -48,6 +45,11 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
     @Override
     JsonOutput.JsonWritable render(Object object) {
+        return render(object, [:])
+    }
+
+    @Override
+    JsonOutput.JsonWritable render(Object object, Map arguments) {
         if (object == null) {
             return NULL_OUTPUT
         }
@@ -56,8 +58,9 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
             @CompileStatic
             Writer writeTo(Writer out) throws IOException {
                 out.write(JsonOutput.OPEN_BRACE)
-                if (exposeJsonApi) {
-                    jsonapiMember().writeTo(out)
+                if (arguments.showJsonApiObject) {
+                    renderJsonApiMember().writeTo(out)
+                    out.write(JsonOutput.COMMA)
                 }
                 if (object instanceof Throwable) {
                     renderException(object).writeTo(out)
@@ -67,10 +70,15 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                     renderData(object).writeTo(out)
                     out.write(JsonOutput.COMMA)
                     renderLinks(object).writeTo(out)
+                    if (arguments.include) {
+                        out.write(JsonOutput.COMMA)
+                        renderIncluded(object, (String) arguments.include).writeTo(out)
+                    }
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }
+
         }
         return jsonWritable
     }
@@ -100,11 +108,16 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
     List<PersistentProperty> getAttributes(PersistentEntity entity) {
         entity.persistentProperties.findAll { PersistentProperty p ->
             if (p instanceof Association) {
-                isAttributeAssociation((Association)p)
+                isAttributeAssociation((Association) p)
             } else {
                 true
             }
         }
+    }
+
+    private void writeKey(Writer out, Object key) {
+        out.write(JsonOutput.toJson(key))
+        out.write(JsonOutput.COLON)
     }
 
     private void writeKeyValue(Writer out, Object key, Object value) {
@@ -113,7 +126,11 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         out.write(JsonOutput.toJson(value))
     }
 
-    private void renderData(Object object, Writer out) {
+    private void renderResource(Object object, Writer out) {
+        renderResource(object, out, false)
+    }
+
+    private void renderResource(Object object, Writer out, boolean showLinks) {
         PersistentEntity entity = findEntity(object)
         out.write(JsonOutput.OPEN_BRACE)
 
@@ -143,7 +160,6 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
             }
-            //TODO Links
             if (relationShips) {
 
                 out.write(JsonOutput.COMMA)
@@ -168,7 +184,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                         Iterator iterator = ((Iterable) value).iterator()
                         String type = association.associatedEntity.decapitalizedName
 
-                        while(iterator.hasNext()) {
+                        while (iterator.hasNext()) {
                             def o = iterator.next()
                             out.write(JsonOutput.OPEN_BRACE)
                             writeKeyValue(out, 'type', type)
@@ -200,6 +216,10 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
             }
+            if (showLinks) {
+                out.write(JsonOutput.COMMA)
+                renderLinks(object).writeTo(out)
+            }
         }
         out.write(JsonOutput.CLOSE_BRACE)
     }
@@ -220,11 +240,11 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                             out.write(JsonOutput.COMMA)
                         }
                         first = false
-                        renderData(o, out)
+                        renderResource(o, out)
                     }
                     out.write(JsonOutput.CLOSE_BRACKET)
                 } else {
-                    renderData(object, out)
+                    renderResource(object, out)
                 }
 
                 return out
@@ -362,17 +382,53 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         return writable
     }
 
-    JsonOutput.JsonWritable jsonapiMember() {
+    JsonOutput.JsonWritable renderIncluded(Object object, String include) {
+        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
+
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+                writeKey(out, "included")
+                out.write(JsonOutput.OPEN_BRACKET)
+                String[] includes = include.split(',')
+
+                List includedItems = []
+
+                for (String includedProperty in includes) {
+                    if (object instanceof Collection && object.size() >= 1) {
+                        object.each { item ->
+                            if (item.hasProperty(includedProperty)) {
+                                includedItems << item.getAt(includedProperty)
+                            }
+                        }
+                    } else {
+                        if (object.hasProperty(includedProperty)) {
+                            includedItems << object.getAt(includedProperty)
+                        }
+                    }
+                }
+
+                for(int idx = 0; idx < includedItems.size(); idx++){
+                    Object itemToInclude = includedItems.get(idx)
+                    renderResource(itemToInclude, out, true)
+                    if (idx < includedItems.size() - 1) {
+                        out.write(JsonOutput.COMMA)
+                    }
+                }
+                out.write(JsonOutput.CLOSE_BRACKET)
+                return out
+            }
+        }
+        return writable
+    }
+
+    JsonOutput.JsonWritable renderJsonApiMember() {
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
             @Override
             @CompileStatic
             Writer writeTo(Writer out) throws IOException {
+                writeKey(out, "jsonapi")
                 out.write(JsonOutput.OPEN_BRACE)
-                StreamingJsonBuilder builder = new StreamingJsonBuilder(out)
-                builder.call {
-                    writeName("jsonapi")
-                    writeValue([version: '1.0'])
-                }
+                writeKeyValue(out, 'version', '1.0')
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }
