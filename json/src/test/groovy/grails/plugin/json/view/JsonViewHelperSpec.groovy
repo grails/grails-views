@@ -148,6 +148,124 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         result.toString() == '{"captain":{"name":"Iniesta"}}'
     }
 
+    void "test includes with json api"() {
+        given:"A view helper"
+        mappingContext.addPersistentEntities(Player, Team)
+        def player1 = new Player(name: "Iniesta")
+        player1.id = 1
+        def player2 = new Player(name: "Messi")
+        player2.id = 2
+        def team = new Team(name:"Barcelona", players: [player1, player2])
+        team.id = 1
+
+        when:"We render an object without deep argument and no child id"
+        def renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [includes: ['name']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{}},"links":{"self":"/team/1","related":{}}}'
+
+        when:"We render an object without deep argument and no child id"
+        renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [includes: ['name', 'captain']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{"captain":{"data":null}}},"links":{"self":"/team/1","related":{}}}'
+    }
+
+    void "test excludes with json api"() {
+        given:"A view helper"
+        mappingContext.addPersistentEntities(Player, Team)
+        def player1 = new Player(name: "Iniesta")
+        player1.id = 1
+        def player2 = new Player(name: "Messi")
+        player2.id = 2
+        def team = new Team(name:"Barcelona", players: [player1, player2])
+        team.id = 1
+
+        when:"We render an object with multiple excludes"
+        def renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [excludes: ['captain', 'players', 'titles']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{}},"links":{"self":"/team/1","related":{}}}'
+
+        when:"We render an object with a single excludes"
+        renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [excludes: ['name']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}}}'
+
+        when:"We expand a relationship"
+        renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [expand: ['players']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"1","attributes":{"name":"Iniesta"},"relationships":{"team":{"data":null}},"links":{"self":"/player/1","related":{"href":""}}},{"type":"player","id":"2","attributes":{"name":"Messi"},"relationships":{"team":{"data":null}},"links":{"self":"/player/2","related":{"href":""}}}]}'
+
+        when:"We expand a relationship and exclude a nested property"
+        team.captain = new Player(name: "Captain Hook")
+        team.captain.id = 10
+        renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [expand: ['captain'], excludes: ['captain.name']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"10","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/10","related":{"href":""}}}]}'
+
+        when:"We expand a relationship and exclude a nested property"
+        team.captain = new Player(name: "Captain Hook")
+        team.captain.id = 10
+        renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json jsonapi.render(team, [expand: ['players'], excludes: ['players.name']])
+        ''', [team:team])
+
+        then:"The result is correct"
+        then:"The result is correct"
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"1","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/1","related":{"href":""}}},{"type":"player","id":"2","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/2","related":{"href":""}}}]}'
+    }
+
     void "Test render object method with customizer"() {
         given:"A view helper"
         DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Test)

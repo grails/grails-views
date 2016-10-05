@@ -70,12 +70,9 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 } else {
                     renderData(object, arguments).writeTo(out)
                     out.write(JsonOutput.COMMA)
-                    renderLinks(object).writeTo(out)
-                    List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
-                    if (!expandProperties.empty && getIncludeAssociations(arguments)) {
-                        out.write(JsonOutput.COMMA)
-                        renderIncluded(object, expandProperties).writeTo(out)
-                    }
+                    renderLinks(object, arguments).writeTo(out)
+                    renderIncluded(object, arguments).writeTo(out)
+
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
@@ -129,10 +126,10 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
     }
 
     private void renderResource(Object object, Writer out) {
-        renderResource(object, out, [:])
+        renderResource(object, out, [:], "")
     }
 
-    private void renderResource(Object object, Writer out, Map arguments) {
+    private void renderResource(Object object, Writer out, Map arguments, String basePath) {
         boolean showLinks = ViewUtils.getBooleanFromMap('showLinks', arguments, false)
         PersistentEntity entity = findEntity(object)
 
@@ -143,12 +140,12 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         out.write(JsonOutput.OPEN_BRACE)
 
         writeKeyValue(out, 'type', entity.decapitalizedName)
-        out.write(JsonOutput.COMMA)
 
         PersistentProperty identity = entity.identity
         String idName = identity?.name
 
-        if(idName != null && includeExcludeSupport.shouldInclude(includes, excludes, idName)) {
+        if(idName != null) {
+            out.write(JsonOutput.COMMA)
             JsonApiIdGenerator idGenerator = getIdGenerator()
             writeKeyValue(out, 'id', idGenerator.generateId(object, idName))
         }
@@ -165,7 +162,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                 boolean firstAttribute = true
                 for (persistentProperty in attributes) {
-                    if (!includeExcludeSupport.shouldInclude(includes, excludes, persistentProperty.name)) continue
+                    if (!includeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${persistentProperty.name}".toString())) continue
 
                     if (!firstAttribute) {
                         out.write(JsonOutput.COMMA)
@@ -187,7 +184,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 boolean firstRelationship = true
 
                 for (association in relationships) {
-                    if (!includeExcludeSupport.shouldInclude(includes, excludes, association.name)) continue
+                    if (!includeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${association.name}".toString())) continue
 
                     def value = ((GroovyObject) object).getProperty(association.name)
                     if (!firstRelationship) {
@@ -246,15 +243,14 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
             }
             if (showLinks) {
                 out.write(JsonOutput.COMMA)
-                renderLinks(object).writeTo(out)
+                renderLinks(object, arguments).writeTo(out)
             }
         }
         out.write(JsonOutput.CLOSE_BRACE)
     }
 
     private JsonOutput.JsonWritable renderData(Object object, Map arguments) {
-        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
-
+        new JsonOutput.JsonWritable() {
             @Override
             Writer writeTo(Writer out) throws IOException {
                 out.write(JsonOutput.toJson("data"))
@@ -268,17 +264,15 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                             out.write(JsonOutput.COMMA)
                         }
                         first = false
-                        renderResource(o, out, arguments)
+                        renderResource(o, out, arguments, "")
                     }
                     out.write(JsonOutput.CLOSE_BRACKET)
                 } else {
-                    renderResource(object, out, arguments)
+                    renderResource(object, out, arguments, "")
                 }
-
-                return out
+                out
             }
         }
-        return writable
     }
 
     JsonOutput.JsonWritable renderErrors(Object object) {
@@ -353,7 +347,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         return writable
     }
 
-    JsonOutput.JsonWritable renderLinks(Object object) {
+    JsonOutput.JsonWritable renderLinks(Object object, Map arguments) {
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
 
             @Override
@@ -372,7 +366,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                     def linkGenerator = view.linkGenerator
                     out.write(JsonOutput.toJson(linkGenerator.link(resource: object)))
                     List<Association> associations = getRelationships(entity)
-                    if (associations) {
+                    if (associations && getIncludeAssociations(arguments)) {
                         out.write(JsonOutput.COMMA)
                         out.write(JsonOutput.toJson('related'))
                         out.write(JsonOutput.COLON)
@@ -410,42 +404,52 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         return writable
     }
 
-    JsonOutput.JsonWritable renderIncluded(Object object, List<String> expandedProperties) {
-        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
+    JsonOutput.JsonWritable renderIncluded(Object object, Map arguments) {
 
-            @Override
-            Writer writeTo(Writer out) throws IOException {
-                writeKey(out, "included")
-                out.write(JsonOutput.OPEN_BRACKET)
+        List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
+        if (!expandProperties.empty && getIncludeAssociations(arguments)) {
 
-                List includedItems = []
+            arguments = new LinkedHashMap(arguments)
+            arguments.showLinks = true
 
-                for (String includedProperty in expandedProperties) {
-                    if (object instanceof Collection && object.size() >= 1) {
-                        object.each { item ->
-                            if (item.hasProperty(includedProperty)) {
-                                includedItems << item.getAt(includedProperty)
+            new JsonOutput.JsonWritable() {
+
+                @Override
+                Writer writeTo(Writer out) throws IOException {
+                    out.write(JsonOutput.COMMA)
+                    writeKey(out, "included")
+                    out.write(JsonOutput.OPEN_BRACKET)
+                    boolean first = true
+
+                    for (String prop in expandProperties) {
+                        if (!first) {
+                            out.write(JsonOutput.COMMA)
+                        }
+                        Object itemToInclude = object.getAt(prop)
+
+                        if (itemToInclude instanceof Collection) {
+                            for (o in itemToInclude) {
+                                if (!first) {
+                                    out.write(JsonOutput.COMMA)
+                                }
+                                first = false
+                                renderResource(o, out, arguments, "${prop}.")
                             }
+                        } else {
+                            renderResource(itemToInclude, out, arguments, "${prop}.")
                         }
-                    } else {
-                        if (object.hasProperty(includedProperty)) {
-                            includedItems << object.getAt(includedProperty)
-                        }
+                        first = false
                     }
+                    out.write(JsonOutput.CLOSE_BRACKET)
+                    out
                 }
-
-                for(int idx = 0; idx < includedItems.size(); idx++){
-                    Object itemToInclude = includedItems.get(idx)
-                    renderResource(itemToInclude, out, [showLinks: true])
-                    if (idx < includedItems.size() - 1) {
-                        out.write(JsonOutput.COMMA)
-                    }
-                }
-                out.write(JsonOutput.CLOSE_BRACKET)
-                return out
             }
+
+        } else {
+            return NOOP_OUTPUT
         }
-        return writable
+
+
     }
 
     JsonOutput.JsonWritable renderJsonApiMember() {
