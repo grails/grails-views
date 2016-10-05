@@ -262,7 +262,6 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        then:"The result is correct"
         renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"1","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/1","related":{"href":""}}},{"type":"player","id":"2","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/2","related":{"href":""}}}]}'
     }
 
