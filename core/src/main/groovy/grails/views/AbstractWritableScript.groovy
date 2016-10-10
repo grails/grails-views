@@ -2,6 +2,8 @@ package grails.views
 
 import grails.views.api.GrailsView
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * A script that is writable
@@ -11,7 +13,15 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class AbstractWritableScript extends Script implements WritableScript, GrailsView {
 
+    /**
+     * A logger that can be used within views
+     */
+    protected static final Logger log = LoggerFactory.getLogger(AbstractWritableScript)
+
     Writer out
+    /**
+     * The source file
+     */
     File sourceFile
 
     private Map<String, Class> modelTypes

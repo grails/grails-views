@@ -19,6 +19,8 @@ try {
     throw new RuntimeException("bad")
 }
 catch(Throwable e) {
+    // test log the exception
+    log.error "foo", e
     json g.render(e)
 }
 
