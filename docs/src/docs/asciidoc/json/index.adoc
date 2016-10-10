@@ -53,3 +53,7 @@ include::configuration.adoc[]
 === IntelliJ Support
 
 include::intellij.adoc[]
+
+=== Debugging Views
+
+include::intellij.adoc[]
