@@ -44,6 +44,14 @@ class TestGsonController {
         render view:"/fromPlugin"
     }
 
+    def testRespondWithMap() {
+        respond one:'two'
+    }
+
+    def testRespondWithMapObjectTemplate() {
+        respond one:'two'
+    }
+
     def testLinks() {
 
     }
