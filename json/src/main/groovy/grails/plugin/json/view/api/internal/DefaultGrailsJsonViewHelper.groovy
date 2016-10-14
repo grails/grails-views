@@ -272,7 +272,6 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         JsonView jsonView = (JsonView)view
         def binding = jsonView.getBinding()
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(binding)
-        MappingFactory mappingFactory = jsonView.mappingContext.mappingFactory
 
         if(object instanceof Iterable) {
             return new JsonOutput.JsonWritable() {
@@ -285,7 +284,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                     int i = 0
                     out.append JsonOutput.OPEN_BRACKET
                     for(o in iterable) {
-                        if(mappingFactory.isSimpleType(o.getClass()) || o instanceof Map) {
+                        if(isSimpleValue(o)) {
                             out.append(JsonOutput.toJson((Object)o))
                         }
                         else {
@@ -315,7 +314,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         out.append(JsonOutput.COLON)
                         def value = entry.value
 
-                        if(mappingFactory.isSimpleType(value.getClass()) || (value instanceof Map)) {
+                        if(isSimpleValue(value)) {
                             out.append(JsonOutput.toJson((Object)value))
                         }
                         else {
@@ -478,6 +477,23 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     }
     public static boolean isSimpleType(Class propertyType, value) {
         MappingFactory.isSimpleType(propertyType.name) || (value instanceof Enum) || (value instanceof Map)
+    }
+
+    protected boolean isSimpleValue(Object value) {
+        if(value == null) {
+            return true
+        }
+
+        Class propertyType = value.getClass()
+        JsonView jsonView = (JsonView)view
+        MappingFactory mappingFactory = jsonView.mappingContext?.mappingFactory
+        if(mappingFactory != null) {
+            return mappingFactory.isSimpleType(propertyType) || (value instanceof Enum) || (value instanceof Map)
+        }
+        else {
+            return MappingFactory.isSimpleType(propertyType.getName()) || (value instanceof Enum) || (value instanceof Map)
+        }
+
     }
 
     protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties = [], boolean includeAssociations = true, Closure customizer = null) {
