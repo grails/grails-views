@@ -1,6 +1,5 @@
 package grails.views
 
-import grails.config.Config
 import grails.config.ConfigMap
 import grails.core.GrailsApplication
 import grails.core.GrailsClass
@@ -13,9 +12,9 @@ import org.grails.config.CodeGenConfig
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.io.support.GrailsResourceUtils
 import org.springframework.beans.BeanUtils
-import org.springframework.core.env.PropertyResolver
 
 import java.beans.PropertyDescriptor
+
 /**
  * Default configuration
  *
@@ -25,22 +24,61 @@ import java.beans.PropertyDescriptor
 @CompileStatic
 trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAware {
 
+    /**
+     * The encoding to use
+     */
     String encoding = "UTF-8"
+    /**
+     * Whether to pretty print
+     */
     boolean prettyPrint = false
+    /**
+     * Whether to use absolute links
+     */
     boolean useAbsoluteLinks = false
+    /**
+     * Whether to enable reloading
+     */
     boolean enableReloading = ViewsEnvironment.isDevelopmentMode()
+    /**
+     * The package name to use
+     */
     String packageName = Metadata.getCurrent().getApplicationName() ?: ""
+    /**
+     * Whether to compile templates statically
+     */
     boolean compileStatic = true
+    /**
+     * The file extension of the templates
+     */
     String extension
+    /**
+     * The template base class
+     */
     Class baseTemplateClass
+    /**
+     * Whether the cache templates
+     */
     boolean cache = !Environment.isDevelopmentMode()
+    /**
+     * Whether resource expansion is allowed
+     */
     boolean allowResourceExpansion = true
+    /**
+     * The path to the templates
+     */
     String templatePath = {
         def current = Environment.current
         def pathToTemplates = current.hasReloadLocation() ? current.reloadLocation : BuildSettings.BASE_DIR?.path
         pathToTemplates ? new File(pathToTemplates, GrailsResourceUtils.VIEWS_DIR_PATH).path : "./grails-app/views"
     }()
+    /**
+     * The default package imports
+     */
     String[] packageImports = ['groovy.transform'] as String[]
+    /**
+     * The default static imports
+     */
     String[] staticImports = ["org.springframework.http.HttpStatus", "org.springframework.http.HttpMethod", "grails.web.http.HttpHeaders"] as String[]
 
     @Override
