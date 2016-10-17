@@ -56,4 +56,4 @@ include::intellij.adoc[]
 
 === Debugging Views
 
-include::intellij.adoc[]
+include::debugging.adoc[]
