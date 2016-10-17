@@ -237,13 +237,49 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                     int i = 0
                     out.append JsonOutput.OPEN_BRACKET
                     for(o in iterable) {
-                        JsonOutput.JsonWritable writable = renderTemplate(o, arguments, customizer, processedObjects)
-                        writable.writeTo(out)
+                        if(isSimpleValue(o)) {
+                            out.append(JsonOutput.toJson((Object)o))
+                        }
+                        else {
+                            JsonOutput.JsonWritable writable = renderTemplate(o, arguments, customizer, processedObjects)
+                            writable.writeTo(out)
+                        }
                         if(++i != size) {
                             out.append JsonOutput.COMMA
                         }
                     }
                     out.append JsonOutput.CLOSE_BRACKET
+                }
+            }
+        }
+        else if(object instanceof Map) {
+            return new JsonOutput.JsonWritable() {
+
+                @Override
+                Writer writeTo(Writer out) throws IOException {
+
+                    Map map = (Map)object
+                    int size = map.size()
+                    int i = 0
+                    out.append JsonOutput.OPEN_BRACE
+                    for(entry in map.entrySet()) {
+                        out.append(JsonOutput.toJson(entry.key.toString()))
+                        out.append(JsonOutput.COLON)
+                        def value = entry.value
+
+                        if(isSimpleValue(value)) {
+                            out.append(JsonOutput.toJson((Object)value))
+                        }
+                        else {
+                            JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects)
+                            writable.writeTo(out)
+                        }
+                        if(++i != size) {
+                            out.append JsonOutput.COMMA
+                        }
+                    }
+                    out.append JsonOutput.CLOSE_BRACE
+                    return out
                 }
             }
         }
@@ -356,6 +392,23 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         }
     }
 
+
+    protected boolean isSimpleValue(Object value) {
+        if(value == null) {
+            return true
+        }
+
+        Class propertyType = value.getClass()
+        JsonView jsonView = (JsonView)view
+        MappingFactory mappingFactory = jsonView.mappingContext?.mappingFactory
+        if(mappingFactory != null) {
+            return mappingFactory.isSimpleType(propertyType) || (value instanceof Enum) || (value instanceof Map)
+        }
+        else {
+            return MappingFactory.isSimpleType(propertyType.getName()) || (value instanceof Enum) || (value instanceof Map)
+        }
+
+    }
 
     protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties = [], boolean includeAssociations = true, Closure customizer = null) {
 
@@ -634,6 +687,9 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             else {
                 throw new ViewException("Template not found for name $template")
             }
+        }
+        else {
+            return render((Object) arguments)
         }
 
     }

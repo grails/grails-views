@@ -20,13 +20,13 @@ class TemplateRendererSpec extends Specification {
         tmpl.foo(o)
 
         then:
-        1 * mockViewHelper.render([template:"foo", model:[foo:o]])
+        1 * mockViewHelper.render([template:"foo", model:[foo:o, object:o]])
 
         when:
         tmpl."/foo/foo"(o)
 
         then:
-        1 * mockViewHelper.render([template:"/foo/foo", model:[foo:o]])
+        1 * mockViewHelper.render([template:"/foo/foo", model:[foo:o, object: o]])
 
         when:
         tmpl."/foo/foo"(null)

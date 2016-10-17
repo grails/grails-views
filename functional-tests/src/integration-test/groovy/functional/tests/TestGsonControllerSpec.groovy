@@ -13,6 +13,23 @@ import geb.spock.*
 @Rollback
 class TestGsonControllerSpec extends GebSpec {
 
+    void "Test that responding with a map is possible"() {
+        when:"When JSON is requested"
+        def content = new URL("${baseUrl}/testGson/testRespondWithMap").text
+
+        then:"The JSON view is rendered"
+        content == '{"message":"two"}'
+
+    }
+
+    void "Test that responding with a map is possible with object template"() {
+        when:"When JSON is requested"
+        def content = new URL("${baseUrl}/testGson/testRespondWithMapObjectTemplate.json").text
+
+        then:"The JSON view is rendered"
+        content == '{"one":"two"}'
+
+    }
     void "Test that it is possible to use the template engine directly"() {
         when:"When JSON is requested"
         def content = new URL("${baseUrl}/testGson/testTemplateEngine").text

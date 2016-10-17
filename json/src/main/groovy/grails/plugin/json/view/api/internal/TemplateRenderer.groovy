@@ -1,6 +1,7 @@
 package grails.plugin.json.view.api.internal
 
 import grails.plugin.json.view.api.GrailsJsonViewHelper
+import grails.util.GrailsNameUtils
 import groovy.transform.CompileStatic
 
 /**
@@ -38,7 +39,9 @@ class TemplateRenderer {
                 return jsonViewHelper.render(template:name, var:modelName, collection:val)
             }
             else {
-                return jsonViewHelper.render(template:name, model:[(modelName): val])
+                def model = [(modelName): val]
+                model.put(GrailsNameUtils.getPropertyName(val.getClass()), val)
+                return jsonViewHelper.render(template:name, model: model)
             }
         }
         else if(len == 2) {

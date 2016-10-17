@@ -21,6 +21,31 @@ def show() {
     respond Book.get(params.id) 
 }
 
+If you define an `index` action that responds with a list of books:
+
+[source,groovy]
+----
+def index() {
+    respond Book.list()
+}
+----
+
+Then you can create a corresponding `grails-app/views/book/index.gson` file that renders each book:
+
+.grails-app/views/book/index.gson
+[source,groovy]
+----
+@Field List<Book> bookList
+
+json tmpl.book(bookList)
+----
+
+NOTE: When responding with a list of objects Grails automatically appends the suffix "List" to the model name, so in this case the model name is `bookList`
+
+By calling the `tmpl.book(..)` method with the list of books the `grails-app/views/book/_book.gson` template will be rendered for each one and a JSON array returned.
+
+==== Global Default Template
+
 You can also define a `/object/_object` template that is rendered by default if no other template is found during content negotiation. To do this create a file called `/grails-app/views/object/_object.gson` where the name of the model is `object`, for example:
 
 [source,groovy]

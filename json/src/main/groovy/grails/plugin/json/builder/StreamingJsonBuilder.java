@@ -19,10 +19,7 @@
 package grails.plugin.json.builder;
 
 import groovy.json.JsonException;
-import groovy.lang.Closure;
-import groovy.lang.DelegatesTo;
-import groovy.lang.GroovyObjectSupport;
-import groovy.lang.Writable;
+import groovy.lang.*;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -630,7 +627,12 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
         public void call(String name, Writable json) throws IOException {
             writeName(name);
             verifyValue();
-            json.writeTo(writer);
+            if(json instanceof GString) {
+                writer.write(groovy.json.JsonOutput.toJson(json.toString()));
+            }
+            else {
+                json.writeTo(writer);
+            }
         }
 
 
