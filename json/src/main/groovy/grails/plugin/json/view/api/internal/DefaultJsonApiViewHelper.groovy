@@ -7,7 +7,6 @@ import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
 import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
 import grails.util.Holders
-import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.utils.ViewUtils
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
@@ -20,6 +19,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
+import org.springframework.http.HttpMethod
 
 /**
  * @Author Colin Harrington
@@ -364,7 +364,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 } else {
                     PersistentEntity entity = findEntity(object)
                     def linkGenerator = view.linkGenerator
-                    out.write(JsonOutput.toJson(linkGenerator.link(resource: object)))
+                    out.write(JsonOutput.toJson(linkGenerator.link(resource: object, method: HttpMethod.GET)))
                     List<Association> associations = getRelationships(entity)
                     if (associations && getIncludeAssociations(arguments)) {
                         out.write(JsonOutput.COMMA)
@@ -377,7 +377,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                                 out.write(JsonOutput.toJson("href"))
                                 out.write(JsonOutput.COLON)
-                                out.write(JsonOutput.toJson(linkGenerator.link(resource: instance)))
+                                out.write(JsonOutput.toJson(linkGenerator.link(resource: instance, method: HttpMethod.GET)))
 
                                 if (instance instanceof Collection) {
                                     Collection instanceCollection = (Collection) instance
