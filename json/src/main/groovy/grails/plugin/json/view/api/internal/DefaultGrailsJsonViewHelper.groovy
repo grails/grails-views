@@ -265,6 +265,36 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         return jsonWritable
     }
 
+    protected JsonOutput.JsonWritable getIterableWritable(Iterable object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+        return new JsonOutput.JsonWritable() {
+
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+
+                Iterable iterable = (Iterable)object
+                int size = iterable.size()
+                int i = 0
+                out.append JsonOutput.OPEN_BRACKET
+                for(o in iterable) {
+                    handleValue(o, out, arguments, customizer, processedObjects)
+                    if(++i != size) {
+                        out.append JsonOutput.COMMA
+                    }
+                }
+                out.append JsonOutput.CLOSE_BRACKET
+            }
+        }
+    }
+
+    protected void handleValue(Object value, Writer out, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+        if(isSimpleValue(value)) {
+            out.append(JsonOutput.toJson((Object)value))
+        }
+        else {
+            JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects)
+            writable.writeTo(out)
+        }
+    }
 
     @Override
     JsonOutput.JsonWritable render(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
@@ -274,30 +304,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(binding)
 
         if(object instanceof Iterable) {
-            return new JsonOutput.JsonWritable() {
-
-                @Override
-                Writer writeTo(Writer out) throws IOException {
-
-                    Iterable iterable = (Iterable)object
-                    int size = iterable.size()
-                    int i = 0
-                    out.append JsonOutput.OPEN_BRACKET
-                    for(o in iterable) {
-                        if(isSimpleValue(o)) {
-                            out.append(JsonOutput.toJson((Object)o))
-                        }
-                        else {
-                            JsonOutput.JsonWritable writable = renderTemplate(o, arguments, customizer, processedObjects)
-                            writable.writeTo(out)
-                        }
-                        if(++i != size) {
-                            out.append JsonOutput.COMMA
-                        }
-                    }
-                    out.append JsonOutput.CLOSE_BRACKET
-                }
-            }
+            return getIterableWritable(object, arguments, customizer, processedObjects)
         }
         else if(object instanceof Map) {
             return new JsonOutput.JsonWritable() {
@@ -313,14 +320,12 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         out.append(JsonOutput.toJson(entry.key.toString()))
                         out.append(JsonOutput.COLON)
                         def value = entry.value
+                        if (value instanceof Iterable) {
+                            getIterableWritable(value, arguments, customizer, processedObjects).writeTo(out)
+                        } else {
+                            handleValue(value, out, arguments, customizer, processedObjects)
+                        }
 
-                        if(isSimpleValue(value)) {
-                            out.append(JsonOutput.toJson((Object)value))
-                        }
-                        else {
-                            JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects)
-                            writable.writeTo(out)
-                        }
                         if(++i != size) {
                             out.append JsonOutput.COMMA
                         }

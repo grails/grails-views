@@ -32,4 +32,21 @@ json g.render(map)
 
     }
 
+    void "Test render a map type with a simple array"() {
+
+        when:"A map is rendered"
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        def renderResult = render(templateText, [map:[foo:'bar', bar: ['A','B']]])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"foo":"bar","bar":["A","B"]}'
+
+    }
+
 }
