@@ -1,4 +1,3 @@
-package grails.plugin.json.builder;
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ package grails.plugin.json.builder;
  *  specific language governing permissions and limitations
  *  under the License.
  */
+package grails.plugin.json.builder;
 
 import groovy.json.JsonDelegate;
 import groovy.json.JsonException;
@@ -56,6 +56,8 @@ import static grails.plugin.json.builder.JsonOutput.OPEN_BRACE;
 import static grails.plugin.json.builder.JsonOutput.OPEN_BRACKET;
 
 /**
+ * Temporary fork of DefaultJsonGenerator until Groovy 2.5.0 is out.
+ *
  * A JsonGenerator that can be configured with various {@link JsonGenerator.Options}.
  * If the default options are sufficient consider using the static {@code JsonOutput.toJson}
  * methods.

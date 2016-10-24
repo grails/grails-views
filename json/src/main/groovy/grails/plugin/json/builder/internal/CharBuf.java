@@ -29,6 +29,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
+ * Temporary fork of {@link groovy.json.internal.CharBuf} until Groovy 2.5.0 is out.
+ *
  * @author Rick Hightower
  */
 public class CharBuf extends Writer implements CharSequence {

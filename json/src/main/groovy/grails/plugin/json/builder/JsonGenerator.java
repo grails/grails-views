@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /**
+ * Temporary fork of groovy JsonGenerator until Groovy 2.5.0 is out.
+ *
  * Generates JSON from objects.
  *
  * The {@link Options} builder can be used to configure an instance of a JsonGenerator.

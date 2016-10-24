@@ -33,6 +33,8 @@ import java.net.URL;
 import java.util.*;
 
 /**
+ * Temporary fork of {@link groovy.json.JsonOutput} until Groovy 2.5.0 is out.
+ *
  * Class responsible for the actual String serialization of the possible values of a JSON structure.
  * This class can also be used as a category, so as to add <code>toJson()</code> methods to various types.
  *
