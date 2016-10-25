@@ -59,7 +59,9 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         Template template = templateEngine.resolveTemplate(url, locale, qualifiers as String[])
         if(template != null) {
 
-            httpServletResponse.setContentType( getContentType() )
+            if (!httpServletResponse.contentType) {
+                httpServletResponse.setContentType( getContentType() )
+            }
             httpServletResponse.setCharacterEncoding( defaultEncoding )
 
             def writable = template.make(map)

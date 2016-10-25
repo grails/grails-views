@@ -67,8 +67,7 @@ class NamespacedBookSpec extends GebSpec {
 
         then: "The response contains the child template"
         resp.status == 200
-        //TODO: Should be hal+json. Revisit after RC2
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
         resp.json.containsKey("_links")
         resp.json.api == "version 1.0 (Namespaced HAL)"
         resp.json.title == "API - The Shining"
