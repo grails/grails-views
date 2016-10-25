@@ -18,10 +18,10 @@ model {
 json.person {
     name person
 }
-''', [person:"bob"]
+''', [person:"æøå ÆØÅ"]
 
         then:"The json is correct"
-        result.json.person.name == 'bob'
+        result.jsonText == '''{"person":{"name":"æøå ÆØÅ"}}'''
     }
 
     void "Test render a GSON view"() {

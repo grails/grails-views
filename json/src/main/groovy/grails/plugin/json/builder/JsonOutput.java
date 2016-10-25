@@ -63,7 +63,7 @@ public class JsonOutput {
     static final char[] EMPTY_MAP_CHARS = {OPEN_BRACE, CLOSE_BRACE};
     static final char[] EMPTY_LIST_CHARS = {OPEN_BRACKET, CLOSE_BRACKET};
 
-    static final JsonGenerator DEFAULT_GENERATOR = new DefaultJsonGenerator(new JsonGenerator.Options().dateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").timezone("GMT"));
+    static final JsonGenerator DEFAULT_GENERATOR = new DefaultJsonGenerator(new JsonGenerator.Options().disableUnicodeEscaping().dateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").timezone("GMT"));
 
     /**
      * @return "true" or "false" for a boolean value
