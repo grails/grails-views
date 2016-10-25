@@ -50,6 +50,10 @@ include::pluginSupport.adoc[]
 
 include::configuration.adoc[]
 
+=== Custom Converters
+
+include::converters.adoc[]
+
 === IntelliJ Support
 
 include::intellij.adoc[]
