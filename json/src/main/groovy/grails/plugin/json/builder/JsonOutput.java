@@ -63,7 +63,21 @@ public class JsonOutput {
     static final char[] EMPTY_MAP_CHARS = {OPEN_BRACE, CLOSE_BRACE};
     static final char[] EMPTY_LIST_CHARS = {OPEN_BRACKET, CLOSE_BRACKET};
 
-    static final JsonGenerator DEFAULT_GENERATOR = new DefaultJsonGenerator(new JsonGenerator.Options().disableUnicodeEscaping().dateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").timezone("GMT"));
+    static final JsonGenerator DEFAULT_GENERATOR;
+
+    static {
+        JsonGenerator.Options options = new JsonGenerator.Options()
+                .disableUnicodeEscaping()
+                .dateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .timezone("GMT");
+
+        ServiceLoader<JsonConverter> loader = ServiceLoader.load(JsonConverter.class);
+        for (JsonConverter converter : loader) {
+            options.addConverter(converter.getType(), converter.getConverter());
+        }
+
+        DEFAULT_GENERATOR = new DefaultJsonGenerator(options);
+    }
 
     /**
      * @return "true" or "false" for a boolean value

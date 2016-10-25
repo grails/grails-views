@@ -120,10 +120,10 @@ class BookSpec extends GebSpec {
 
         def resp = builder.get("$baseUrl/books/non-standard-template")
 
-        then:"The template was rendered successfully"
+        then:"The template was rendered successfully. The custom converter was also used"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"bookTitle":"template found"}'
+        resp.text == '{"bookTitle":"template found","custom":"Sally"}'
 
     }
 }
