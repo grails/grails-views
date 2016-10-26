@@ -226,7 +226,7 @@ public interface JsonGenerator {
          * Example:
          * <pre><code class="groovyTestCase">
          *     def generator = new groovy.json.JsonGenerator.Options()
-         *                         .addConverter(URL) { URL u ->
+         *                         .addConverter(URL) { URL u -&gt;
          *                             "\"${u.getHost()}\""
          *                         }
          *                         .build()
