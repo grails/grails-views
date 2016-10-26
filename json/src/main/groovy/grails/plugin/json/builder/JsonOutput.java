@@ -59,6 +59,9 @@ public class JsonOutput {
     public static final char QUOTE = '"';
 
     public static final String NULL_VALUE = "null";
+    public static final String JSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String DEFAULT_TIMEZONE = "GMT";
+
     static final char[] EMPTY_STRING_CHARS = Chr.array(QUOTE, QUOTE);
     static final char[] EMPTY_MAP_CHARS = {OPEN_BRACE, CLOSE_BRACE};
     static final char[] EMPTY_LIST_CHARS = {OPEN_BRACKET, CLOSE_BRACKET};
@@ -68,8 +71,8 @@ public class JsonOutput {
     static {
         JsonGenerator.Options options = new JsonGenerator.Options()
                 .disableUnicodeEscaping()
-                .dateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                .timezone("GMT");
+                .dateFormat(JSON_DATE_FORMAT)
+                .timezone(DEFAULT_TIMEZONE);
 
         ServiceLoader<JsonConverter> loader = ServiceLoader.load(JsonConverter.class);
         for (JsonConverter converter : loader) {
