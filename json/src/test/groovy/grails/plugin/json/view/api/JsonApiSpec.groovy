@@ -34,6 +34,7 @@ json jsonapi.render(widget)
 
         then:
             result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
+            result.contentType == 'application/vnd.api+json'
     }
 
     void 'test Relationships'() {

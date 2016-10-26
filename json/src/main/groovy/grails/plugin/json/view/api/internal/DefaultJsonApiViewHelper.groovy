@@ -7,6 +7,7 @@ import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
 import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
 import grails.util.Holders
+import grails.views.api.HttpView
 import grails.views.utils.ViewUtils
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
@@ -51,6 +52,9 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
     @Override
     JsonOutput.JsonWritable render(Object object, Map arguments) {
+        if(view instanceof HttpView) {
+            ((HttpView)view).response?.contentType(contentType)
+        }
         if (object == null) {
             return NULL_OUTPUT
         }
