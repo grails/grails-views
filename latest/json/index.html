@@ -436,7 +436,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_testing">Testing</a></li>
 <li><a href="#_plugin_support">Plugin Support</a></li>
 <li><a href="#_configuration">Configuration</a></li>
-<li><a href="#_custom_converters">Custom Converters</a></li>
 <li><a href="#_intellij_support">IntelliJ Support</a></li>
 <li><a href="#_debugging_views">Debugging Views</a></li>
 </ul>
@@ -519,7 +518,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="sect2">
 <h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.2.0.M1. Below is a version history.</p>
+<p>The current release is 1.1.2. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>1.1.0</strong></p>
@@ -576,7 +575,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.2.0.M1"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.1.2"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -584,7 +583,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.0.M1"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.2"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -596,7 +595,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.2.0.M1"
+        classpath "org.grails.plugins:views-gradle:1.1.2"
     }
 }</code></pre>
 </div>
@@ -1944,7 +1943,7 @@ result.json.age == 10</code></pre>
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:1.2.0.M1"
+        classpath "org.grails.plugins:views-gradle:1.1.2"
     }
 }
 
@@ -1958,7 +1957,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:1.2.0.M1"
+    compile "org.grails.plugins:views-json:1.1.2"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
@@ -2104,55 +2103,6 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_custom_converters">Custom Converters</h3>
-<div class="paragraph">
-<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonConverter.html">JsonConverter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">package foo
-
-class MyCustomConverter implements JsonConverter {
-
-    @Override
-    Closure&lt;? extends CharSequence&gt; getConverter() {
-        { CustomClass c -&gt;
-            JsonOutput.toJson(c.name)
-        }
-    }
-
-    @Override
-    Class getType() {
-        CustomClass
-    }
-
-}
-
-class CustomClass {
-    String name
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter</div>
-<div class="content">
-<pre class="highlight"><code>foo.MyCustomConverter</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you have multiple classes to register, put each one on it&#8217;s own line
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_intellij_support">IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
@@ -2215,7 +2165,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-26 05:41:42 UTC
+Last updated 2016-10-27 07:31:53 UTC
 </div>
 </div>
 </body>
