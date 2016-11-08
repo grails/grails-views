@@ -1,6 +1,7 @@
 package grails.plugin.json.view.api.internal
 
 import grails.gorm.PagedResultList
+import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
@@ -66,10 +67,11 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
             int size = iterable.size()
             Object firstObject = size > 0 ? iterable.first() : null
             DefaultHalViewHelper helper = this
+            JsonGenerator generator = getGenerator()
             return new JsonOutput.JsonWritable() {
                 @Override
                 Writer writeTo(Writer out) throws IOException {
-                    StreamingJsonBuilder builder = new StreamingJsonBuilder(out)
+                    StreamingJsonBuilder builder = new StreamingJsonBuilder(out, generator)
                     builder.call {
 
                         if(firstObject != null) {
