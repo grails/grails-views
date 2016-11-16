@@ -396,6 +396,9 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                                     out.write(JsonOutput.CLOSE_BRACE)
                                 }
+                                if (idx < associations.size() - 1) {
+                                    out.write(JsonOutput.COMMA)
+                                }
                             }
                         }
                         out.write(JsonOutput.CLOSE_BRACE)
