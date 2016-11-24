@@ -6,7 +6,6 @@ import grails.plugin.json.view.test.JsonViewTest
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 import groovy.json.JsonException
-import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -62,7 +61,6 @@ json jsonapi.render(book)
     }
 
 
-    @Ignore('Currently likns are not produced in the relationships section')
     void 'relationships should contain links to self'() {
         when:
             JsonRenderResult result = render('''
