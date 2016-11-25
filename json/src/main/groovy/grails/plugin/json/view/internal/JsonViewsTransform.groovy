@@ -1,7 +1,7 @@
 package grails.plugin.json.view.internal
 
 import grails.compiler.traits.TraitInjector
-import grails.plugin.json.view.JsonViewTemplate
+import grails.plugin.json.view.JsonViewWritableScript
 import grails.views.compiler.ViewsTransform
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
@@ -22,7 +22,7 @@ class JsonViewsTransform extends ViewsTransform {
         def injectors = super.findTraitInjectors()
 
         injectors += GrailsFactoriesLoader.loadFactories(TraitInjector).findAll() { TraitInjector ti ->
-            ti.artefactTypes.contains(JsonViewTemplate.TYPE)
+            ti.artefactTypes.contains(JsonViewWritableScript.TYPE)
         }
         return injectors
     }

@@ -1,6 +1,7 @@
 package grails.plugin.json.view.api.internal
 
 import grails.core.support.proxy.ProxyHandler
+import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
@@ -139,6 +140,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             processSimple(jsonDelegate, object, processedObjects, incs, excs, "", customizer)
         }
 
+        JsonGenerator generator = getGenerator()
         def jsonWritable = new JsonOutput.JsonWritable() {
             @Override
             @CompileStatic
@@ -160,7 +162,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                         }
                         else {
 
-                            StreamingJsonBuilder builder = new StreamingJsonBuilder(out)
+                            StreamingJsonBuilder builder = new StreamingJsonBuilder(out, generator)
                             builder.call {
                                 StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate) getDelegate()
                                 if (beforeClosure != null) {
@@ -187,7 +189,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                         }
                         else {
 
-                            StreamingJsonBuilder builder = new StreamingJsonBuilder(out)
+                            StreamingJsonBuilder builder = new StreamingJsonBuilder(out, generator)
                             builder.call {
                                 StreamingJsonDelegate jsonDelegate = (StreamingJsonDelegate) getDelegate()
                                 if (beforeClosure != null) {
@@ -241,7 +243,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
     protected void handleValue(Object value, Writer out, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
         if(isSimpleValue(value)) {
-            out.append(JsonOutput.toJson((Object)value))
+            out.append(generator.toJson((Object)value))
         }
         else {
             JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects)
@@ -254,8 +256,8 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
         JsonView jsonView = (JsonView)view
         def binding = jsonView.getBinding()
+        JsonGenerator generator = getGenerator()
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(binding)
-
         if(object instanceof Iterable) {
             return getIterableWritable(object, arguments, customizer, processedObjects)
         }
@@ -270,7 +272,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                     int i = 0
                     out.append JsonOutput.OPEN_BRACE
                     for(entry in map.entrySet()) {
-                        out.append(JsonOutput.toJson(entry.key.toString()))
+                        out.append(generator.toJson(entry.key.toString()))
                         out.append(JsonOutput.COLON)
                         def value = entry.value
                         if (value instanceof Iterable) {
@@ -294,7 +296,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             return new JsonOutput.JsonWritable() {
                 @Override
                 Writer writeTo(Writer out) throws IOException {
-                    new StreamingJsonBuilder(out).call {
+                    new StreamingJsonBuilder(out, generator).call {
                         StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
                         jsonDelegate.call("message", e.message)
                         jsonDelegate.call("stacktrace", stacktrace)

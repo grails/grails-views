@@ -1,7 +1,7 @@
 package grails.plugin.json.view.api
 
+import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.StreamingJsonBuilder
-import grails.plugin.json.view.JsonViewTemplate
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.DefaultHalViewHelper
 import grails.plugin.json.view.api.internal.DefaultJsonApiViewHelper
@@ -20,6 +20,11 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 trait JsonView extends GrailsView {
+
+    /**
+     * The default generator
+     */
+    JsonGenerator generator
 
     /**
      * The {@link StreamingJsonBuilder} instance

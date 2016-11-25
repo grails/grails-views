@@ -1,10 +1,17 @@
 package grails.plugin.json.view
 
+import grails.plugin.json.builder.JsonConverter
+import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension
 import grails.plugin.json.view.internal.JsonViewsTransform
+import grails.plugin.json.view.template.JsonViewTemplate
+import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewConfiguration
+import grails.views.WritableScriptTemplate
+import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
+import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
@@ -20,6 +27,9 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
 
     private final boolean compileStatic
+
+    final JsonGenerator generator
+
     /**
      * Constructs a JsonTemplateEngine with the default configuration
      */
@@ -35,6 +45,22 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     JsonViewTemplateEngine(ViewConfiguration configuration) {
         super(configuration)
         this.compileStatic = configuration.compileStatic
+
+        JsonGenerator.Options options = new JsonGenerator.Options()
+        JsonViewGeneratorConfiguration config = ((JsonViewConfiguration)configuration).generator
+
+        if (!config.escapeUnicode) {
+            options.disableUnicodeEscaping()
+        }
+        options.dateFormat(config.dateFormat)
+        options.timezone(config.timeZone)
+
+        ServiceLoader<JsonConverter> loader = ServiceLoader.load(JsonConverter.class)
+        for (JsonConverter converter : loader) {
+            options.addConverter(converter.getType(), converter.getConverter())
+        }
+
+        this.generator = options.build()
     }
 
     @Override
@@ -55,6 +81,12 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     @Override
     String getDynamicTemplatePrefix() {
         "JsonView".intern()
+    }
+
+    protected WritableScriptTemplate createTemplate(Class<? extends Template> cls, File sourceFile) {
+        def template = new JsonViewTemplate((Class<? extends GrailsView>) cls, sourceFile)
+        template.generator = this.generator
+        return initializeTemplate(template, sourceFile)
     }
 
 }

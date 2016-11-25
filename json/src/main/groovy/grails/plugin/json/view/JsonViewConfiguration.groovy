@@ -17,10 +17,12 @@ class JsonViewConfiguration implements GenericViewConfiguration {
 
     List<String> mimeTypes = [MimeType.JSON.name, MimeType.HAL_JSON.name]
 
+    JsonViewGeneratorConfiguration generator = new JsonViewGeneratorConfiguration()
+
     JsonViewConfiguration() {
-        setExtension(JsonViewTemplate.EXTENSION)
+        setExtension(JsonViewWritableScript.EXTENSION)
         setCompileStatic(true)
-        setBaseTemplateClass(JsonViewTemplate)
+        setBaseTemplateClass(JsonViewWritableScript)
     }
 
     @Override

@@ -1,5 +1,6 @@
 package grails.plugin.json.view.api.internal
 
+import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.view.api.JsonView
 import grails.views.api.internal.DefaultGrailsViewHelper
@@ -121,6 +122,10 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
 
     protected boolean getIncludeAssociations(Map arguments) {
         ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
+    }
+
+    JsonGenerator getGenerator() {
+        ((JsonView)view).generator
     }
 
 }

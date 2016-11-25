@@ -3,11 +3,10 @@ package grails.plugin.json.view.mvc
 import grails.core.support.proxy.ProxyHandler
 import grails.plugin.json.renderer.ErrorsJsonViewRenderer
 import grails.plugin.json.renderer.JsonViewJsonRenderer
-import grails.plugin.json.view.JsonViewTemplate
 import grails.plugin.json.view.JsonViewTemplateEngine
 import grails.plugin.json.view.JsonViewConfiguration
+import grails.plugin.json.view.JsonViewWritableScript
 import grails.rest.render.RendererRegistry
-import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.views.mvc.SmartViewResolver
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
@@ -22,7 +21,7 @@ import javax.annotation.PostConstruct
 @CompileStatic
 class JsonViewResolver extends SmartViewResolver {
 
-    public static final String JSON_VIEW_SUFFIX = ".${JsonViewTemplate.EXTENSION}"
+    public static final String JSON_VIEW_SUFFIX = ".${JsonViewWritableScript.EXTENSION}"
 
     @Autowired(required = false)
     ProxyHandler proxyHandler
