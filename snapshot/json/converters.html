@@ -427,27 +427,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonConverter.html">JsonConverter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter</code>.</p>
+<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">package foo
 
-class MyCustomConverter implements JsonConverter {
+class MyConverter implements JsonGenerator.Converter {
 
     @Override
-    Closure&lt;? extends CharSequence&gt; getConverter() {
-        { CustomClass c -&gt;
-            JsonOutput.toJson(c.name)
-        }
+    boolean handles(Class&lt;?&gt; type) {
+        CustomClass.isAssignableFrom(type)
     }
 
     @Override
-    Class getType() {
-        CustomClass
+    Object convert(Object value, String key) {
+        ((CustomClass)value).name
     }
-
 }
+
 
 class CustomClass {
     String name
@@ -455,7 +453,7 @@ class CustomClass {
 </div>
 </div>
 <div class="listingblock">
-<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter</div>
+<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
 <div class="content">
 <pre class="highlight"><code>foo.MyCustomConverter</code></pre>
 </div>
@@ -475,7 +473,7 @@ If you have multiple classes to register, put each one on it&#8217;s own line
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-08 08:09:31 UTC
+Last updated 2016-12-08 21:17:00 UTC
 </div>
 </div>
 </body>

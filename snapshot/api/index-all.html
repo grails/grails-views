@@ -155,7 +155,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/internal/CharBuf.html#addChars(char[])" title="Method in CharBuf">addChars(char[])</a></span> - Method in <a href="grails/plugin/json/builder/internal/CharBuf.html">CharBuf</a>
 </dt><dd> <div class="block"></div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.Options.html#addConverter(Class<T>, Closure<? extends CharSequence>)" title="Method in JsonGenerator.Options">addConverter(Class&lt;T&gt;, Closure&lt;? extends CharSequence&gt;)</a></span> - Method in <a href="grails/plugin/json/builder/JsonGenerator.Options.html">JsonGenerator.Options</a>
+<dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.Options.html#addConverter(Class<T>, Closure<?>)" title="Method in JsonGenerator.Options">addConverter(Class&lt;T&gt;, Closure&lt;?&gt;)</a></span> - Method in <a href="grails/plugin/json/builder/JsonGenerator.Options.html">JsonGenerator.Options</a>
 </dt><dd> <div class="block">Registers a closure that will be called when the specified type or subtype
  is serialized.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/internal/CharBuf.html#addDouble(java.lang.Double)" title="Method in CharBuf">addDouble(Double)</a></span> - Method in <a href="grails/plugin/json/builder/internal/CharBuf.html">CharBuf</a>
@@ -308,9 +308,9 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/plugin/json/view/test/TestRequestConfigurer.html#controllerNamespace(java.lang.String)" title="Method in TestRequestConfigurer">controllerNamespace(String)</a></span> - Method in <a href="grails/plugin/json/view/test/TestRequestConfigurer.html">TestRequestConfigurer</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html#convert(java.lang.Object, java.lang.String)" title="Method in DefaultJsonGenerator.ClosureConverter">convert(Object, String)</a></span> - Method in <a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html">DefaultJsonGenerator.ClosureConverter</a>
-</dt><dd> <div class="block">Converts a given value to a JSON value.</div></dd>
+</dt><dd> <div class="block">Converts a given value.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.Converter.html#convert(java.lang.Object, java.lang.String)" title="Method in JsonGenerator.Converter">convert(Object, String)</a></span> - Method in <a href="grails/plugin/json/builder/JsonGenerator.Converter.html">JsonGenerator.Converter</a>
-</dt><dd> <div class="block">Converts a given object to a JSON value.</div></dd>
+</dt><dd> <div class="block">Converts a given object.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/DefaultJsonGenerator.html#converters" title="Field in DefaultJsonGenerator">converters</a></span> - Field in <a href="grails/plugin/json/builder/DefaultJsonGenerator.html">DefaultJsonGenerator</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.Options.html#converters" title="Field in JsonGenerator.Options">converters</a></span> - Field in <a href="grails/plugin/json/builder/JsonGenerator.Options.html">JsonGenerator.Options</a>
@@ -383,7 +383,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html" title="Class in grails.plugin.json.builder.DefaultJsonGenerator">DefaultJsonGenerator.ClosureConverter</a></span> - Class in <a href="./grails/plugin/json/builder/package-summary.html">grails.plugin.json.builder</a>
 </dt><dd><div class="block">A converter that handles converting a given type to a JSON value
  using a closure.</div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html#DefaultJsonGenerator.ClosureConverter(Class<?>, Closure<? extends CharSequence>)" title="Constructor in DefaultJsonGenerator.ClosureConverter">DefaultJsonGenerator.ClosureConverter(Class&lt;?&gt;, Closure&lt;? extends CharSequence&gt;)</a></span> - Constructor in <a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html">DefaultJsonGenerator.ClosureConverter</a>
+<dt><span class="strong"><a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html#DefaultJsonGenerator.ClosureConverter(Class<?>, Closure<?>)" title="Constructor in DefaultJsonGenerator.ClosureConverter">DefaultJsonGenerator.ClosureConverter(Class&lt;?&gt;, Closure&lt;?&gt;)</a></span> - Constructor in <a href="grails/plugin/json/builder/DefaultJsonGenerator.ClosureConverter.html">DefaultJsonGenerator.ClosureConverter</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/DefaultJsonGenerator.html#DefaultJsonGenerator(Options)" title="Constructor in DefaultJsonGenerator">DefaultJsonGenerator(Options)</a></span> - Constructor in <a href="grails/plugin/json/builder/DefaultJsonGenerator.html">DefaultJsonGenerator</a>
 </dt><dd> <div class="block"></div></dd>
@@ -590,8 +590,6 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block">@return The context path</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/test/TestLinkGenerator.html#getContextPath()" title="Method in TestLinkGenerator">getContextPath()</a></span> - Method in <a href="grails/plugin/json/view/test/TestLinkGenerator.html">TestLinkGenerator</a>
 </dt><dd> <div class="block"></div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/builder/JsonConverter.html#getConverter()" title="Method in JsonConverter">getConverter()</a></span> - Method in <a href="grails/plugin/json/builder/JsonConverter.html">JsonConverter</a>
-</dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/compiler/BuilderTypeCheckingExtension.html#getDelegateInvokeMethod()" title="Method in BuilderTypeCheckingExtension">getDelegateInvokeMethod()</a></span> - Method in <a href="grails/views/compiler/BuilderTypeCheckingExtension.html">BuilderTypeCheckingExtension</a>
 </dt><dd> <div class="block">@return The method node to invoke for unresolved methods within closures of the builder (implicit this)</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/internal/JsonTemplateTypeCheckingExtension.html#getDelegateInvokeMethod()" title="Method in JsonTemplateTypeCheckingExtension">getDelegateInvokeMethod()</a></span> - Method in <a href="grails/plugin/json/view/internal/JsonTemplateTypeCheckingExtension.html">JsonTemplateTypeCheckingExtension</a>
@@ -644,7 +642,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html#getIncludes(java.util.Map)" title="Method in DefaultJsonViewHelper">getIncludes(Map)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html">DefaultJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#getIterableWritable(java.lang.Iterable, java.util.Map, groovy.lang.Closure, Map<Object, JsonOutput.JsonWritable>)" title="Method in DefaultGrailsJsonViewHelper">getIterableWritable(Iterable, Map, Closure, JsonWritable&gt;)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#getIterableWritable(java.lang.Iterable, groovy.lang.Closure)" title="Method in DefaultGrailsJsonViewHelper">getIterableWritable(Iterable, Closure)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html#getJsonStackTrace(java.lang.Throwable)" title="Method in DefaultJsonViewHelper">getJsonStackTrace(Throwable)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultJsonViewHelper.html">DefaultJsonViewHelper</a>
 </dt><dd> <div class="block"></div></dd>
@@ -658,6 +656,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd> <div class="block">The link generator</div></dd>
 <dt><span class="strong"><a href="grails/views/api/GrailsView.html#getMappingContext()" title="Method in GrailsView">getMappingContext()</a></span> - Method in <a href="grails/views/api/GrailsView.html">GrailsView</a>
 </dt><dd> <div class="block">The GORM mapping context</div></dd>
+<dt><span class="strong"><a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html#getMapWritable(java.util.Map, java.util.Map, groovy.lang.Closure, Map<Object, JsonOutput.JsonWritable>)" title="Method in DefaultGrailsJsonViewHelper">getMapWritable(Map, Map, Closure, JsonWritable&gt;)</a></span> - Method in <a href="grails/plugin/json/view/api/internal/DefaultGrailsJsonViewHelper.html">DefaultGrailsJsonViewHelper</a>
+</dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/api/GrailsView.html#getMessageSource()" title="Method in GrailsView">getMessageSource()</a></span> - Method in <a href="grails/views/api/GrailsView.html">GrailsView</a>
 </dt><dd> <div class="block">The message source object</div></dd>
 <dt><span class="strong"><a href="grails/views/api/http/Request.html#getMethod()" title="Method in Request">getMethod()</a></span> - Method in <a href="grails/views/api/http/Request.html">Request</a>
@@ -719,8 +719,6 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/views/ViewConfiguration.html#getTemplatePath()" title="Method in ViewConfiguration">getTemplatePath()</a></span> - Method in <a href="grails/views/ViewConfiguration.html">ViewConfiguration</a>
 </dt><dd> <div class="block">@return Path to the templates</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonOutput.JsonUnescaped.html#getText()" title="Method in JsonOutput.JsonUnescaped">getText()</a></span> - Method in <a href="grails/plugin/json/builder/JsonOutput.JsonUnescaped.html">JsonOutput.JsonUnescaped</a>
-</dt><dd> <div class="block"></div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/builder/JsonConverter.html#getType()" title="Method in JsonConverter">getType()</a></span> - Method in <a href="grails/plugin/json/builder/JsonConverter.html">JsonConverter</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/views/api/http/Request.html#getUri()" title="Method in Request">getUri()</a></span> - Method in <a href="grails/views/api/http/Request.html">Request</a>
 </dt><dd> <div class="block">@return The request URI</div></dd>
@@ -908,12 +906,10 @@ if (location.href.indexOf('is-external=true') == -1) {
 </dt><dd><div class="block">@Author Colin Harrington</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/view/api/JsonApiViewHelper.html" title="Interface in grails.plugin.json.view.api">JsonApiViewHelper</a></span> - Interface in <a href="./grails/plugin/json/view/api/package-summary.html">grails.plugin.json.view.api</a>
 </dt><dd><div class="block">@author Colin Harrington</div></dd>
-<dt><span class="strong"><a href="grails/plugin/json/builder/JsonConverter.html" title="Interface in grails.plugin.json.builder">JsonConverter</a></span> - Interface in <a href="./grails/plugin/json/builder/package-summary.html">grails.plugin.json.builder</a>
-</dt><dd><div class="block">An interface for custom converters to implement for service location</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.html" title="Interface in grails.plugin.json.builder">JsonGenerator</a></span> - Interface in <a href="./grails/plugin/json/builder/package-summary.html">grails.plugin.json.builder</a>
 </dt><dd><div class="block">Temporary fork of groovy JsonGenerator until Groovy 2.5.0 is out.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.Converter.html" title="Interface in grails.plugin.json.builder.JsonGenerator">JsonGenerator.Converter</a></span> - Interface in <a href="./grails/plugin/json/builder/package-summary.html">grails.plugin.json.builder</a>
-</dt><dd><div class="block">Handles converting a given type to a JSON value.</div></dd>
+</dt><dd><div class="block">Handles converting a given type.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/json/builder/JsonGenerator.Options.html" title="Class in grails.plugin.json.builder.JsonGenerator">JsonGenerator.Options</a></span> - Class in <a href="./grails/plugin/json/builder/package-summary.html">grails.plugin.json.builder</a>
 </dt><dd><div class="block">A builder used to construct a <a href='../../../../grails/plugin/json/builder/JsonGenerator.html' title='JsonGenerator'>JsonGenerator</a> instance that allows
  control over the serialized JSON output.  </div></dd>
