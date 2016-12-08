@@ -49,4 +49,22 @@ json g.render(map)
 
     }
 
+    void "Test render a list of maps"() {
+        when:
+        def templateText = '''
+model {
+    List list
 }
+
+json g.render(list)
+'''
+        def renderResult = render(templateText, [list:[[foo:'bar', bar: ['A','B']], [x:'y']]])
+
+        then:"The result is correct"
+        renderResult.jsonText == '[{"foo":"bar","bar":["A","B"]},{"x":"y"}]'
+    }
+
+
+
+}
+
