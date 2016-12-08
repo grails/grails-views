@@ -37,7 +37,7 @@ json g.render(book) {
 Or combine the two approaches:
 
 [source,groovy]    
-json g.render(book, [includes:['title']) {
+json g.render(book, [includes:['title']]) {
     pages 1000
 }
 
