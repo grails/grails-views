@@ -266,22 +266,57 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     }
 
     protected JsonOutput.JsonWritable getIterableWritable(Iterable object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+        return getIterableWritable(object) { Object o, Writer out ->
+            handleValue(o, out, arguments, customizer, processedObjects)
+        }
+
+    }
+
+    protected JsonOutput.JsonWritable getIterableWritable(Iterable object, Closure forEach) {
+        return new JsonOutput.JsonWritable() {
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+                Iterable iterable = (Iterable)object
+                boolean first = true
+                out.append JsonOutput.OPEN_BRACKET
+                for(o in iterable) {
+                    if(!first) {
+                        out.append JsonOutput.COMMA
+                    }
+                    forEach.call(o, out)
+                    first = false
+                }
+                out.append JsonOutput.CLOSE_BRACKET
+            }
+        }
+    }
+
+    protected JsonOutput.JsonWritable getMapWritable(Map object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
         return new JsonOutput.JsonWritable() {
 
             @Override
             Writer writeTo(Writer out) throws IOException {
 
-                Iterable iterable = (Iterable)object
-                int size = iterable.size()
+                Map map = (Map)object
+                int size = map.size()
                 int i = 0
-                out.append JsonOutput.OPEN_BRACKET
-                for(o in iterable) {
-                    handleValue(o, out, arguments, customizer, processedObjects)
+                out.append JsonOutput.OPEN_BRACE
+                for(entry in map.entrySet()) {
+                    out.append(JsonOutput.toJson(entry.key.toString()))
+                    out.append(JsonOutput.COLON)
+                    def value = entry.value
+                    if (value instanceof Iterable) {
+                        getIterableWritable(value, arguments, customizer, processedObjects).writeTo(out)
+                    } else {
+                        handleValue(value, out, arguments, customizer, processedObjects)
+                    }
+
                     if(++i != size) {
                         out.append JsonOutput.COMMA
                     }
                 }
-                out.append JsonOutput.CLOSE_BRACKET
+                out.append JsonOutput.CLOSE_BRACE
+                return out
             }
         }
     }
@@ -307,33 +342,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             return getIterableWritable(object, arguments, customizer, processedObjects)
         }
         else if(object instanceof Map) {
-            return new JsonOutput.JsonWritable() {
-
-                @Override
-                Writer writeTo(Writer out) throws IOException {
-
-                    Map map = (Map)object
-                    int size = map.size()
-                    int i = 0
-                    out.append JsonOutput.OPEN_BRACE
-                    for(entry in map.entrySet()) {
-                        out.append(JsonOutput.toJson(entry.key.toString()))
-                        out.append(JsonOutput.COLON)
-                        def value = entry.value
-                        if (value instanceof Iterable) {
-                            getIterableWritable(value, arguments, customizer, processedObjects).writeTo(out)
-                        } else {
-                            handleValue(value, out, arguments, customizer, processedObjects)
-                        }
-
-                        if(++i != size) {
-                            out.append JsonOutput.COMMA
-                        }
-                    }
-                    out.append JsonOutput.CLOSE_BRACE
-                    return out
-                }
-            }
+            return getMapWritable(object, arguments, customizer, processedObjects)
         }
         else if(object instanceof Throwable) {
             return new JsonOutput.JsonWritable() {
@@ -423,10 +432,21 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                 }
                                 else {
                                     Iterable iterable = isArray ? value as List : (Iterable)value
-                                    jsonDelegate.call(propertyName, iterable) { child ->
-                                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                        processSimple(embeddedDelegate, child, processedObjects, incs, excs,"${path}${propertyName}.")
-                                    }
+                                    boolean first = true
+                                    jsonDelegate.call(propertyName, getIterableWritable(iterable) { Object o, Writer out ->
+                                        if(isStringType(o.class)) {
+                                            out.append(o.toString())
+                                        }
+                                        else if(isSimpleType(o.class, o)) {
+                                            out.append(JsonOutput.toJson((Object)o))
+                                        }
+                                        else {
+                                            out.append JsonOutput.OPEN_BRACE
+                                            processSimple(new StreamingJsonDelegate(out, first), o, processedObjects, incs, excs,"${path}${propertyName}.")
+                                            out.append JsonOutput.CLOSE_BRACE
+                                        }
+                                        first = false
+                                    })
                                 }
                             }
                             else {
