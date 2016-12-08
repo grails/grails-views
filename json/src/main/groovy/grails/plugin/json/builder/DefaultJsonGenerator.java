@@ -186,8 +186,8 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
         Converter converter = findConverter(objectClass);
         if (converter != null) {
-            writeRaw(converter.convert(object, key), buffer);
-            return;
+            object = converter.convert(object, key);
+            objectClass = object.getClass();
         }
 
         if (CharSequence.class.isAssignableFrom(objectClass)) { // Handle String, StringBuilder, GString and other CharSequence implementations
@@ -454,10 +454,10 @@ public class DefaultJsonGenerator implements JsonGenerator {
     protected static class ClosureConverter implements Converter {
 
         protected final Class<?> type;
-        protected final Closure<? extends CharSequence> closure;
+        protected final Closure<?> closure;
         protected final int paramCount;
 
-        protected ClosureConverter(Class<?> type, Closure<? extends CharSequence> closure) {
+        protected ClosureConverter(Class<?> type, Closure<?> closure) {
             if (type == null) {
                 throw new NullPointerException("Type parameter must not be null");
             }
@@ -490,30 +490,22 @@ public class DefaultJsonGenerator implements JsonGenerator {
          *
          * @param type the type of the object to convert
          * @return true if this converter can successfully convert values of
-         *      the given type to a JSON value
+         *      the given type
          */
+        @Override
         public boolean handles(Class<?> type) {
             return this.type.isAssignableFrom(type);
         }
 
         /**
-         * Converts a given value to a JSON value.
-         *
-         * @param value the object to convert
-         * @return a JSON value representing the value
-         */
-        public CharSequence convert(Object value) {
-            return convert(value, null);
-        }
-
-        /**
-         * Converts a given value to a JSON value.
+         * Converts a given value.
          *
          * @param value the object to convert
          * @param key the key name for the value, may be {@code null}
-         * @return a JSON value representing the value
+         * @return the converted object
          */
-        public CharSequence convert(Object value, String key) {
+        @Override
+        public Object convert(Object value, String key) {
             return (paramCount == 1) ?
                     closure.call(value) :
                     closure.call(value, key);

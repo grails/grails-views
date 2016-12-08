@@ -1,22 +1,19 @@
 package functional.tests
 
-import grails.plugin.json.builder.JsonConverter
-import grails.plugin.json.builder.JsonOutput
+import grails.plugin.json.builder.JsonGenerator
 
 /**
  * Created by jameskleeh on 10/25/16.
  */
-class MyConverter implements JsonConverter {
+class MyConverter implements JsonGenerator.Converter {
 
     @Override
-    Closure<? extends CharSequence> getConverter() {
-        { CustomClass c ->
-            JsonOutput.toJson(c.name)
-        }
+    boolean handles(Class<?> type) {
+        CustomClass.isAssignableFrom(type)
     }
 
     @Override
-    Class getType() {
-        CustomClass
+    Object convert(Object value, String key) {
+        ((CustomClass)value).name
     }
 }

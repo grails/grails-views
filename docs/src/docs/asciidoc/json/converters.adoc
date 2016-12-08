@@ -1,24 +1,22 @@
-It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements link:api/grails/plugin/json/builder/JsonConverter.html[JsonConverter]. Then you must register the class in `src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter`.
+It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements link:api/grails/plugin/json/builder/JsonGenerator.Converter.html[Converter]. Then you must register the class in `src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter`.
 
 [source,groovy]
 ----
 package foo
 
-class MyCustomConverter implements JsonConverter {
+class MyConverter implements JsonGenerator.Converter {
 
     @Override
-    Closure<? extends CharSequence> getConverter() {
-        { CustomClass c ->
-            JsonOutput.toJson(c.name)
-        }
+    boolean handles(Class<?> type) {
+        CustomClass.isAssignableFrom(type)
     }
 
     @Override
-    Class getType() {
-        CustomClass
+    Object convert(Object value, String key) {
+        ((CustomClass)value).name
     }
-
 }
+
 
 class CustomClass {
     String name
@@ -26,7 +24,7 @@ class CustomClass {
 ----
 
 [source]
-.src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter
+.src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter
 ----
 foo.MyCustomConverter
 ----

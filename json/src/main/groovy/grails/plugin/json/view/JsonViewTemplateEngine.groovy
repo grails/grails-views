@@ -1,11 +1,9 @@
 package grails.plugin.json.view
 
-import grails.plugin.json.builder.JsonConverter
 import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension
 import grails.plugin.json.view.internal.JsonViewsTransform
 import grails.plugin.json.view.template.JsonViewTemplate
-import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewConfiguration
 import grails.views.WritableScriptTemplate
@@ -55,9 +53,9 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         options.dateFormat(config.dateFormat)
         options.timezone(config.timeZone)
 
-        ServiceLoader<JsonConverter> loader = ServiceLoader.load(JsonConverter.class)
-        for (JsonConverter converter : loader) {
-            options.addConverter(converter.getType(), converter.getConverter())
+        ServiceLoader<JsonGenerator.Converter> loader = ServiceLoader.load(JsonGenerator.Converter.class);
+        for (JsonGenerator.Converter converter : loader) {
+            options.addConverter(converter);
         }
 
         this.generator = options.build()

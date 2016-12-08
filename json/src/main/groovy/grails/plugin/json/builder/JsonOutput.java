@@ -74,11 +74,6 @@ public class JsonOutput {
                 .dateFormat(JSON_DATE_FORMAT)
                 .timezone(DEFAULT_TIMEZONE);
 
-        ServiceLoader<JsonConverter> loader = ServiceLoader.load(JsonConverter.class);
-        for (JsonConverter converter : loader) {
-            options.addConverter(converter.getType(), converter.getConverter());
-        }
-
         DEFAULT_GENERATOR = new DefaultJsonGenerator(options);
     }
 

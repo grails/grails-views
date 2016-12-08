@@ -69,7 +69,7 @@ public interface JsonGenerator {
     boolean isExcludingValues(Object value);
 
     /**
-     * Handles converting a given type to a JSON value.
+     * Handles converting a given type.
      *
      * @since 2.5
      */
@@ -86,21 +86,13 @@ public interface JsonGenerator {
         boolean handles(Class<?> type);
 
         /**
-         * Converts a given object to a JSON value.
-         *
-         * @param value the object to convert
-         * @return a JSON value representing the object
-         */
-        CharSequence convert(Object value);
-
-        /**
-         * Converts a given object to a JSON value.
+         * Converts a given object.
          *
          * @param value the object to convert
          * @param key the key name for the value, may be {@code null}
-         * @return a JSON value representing the object
+         * @return the converted object
          */
-        CharSequence convert(Object value, String key);
+        Object convert(Object value, String key);
 
     }
 
@@ -208,6 +200,19 @@ public interface JsonGenerator {
         }
 
         /**
+         * Registers a converter that will be called when a type it handles is encountered.
+         *
+         * @param converter to register
+         * @return a reference to this {@code Options} instance
+         */
+        public Options addConverter(Converter converter) {
+            if (converter != null) {
+                converters.add(converter);
+            }
+            return this;
+        }
+
+        /**
          * Registers a closure that will be called when the specified type or subtype
          * is serialized.
          *
@@ -217,10 +222,6 @@ public interface JsonGenerator {
          * and, if available, will be passed the name of the key associated with this
          * value if serializing a JSON Object.  This parameter will be {@code null} when
          * serializing a JSON Array or when there is no way to determine the name of the key.
-         *
-         * <p>The return value from the closure must be a valid JSON value. The result
-         * of the closure will be written to the internal buffer directly and no quoting,
-         * escaping or other manipulation will be done to the resulting output.
          *
          * <p>
          * Example:
@@ -253,14 +254,13 @@ public interface JsonGenerator {
          */
         public <T> Options addConverter(Class<T> type,
                                         @ClosureParams(value=FromString.class, options={"T","T,String"})
-                                                Closure<? extends CharSequence> closure)
+                                                Closure<?> closure)
         {
             Converter converter = new DefaultJsonGenerator.ClosureConverter(type, closure);
             if (converters.contains(converter)) {
                 converters.remove(converter);
             }
-            converters.add(converter);
-            return this;
+            return addConverter(converter);
         }
 
         /**
