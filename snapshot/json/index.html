@@ -2131,6 +2131,9 @@ class CustomClass {
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Because plugins could potentially provide converters, you can also determine the order by implementing the <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/Ordered.html">Ordered</a> interface in your converter.</p>
+</div>
 <div class="listingblock">
 <div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
 <div class="content">
@@ -2213,7 +2216,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-08 21:24:59 UTC
+Last updated 2016-12-12 15:20:45 UTC
 </div>
 </div>
 </body>
