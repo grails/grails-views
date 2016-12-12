@@ -4,9 +4,9 @@ import grails.plugin.json.builder.JsonGenerator
 import org.springframework.core.Ordered
 
 /**
- * Created by jameskleeh on 10/25/16.
+ * Created by jameskleeh on 12/12/16.
  */
-class MyConverter implements JsonGenerator.Converter, Ordered {
+class MyOtherConverter implements JsonGenerator.Converter, Ordered {
 
     @Override
     boolean handles(Class<?> type) {
@@ -15,11 +15,11 @@ class MyConverter implements JsonGenerator.Converter, Ordered {
 
     @Override
     Object convert(Object value, String key) {
-        ((CustomClass)value).name
+        "shouldn't see this value because MyConverter has a higher priority of -2"
     }
 
     @Override
     int getOrder() {
-        return -2
+        return -1
     }
 }

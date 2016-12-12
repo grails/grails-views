@@ -13,6 +13,7 @@ import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.springframework.core.OrderComparator
 
 /**
  * A template engine for parsing JSON views
@@ -54,8 +55,14 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         options.timezone(config.timeZone)
 
         ServiceLoader<JsonGenerator.Converter> loader = ServiceLoader.load(JsonGenerator.Converter.class);
+        List<JsonGenerator.Converter> converters = []
         for (JsonGenerator.Converter converter : loader) {
-            options.addConverter(converter);
+            converters.add(converter)
+        }
+        println converters
+        OrderComparator.sort(converters)
+        converters.each {
+            options.addConverter(it)
         }
 
         this.generator = options.build()
