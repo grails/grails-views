@@ -3,10 +3,12 @@ package grails.plugin.json.view.api.internal
 import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.view.api.JsonView
+import grails.views.api.http.Parameters
 import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.utils.ViewUtils
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
+import org.apache.commons.collections.MapUtils
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.gorm.GormEnhancer
@@ -101,23 +103,34 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
 
     protected List<Object> getJsonStackTrace(Throwable e) {
         StackTraceUtils.sanitize(e)
-        (List<Object>) e.stackTrace
+        e.stackTrace
                 .findAll() { StackTraceElement element -> element.lineNumber > -1 }
                 .collect() { StackTraceElement element ->
             "$element.lineNumber | ${element.className}.$element.methodName".toString()
-        }.toList()
+        }.toList() as List<Object>
     }
 
-    protected List<String> getExpandProperties(JsonView jsonView, Map arguments) {
-        List<String> expandProperties
+    protected Set<String> getExpandProperties(JsonView jsonView, Map arguments) {
+        Set<String> expandProperties
         def templateEngine = jsonView.templateEngine
         def viewConfiguration = templateEngine?.viewConfiguration
         if (viewConfiguration == null || viewConfiguration.isAllowResourceExpansion()) {
-            expandProperties = (List<String>) (jsonView.params.list(EXPAND) ?: ViewUtils.getStringListFromMap(EXPAND, arguments))
+            expandProperties = parseExpandByParamsOrArguments(jsonView.params, jsonView.level, MapUtils.isEmpty(arguments) && MapUtils.isNotEmpty(jsonView.arguments) ? jsonView.arguments : arguments)
         } else {
-            expandProperties = Collections.emptyList()
+            expandProperties = Collections.emptySet()
         }
         expandProperties
+    }
+
+    protected Set<String> parseExpandByParamsOrArguments(Parameters params, Integer level, Map arguments) {
+        return params ? parseExpandParamsByLevel(params.list(EXPAND), level) ?: parseExpandParamsByLevel(ViewUtils.getStringListFromMap(EXPAND, arguments), level) : parseExpandParamsByLevel(ViewUtils.getStringListFromMap(EXPAND, arguments), level)
+    }
+
+    protected Set<String> parseExpandParamsByLevel(List<String> expandParameters, Integer level) {
+        return expandParameters ? expandParameters.findResults {
+            String[] splitParams = it ? it.split("\\.") : [] as String[]
+            splitParams.size() > level ? splitParams[level] : null
+        } as Set<String> : [] as Set<String>
     }
 
     protected boolean getIncludeAssociations(Map arguments) {

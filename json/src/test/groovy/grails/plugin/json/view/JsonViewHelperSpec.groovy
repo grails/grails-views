@@ -328,6 +328,47 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         result.toString() == '{"title":"The Stand"}'
     }
 
+    void "test expand"() {
+        given: "An view helper"
+        mappingContext.addPersistentEntities(Player, Team)
+        def player1 = new Player(name: "Iniesta")
+        player1.id = 1
+        def player2 = new Player(name: "Messi")
+        player2.id = 2
+        def team = new Team(name: "Barcelona", players: [player1, player2])
+        team.id = 1
+        player1.setTeam(team)
+        player2.setTeam(team)
+
+        when: "We render an object with single expand"
+
+        def renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json g.render(team, [expand: ['players']])
+        ''', [team: team])
+
+        then: "The result is correct"
+        renderResult.jsonText == '{"id":1,"name":"Barcelona","players":[{"id":1,"name":"Iniesta","team":{"id":1}},{"id":2,"name":"Messi","team":{"id":1}}]}'
+
+        when: "We render an object with nested expand"
+
+        renderResult = render('''
+        import groovy.transform.*
+        import grails.plugin.json.view.*
+
+        @Field Team team
+
+        json g.render(team, [expand: ['players.team']])
+        ''', [team: team])
+
+        then: "The result is correct"
+        renderResult.jsonText == '{"id":1,"name":"Barcelona","players":[{"id":1,"name":"Iniesta","team":{"id":1,"name":"Barcelona","players":[{"id":1},{"id":2}]}},{"id":2,"name":"Messi","team":{"id":1,"name":"Barcelona","players":[{"id":1},{"id":2}]}}]}'
+    }
+
     protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
         def jsonView = Mock(JsonView)
         jsonView.getParams() >> new EmptyParameters()

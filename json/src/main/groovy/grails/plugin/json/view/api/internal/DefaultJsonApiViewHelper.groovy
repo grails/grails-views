@@ -417,7 +417,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
     JsonOutput.JsonWritable renderIncluded(Object object, Map arguments) {
 
-        List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
+        Set<String> expandProperties = getExpandProperties((JsonView) view, arguments)
         if (!expandProperties.empty && getIncludeAssociations(arguments)) {
 
             arguments = new LinkedHashMap(arguments)
