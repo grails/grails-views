@@ -8,6 +8,7 @@ import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.utils.ViewUtils
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
+import org.apache.commons.collections.MapUtils
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.gorm.GormEnhancer
@@ -114,7 +115,7 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         def templateEngine = jsonView.templateEngine
         def viewConfiguration = templateEngine?.viewConfiguration
         if (viewConfiguration == null || viewConfiguration.isAllowResourceExpansion()) {
-            expandProperties = parseExpandByParamsOrArguments(jsonView.params, jsonView.level, arguments.isEmpty() && !jsonView.arguments.isEmpty() ? jsonView.arguments : arguments)
+            expandProperties = parseExpandByParamsOrArguments(jsonView.params, jsonView.level, MapUtils.isEmpty(arguments) && MapUtils.isNotEmpty(jsonView.arguments) ? jsonView.arguments : arguments)
         } else {
             expandProperties = Collections.emptySet()
         }
