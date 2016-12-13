@@ -286,7 +286,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
 
         List<String> incs = getIncludes(arguments)
         List<String> excs = getExcludes(arguments)
-        List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
+        Set<String> expandProperties = getExpandProperties((JsonView) view, arguments)
         boolean deep = ViewUtils.getBooleanFromMap(GrailsJsonViewHelper.DEEP, arguments)
         arguments.put(IncludeExcludeSupport.EXCLUDES_PROPERTY, excs)
         if(entity != null) {

@@ -5,6 +5,7 @@ import grails.plugin.json.view.JsonViewConfiguration
 import grails.plugin.json.view.JsonViewTemplateEngine
 import grails.plugin.json.view.api.JsonView
 import grails.views.api.HttpView
+import grails.views.api.http.Parameters
 import grails.views.api.http.Response
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeUtility
@@ -166,6 +167,7 @@ trait JsonViewTest {
 
     private JsonRenderResult produceResult(Template template, Map model, Closure configurer) {
         JsonView writable = (JsonView) template.make(model)
+        writable.params = (Parameters) model['params']
         if (configurer != null) {
             def rc = new TestRequestConfigurer(writable)
             configurer.delegate = rc
