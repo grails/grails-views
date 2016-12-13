@@ -7,6 +7,7 @@ import grails.plugin.json.view.api.JsonView
 import grails.views.api.HttpView
 import grails.views.api.http.Parameters
 import grails.views.api.http.Response
+import grails.views.api.internal.EmptyParameters
 import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeUtility
 import groovy.json.JsonSlurper
@@ -167,7 +168,7 @@ trait JsonViewTest {
 
     private JsonRenderResult produceResult(Template template, Map model, Closure configurer) {
         JsonView writable = (JsonView) template.make(model)
-        writable.params = (Parameters) model['params']
+        writable.params = model['params'] == null ? new EmptyParameters() : (Parameters) model['params']
         if (configurer != null) {
             def rc = new TestRequestConfigurer(writable)
             configurer.delegate = rc

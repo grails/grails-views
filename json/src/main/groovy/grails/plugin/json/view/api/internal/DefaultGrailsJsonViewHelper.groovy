@@ -123,7 +123,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
     }
 
-    private Set<String> getExpandProperties(JsonView jsonView, Map arguments) {
+    protected Set<String> getExpandProperties(JsonView jsonView, Map arguments) {
         Set<String> expandProperties
         def templateEngine = jsonView.templateEngine
         def viewConfiguration = templateEngine?.viewConfiguration
