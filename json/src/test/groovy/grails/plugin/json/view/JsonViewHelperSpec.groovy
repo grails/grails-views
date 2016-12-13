@@ -182,9 +182,37 @@ class JsonViewHelperSpec extends Specification {
         result.toString() == '{"title":"The Stand"}'
     }
 
+    void "test expand"() {
+        given: "An view helper"
+        def viewHelper = mockViewHelper(Player, Team)
+        def player1 = new Player(name: "Iniesta")
+        player1.id = 1
+        def player2 = new Player(name: "Messi")
+        player2.id = 2
+        def team = new Team(name: "Barcelona", players: [player1, player2])
+        team.id = 1
+        player1.setTeam(team)
+        player2.setTeam(team)
+
+        when: "We render an object with single expand"
+
+        def renderResult = viewHelper.render(team, [expand: 'players'])
+
+        then: "The result is correct"
+        renderResult.toString() == '{"id":1,"name":"Barcelona","players":[{"id":1,"name":"Iniesta","team":{"id":1}},{"id":2,"name":"Messi","team":{"id":1}}]}'
+
+        when: "We render an object with nested expand"
+
+        renderResult = viewHelper.render(team, [expand: 'players.team'])
+
+        then: "The result is correct"
+        renderResult.toString() == '{"id":1,"name":"Barcelona","players":[{"id":1,"name":"Iniesta","team":{"id":1,"name":"Barcelona","players":[{"id":1},{"id":2}]}},{"id":2,"name":"Messi","team":{"id":1,"name":"Barcelona","players":[{"id":1},{"id":2}]}}]}'
+    }
+
     protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
         def jsonView = Mock(JsonView)
         jsonView.getParams() >> new EmptyParameters()
+        jsonView.getExpandRootArguments() >> [:]
         def mappingContext = Mock(MappingContext)
 
         def app = new DefaultGrailsApplication(classes)

@@ -6,18 +6,16 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
-import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import grails.views.ResolvableGroovyTemplateEngine
-import grails.views.ViewConfiguration
 import grails.views.ViewException
 import grails.views.ViewUriResolver
 import grails.views.api.GrailsView
+import grails.views.api.http.Parameters
 import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.resolve.TemplateResolverUtils
 import grails.views.utils.ViewUtils
 import groovy.text.Template
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
@@ -27,7 +25,6 @@ import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.collection.PersistentCollection
-import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -42,6 +39,7 @@ import org.springframework.util.ReflectionUtils
 
 import java.beans.PropertyDescriptor
 import java.lang.reflect.ParameterizedType
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -53,7 +51,12 @@ import java.lang.reflect.ParameterizedType
 @Slf4j
 class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements GrailsJsonViewHelper {
 
-
+    private static final ThreadLocal<AtomicInteger> THREAD_LOCAL_NODE_LEVEL = new ThreadLocal<AtomicInteger>() {
+        @Override
+        protected AtomicInteger initialValue() {
+            return new AtomicInteger()
+        }
+    }
     private static final Set<String> TO_STRING_TYPES = [
         "org.bson.types.ObjectId"
     ] as Set
@@ -62,8 +65,8 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     public static final JsonOutput.JsonWritable NULL_OUTPUT = new JsonOutput.JsonWritable() {
         @Override
         Writer writeTo(Writer out) throws IOException {
-            out.write(JsonOutput.NULL_VALUE);
-            return out;
+            out.write(JsonOutput.NULL_VALUE)
+            return out
         }
     }
 
@@ -87,11 +90,12 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     @Override
     void inline(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
         JsonView jsonView = (JsonView)view
+        addExpandRootArguments(jsonView, arguments)
         def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(jsonView.binding)
         boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
         boolean includeAssociations = ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
-        List<String> expandProperties = getExpandProperties(jsonView, arguments)
+        Set<String> expandProperties = getExpandProperties(jsonView, arguments)
 
         List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
         List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments)
@@ -103,7 +107,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         PersistentEntity entity = mappingContext.getPersistentEntity(object.getClass().name)
 
         if(entity != null) {
-            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, expandProperties, includeAssociations, customizer)
+            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, expandProperties, includeAssociations, arguments, customizer)
         }
         else {
             processSimple(jsonDelegate, object, processedObjects, incs, excs, "", customizer)
@@ -112,16 +116,42 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
     }
 
-    private List<String> getExpandProperties(JsonView jsonView, Map arguments) {
-        List<String> expandProperties
+    private void addExpandRootArguments(JsonView jsonView, Map arguments) {
+        if (jsonView.expandNodeLevel == 0 && isNotEmpty(arguments) && arguments[EXPAND]) {
+            jsonView.expandRootArguments = isEmpty(jsonView.expandRootArguments) ? [:] : jsonView.expandRootArguments
+            jsonView.expandRootArguments[EXPAND] = arguments[EXPAND]
+        }
+    }
+
+    private Set<String> getExpandProperties(JsonView jsonView, Map arguments) {
+        Set<String> expandProperties
         def templateEngine = jsonView.templateEngine
         def viewConfiguration = templateEngine?.viewConfiguration
         if (viewConfiguration == null || viewConfiguration.isAllowResourceExpansion()) {
-            expandProperties = (List<String>) (jsonView.params.list(EXPAND) ?: ViewUtils.getStringListFromMap(EXPAND, arguments))
+            expandProperties = parseExpandByParamsOrArguments(jsonView.params, jsonView.expandNodeLevel, isEmpty(arguments) && isNotEmpty(jsonView.expandRootArguments) ? jsonView.expandRootArguments : arguments)
         } else {
-            expandProperties = Collections.emptyList()
+            expandProperties = [] as Set<String>
         }
         expandProperties
+    }
+
+    protected Set<String> parseExpandByParamsOrArguments(Parameters params, Integer level, Map arguments) {
+        return params ? parseExpandParamsByLevel(params.list(EXPAND), level) ?: parseExpandParamsByLevel(ViewUtils.getStringListFromMap(EXPAND, arguments), level) : parseExpandParamsByLevel(ViewUtils.getStringListFromMap(EXPAND, arguments), level)
+    }
+
+    protected Set<String> parseExpandParamsByLevel(List<String> expandParameters, Integer level) {
+        return expandParameters ? expandParameters.findResults {
+            String[] splitParams = it ? it.split("\\.") : [] as String[]
+            splitParams.size() > level ? splitParams[level] : null
+        } as Set<String> : [] as Set<String>
+    }
+
+    protected boolean isEmpty(Map map) {
+        return (map == null || map.isEmpty())
+    }
+
+    protected boolean isNotEmpty(Map map) {
+        return !isEmpty(map)
     }
 
     @Override
@@ -129,8 +159,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         inline(object, Collections.emptyMap(), customizer)
     }
 
-    private JsonOutput.JsonWritable preProcessedOutput(Object object, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+    private JsonOutput.JsonWritable preProcessedOutput(Object object, Map<Object, JsonOutput.JsonWritable> processedObjects, Map arguments) {
         JsonView jsonView = (JsonView)view
+        addExpandRootArguments(jsonView, arguments)
         boolean rootRender = processedObjects.isEmpty()
         object = jsonView.proxyHandler?.unwrapIfProxy(object) ?: object
         if(object == null) {
@@ -147,7 +178,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     }
 
     private JsonOutput.JsonWritable renderTemplate(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
-        JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects)
+        JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects, arguments)
         if (preProcessed != null) {
             return preProcessed
         }
@@ -164,22 +195,23 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     }
 
     private JsonOutput.JsonWritable renderDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
-        JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects)
+        JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects, arguments)
         if (preProcessed != null) {
             return preProcessed
         }
 
         JsonView jsonView = (JsonView)view
+        addExpandRootArguments(jsonView, arguments)
         boolean rootRender = processedObjects.isEmpty()
         def binding = jsonView.getBinding()
         def entity = findEntity(object)
 
         final boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
-        List<String> expandProperties = getExpandProperties(jsonView, arguments)
+        Set<String> expandProperties = getExpandProperties(jsonView, arguments)
         final Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
 
         Closure doProcessEntity = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->
-            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, expandProperties, true, customizer)
+            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, expandProperties, true, arguments, customizer)
         }
 
         Closure doProcessSimple = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->
@@ -335,6 +367,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
     JsonOutput.JsonWritable render(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null ) {
 
         JsonView jsonView = (JsonView)view
+        addExpandRootArguments(jsonView, arguments)
         def binding = jsonView.getBinding()
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(binding)
 
@@ -521,7 +554,16 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
     }
 
-    protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, PersistentEntity entity, Object object, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties = [], boolean includeAssociations = true, Closure customizer = null) {
+    protected void process(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate,
+                           PersistentEntity entity,
+                           Object object,
+                           Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs,
+                           List<String> excs, String path,
+                           boolean isDeep,
+                           Set<String> expandProperties = [] as Set<String>,
+                           boolean includeAssociations = true,
+                           Map arguments = [:],
+                           Closure customizer = null) {
 
 /*
         if(processedObjects.containsKey(object)) {
@@ -550,145 +592,140 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                 }
             }
         }
+        try {
+            THREAD_LOCAL_NODE_LEVEL.get().getAndIncrement()
+            for (prop in entity.persistentProperties) {
+                def propertyName = prop.name
+                String qualified = "${path}${propertyName}"
+                if (!includeExcludeSupport.shouldInclude(incs, excs, qualified)) continue
 
-        for (prop in entity.persistentProperties) {
-            def propertyName = prop.name
-            String qualified = "${path}${propertyName}"
-            if (!includeExcludeSupport.shouldInclude(incs, excs, qualified)) continue
+                def value = ((GroovyObject) object).getProperty(propertyName)
+                if (value == null) continue
 
-            def value = ((GroovyObject) object).getProperty(propertyName)
-            if(value == null) continue
+                if (!(prop instanceof Association)) {
+                    processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value, templateEngine, locale)
+                } else if (includeAssociations) {
+                    Association ass = (Association) prop
+                    def associatedEntity = ass.associatedEntity
 
-            if (!(prop instanceof Association)) {
-                processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value, templateEngine, locale)
-            } else if(includeAssociations) {
-                Association ass = (Association) prop
-                def associatedEntity = ass.associatedEntity
-
-                if (ass instanceof Embedded) {
-                    def propertyType = ass.type
-                    def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
-                    if(childTemplate != null) {
-                        JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, propertyType, value)
-                        jsonDelegate.call(propertyName, jsonWritable)
-                    }
-                    else {
-                        jsonDelegate.call(propertyName) {
-                            StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                            if(associatedEntity != null) {
-                                process(embeddedDelegate, associatedEntity,value, processedObjects, incs, excs , "${qualified}.", isDeep)
-                            }
-                            else {
-                                processSimple(embeddedDelegate, value, processedObjects, incs, excs, "${qualified}.")
-                            }
-                        }
-                    }
-                }
-                else if(ass instanceof ToOne) {
-                    if(associatedEntity != null) {
-                        def associationIdName = associatedEntity.identity.name
-
+                    if (ass instanceof Embedded) {
                         def propertyType = ass.type
-                        JsonView jsonView = (JsonView)view
-                        ProxyHandler proxyHandler = jsonView.proxyHandler
-                        def associatedId = ((GroovyObject)value).getProperty(associationIdName)
-
-                        if(!ass.circular && (isDeep || expandProperties.contains(propertyName))) {
-                            def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
-                            if(childTemplate != null) {
-                                def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
-                                def childView = prepareWritable(childTemplate, model)
-                                def writer = new FastStringWriter()
-                                childView.writeTo(writer)
-                                jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
-                            }
-                            else {
-                                jsonDelegate.call(propertyName) {
-                                    StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                    process(embeddedDelegate, associatedEntity,value, processedObjects, incs, excs , "${qualified}.", isDeep, expandProperties)
+                        def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
+                        if (childTemplate != null) {
+                            JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, propertyType, value)
+                            jsonDelegate.call(propertyName, jsonWritable)
+                        } else {
+                            jsonDelegate.call(propertyName) {
+                                StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate) getDelegate()
+                                if (associatedEntity != null) {
+                                    process(embeddedDelegate, associatedEntity, value, processedObjects, incs, excs, "${qualified}.", isDeep)
+                                } else {
+                                    processSimple(embeddedDelegate, value, processedObjects, incs, excs, "${qualified}.")
                                 }
                             }
-
                         }
-                        else if(associatedId != null) {
-                            jsonDelegate.call(propertyName) {
-                                call(associationIdName, associatedId)
-                            }
-                        }
+                    } else if (ass instanceof ToOne) {
+                        if (associatedEntity != null) {
+                            def associationIdName = associatedEntity.identity.name
 
-                    }
-                }
-                else if((ass instanceof ToMany) && Iterable.isAssignableFrom(ass.type)) {
+                            def propertyType = ass.type
+                            JsonView jsonView = (JsonView) view
+                            ProxyHandler proxyHandler = jsonView.proxyHandler
+                            def associatedId = ((GroovyObject) value).getProperty(associationIdName)
 
-                    if(ass instanceof Basic) {
-                        // basic collection types like lists of strings etc. just render directly
-                        jsonDelegate.call(propertyName, value)
-                    }
-                    else {
-                        boolean shouldExpand = expandProperties.contains(propertyName)
-                        if(!isDeep && !shouldExpand) {
-                            def proxyHandler = ((JsonView) view).getProxyHandler()
-                            if(proxyHandler?.isProxy(value) && !proxyHandler.isInitialized(value)) {
-                                continue
-                            }
-                            if(value instanceof PersistentCollection) {
-                                PersistentCollection pc = (PersistentCollection)value
-                                if(!pc.isInitialized()) continue
-                            }
-                        }
-
-                        if(isDeep || shouldExpand) {
-                            def propertyType = ass.associatedEntity.javaClass
-                            def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
-                            if(childTemplate != null) {
-                                def writer = new FastStringWriter()
-                                def iterator = ((Iterable) value).iterator()
-                                writer.write(JsonOutput.OPEN_BRACKET)
-                                def childPropertyName = GrailsNameUtils.getPropertyName(propertyType)
-
-                                while(iterator.hasNext()) {
-                                    def o = iterator.next()
-
-                                    def model = [(childPropertyName): o]
+                            if (expandProperties.contains(propertyName) || (!ass.circular && isDeep)) {
+                                def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
+                                if (childTemplate != null) {
+                                    def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
                                     def childView = prepareWritable(childTemplate, model)
+                                    def writer = new FastStringWriter()
                                     childView.writeTo(writer)
-                                    if(iterator.hasNext()) {
-                                        writer.write(JsonOutput.COMMA)
+                                    jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                                } else {
+                                    jsonDelegate.call(propertyName) {
+                                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate) getDelegate()
+                                        process(embeddedDelegate, associatedEntity, value, processedObjects, incs, excs, "${qualified}.", isDeep, expandProperties)
                                     }
                                 }
-                                writer.write(JsonOutput.CLOSE_BRACKET)
-                                jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
-                            } else {
-                                jsonDelegate.call(propertyName, (Iterable)value) { child ->
-                                    StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                    process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep)
-                                }
-                            }
-                        } else {
-                            def associationIdName = associatedEntity.identity.name
-                            jsonDelegate.call(propertyName, (Iterable)value) { child ->
-                                def associatedId = ((GroovyObject)child).getProperty(associationIdName)
-                                if(associatedId != null) {
+
+                            } else if (associatedId != null) {
+                                jsonDelegate.call(propertyName) {
                                     call(associationIdName, associatedId)
                                 }
-                                else {
-                                    StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                                    process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep, expandProperties)
+                            }
+
+                        }
+                    } else if ((ass instanceof ToMany) && Iterable.isAssignableFrom(ass.type)) {
+
+                        if (ass instanceof Basic) {
+                            // basic collection types like lists of strings etc. just render directly
+                            jsonDelegate.call(propertyName, value)
+                        } else {
+                            boolean shouldExpand = expandProperties.contains(propertyName)
+                            if (!isDeep && !shouldExpand) {
+                                def proxyHandler = ((JsonView) view).getProxyHandler()
+                                if (proxyHandler?.isProxy(value) && !proxyHandler.isInitialized(value)) {
+                                    continue
+                                }
+                                if (value instanceof PersistentCollection) {
+                                    PersistentCollection pc = (PersistentCollection) value
+                                    if (!pc.isInitialized()) continue
+                                }
+                            }
+
+                            if (isDeep || shouldExpand) {
+                                def propertyType = ass.associatedEntity.javaClass
+                                def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
+                                if (childTemplate != null) {
+                                    def writer = new FastStringWriter()
+                                    def iterator = ((Iterable) value).iterator()
+                                    writer.write(JsonOutput.OPEN_BRACKET)
+                                    def childPropertyName = GrailsNameUtils.getPropertyName(propertyType)
+
+                                    while (iterator.hasNext()) {
+                                        def o = iterator.next()
+
+                                        def model = [(childPropertyName): o]
+                                        def childView = prepareWritable(childTemplate, model)
+                                        childView.writeTo(writer)
+                                        if (iterator.hasNext()) {
+                                            writer.write(JsonOutput.COMMA)
+                                        }
+                                    }
+                                    writer.write(JsonOutput.CLOSE_BRACKET)
+                                    jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                                } else {
+                                    jsonDelegate.call(propertyName, (Iterable) value) { child ->
+                                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate) getDelegate()
+                                        process(embeddedDelegate, associatedEntity, child, processedObjects, incs, excs, "${qualified}.", isDeep, parseExpandByParamsOrArguments(view.params, THREAD_LOCAL_NODE_LEVEL.get().get(), arguments))
+                                    }
+                                }
+                            } else {
+                                def associationIdName = associatedEntity.identity.name
+                                jsonDelegate.call(propertyName, (Iterable) value) { child ->
+                                    def associatedId = ((GroovyObject) child).getProperty(associationIdName)
+                                    if (associatedId != null) {
+                                        call(associationIdName, associatedId)
+                                    } else {
+                                        StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate) getDelegate()
+                                        process(embeddedDelegate, associatedEntity, child, processedObjects, incs, excs, "${qualified}.", isDeep, parseExpandByParamsOrArguments(view.params, THREAD_LOCAL_NODE_LEVEL.get().get(), arguments))
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                else if(ass instanceof EmbeddedCollection) {
-                    if(Iterable.isAssignableFrom(ass.type) && associatedEntity != null) {
-                        jsonDelegate.call(propertyName, (Iterable)value) { child ->
-                            StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
-                            process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep, expandProperties)
+                    } else if (ass instanceof EmbeddedCollection) {
+                        if (Iterable.isAssignableFrom(ass.type) && associatedEntity != null) {
+                            jsonDelegate.call(propertyName, (Iterable) value) { child ->
+                                StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate) getDelegate()
+                                process(embeddedDelegate, associatedEntity, child, processedObjects, incs, excs, "${qualified}.", isDeep, parseExpandByParamsOrArguments(view.params, THREAD_LOCAL_NODE_LEVEL.get().get(), arguments))
+                            }
                         }
                     }
-                }
 
+                }
             }
+        } finally {
+            THREAD_LOCAL_NODE_LEVEL.get().decrementAndGet()
         }
 
         if (customizer != null) {
@@ -822,6 +859,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         writable.controllerName = view.controllerName
         writable.actionName = view.actionName
         writable.config = view.config
+        writable.params = view.params
+        writable instanceof JsonView ? ((JsonView) writable).expandNodeLevel = THREAD_LOCAL_NODE_LEVEL.get().get() : null
+        writable instanceof JsonView && view instanceof JsonView ? ((JsonView) writable).expandRootArguments = ((JsonView) view).expandRootArguments : [:]
         return writable
     }
 }

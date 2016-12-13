@@ -1,0 +1,7 @@
+import functional.tests.Circular
+
+model {
+    Iterable<Circular> circularList
+}
+
+json tmpl.circular(circularList ?: [])

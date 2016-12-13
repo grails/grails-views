@@ -35,6 +35,17 @@ trait JsonView extends GrailsView {
      * The parent model, if any
      */
     Map parentModel
+
+    /**
+     * The expand node level when rendering
+     */
+    int expandNodeLevel
+
+    /**
+     * The root expand arguments, if any
+     */
+    Map expandRootArguments = [:]
+
     /**
      * Overrides the default helper with new methods specific to JSON building
      */
