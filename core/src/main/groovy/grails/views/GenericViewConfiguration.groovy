@@ -107,7 +107,12 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
             for (desc in descriptors) {
                 if (desc.writeMethod != null) {
                     def propertyName = desc.name
-                    def value = config.getProperty("grails.views.${moduleName}.$propertyName", (Class) desc.propertyType)
+                    def value
+                    if (desc.propertyType == Class) {
+                        value = getClass().classLoader.loadClass(config.getProperty("grails.views.${moduleName}.$propertyName", String))
+                    } else {
+                        value = config.getProperty("grails.views.${moduleName}.$propertyName", (Class) desc.propertyType)
+                    }
                     if(value != null) {
                         configObject.setProperty(propertyName, value)
                     }
@@ -125,6 +130,6 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
     }
 
     PropertyDescriptor[] findViewConfigPropertyDescriptor() {
-        BeanUtils.getPropertyDescriptors(ViewConfiguration)
+        BeanUtils.getPropertyDescriptors(GenericViewConfiguration)
     }
 }
