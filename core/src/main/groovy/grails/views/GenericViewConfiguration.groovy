@@ -109,7 +109,10 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
                     def propertyName = desc.name
                     def value
                     if (desc.propertyType == Class) {
-                        value = getClass().classLoader.loadClass(config.getProperty("grails.views.${moduleName}.$propertyName", String))
+                        String className = config.getProperty("grails.views.${moduleName}.$propertyName", String)
+                        if (className) {
+                            value = getClass().classLoader.loadClass(className)
+                        }
                     } else {
                         value = config.getProperty("grails.views.${moduleName}.$propertyName", (Class) desc.propertyType)
                     }
