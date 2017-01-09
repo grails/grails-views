@@ -779,6 +779,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                             out.append JsonOutput.OPEN_BRACKET
                             for(o in collection) {
                                 model.put(var, o)
+                                model.put(GrailsNameUtils.getPropertyName(o.class), o)
                                 def writable = prepareWritable(childTemplate, model)
                                 writable.writeTo( out )
                                 if(++i != size) {
