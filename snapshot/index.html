@@ -536,9 +536,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_testing">2.11. Testing</a></li>
 <li><a href="#_plugin_support">2.12. Plugin Support</a></li>
 <li><a href="#_configuration">2.13. Configuration</a></li>
-<li><a href="#_custom_converters">2.14. Custom Converters</a></li>
-<li><a href="#_intellij_support">2.15. IntelliJ Support</a></li>
-<li><a href="#_debugging_views">2.16. Debugging Views</a></li>
+<li><a href="#_intellij_support">2.14. IntelliJ Support</a></li>
+<li><a href="#_debugging_views">2.15. Debugging Views</a></li>
 </ul>
 </li>
 <li><a href="#_markup_views">3. Markup Views</a>
@@ -649,7 +648,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="sect2">
 <h3 id="_version_history">2.2. Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.2.0.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 1.1.4.BUILD-SNAPSHOT. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>1.1.0</strong></p>
@@ -706,7 +705,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:1.1.4.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -714,7 +713,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.4.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -726,7 +725,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.1.4.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -1039,7 +1038,7 @@ json g.render(book)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">includes</span>:[<span class="string"><span class="delimiter">'</span><span class="content">title</span><span class="delimiter">'</span></span>]]) {
+<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">includes</span>:[<span class="string"><span class="delimiter">'</span><span class="content">title</span><span class="delimiter">'</span></span>]) {
     pages <span class="integer">1000</span>
 }</code></pre>
 </div>
@@ -2074,7 +2073,7 @@ result.json.age == <span class="integer">10</span></code></pre>
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.1.4.BUILD-SNAPSHOT"
     }
 }
 
@@ -2088,7 +2087,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:1.1.4.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
@@ -2234,57 +2233,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_custom_converters">2.14. Custom Converters</h3>
-<div class="paragraph">
-<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> foo
-
-<span class="type">class</span> <span class="class">MyConverter</span> <span class="directive">implements</span> JsonGenerator.Converter {
-
-    <span class="annotation">@Override</span>
-    <span class="type">boolean</span> handles(<span class="predefined-type">Class</span>&lt;?&gt; type) {
-        CustomClass.isAssignableFrom(type)
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="predefined-type">Object</span> convert(<span class="predefined-type">Object</span> value, <span class="predefined-type">String</span> key) {
-        ((CustomClass)value).name
-    }
-}
-
-
-<span class="type">class</span> <span class="class">CustomClass</span> {
-    <span class="predefined-type">String</span> name
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Because plugins could potentially provide converters, you can also determine the order by implementing the <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/Ordered.html">Ordered</a> interface in your converter.</p>
-</div>
-<div class="listingblock">
-<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
-<div class="content">
-<pre class="CodeRay highlight"><code>foo.MyCustomConverter</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you have multiple classes to register, put each one on it&#8217;s own line
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_intellij_support">2.15. IntelliJ Support</h3>
+<h3 id="_intellij_support">2.14. IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
@@ -2299,7 +2248,7 @@ If you have multiple classes to register, put each one on it&#8217;s own line
 </div>
 </div>
 <div class="sect2">
-<h3 id="_debugging_views">2.16. Debugging Views</h3>
+<h3 id="_debugging_views">2.15. Debugging Views</h3>
 <div class="paragraph">
 <p>Generally views should be kept simple and if you arrive to the point where you need to debug a view you probably have too much logic in the view that would be better off handled by the controller prior to supplying the model.</p>
 </div>
@@ -2307,7 +2256,7 @@ If you have multiple classes to register, put each one on it&#8217;s own line
 <p>Nevertheless here are a few view debugging tips to help identify problems in the view.</p>
 </div>
 <div class="sect3">
-<h4 id="_introspecting_the_model">2.16.1. Introspecting the Model</h4>
+<h4 id="_introspecting_the_model">2.15.1. Introspecting the Model</h4>
 <div class="paragraph">
 <p>Every JSON view is a Groovy script and like any Groovy script the model is defined in a <code>binding</code> variable. Therefore you can easily find out the model at any time by either logging or printing the binding variables:</p>
 </div>
@@ -2337,7 +2286,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connecting_a_debugger">2.16.2. Connecting a Debugger</h4>
+<h4 id="_connecting_a_debugger">2.15.2. Connecting a Debugger</h4>
 <div class="paragraph">
 <p>Some IDEs like Intellij IDE allow you to set break points and step debug within the view itself. As mentioned previously you shouldn&#8217;t arrive to this point and if you do you have too much logic in your view, but if you do need it the feature is there.</p>
 </div>
@@ -2493,7 +2442,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-12 15:20:45 UTC
+Last updated 2017-01-09 19:51:52 UTC
 </div>
 </div>
 </body>

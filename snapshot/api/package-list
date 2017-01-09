@@ -1,13 +1,10 @@
 grails.plugin.json.builder
-grails.plugin.json.builder.internal
 grails.plugin.json.renderer
 grails.plugin.json.view
 grails.plugin.json.view.api
 grails.plugin.json.view.api.internal
-grails.plugin.json.view.api.jsonapi
 grails.plugin.json.view.internal
 grails.plugin.json.view.mvc
-grails.plugin.json.view.template
 grails.plugin.json.view.test
 grails.plugin.markup.view
 grails.plugin.markup.view.api
