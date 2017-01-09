@@ -26,7 +26,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_P
   cd gh-pages
 
   # If this is the master branch then update the snapshot
-  if [[ $TRAVIS_BRANCH == 'master' ]]; then
+  if [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ ]]; then
      mkdir -p snapshot
      cp -r ../docs/build/docs/. ./snapshot/
 
