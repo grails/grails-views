@@ -1,10 +1,13 @@
 package grails.views
 
+import grails.util.GrailsUtil
 import org.grails.config.CodeGenConfig
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 
+//Fixed in 3.2.5
+@IgnoreIf( { GrailsUtil.grailsVersion.startsWith('3.1') })
 class GenericViewConfigurationSpec extends Specification {
-
 
     void "test setting of boolean"() {
         given:
