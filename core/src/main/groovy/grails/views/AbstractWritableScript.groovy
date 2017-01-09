@@ -55,20 +55,6 @@ abstract class AbstractWritableScript extends Script implements WritableScript, 
      */
     abstract Writer doWrite(Writer writer)
 
-    /**
-     * Obtains a model value for the given name and type
-     *
-     * @param name The name
-     * @param targetType The type
-     * @return The model value or null if it doesn't exist
-     */
-    def <T> T model(String name, Class<T> targetType = Object) {
-        def value = getBinding().variables.get(name)
-        if(targetType.isInstance(value)) {
-            return (T)value
-        }
-        return null
-    }
 
     void setModelTypes(Map<String, Class> modelTypes) {
         this.modelTypes = modelTypes

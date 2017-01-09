@@ -17,11 +17,13 @@ model {
 }
 json.person {
     name person
+    model person
 }
 ''', [person:"bob"]
 
         then:"The json is correct"
         result.json.person.name == 'bob'
+        result.json.person.model == 'bob'
     }
 
     void "Test render a GSON view"() {

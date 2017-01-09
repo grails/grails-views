@@ -824,4 +824,19 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         writable.config = view.config
         return writable
     }
+
+    /**
+     * Obtains a model value for the given name and type
+     *
+     * @param name The name
+     * @param targetType The type
+     * @return The model value or null if it doesn't exist
+     */
+    def <T> T model(String name, Class<T> targetType = Object) {
+        def value = view.binding.variables.get(name)
+        if(targetType.isInstance(value)) {
+            return (T)value
+        }
+        return null
+    }
 }
