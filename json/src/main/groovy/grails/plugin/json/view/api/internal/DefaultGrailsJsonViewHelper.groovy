@@ -473,7 +473,11 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
             if (customizer != null) {
                 customizer.setDelegate(jsonDelegate)
-                customizer.call()
+                if (customizer.maximumNumberOfParameters == 1) {
+                    customizer.call(object)
+                } else {
+                    customizer.call()
+                }
             }
 
         }
