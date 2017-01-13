@@ -5,6 +5,8 @@ import grails.core.GrailsDomainClass
 import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
+import grails.plugin.json.view.test.JsonViewTest
+import grails.views.GrailsViewTemplate
 import grails.views.api.internal.EmptyParameters
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.core.support.GrailsDomainConfigurationUtil
@@ -32,7 +34,7 @@ import spock.lang.Specification
 /**
  * @author graemerocher
  */
-class JsonViewHelperSpec extends Specification {
+class JsonViewHelperSpec extends Specification implements JsonViewTest {
     void "test render toMany association"() {
         given:"A view helper"
         DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)
@@ -182,6 +184,23 @@ class JsonViewHelperSpec extends Specification {
         result.toString() == '{"title":"The Stand"}'
     }
 
+    void "Test render collection as null produces empty list"() {
+        given:"A view helper"
+        def viewHelper = mockViewHelper()
+
+        when:
+        def result = viewHelper.render(collection: null, template: 'child', var: 'age')
+
+        then:"The result is correct"
+        result.toString() == '[]'
+
+        when:
+        result = viewHelper.render(collection: [], template: 'child', var: 'age')
+
+        then:"The result is correct"
+        result.toString() == '[]'
+    }
+
     protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
         def jsonView = Mock(JsonView)
         jsonView.getParams() >> new EmptyParameters()
@@ -208,6 +227,11 @@ class JsonViewHelperSpec extends Specification {
 
         def binding = new Binding()
         jsonView.getBinding() >> binding
+
+        jsonView.getTemplateEngine() >> templateEngine
+
+        jsonView.getViewTemplate() >> new GrailsViewTemplate(JsonView)
+
         viewHelper
     }
 }

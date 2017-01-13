@@ -749,7 +749,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         def templateEngine = view.templateEngine
         if(template) {
             Map model = (Map)arguments.model ?: [:]
-            def collection = arguments.collection
+            def collection = arguments.containsKey('collection') ? (arguments.collection ?: []) : null
             def var = arguments.var ?: 'it'
             String templateName = template.toString()
             String namespace = view.getControllerNamespace()
