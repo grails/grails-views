@@ -1,6 +1,5 @@
-package grails.view.resolve
+package grails.views.resolve
 
-import grails.views.resolve.TemplateResolverUtils
 import spock.lang.Specification
 
 /**

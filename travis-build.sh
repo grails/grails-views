@@ -5,7 +5,7 @@ rm -rf *.zip
 
 EXIT_STATUS=0
 echo "Publishing archives for branch $TRAVIS_BRANCH"
-if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
+if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
   echo "Publishing archives"
 
@@ -26,7 +26,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   cd gh-pages
 
   # If this is the master branch then update the snapshot
-  if [[ $TRAVIS_BRANCH == 'master' ]]; then
+  if [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ ]]; then
      mkdir -p snapshot
      cp -r ../docs/build/docs/. ./snapshot/
 

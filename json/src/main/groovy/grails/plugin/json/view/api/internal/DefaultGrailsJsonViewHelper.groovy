@@ -506,7 +506,11 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
             if (customizer != null) {
                 customizer.setDelegate(jsonDelegate)
-                customizer.call()
+                if (customizer.maximumNumberOfParameters == 1) {
+                    customizer.call(object)
+                } else {
+                    customizer.call()
+                }
             }
 
         }
@@ -730,7 +734,11 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
         if (customizer != null) {
             customizer.setDelegate(jsonDelegate)
-            customizer.call()
+            if (customizer.maximumNumberOfParameters == 1) {
+                customizer.call(object)
+            } else {
+                customizer.call()
+            }
         }
 
     }
@@ -778,7 +786,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         def templateEngine = view.templateEngine
         if(template) {
             Map model = (Map)arguments.model ?: [:]
-            def collection = arguments.collection
+            def collection = arguments.containsKey('collection') ? (arguments.collection ?: []) : null
             def var = arguments.var ?: 'it'
             String templateName = template.toString()
             String namespace = view.getControllerNamespace()
@@ -816,6 +824,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                             out.append JsonOutput.OPEN_BRACKET
                             for(o in collection) {
                                 model.put(var, o)
+                                model.put(GrailsNameUtils.getPropertyName(o.class), o)
                                 def writable = prepareWritable(childTemplate, model)
                                 writable.writeTo( out )
                                 if(++i != size) {
@@ -863,5 +872,20 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         writable instanceof JsonView ? ((JsonView) writable).expandNodeLevel = THREAD_LOCAL_NODE_LEVEL.get().get() : null
         writable instanceof JsonView && view instanceof JsonView ? ((JsonView) writable).expandRootArguments = ((JsonView) view).expandRootArguments : [:]
         return writable
+    }
+
+    /**
+     * Obtains a model value for the given name and type
+     *
+     * @param name The name
+     * @param targetType The type
+     * @return The model value or null if it doesn't exist
+     */
+    def <T> T model(String name, Class<T> targetType = Object) {
+        def value = view.binding.variables.get(name)
+        if(targetType.isInstance(value)) {
+            return (T)value
+        }
+        return null
     }
 }

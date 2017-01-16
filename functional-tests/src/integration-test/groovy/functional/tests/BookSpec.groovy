@@ -101,7 +101,7 @@ class BookSpec extends GebSpec {
         then:"Access to config and params works"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":3}]'
+        resp.text == '[{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"ConfigVendor","fromParams":3}]'
 
         when:"A GET is issued for all books with excludes"
         resp = builder.get("$baseUrl/books/listExcludesRespond?testParam=4")
@@ -124,6 +124,19 @@ class BookSpec extends GebSpec {
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '{"bookTitle":"template found"}'
+    }
 
+    void "Object type of list is used for model variable when rendering templates"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:
+
+        def resp = builder.get("$baseUrl/books/listCallsTmpl")
+
+        then:"The template was rendered successfully"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.text == '[{"title":"The Changeling"}]'
     }
 }
