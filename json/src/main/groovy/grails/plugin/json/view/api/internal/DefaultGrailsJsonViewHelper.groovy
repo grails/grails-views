@@ -432,7 +432,6 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                 }
                                 else {
                                     Iterable iterable = isArray ? value as List : (Iterable)value
-                                    boolean first = true
                                     jsonDelegate.call(propertyName, getIterableWritable(iterable) { Object o, Writer out ->
                                         if(isStringType(o.class)) {
                                             out.append(o.toString())
@@ -442,10 +441,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                         }
                                         else {
                                             out.append JsonOutput.OPEN_BRACE
-                                            processSimple(new StreamingJsonDelegate(out, first), o, processedObjects, incs, excs,"${path}${propertyName}.")
+                                            processSimple(new StreamingJsonDelegate(out, true), o, processedObjects, incs, excs,"${path}${propertyName}.")
                                             out.append JsonOutput.CLOSE_BRACE
                                         }
-                                        first = false
                                     })
                                 }
                             }
