@@ -30,14 +30,14 @@ When using a template:
 model {
     String message
 }
-json.message {
+json {
     hello message
 }
 
 In the view you can use the `tmpl` namespace:
 [source,groovy]
 json {
-    message tmpl.msg(message)
+    message tmpl.msg([message: message])
 }
 
 or you can use `g.render`
@@ -45,13 +45,6 @@ or you can use `g.render`
 [source,groovy]
 json {
     message g.render(template:'msg', model:[message: message])
-}
-
-or
-
-[source,groovy]
-json {
-    message g.render(template:'msg', model: message, var:'message')
 }
 
 Using collections:
@@ -129,5 +122,5 @@ json {
 When using g.render, you *must* set the `var` parameter to the variable name in the template.
 [source,groovy]
 json {
-    messages g.render(template:'msg', collection: stringList, var: 'string')
+    messages g.render(template:'msg', collection: stringList, var: 'msg')
 }
