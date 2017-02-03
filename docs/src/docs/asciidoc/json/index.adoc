@@ -22,6 +22,10 @@ include::rendering.adoc[]
 
 include::viewApi.adoc[]
 
+=== Model Naming
+
+include::modelNaming.adoc[]
+
 === Content Negotiation
 
 include::contentNegotiation.adoc[]
