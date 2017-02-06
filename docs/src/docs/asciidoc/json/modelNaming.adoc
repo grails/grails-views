@@ -74,8 +74,8 @@ Given a view:
 model {
     String string
 }
-json.message {
-    hello string
+json {
+    message string
 }
 
 You can pass in the variable directly to `respond`:
@@ -92,14 +92,16 @@ When using a template the model name is based on the template name:
 In the view you can use the `tmpl` namespace:
 [source,groovy]
 .`grails-app/views/hello/index.gson`
-json.message tmpl.msg(message)
+json {
+    message tmpl.msg(message)
+}
 
 [source,groovy]
 .`grails-app/views/hello/_msg.gson`
 model {
     String msg
 }
-json.message {
+json {
     hello msg
 }
 
