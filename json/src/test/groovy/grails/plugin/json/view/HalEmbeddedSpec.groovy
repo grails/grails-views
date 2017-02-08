@@ -39,6 +39,33 @@ json {
 
     }
 
+
+    void "test hal links only"() {
+        given:"A model"
+        def player = new Player(id: 1L, name: "Cantona")
+        player.id = 1L
+
+        def captain = new Player(name: "Keane")
+        captain.id = 2L
+        def team = new Team( captain: captain, name: "Manchester United", players: [player])
+        team.id = 1L
+
+        when:"hal.embedded(..) is used with a map"
+        def result = render('''
+import grails.plugin.json.view.*
+
+@Field Team team
+
+json {
+    hal.links(self: team, captain: team.captain)
+}
+
+''', [players:team.players, team:team])
+        then:"The output is correct"
+        result.jsonText == '{"_links":{"self":{"href":"http://localhost:8080/team/1","hreflang":"en","type":"application/hal+json"},"captain":{"href":"http://localhost:8080/player/2","hreflang":"en","type":"application/hal+json"}}}'
+
+    }
+
     void "test hal embedded with explicit model and inline rendering"() {
         given:"A model"
         def player = new Player(id: 1L, name: "Cantona")
@@ -63,6 +90,32 @@ json {
 ''', [players:team.players, team:team])
         then:"The output is correct"
         result.jsonText == '{"_embedded":{"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"id":1,"name":"Manchester United"}'
+    }
+
+
+    void "test hal embedded only"() {
+        given:"A model"
+        def player = new Player(id: 1L, name: "Cantona")
+        player.id = 1L
+
+        def captain = new Player(name: "Keane")
+        captain.id = 2L
+        def team = new Team( captain: captain, name: "Manchester United", players: [player])
+        team.id = 1L
+
+        when:"hal.embedded(..) is used with a map"
+        def result = render('''
+import grails.plugin.json.view.*
+
+@Field Team team
+
+json {
+    hal.embedded(players:team.players)
+}
+
+''', [players:team.players, team:team])
+        then:"The output is correct"
+        result.jsonText == '{"_embedded":{"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]}}'
     }
 
     void "test hal embedded with explicit model"() {
@@ -145,8 +198,6 @@ json {
 
     void "test hal embedded method for many-to-one associations"() {
         when:"A GSON view that renders hal.embedded(..) is rendered"
-
-
 
         def team = new Team(name: "Manchester United")
         def player = new Player(id: 1L, name: "Cantona", team: team)

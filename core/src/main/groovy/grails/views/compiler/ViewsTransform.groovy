@@ -7,11 +7,13 @@ import groovy.text.markup.MarkupTemplateEngine
 import groovy.transform.CompilationUnitAware
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import org.apache.commons.validator.Var
 import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.ast.ClassCodeExpressionTransformer
 import org.codehaus.groovy.ast.ClassCodeVisitorSupport
 import org.codehaus.groovy.ast.ClassHelper
 import org.codehaus.groovy.ast.ClassNode
+import org.codehaus.groovy.ast.CodeVisitorSupport
 import org.codehaus.groovy.ast.DynamicVariable
 import org.codehaus.groovy.ast.FieldNode
 import org.codehaus.groovy.ast.MethodNode
@@ -25,10 +27,14 @@ import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MapEntryExpression
 import org.codehaus.groovy.ast.expr.MapExpression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
+import org.codehaus.groovy.ast.expr.PropertyExpression
+import org.codehaus.groovy.ast.expr.TupleExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.ast.stmt.Statement
+import org.codehaus.groovy.ast.tools.GeneralUtils
+import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 import org.codehaus.groovy.control.CompilationUnit
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
@@ -99,13 +105,15 @@ class ViewsTransform implements ASTTransformation, CompilationUnitAware {
                                 Expression exp = ((ExpressionStatement)st).expression
                                 if(exp instanceof MethodCallExpression) {
                                     MethodCallExpression mce = (MethodCallExpression)exp
-                                    if(mce.methodAsString == 'model') {
+                                    if(mce.methodAsString == 'model' && modelStatement == null) {
                                         def arguments = mce.getArguments()
                                         def args = arguments instanceof ArgumentListExpression ? ((ArgumentListExpression) arguments).getExpressions() : Collections.emptyList()
                                         if(args.size() == 1 && args[0] instanceof ClosureExpression) {
                                             modelStatement = st
-                                            break
                                         }
+                                    }
+                                    if(mce.methodAsString == 'json') {
+                                        new HalCodeVisitorSupport(compilationUnit).visitMethodCallExpression(mce)
                                     }
                                 }
                             }
