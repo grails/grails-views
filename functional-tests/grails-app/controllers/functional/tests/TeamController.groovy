@@ -15,6 +15,10 @@ class TeamController extends RestfulController {
         respond Team.findById(params.id, [fetch:[players:'join']])
     }
 
+    def composite() {
+        respond Composite.findByTeamAndPlayer(Team.load(1), Player.load(2))
+    }
+
     def deep(Long id) {
         respond Team.get(id)
     }
