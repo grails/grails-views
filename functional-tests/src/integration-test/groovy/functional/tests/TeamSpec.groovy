@@ -19,7 +19,7 @@ class TeamSpec extends GebSpec {
         def builder = new RestBuilder()
 
         when:
-        def resp = builder.get("$baseUrl/teams/1")
+        def resp = builder.get("${baseUrl}teams/1")
 
         then:"The response is correct"
         resp.status == 200
@@ -34,7 +34,7 @@ class TeamSpec extends GebSpec {
         def builder = new RestBuilder()
 
         when:
-        def resp = builder.get("$baseUrl/teams/deep/1")
+        def resp = builder.get("${baseUrl}teams/deep/1")
 
         then:"The response is correct"
         resp.status == 200
@@ -47,7 +47,7 @@ class TeamSpec extends GebSpec {
         def builder = new RestBuilder()
 
         when:
-        def resp = builder.get("$baseUrl/teams/hal/1")
+        def resp = builder.get("${baseUrl}teams/hal/1")
 
         then:"The response is correct"
         resp.status == 200
