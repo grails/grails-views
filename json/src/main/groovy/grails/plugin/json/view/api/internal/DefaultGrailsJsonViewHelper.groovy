@@ -531,27 +531,10 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
         processedObjects.put(object, NULL_OUTPUT)
 */
-
-
-        def identity = entity.identity
-        def idName = identity?.name
-        String idQualified = "${path}${idName}"
         ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
         Locale locale = view.locale
-        if(idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
-            def idValue = ((GroovyObject) object).getProperty(idName)
-            if(idValue != null) {
-                def idType = identity.type
-                def childTemplate = templateEngine?.resolveTemplate(idType, locale)
-                if(childTemplate != null) {
-                    JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, idType, idValue)
-                    jsonDelegate.call(idName, jsonWritable)
-                }
-                else {
-                    jsonDelegate.call(idName, idValue)
-                }
-            }
-        }
+
+        renderEntityId(jsonDelegate, processedObjects, incs, excs, path, isDeep, expandProperties, getValidIdProperties(entity, object, incs, excs, path))
 
         for (prop in entity.persistentProperties) {
             def propertyName = prop.name
@@ -588,12 +571,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                 }
                 else if(ass instanceof ToOne) {
                     if(associatedEntity != null) {
-                        def associationIdName = associatedEntity.identity.name
-
                         def propertyType = ass.type
-                        JsonView jsonView = (JsonView)view
-                        ProxyHandler proxyHandler = jsonView.proxyHandler
-                        def associatedId = ((GroovyObject)value).getProperty(associationIdName)
 
                         if(!ass.circular && (isDeep || expandProperties.contains(propertyName))) {
                             def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
@@ -612,9 +590,12 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                             }
 
                         }
-                        else if(associatedId != null) {
-                            jsonDelegate.call(propertyName) {
-                                call(associationIdName, associatedId)
+                        else {
+                            Map validIdProperties = getValidIdProperties(associatedEntity, value, incs, excs, "${qualified}.")
+                            if (validIdProperties.size() > 0) {
+                                jsonDelegate.call(propertyName) {
+                                    renderEntityId(delegate, processedObjects, incs, excs, "${qualified}.", isDeep, expandProperties, validIdProperties)
+                                }
                             }
                         }
 
@@ -667,13 +648,11 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                                 }
                             }
                         } else {
-                            def associationIdName = associatedEntity.identity.name
                             jsonDelegate.call(propertyName, (Iterable)value) { child ->
-                                def associatedId = ((GroovyObject)child).getProperty(associationIdName)
-                                if(associatedId != null) {
-                                    call(associationIdName, associatedId)
-                                }
-                                else {
+                                Map idProperties = getValidIdProperties(associatedEntity, child, incs, excs, "${qualified}.")
+                                if (idProperties.size() > 0) {
+                                    renderEntityId(getDelegate(), processedObjects, incs, excs, "${qualified}.", isDeep, expandProperties, idProperties)
+                                } else {
                                     StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
                                     process(embeddedDelegate, associatedEntity,child, processedObjects, incs, excs , "${qualified}.", isDeep, expandProperties)
                                 }
@@ -725,6 +704,64 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             jsonDelegate.call(propertyName, value)
         }
 
+    }
+
+    private Map<PersistentProperty, Object> getValidIdProperties(PersistentEntity entity, Object object, List<String> incs, List<String> excs, String path) {
+        Map<PersistentProperty, Object> ids = [:]
+        String[] identity = entity.mapping.identifier.identifierName
+        for (String idName : identity) {
+            String idQualified = "${path}${idName}"
+
+            if (idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
+                PersistentProperty property
+                if (entity.identity != null && entity.identity.name == idName) {
+                    property = entity.identity
+                }
+                if (property == null) {
+                    property = entity.getPropertyByName(idName)
+                }
+                if (property != null) {
+                    def idValue = ((GroovyObject) object).getProperty(idName)
+                    if (idValue != null) {
+                        ids[property] = idValue
+                    }
+                }
+            }
+        }
+        ids
+    }
+
+    private renderEntityId(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties, Map<PersistentProperty, Object> idProperties) {
+        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
+        Locale locale = view.locale
+
+        idProperties.each { PersistentProperty property, Object idValue ->
+            def idType = property.type
+            def idName = property.name
+            String idQualified = "${path}${idName}"
+            def childTemplate = templateEngine?.resolveTemplate(idType, locale)
+            if(childTemplate != null) {
+                JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, idType, idValue)
+                jsonDelegate.call(idName, jsonWritable)
+            }
+            else {
+                if (property instanceof Association) {
+                    def ass = (Association)property
+                    if(!ass.circular && (isDeep || expandProperties.contains(idName))) {
+                        jsonDelegate.call(idName) {
+                            StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                            process(embeddedDelegate, ass.associatedEntity, idValue, processedObjects, incs, excs , "${idQualified}.", isDeep, expandProperties)
+                        }
+                    } else {
+                        jsonDelegate.call(idName) {
+                            renderEntityId(getDelegate(), processedObjects, incs, excs, "${idQualified}.", isDeep, expandProperties, getValidIdProperties(ass.associatedEntity, idValue, incs, excs, "${idQualified}."))
+                        }
+                    }
+                } else {
+                    jsonDelegate.call(idName, idValue)
+                }
+            }
+        }
     }
 
     JsonOutput.JsonWritable renderChildTemplate(Template template, Class modelType, modelValue) {
