@@ -1,7 +1,7 @@
 Model names can be specified in a couple different ways.
 
 NOTE: Some model names are _reserved_ since there are properties of the same name injected into the view:
-`locale`, `response`, `request`, `page`, `controllerNamespace`, `controllerName`, `actionName`, `config`
+`locale`, `response`, `request`, `page`, `controllerNamespace`, `controllerName`, `actionName`, `config`.
 
 ==== Models referenced explicitly by name
 
@@ -36,15 +36,9 @@ json {
 
 In the view you can use the `tmpl` namespace:
 [source,groovy]
+.`grails-app/views/hello/index.gson`
 json {
     message tmpl.msg([message: message])
-}
-
-or you can use `g.render`
-
-[source,groovy]
-json {
-    message g.render(template:'msg', model:[message: message])
 }
 
 Using collections:
@@ -57,16 +51,9 @@ json {
     messages tmpl.msg('message', messages)
 }
 
-or
-
-[source,groovy]
-json {
-    messages g.render(template:'msg', collection: messages, var: 'message')
-}
-
 ==== Model name by convention
 
-Model names are, by convention, based on the type.
+The convention for model names in a view is based on the type of the data being rendered. In addition for templates, the template name is also available to be used as the name of the model.
 
 Given a view:
 [source,groovy]
@@ -79,7 +66,6 @@ json {
 }
 
 You can pass in the variable directly to `respond`:
-
 [source,groovy]
 .`grails-app/controllers/helloController.groovy`
 def index() {
@@ -88,28 +74,20 @@ def index() {
 
 
 When using a template the model name is based on the template name:
+[source,groovy]
+.`grails-app/views/hello/_msg.gson`
+model {
+    String msg // or String string
+}
+json {
+    hello msg
+}
 
 In the view you can use the `tmpl` namespace:
 [source,groovy]
 .`grails-app/views/hello/index.gson`
 json {
     message tmpl.msg(message)
-}
-
-[source,groovy]
-.`grails-app/views/hello/_msg.gson`
-model {
-    String msg
-}
-json {
-    hello msg
-}
-
-When using `g.render`, the model name must always be specified by using a map.
-
-[source,groovy]
-json{
-    message g.render(template:'msg', model: [msg: string])
 }
 
 Using collections:
@@ -119,10 +97,4 @@ model {
 }
 json {
     messages tmpl.msg(stringList)
-}
-
-When using g.render, you *must* set the `var` parameter to the variable name in the template.
-[source,groovy]
-json {
-    messages g.render(template:'msg', collection: stringList, var: 'msg')
 }
