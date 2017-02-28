@@ -198,12 +198,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 }
 
                 if(paginationObject != null) {
-                    def httpParams = jsonView.params
-                    int offset = httpParams.int('offset', 0)
-                    int max = httpParams.int('max', 10)
-                    String sort = httpParams.get('sort')
-                    String order = httpParams.get('order')
-                    List<Link> links = getPaginationLinks(paginationObject, total.intValue(), max, offset, sort, order)
+                    List<Link> links = getPaginationLinks(paginationObject, total.intValue(), jsonView.params)
                     for(link in links) {
                         call(link.rel) {
                             call HREF_ATTRIBUTE, link.href
@@ -240,10 +235,10 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
 
         def jsonView = view
         def httpParams = jsonView.params
-        offset = offset ?: httpParams.int('offset', 0)
-        max = max ?: httpParams.int('max', 10)
-        sort = sort ?: httpParams.get('sort')
-        order = order ?: httpParams.get('order')
+        offset = offset ?: httpParams.int(PAGINATION_OFFSET, 0)
+        max = max ?: httpParams.int(PAGINATION_MAX, 10)
+        sort = sort ?: httpParams.get(PAGINATION_SORT)
+        order = order ?: httpParams.get(PAGINATION_ORDER)
 
         String contentType = this.contentType
         def locale = jsonView.locale ?: Locale.ENGLISH
@@ -524,89 +519,6 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         else {
             Collections.emptySet()
         }
-    }
-
-    /**
-     * @return the pagination links if any
-     */
-    protected List<Link> getPaginationLinks(Object object, Integer total, Integer max, Integer offset, String sort, String order) {
-        Map<String, Object> linkParams = buildPaginateParams(max, offset, sort, order)
-        List<Link> links = []
-
-        if (total > 0) {
-            if (total > max) {
-                Map firstParams = paramsWithOffset(linkParams, 0)
-                links << new Link("first", viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true, params: firstParams))
-                Integer prevOffset = getPrevOffset(offset, max)
-                if (prevOffset != null) {
-                    Map prevParams = paramsWithOffset(linkParams, prevOffset)
-                    links << new Link("prev", viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true, params: prevParams))
-                }
-                Integer nextOffset = getNextOffset(total, offset, max)
-                if (nextOffset) {
-                    Map nextParams = paramsWithOffset(linkParams, nextOffset)
-                    links << new Link("next", viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true, params: nextParams))
-                }
-                Integer lastOffset = getLastOffset(total, max)
-                if (lastOffset) {
-                    Map lastParams = paramsWithOffset(linkParams, lastOffset)
-                    links << new Link("last", viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true, params: lastParams))
-                }
-            }
-        }
-        return links
-    }
-
-    protected Map<String, Object> buildPaginateParams(Integer max, Integer offset, String sort, String order) {
-        Map<String, Object> params = [:]
-        params.offset = offset
-        params.max = max
-        if (sort) {
-            params.sort = sort
-        }
-        if (order) {
-            params.order = order
-        }
-        return params
-    }
-
-    /**
-     * Creates a new Parameter map with the new offset
-     * Note: neccesary to avoid clone until Groovy 2.5.x https://issues.apache.org/jira/browse/GROOVY-7325
-     *
-     * @param map The parameter map to copy
-     * @param offset The new offset to use
-     * @return The resulting parameters
-     */
-    protected Map<String, Object> paramsWithOffset(Map<String, Object> originalParameters, Integer offset) {
-        Map<String, Object> params = [:]
-        originalParameters.each { String k, Object v ->
-            params.put(k, v)
-        }
-        params.offset = offset
-        return params
-    }
-
-    protected Integer getPrevOffset(Integer offset, Integer max) {
-        if (offset <= 0) {
-            return null
-        }
-        return Math.max(offset - max, 0)
-    }
-
-    protected Integer getNextOffset(Integer total, Integer offset, Integer max) {
-        if (offset < 0 || offset + max >= total) {
-            return null
-        }
-        return offset + max
-    }
-
-    protected Integer getLastOffset(Integer total, Integer max) {
-        if (total <= 0) {
-            return null
-        }
-        Integer laststep = ((int) Math.round(Math.ceil(total / max))) - 1
-        return Math.max((laststep * max), 0)
     }
 
     static class HalStreamingJsonDelegate extends StreamingJsonDelegate {

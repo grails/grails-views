@@ -15,6 +15,11 @@ interface Parameters {
     Set<String> keySet()
 
     /**
+     * @return Whether or not the key exists
+     */
+    boolean containsKey(Object key)
+
+    /**
      * Obtains the value of a parameter
      *
      * @param name The name of the parameter

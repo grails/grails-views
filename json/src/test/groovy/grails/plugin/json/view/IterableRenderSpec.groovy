@@ -3,6 +3,7 @@ package grails.plugin.json.view
 import grails.plugin.json.view.test.JsonViewTest
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.views.ViewException
 import spock.lang.Specification
 
 @TestMixin(GrailsUnitTestMixin)
@@ -93,5 +94,82 @@ json jsonapi.render(players)
 
         then: "The result is an array"
         renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona"},"relationships":{"team":{"data":null}}},{"type":"player","id":"2","attributes":{"name":"Louis"},"relationships":{"team":{"data":null}}}],"links":{"self":"/foo"}}'
+    }
+
+    void "Test render a collection type with JSON API and pagination"() {
+        given: "A collection"
+        mappingContext.addPersistentEntities(Player, Team)
+        Player player = new Player(name: "Cantona")
+        player.id = 1
+        Player player2 = new Player(name: "Louis")
+        player2.id = 2
+        def players = [player, player2]
+
+        when: "A collection type is rendered total must be greater than max (10)"
+        def renderResult = render('''
+import groovy.transform.*
+import grails.plugin.json.view.*
+
+@Field Collection<Player> players
+
+json jsonapi.render(players, [pagination: [resource: Player, total: 11]])
+''', [players: players]) {
+            uri = "/foo"
+        }
+
+        then: "The result is an array"
+        renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona"},"relationships":{"team":{"data":null}}},{"type":"player","id":"2","attributes":{"name":"Louis"},"relationships":{"team":{"data":null}}}],"links":{"self":"/foo","first":"http://localhost:8080/player?offset=0&max=10","next":"http://localhost:8080/player?offset=10&max=10","last":"http://localhost:8080/player?offset=10&max=10"}}'
+    }
+
+    void "Test render a collection type with JSON API and pagination override max"() {
+        given: "A collection"
+        mappingContext.addPersistentEntities(Player, Team)
+        Player player = new Player(name: "Cantona")
+        player.id = 1
+        Player player2 = new Player(name: "Louis")
+        player2.id = 2
+        def players = [player, player2]
+
+        when: "A collection type is rendered total must be greater than max (10)"
+        def renderResult = render('''
+import groovy.transform.*
+import grails.plugin.json.view.*
+
+@Field Collection<Player> players
+
+json jsonapi.render(players, [pagination: [resource: Player, total: 11, max: 5]])
+''', [players: players]) {
+            uri = "/foo"
+        }
+
+        then: "The result is an array"
+        renderResult.jsonText == '{"data":[{"type":"player","id":"1","attributes":{"name":"Cantona"},"relationships":{"team":{"data":null}}},{"type":"player","id":"2","attributes":{"name":"Louis"},"relationships":{"team":{"data":null}}}],"links":{"self":"/foo","first":"http://localhost:8080/player?offset=0&max=5","next":"http://localhost:8080/player?offset=5&max=5","last":"http://localhost:8080/player?offset=10&max=5"}}'
+    }
+
+    void "Test render a collection type with JSON API and pagination (incorrect arguments)"() {
+        given: "A collection"
+        mappingContext.addPersistentEntities(Player, Team)
+        Player player = new Player(name: "Cantona")
+        player.id = 1
+        Player player2 = new Player(name: "Louis")
+        player2.id = 2
+        def players = [player, player2]
+
+        when: "A collection type is rendered total must be greater than max (10)"
+        render('''
+import groovy.transform.*
+import grails.plugin.json.view.*
+
+@Field Collection<Player> players
+
+json jsonapi.render(players, [pagination: [total: 11]])
+''', [players: players]) {
+            uri = "/foo"
+        }
+
+        then: "An illegal argument exception is thrown"
+        def ex = thrown(ViewException)
+        ex.cause instanceof IllegalArgumentException
+        ex.message == "Error rendering view: JSON API pagination arguments must contain resource and total"
     }
 }

@@ -7,11 +7,15 @@ import grails.plugin.json.view.api.JsonApiViewHelper
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
 import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
+import grails.rest.Link
 import grails.util.Holders
+import grails.util.TypeConvertingMap
 import grails.views.api.HttpView
+import grails.views.api.http.Parameters
 import grails.views.utils.ViewUtils
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
+import org.grails.core.util.ClassPropertyFetcher
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
@@ -140,7 +144,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
         List<String> includes = getIncludes(arguments)
         List<String> excludes = getExcludes(arguments)
-        boolean includeAssociations = getIncludeAssociations(arguments)
+        boolean includeAssociations = includeAssociations(arguments)
 
         out.write(JsonOutput.OPEN_BRACE)
 
@@ -369,12 +373,27 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                 if (object instanceof Collection) {
                     out.write(generator.toJson(view.request.uri))
+
+                    if (arguments.pagination instanceof Map) {
+                        Map paginationArgs = (Map)arguments.pagination
+                        if (!paginationArgs.containsKey('total') || !paginationArgs.containsKey('resource')) {
+                            throw new IllegalArgumentException("JSON API pagination arguments must contain resource and total")
+                        }
+                        Integer total = (Integer)paginationArgs.total
+                        Object resource = paginationArgs.resource
+                        Parameters params = defaultPaginateParams(paginationArgs)
+                        List<Link> links = getPaginationLinks(resource, total, params)
+                        for(link in links) {
+                            out.write(JsonOutput.COMMA)
+                            writeKeyValue(out, link.rel, link.href)
+                        }
+                    }
                 } else {
                     PersistentEntity entity = findEntity(object)
                     def linkGenerator = view.linkGenerator
                     out.write(generator.toJson(linkGenerator.link(resource: object, method: HttpMethod.GET)))
                     List<Association> associations = getRelationships(entity)
-                    if (associations && getIncludeAssociations(arguments)) {
+                    if (associations && includeAssociations(arguments)) {
                         out.write(JsonOutput.COMMA)
                         out.write(generator.toJson("related"))
                         out.write(JsonOutput.COLON)
@@ -408,6 +427,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                         out.write(JsonOutput.CLOSE_BRACE)
                     }
                 }
+
                 out.write(JsonOutput.CLOSE_BRACE)
                 return out
             }
@@ -418,7 +438,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
     JsonOutput.JsonWritable renderIncluded(Object object, Map arguments) {
 
         List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
-        if (!expandProperties.empty && getIncludeAssociations(arguments)) {
+        if (!expandProperties.empty && includeAssociations(arguments)) {
 
             arguments = new LinkedHashMap(arguments)
             arguments.showLinks = true
@@ -519,7 +539,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         return writable
     }
 
-    public JsonApiIdGenerator getIdGenerator() {
+    JsonApiIdGenerator getIdGenerator() {
         if (jsonApiIdGenerator == null) {
             try {
                 this.jsonApiIdGenerator = Holders.getApplicationContext().getBean("jsonApiIdGenerator") as JsonApiIdGenerator

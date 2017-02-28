@@ -1,23 +1,29 @@
 package grails.plugin.json.view.api
 
 import grails.plugin.json.view.Book
+import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.DefaultHalViewHelper
+import grails.plugin.json.view.api.internal.DefaultJsonViewHelper
 import grails.rest.Link
+import grails.web.mapping.LinkGenerator
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class HalViewHelperSpec extends Specification {
-    DefaultHalViewHelper halViewHelper
+class PaginationSpec extends Specification {
+    DefaultJsonViewHelper jsonViewHelper
+    LinkGenerator linkGenerator
 
     def setup() {
-        JsonView view = Mock()
-        GrailsJsonViewHelper viewHelper = Mock()
-        halViewHelper = new DefaultHalViewHelper(view, viewHelper)
+        linkGenerator = Mock()
+        JsonView view = Mock() {
+            getLinkGenerator() >> linkGenerator
+        }
+        jsonViewHelper = new DefaultJsonViewHelper(view)
     }
 
     void "test Pagination links without anything to paginate"() {
         when:
-            List<Link> links = halViewHelper.getPaginationLinks(Book, total, 10, 0, null, null)
+            List<Link> links = jsonViewHelper.getPaginationLinks(Book, total, 10, 0, null, null)
 
         then:
             links == []
@@ -29,10 +35,10 @@ class HalViewHelperSpec extends Specification {
     @Unroll("getPaginationLinks(_, total:#total, max:#max, offset:#offset, sort:#sort, order#order) => #expectedLinks")
     void "test Pagination Links"() {
         when:
-            List<Link> links = halViewHelper.getPaginationLinks(Book, total, max, offset, sort, order)
+            List<Link> links = jsonViewHelper.getPaginationLinks(Book, total, max, offset, sort, order)
 
         then:
-            halViewHelper.viewHelper.link(_) >> "http://example.com/book?max=$max&offset=${offset}"
+            linkGenerator.link(_) >> "http://example.com/book?max=$max&offset=${offset}"
             links*.rel == expectedLinks
 
         where:
@@ -55,7 +61,7 @@ class HalViewHelperSpec extends Specification {
     @Unroll("getLastOffset(total:#total, max:#max) == #expectedOffset")
     void "test last offests"() {
         when:
-            Integer lastOffset = halViewHelper.getLastOffset(total, max)
+            Integer lastOffset = jsonViewHelper.getLastOffset(total, max)
 
         then:
             lastOffset == expectedOffset
@@ -77,7 +83,7 @@ class HalViewHelperSpec extends Specification {
     @Unroll("getPrevOffset(offset:#offset, max:#max) == #expectedOffset")
     void "test prev offests"() {
         when:
-            Integer prevOffset = halViewHelper.getPrevOffset(offset, max)
+            Integer prevOffset = jsonViewHelper.getPrevOffset(offset, max)
 
         then:
             prevOffset == expectedOffset
@@ -100,7 +106,7 @@ class HalViewHelperSpec extends Specification {
     @Unroll("getNextOffset(total:#total, offset:#offset, max:#max) == #expectedOffset")
     void "test getNextOffset"() {
         when:
-            Integer nextOffset = halViewHelper.getNextOffset(total, offset, max)
+            Integer nextOffset = jsonViewHelper.getNextOffset(total, offset, max)
 
         then:
             nextOffset == expectedOffset

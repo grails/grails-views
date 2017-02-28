@@ -43,7 +43,12 @@ class TestLinkGenerator implements LinkGenerator{
 
             def resource = urlObject.resource
             if( resource != null &&  !(resource instanceof CharSequence)) {
-                def clazz = mappingContext.getProxyFactory().getProxiedClass(resource)
+                Class clazz
+                if (resource instanceof Class) {
+                    clazz = resource
+                } else {
+                    clazz = mappingContext.getProxyFactory().getProxiedClass(resource)
+                }
                 resource = GrailsNameUtils.getPropertyName(clazz)
             }
             String controller = resource ?: urlObject.controller

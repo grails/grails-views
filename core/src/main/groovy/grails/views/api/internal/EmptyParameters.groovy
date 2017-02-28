@@ -17,6 +17,11 @@ class EmptyParameters implements Parameters {
     }
 
     @Override
+    boolean containsKey(Object key) {
+        return false
+    }
+
+    @Override
     String get(String name) {
         return null
     }

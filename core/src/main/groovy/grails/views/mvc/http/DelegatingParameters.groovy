@@ -25,6 +25,11 @@ class DelegatingParameters implements Parameters {
     }
 
     @Override
+    boolean containsKey(Object key) {
+        return parameterMap.containsKey(key)
+    }
+
+    @Override
     String get(String name) {
         return parameterMap.get(name)
     }

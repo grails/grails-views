@@ -1,6 +1,5 @@
 package grails.plugin.json.view.api.internal
 
-import grails.core.support.proxy.ProxyHandler
 import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
@@ -58,7 +57,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(jsonView.binding)
         boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
-        boolean includeAssociations = getIncludeAssociations(arguments)
+        boolean includeAssociations = includeAssociations(arguments)
         List<String> expandProperties = getExpandProperties(jsonView, arguments)
 
         List<String> incs = getIncludes(arguments)
