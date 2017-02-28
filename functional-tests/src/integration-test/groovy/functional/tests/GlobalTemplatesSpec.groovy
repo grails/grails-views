@@ -25,7 +25,7 @@ class GlobalTemplatesSpec extends GebSpec {
 
         when:"A POST is issued"
 
-        def resp = builder.get("$baseUrl/place/show")
+        def resp = builder.get("${baseUrl}place/show")
 
         then:"The REST resource is created and the correct JSON is returned"
         resp.status == 200

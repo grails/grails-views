@@ -30,7 +30,7 @@ class BookSpec extends GebSpec {
 
         when:"A POST is issued"
 
-        def resp = builder.post("$baseUrl/books") {
+        def resp = builder.post("${baseUrl}books") {
             json {
                 title = ""
             }
@@ -47,7 +47,7 @@ class BookSpec extends GebSpec {
         def builder = new RestBuilder()
 
         when:
-        def resp = builder.get("$baseUrl/books")
+        def resp = builder.get("${baseUrl}books")
 
         then:"The response is correct"
         resp.status == 200
@@ -56,7 +56,7 @@ class BookSpec extends GebSpec {
 
         when:"A POST is issued"
 
-        resp = builder.post("$baseUrl/books") {
+        resp = builder.post("${baseUrl}books") {
             json {
                 title = "The Stand"
             }
@@ -68,7 +68,7 @@ class BookSpec extends GebSpec {
         resp.text == '{"id":1,"timeZone":"America/New_York","title":"The Stand","vendor":"MyCompany"}'
 
         when:"A GET request is issued"
-        resp = builder.get("$baseUrl/books/${resp.json.id}")
+        resp = builder.get("${baseUrl}books/${resp.json.id}")
 
         then:"The response is correct"
         resp.status == 200
@@ -76,7 +76,7 @@ class BookSpec extends GebSpec {
         resp.text == '{"id":1,"timeZone":"America/New_York","title":"The Stand","vendor":"MyCompany"}'
 
         when:"A PUT is issued"
-        resp = builder.put("$baseUrl/books/${resp.json.id}") {
+        resp = builder.put("${baseUrl}books/${resp.json.id}") {
             json {
                 title = "The Changeling"
             }
@@ -88,7 +88,7 @@ class BookSpec extends GebSpec {
         resp.text == '{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"MyCompany"}'
 
         when:"A GET is issued for all books"
-        resp = builder.get("$baseUrl/books")
+        resp = builder.get("${baseUrl}books")
 
         then:"The response is correct"
         resp.status == 200
@@ -96,15 +96,15 @@ class BookSpec extends GebSpec {
         resp.text == '[{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"MyCompany"}]'
 
         when:"A GET is issued for all books with excludes"
-        resp = builder.get("$baseUrl/books/listExcludes?testParam=3")
+        resp = builder.get("${baseUrl}books/listExcludes?testParam=3")
 
         then:"Access to config and params works"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":3}]'
+        resp.text == '[{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"ConfigVendor","fromParams":3}]'
 
         when:"A GET is issued for all books with excludes"
-        resp = builder.get("$baseUrl/books/listExcludesRespond?testParam=4")
+        resp = builder.get("${baseUrl}books/listExcludesRespond?testParam=4")
 
         then:"view rendering works with a map with respond"
         resp.status == 200
@@ -117,13 +117,24 @@ class BookSpec extends GebSpec {
         def builder = new RestBuilder()
 
         when:"A GET is issued to a request with a template at a non-standard location"
-
-        def resp = builder.get("$baseUrl/books/non-standard-template")
+        def resp = builder.get("${baseUrl}books/non-standard-template")
 
         then:"The template was rendered successfully. The custom converter was also used"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '{"bookTitle":"template found","custom":"Sally"}'
+    }
 
+    void "Object type of list is used for model variable when rendering templates"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:
+        def resp = builder.get("${baseUrl}books/listCallsTmpl")
+
+        then:"The template was rendered successfully"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.text == '[{"title":"The Changeling"}]'
     }
 }

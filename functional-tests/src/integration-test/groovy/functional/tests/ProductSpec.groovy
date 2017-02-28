@@ -21,7 +21,7 @@ class ProductSpec extends GebSpec {
             def builder = new RestBuilder()
 
         when:
-            def resp = builder.get("$baseUrl/products")
+            def resp = builder.get("${baseUrl}products")
 
         then:
             resp.status == 200
@@ -35,7 +35,7 @@ class ProductSpec extends GebSpec {
             resp.json.order == null
         and: "the hal _links attribute is present"
             resp.json._links.size() == 1
-            resp.json._links.self.href.startsWith("$baseUrl/product")
+            resp.json._links.self.href.startsWith("${baseUrl}product")
 
         and: "there are no products yet"
             resp.json._embedded.products.size() == 0
@@ -45,7 +45,7 @@ class ProductSpec extends GebSpec {
         given:
             def builder = new RestBuilder()
 
-            def createResp = builder.post("$baseUrl/products") {
+            def createResp = builder.post("${baseUrl}products") {
                 json {
                     name = "Product 1"
                     description = "product 1 description"
@@ -55,7 +55,7 @@ class ProductSpec extends GebSpec {
             assert createResp.status == 201
 
         when: "We get the products"
-            def resp = builder.get("$baseUrl/products")
+            def resp = builder.get("${baseUrl}products")
 
         then:
             resp.status == 200
@@ -69,14 +69,14 @@ class ProductSpec extends GebSpec {
             resp.json.order == null
         and: "the hal _links attribute is present"
             resp.json._links.size() == 1
-            resp.json._links.self.href.startsWith("$baseUrl/product")
+            resp.json._links.self.href.startsWith("${baseUrl}product")
 
         and: "the product is present"
             resp.json._embedded.products.size() == 1
             resp.json._embedded.products.first().name == "Product 1"
 
         cleanup:
-            def delResp = builder.delete("$baseUrl/products/${createResp.json.id}")
+            def delResp = builder.delete("${baseUrl}products/${createResp.json.id}")
             assert delResp.status == 204
     }
 
@@ -85,7 +85,7 @@ class ProductSpec extends GebSpec {
             def builder = new RestBuilder()
             def productsIds = []
             15.times { productNumber ->
-                def createResp = builder.post("$baseUrl/products") {
+                def createResp = builder.post("${baseUrl}products") {
                     json {
                         name = "Product $productNumber"
                         description = "product ${productNumber} description"
@@ -98,7 +98,7 @@ class ProductSpec extends GebSpec {
 
 
         when: "We get the products"
-            def resp = builder.get("$baseUrl/products")
+            def resp = builder.get("${baseUrl}products")
 
         then:
             resp.status == 200
@@ -112,17 +112,17 @@ class ProductSpec extends GebSpec {
             resp.json.order == null
         and: "the hal _links attribute is present"
             resp.json._links.size() == 4
-            resp.json._links.self.href.startsWith("$baseUrl/product")
-            resp.json._links.first.href.startsWith("$baseUrl/product")
-            resp.json._links.next.href.startsWith("$baseUrl/product")
-            resp.json._links.last.href.startsWith("$baseUrl/product")
+            resp.json._links.self.href.startsWith("${baseUrl}product")
+            resp.json._links.first.href.startsWith("${baseUrl}product")
+            resp.json._links.next.href.startsWith("${baseUrl}product")
+            resp.json._links.last.href.startsWith("${baseUrl}product")
 
         and: "the product is present"
             resp.json._embedded.products.size() == 10
 
         cleanup:
             productsIds.each { id ->
-                def delResp = builder.delete("$baseUrl/products/${id}")
+                def delResp = builder.delete("${baseUrl}products/${id}")
                 assert delResp.status == 204
             }
     }
@@ -132,7 +132,7 @@ class ProductSpec extends GebSpec {
             def builder = new RestBuilder()
             def productsIds = []
             30.times { productNumber ->
-                def createResp = builder.post("$baseUrl/products") {
+                def createResp = builder.post("${baseUrl}products") {
                     json {
                         name = "Product $productNumber"
                         description = "product ${productNumber} description"
@@ -145,7 +145,7 @@ class ProductSpec extends GebSpec {
 
 
         when: "We get the products"
-            def resp = builder.get("$baseUrl/products?offset=10")
+            def resp = builder.get("${baseUrl}products?offset=10")
 
         then:
             resp.status == 200
@@ -159,18 +159,18 @@ class ProductSpec extends GebSpec {
             resp.json.order == null
         and: "the hal _links attribute is present"
             resp.json._links.size() == 5
-            resp.json._links.self.href.startsWith("$baseUrl/product")
-            resp.json._links.first.href.startsWith("$baseUrl/product")
-            resp.json._links.prev.href.startsWith("$baseUrl/product")
-            resp.json._links.next.href.startsWith("$baseUrl/product")
-            resp.json._links.last.href.startsWith("$baseUrl/product")
+            resp.json._links.self.href.startsWith("${baseUrl}product")
+            resp.json._links.first.href.startsWith("${baseUrl}product")
+            resp.json._links.prev.href.startsWith("${baseUrl}product")
+            resp.json._links.next.href.startsWith("${baseUrl}product")
+            resp.json._links.last.href.startsWith("${baseUrl}product")
 
         and: "the product is present"
             resp.json._embedded.products.size() == 10
 
         cleanup:
             productsIds.each { id ->
-                def delResp = builder.delete("$baseUrl/products/${id}")
+                def delResp = builder.delete("${baseUrl}products/${id}")
                 assert delResp.status == 204
             }
     }

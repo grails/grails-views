@@ -19,6 +19,10 @@ class BookController extends RestfulController<Book> {
         respond([books: listAllResources(params)])
     }
 
+    def listCallsTmpl() {
+        respond([books: listAllResources(params)])
+    }
+
     def nonStandardTemplate() {
         respond([book: new Book(title: 'template found'), custom: new CustomClass(name: "Sally")], view:'/non-standard/template')
     }

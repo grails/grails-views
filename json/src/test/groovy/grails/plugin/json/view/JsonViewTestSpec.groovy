@@ -1,12 +1,8 @@
 package grails.plugin.json.view
 
-import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
 import spock.lang.Specification
 
-/**
- * Created by graemerocher on 15/04/2016.
- */
 class JsonViewTestSpec extends Specification implements JsonViewTest {
 
     void "Test render a raw GSON view"() {
@@ -17,11 +13,12 @@ model {
 }
 json.person {
     name person
+    model person
 }
 ''', [person:"æøå ÆØÅ"]
 
         then:"The json is correct"
-        result.jsonText == '''{"person":{"name":"æøå ÆØÅ"}}'''
+        result.jsonText == '''{"person":{"name":"æøå ÆØÅ","model":"æøå ÆØÅ"}}'''
     }
 
     void "Test render a GSON view"() {

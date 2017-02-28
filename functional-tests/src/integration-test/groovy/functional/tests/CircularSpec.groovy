@@ -16,7 +16,7 @@ class CircularSpec extends GebSpec {
 
         when:"A GET is issued"
 
-        def resp = builder.get("$baseUrl/circular/show/1")
+        def resp = builder.get("${baseUrl}circular/show/1")
         def json = resp.json
 
         then:"The REST resource is retrieved and the correct JSON is returned"

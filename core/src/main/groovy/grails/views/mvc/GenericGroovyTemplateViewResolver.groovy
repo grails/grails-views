@@ -25,7 +25,18 @@ class GenericGroovyTemplateViewResolver implements ViewResolver {
         if(webRequest != null) {
             def currentRequest = webRequest?.currentRequest
             if(viewName.startsWith('/')) {
-                return smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
+                def controller = webRequest.controllerClass
+                View view
+                if (controller && controller.namespace) {
+                    String namespacePrefix = "/" + controller.namespace
+                    if (!viewName.startsWith(namespacePrefix)) {
+                        view = smartViewResolver.resolveView(namespacePrefix + viewName, currentRequest, webRequest.response)
+                    }
+                }
+                if (view == null) {
+                    view = smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
+                }
+                return view
             }
             else {
 

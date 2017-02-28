@@ -16,4 +16,12 @@ class BookController {
     def nested() {
         respond new Book(title: 'API - The Shining')
     }
+
+    def testRender() {
+        render(view: "index", model: [book: new Book(title: 'API - The Shining')])
+    }
+
+    def testRespond() {
+        respond(new Book(title: 'API - The Shining'), view: 'index')
+    }
 }

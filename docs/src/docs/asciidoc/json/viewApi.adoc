@@ -80,3 +80,22 @@ json.error {
 You can also create locale specific views by appending the locale to view name. For example `person_de.gson` for German or `person.gson` for the default.
 
 NOTE: For more complex message lookups the `messageSource` property is an instance of the Spring https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/MessageSource.html[MessageSource] class.
+
+==== Accessing Configuration
+
+The application configuration is injected automatically into your json views. To access it, simply reference `config`.
+
+[source,groovy]
+json {
+    foo config.getProperty("bar", String, null)
+}
+
+==== Miscellaneous Properties
+
+Other properties are also available:
+
+|=======
+|`controllerName` |The name of the current controller
+|`actionName` |The name of the current controller action
+|`controllerNamespace` |The namespace of the current controller
+|=======

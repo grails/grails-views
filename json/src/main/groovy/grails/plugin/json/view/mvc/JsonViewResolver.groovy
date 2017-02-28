@@ -32,12 +32,11 @@ class JsonViewResolver extends SmartViewResolver {
     JsonViewConfiguration viewConfiguration
 
     JsonViewResolver(JsonViewConfiguration configuration = new JsonViewConfiguration()) {
-        this(new JsonViewTemplateEngine(configuration), JSON_VIEW_SUFFIX, MimeType.JSON.name)
+        this(new JsonViewTemplateEngine(configuration))
     }
 
     JsonViewResolver(JsonViewTemplateEngine templateEngine) {
-        super(templateEngine)
-        viewConfiguration = (JsonViewConfiguration)templateEngine.viewConfiguration
+        this(templateEngine, JSON_VIEW_SUFFIX, MimeType.JSON.name)
     }
 
     JsonViewResolver(JsonViewTemplateEngine templateEngine, String suffix, String contentType) {

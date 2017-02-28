@@ -66,7 +66,7 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             }
         }
 
-        allClasspath = project.configurations.getByName('compile') + project.files(classesDir)
+        allClasspath = project.files(classesDir) + project.configurations.getByName('compile')
         if(providedConfig) {
             allClasspath += providedConfig
         }
