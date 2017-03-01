@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Content Negotiation and Domain Classes</title>
+<title>Explicit Model Naming</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -423,66 +423,184 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel3">
-<li><a href="#_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</a></li>
-<li><a href="#_global_default_template">Global Default Template</a></li>
-<li><a href="#_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</a></li>
-<li><a href="#_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</a></li>
-<li><a href="#mimeTypes">Content Negotiation and Custom Mime Types</a></li>
+<li><a href="#_explicit_model_naming">Explicit Model Naming</a></li>
+<li><a href="#_model_by_convention">Model By Convention</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
+<p>Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
 </div>
-<div class="listingblock">
-<div class="title"><code>grails-app/controllers/myapp/BookController.groovy</code></div>
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
-    respond Book.get(params.id)
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The result is that if you send a request to <code>/book/show</code> it will render <code>show.gsp</code> but if you send a request to <code>/book/show.json</code> it will render <code>show.gson</code>.</p>
-</div>
-<div class="paragraph">
-<p>In addition, if the client sends a request with the <code>Accept</code> header containing <code>application/json</code> the <code>show.gson</code> view will be rendered.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Some model names are <em>reserved</em> since there are properties of the same name injected into the view:
+<code>locale</code>, <code>response</code>, <code>request</code>, <code>page</code>, <code>controllerNamespace</code>, <code>controllerName</code>, <code>actionName</code>, <code>config</code>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h4>
+<h4 id="_explicit_model_naming">Explicit Model Naming</h4>
 <div class="paragraph">
-<p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
-</div>
-<div class="paragraph">
-<p>For example given a class called <code>demo.Book</code> you can create <code>grails-app/views/book/_book.gson</code> and whenever <code>respond</code> is called with an instance of <code>Book</code> Grails will render <code>_book.gson</code>.</p>
+<p>Given a view:</p>
 </div>
 <div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">def show() {
-    respond Book.get(params.id)
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you define an <code>index</code> action that responds with a list of books:</p>
+<p>Then the controller has to specify the name to be used in the view:</p>
 </div>
 <div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
-    respond Book.list()
+    respond(message: "Hello World")
+    //or [message: "Hello World"]
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then you can create a corresponding <code>grails-app/views/book/index.gson</code> file that renders each book:</p>
+<p>When using a template:</p>
 </div>
 <div class="listingblock">
-<div class="title">grails-app/views/book/index.gson</div>
+<div class="title">grails-app/views/hello/_msg.gson</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Field List&lt;Book&gt; bookList
-
-json tmpl.book(bookList)</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the view you can use the <code>tmpl</code> namespace:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json {
+    message tmpl.msg([message: message])
+    // or g.render(template:'msg', model:[message: message])
+    // or g.render(template:'msg', model: message, var:'message')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using collections:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;String&gt; messages
+}
+json {
+    messages tmpl.msg('message', messages)
+    // or g.render(template:'msg', collection: messages, var: 'message')
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_by_convention">Model By Convention</h4>
+<div class="sect4">
+<h5 id="_property_type">Property Type</h5>
+<div class="paragraph">
+<p>When rendering a non iterable object, the property name of the type is used when a name is not specified.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String string
+}
+json.message {
+    hello string
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable can be passed in directly to <code>respond</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond("Hello World")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This also applies when rendering templates with <code>tmpl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String string
+}
+json.message {
+    hello string
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String someString
+}
+json tmpl.msg(someString)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a collection is rendered, the property name of the component type is appended with the property name of the collection type. The component type is based on the first item in the list.</p>
+</div>
+<div class="paragraph">
+<p><code>List&lt;String&gt;</code>  &#8594; <code>stringList</code></p>
+</div>
+<div class="paragraph">
+<p><code>Set&lt;String&gt;</code>  &#8594; <code>stringSet</code></p>
+</div>
+<div class="paragraph">
+<p><code>Bag&lt;String&gt;</code>  &#8594; <code>stringCollection</code></p>
+</div>
+<div class="paragraph">
+<p>If the collection is empty, <code>emptyCollection</code> will be used as the default model name. This is due to not being able to inspect the first object&#8217;s type.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String stringList
+}
+json {
+    strings stringList
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable can be passed in directly to <code>respond</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond(["Hello", "World"])
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -492,104 +610,57 @@ json tmpl.book(bookList)</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When responding with a list of objects Grails automatically appends the suffix "List" to the model name, so in this case the model name is <code>bookList</code>
+The component+collection convention does not apply when rendering collections with <code>tmpl</code> inside a view.
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>By calling the <code>tmpl.book(..)</code> method with the list of books the <code>grails-app/views/book/_book.gson</code> template will be rendered for each one and a JSON array returned.</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_global_default_template">Global Default Template</h4>
+<div class="sect4">
+<h5 id="_template_name">Template Name</h5>
 <div class="paragraph">
-<p>You can also define a <code>/object/_object</code> template that is rendered by default if no other template is found during content negotiation. To do this create a file called <code>/grails-app/views/object/_object.gson</code> where the name of the model is <code>object</code>, for example:</p>
+<p>When using a template, unless specified, the model name is based on the template name.</p>
+</div>
+<div class="paragraph">
+<p>Given the following template:</p>
 </div>
 <div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
-    Object object
+    String msg // or String string
 }
-json g.render(object)</code></pre>
+json.message {
+    hello msg
+}</code></pre>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</h4>
-<div class="paragraph">
-<p>A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.</p>
 </div>
 <div class="paragraph">
-<p>Grails will then use the <code>ACCEPT_VERSION</code> header when resolving the view.</p>
-</div>
-<div class="paragraph">
-<p>For example given a view called <code>/book/show.gson</code> if you wish to deprecate your previous API and create a version 2.0 API, you can rename the previous view <code>/book/show_v1.0.gson</code> and create a new <code>/book/show.gson</code> representing the new version of the API.</p>
-</div>
-<div class="paragraph">
-<p>Then when the client sends a request with the <code>ACCEPT_VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</h4>
-<div class="paragraph">
-<p>Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
-</div>
-<div class="paragraph">
-<p>The following paths are searched:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_de_hal_v1.0.gson)</p>
-</li>
-<li>
-<p>view_name[_LOCALE][_ACCEPT_CONTENT_TYPE].gson (Example: show_de_hal.gson)</p>
-</li>
-<li>
-<p>view_name[_LOCALE][_ACCEPT_VERSION].gson (Example: show_de_v1.0.gson)</p>
-</li>
-<li>
-<p>view_name[_LOCALE].gson (Example: show_de.gson)</p>
-</li>
-<li>
-<p>view_name[_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_hal_v1.0.gson)</p>
-</li>
-<li>
-<p>view_name[_ACCEPT_VERSION][_ACCEPT_CONTENT_TYPE].gson (Example: show_v1.0_hal.gson)</p>
-</li>
-<li>
-<p>view_name[_ACCEPT_CONTENT_TYPE].gson (Example: show_hal.gson)</p>
-</li>
-<li>
-<p>view_name[_ACCEPT_VERSION].gson (Example: show_v1.0.gson)</p>
-</li>
-<li>
-<p>view_name.gson (Example: show.gson)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The content type (defined by either the <code>ACCEPT</code> header or file extension in the URI) is taken into account to allow different formats for the same view.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="mimeTypes">Content Negotiation and Custom Mime Types</h4>
-<div class="paragraph">
-<p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
+<p>To render a single message from another view using the template:</p>
 </div>
 <div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">grails:
-    mime:
-        types:
-            all:      "*/*"
-            book:     "application/vnd.books.org.book+json"
-            bookList: "application/vnd.books.org.booklist+json"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.message tmpl.msg(message)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once these custom mime types have been defined you can then define a view such as <code>show.book.gson</code> for that particular mime type.</p>
+<p>To render a collection of messages from another view using the template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;String&gt; stringList
+}
+json {
+    messages tmpl.msg(stringList)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In both cases the convention of the variable name matching the template name is used.</p>
+</div>
 </div>
 </div>
 </div>

@@ -429,15 +429,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_templates">Templates</a></li>
 <li><a href="#_rendering_domain_classes">Rendering Domain Classes</a></li>
 <li><a href="#_json_view_api">JSON View API</a></li>
+<li><a href="#_model_naming">Model Naming</a></li>
 <li><a href="#_content_negotiation">Content Negotiation</a></li>
 <li><a href="#_hal_support">HAL Support</a></li>
-<li><a href="#_json_api_support">JSON API Support</a></li>
 <li><a href="#_the_jsontemplateengine">The JsonTemplateEngine</a></li>
 <li><a href="#_static_compilation">Static Compilation</a></li>
 <li><a href="#_testing">Testing</a></li>
 <li><a href="#_plugin_support">Plugin Support</a></li>
 <li><a href="#_configuration">Configuration</a></li>
-<li><a href="#_custom_converters">Custom Converters</a></li>
 <li><a href="#_intellij_support">IntelliJ Support</a></li>
 <li><a href="#_debugging_views">Debugging Views</a></li>
 </ul>
@@ -520,7 +519,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="sect2">
 <h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.2.0.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 1.1.6.BUILD-SNAPSHOT. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>1.1.0</strong></p>
@@ -577,7 +576,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.1.6.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -585,7 +584,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.6.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -597,7 +596,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.1.6.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -910,7 +909,7 @@ json g.render(book)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [includes:['title']]) {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json g.render(book, [includes:['title']) {
     pages 1000
 }</code></pre>
 </div>
@@ -1207,6 +1206,243 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_model_naming">Model Naming</h3>
+<div class="paragraph">
+<p>Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Some model names are <em>reserved</em> since there are properties of the same name injected into the view:
+<code>locale</code>, <code>response</code>, <code>request</code>, <code>page</code>, <code>controllerNamespace</code>, <code>controllerName</code>, <code>actionName</code>, <code>config</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_explicit_model_naming">Explicit Model Naming</h4>
+<div class="paragraph">
+<p>Given a view:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then the controller has to specify the name to be used in the view:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond(message: "Hello World")
+    //or [message: "Hello World"]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using a template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the view you can use the <code>tmpl</code> namespace:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json {
+    message tmpl.msg([message: message])
+    // or g.render(template:'msg', model:[message: message])
+    // or g.render(template:'msg', model: message, var:'message')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using collections:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;String&gt; messages
+}
+json {
+    messages tmpl.msg('message', messages)
+    // or g.render(template:'msg', collection: messages, var: 'message')
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_by_convention">Model By Convention</h4>
+<div class="sect4">
+<h5 id="_property_type">Property Type</h5>
+<div class="paragraph">
+<p>When rendering a non iterable object, the property name of the type is used when a name is not specified.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String string
+}
+json.message {
+    hello string
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable can be passed in directly to <code>respond</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond("Hello World")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This also applies when rendering templates with <code>tmpl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String string
+}
+json.message {
+    hello string
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String someString
+}
+json tmpl.msg(someString)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a collection is rendered, the property name of the component type is appended with the property name of the collection type. The component type is based on the first item in the list.</p>
+</div>
+<div class="paragraph">
+<p><code>List&lt;String&gt;</code>  &#8594; <code>stringList</code></p>
+</div>
+<div class="paragraph">
+<p><code>Set&lt;String&gt;</code>  &#8594; <code>stringSet</code></p>
+</div>
+<div class="paragraph">
+<p><code>Bag&lt;String&gt;</code>  &#8594; <code>stringCollection</code></p>
+</div>
+<div class="paragraph">
+<p>If the collection is empty, <code>emptyCollection</code> will be used as the default model name. This is due to not being able to inspect the first object&#8217;s type.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String stringList
+}
+json {
+    strings stringList
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable can be passed in directly to <code>respond</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond(["Hello", "World"])
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The component+collection convention does not apply when rendering collections with <code>tmpl</code> inside a view.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_template_name">Template Name</h5>
+<div class="paragraph">
+<p>When using a template, unless specified, the model name is based on the template name.</p>
+</div>
+<div class="paragraph">
+<p>Given the following template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String msg // or String string
+}
+json.message {
+    hello msg
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render a single message from another view using the template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.message tmpl.msg(message)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render a collection of messages from another view using the template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;String&gt; stringList
+}
+json {
+    messages tmpl.msg(stringList)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In both cases the convention of the variable name matching the template name is used.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1793,15 +2029,6 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_json_api_support">JSON API Support</h3>
-<div class="paragraph">
-<p><a href="http://http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
-</div>
-<div class="paragraph">
-<p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views implement the <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a> trait, which provides an API for writing JSON API views.</p>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_the_jsontemplateengine">The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
@@ -1993,7 +2220,7 @@ result.json.age == 10</code></pre>
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.1.6.BUILD-SNAPSHOT"
     }
 }
 
@@ -2007,7 +2234,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:1.1.6.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
@@ -2153,56 +2380,6 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_custom_converters">Custom Converters</h3>
-<div class="paragraph">
-<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">package foo
-
-class MyConverter implements JsonGenerator.Converter {
-
-    @Override
-    boolean handles(Class&lt;?&gt; type) {
-        CustomClass.isAssignableFrom(type)
-    }
-
-    @Override
-    Object convert(Object value, String key) {
-        ((CustomClass)value).name
-    }
-}
-
-
-class CustomClass {
-    String name
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Because plugins could potentially provide converters, you can also determine the order by implementing the <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/Ordered.html">Ordered</a> interface in your converter.</p>
-</div>
-<div class="listingblock">
-<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
-<div class="content">
-<pre class="highlight"><code>foo.MyCustomConverter</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you have multiple classes to register, put each one on it&#8217;s own line
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_intellij_support">IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
@@ -2265,7 +2442,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-01 06:59:20 UTC
+Last updated 2017-03-01 07:56:55 UTC
 </div>
 </div>
 </body>
