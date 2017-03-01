@@ -427,44 +427,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Markup Views are written in Groovy, end with the file extension <code>gml</code> and reside in the <code>grails-app/views</code> directory.</p>
+<p><a href="http://http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
 </div>
 <div class="paragraph">
-<p>The Markup Views plugin uses Groovy&#8217;s <a href="http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine">MarkupTemplateEngine</a> and you can mostly use the <a href="http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine">Groovy user guide</a> as a reference for the syntax.</p>
-</div>
-<div class="paragraph">
-<p>Example Markup View:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
-    Iterable&lt;Map&gt; cars
-}
-xmlDeclaration()
-cars {
-    cars.each {
-        car(make: it.make, model: it.model)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This produces the following output given a model such as <code>[cars:[[make:"Audi", model:"A5"]]]</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version='1.0'?&gt;
-&lt;cars&gt;&lt;car make='Audi' model='A5'/&gt;&lt;/cars&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>For further examples see Groovy&#8217;s <a href="http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine">MarkupTemplateEngine</a> documentation.</p>
-</div>
-<div class="paragraph">
-<p>All Markup views subclass the <a href="api/grails/plugin/markup/view/MarkupViewTemplate.html">MarkupViewTemplate</a> class by default.</p>
-</div>
-<div class="paragraph">
-<p>The <code>MarkupViewTemplate</code> superclass implements the <a href="api/grails/plugin/markup/view/api/MarkupView.html">MarkupView</a> trait which in turn extends the the <a href="api/grails/views/api/GrailsView.html">GrailsView</a> trait.</p>
+<p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views implement the <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a> trait, which provides an API for writing JSON API views.</p>
 </div>
 </div>
 <div id="footer">
