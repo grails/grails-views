@@ -1,0 +1,100 @@
+Model names can be specified in a couple different ways.
+
+NOTE: Some model names are _reserved_ since there are properties of the same name injected into the view:
+`locale`, `response`, `request`, `page`, `controllerNamespace`, `controllerName`, `actionName`, `config`.
+
+==== Models referenced explicitly by name
+
+Given a view:
+[source,groovy]
+.`grails-app/views/hello/index.gson`
+model {
+    String message
+}
+json.message {
+    hello message
+}
+
+Then the controller has to specify the model name by passing a map to `respond`:
+
+[source,groovy]
+.`grails-app/controllers/helloController.groovy`
+def index() {
+    respond(message: "Hello World")
+}
+
+When using a template:
+
+[source,groovy]
+.`grails-app/views/hello/_msg.gson`
+model {
+    String message
+}
+json {
+    hello message
+}
+
+In the view you can use the `tmpl` namespace:
+[source,groovy]
+.`grails-app/views/hello/index.gson`
+json {
+    message tmpl.msg([message: message])
+}
+
+Using collections:
+
+[source,groovy]
+model {
+    List<String> messages
+}
+json {
+    messages tmpl.msg('message', messages)
+}
+
+==== Model name by convention
+
+The convention for model names in a view is based on the type of the data being rendered. In addition for templates, the template name is also available to be used as the name of the model.
+
+Given a view:
+[source,groovy]
+.`grails-app/views/hello/index.gson`
+model {
+    String string
+}
+json {
+    message string
+}
+
+You can pass in the variable directly to `respond`:
+[source,groovy]
+.`grails-app/controllers/helloController.groovy`
+def index() {
+    respond("Hello World")
+}
+
+
+When using a template the model name is based on the template name:
+[source,groovy]
+.`grails-app/views/hello/_msg.gson`
+model {
+    String msg // or String string
+}
+json {
+    hello msg
+}
+
+In the view you can use the `tmpl` namespace:
+[source,groovy]
+.`grails-app/views/hello/index.gson`
+json {
+    message tmpl.msg(message)
+}
+
+Using collections:
+[source,groovy]
+model {
+    List<String> stringList
+}
+json {
+    messages tmpl.msg(stringList)
+}
