@@ -8,6 +8,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface JsonApiViewHelper {
+
     JsonOutput.JsonWritable render(Object object)
+
     JsonOutput.JsonWritable render(Object object, Map arguments)
 }

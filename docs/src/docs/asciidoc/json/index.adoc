@@ -30,6 +30,10 @@ include::contentNegotiation.adoc[]
 
 include::hal.adoc[]
 
+=== JSON API Support
+
+include::jsonapi.adoc[]
+
 === The JsonTemplateEngine
 
 include::templateEngine.adoc[]
