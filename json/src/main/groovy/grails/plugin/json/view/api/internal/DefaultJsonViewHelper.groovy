@@ -26,12 +26,12 @@ import java.lang.reflect.ParameterizedType
 @InheritConstructors
 class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
 
-    static final String PAGINATION_SORT = "sort"
-    static final String PAGINATION_ORDER = "order"
-    static final String PAGINATION_MAX = "max"
-    static final String PAGINATION_OFFSET = "offset"
-    static final String PAGINATION_TOTAL = "total"
-    static final String PAGINATION_RESROUCE = "resource"
+    public static final String PAGINATION_SORT = "sort"
+    public static final String PAGINATION_ORDER = "order"
+    public static final String PAGINATION_MAX = "max"
+    public static final String PAGINATION_OFFSET = "offset"
+    public static final String PAGINATION_TOTAL = "total"
+    public static final String PAGINATION_RESROUCE = "resource"
 
     
     /**
