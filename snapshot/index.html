@@ -2168,6 +2168,174 @@ json {
 <div class="paragraph">
 <p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views implement the <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a> trait, which provides an API for writing JSON API views.</p>
 </div>
+<div class="paragraph">
+<p>Grails views makes a best effort to conform to the JSON API standard, however that only applies to the format of the data. The specification makes many assertions about response codes, url conventions, and other server related concepts that are overreaching.</p>
+</div>
+<div class="paragraph">
+<p>The JSON API support in Grails also only applies to domain classes. Because the specification relies on concepts of relationships and identifiers, there is no clear way to determine how those concepts would apply to conventional Groovy classes. As a result, normal Groovy classes are not supported.</p>
+</div>
+<div class="paragraph">
+<p>The simplest example of using JSON API simply passes a domain class to the <code>render</code> method of the <code>jsonapi</code> object.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example where <code>Book</code> looks like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">Book</span> {
+    <span class="predefined-type">String</span> title
+    Author author
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is what an example <code>Book</code> instance rendered with JSON API might look like.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">book</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">3</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">attributes</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">The Return of the King</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">relationships</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">9</span><span class="delimiter">&quot;</span></span>
+        }
+      }
+    }
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">links</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/3</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">related</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">href</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/author/9</span><span class="delimiter">&quot;</span></span>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_json_api_object">2.10.1. JSON API Object</h4>
+<div class="paragraph">
+<p>To include the <a href="http://jsonapi.org/format/#document-jsonapi-object">JSON API Object</a> in the response, include a <code>jsonApiObject</code> argument to the <code>render</code> method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book, [<span class="key">jsonApiObject</span>: <span class="predefined-constant">true</span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response will contain <code>"jsonapi":{"version":"1.0"}</code> as the first key in the resulting object.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_meta_object">2.10.2. Meta Object</h4>
+<div class="paragraph">
+<p>To add <a href="http://jsonapi.org/format/#document-meta">metadata</a> to your response, the <code>meta</code> argument can be passed to render with the value being the object that should be rendered. If this functionality is used in addition to <code>jsonApiObject: true</code>, the metadata will be rendered as the "meta" property of the "jsonapi" object.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book, [<span class="key">meta</span>: [<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Metadata Information</span><span class="delimiter">&quot;</span></span>]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response will contain <code>"meta":{"name":"Metadata Information"}</code> as the first key in the resulting object.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rendering_errors">2.10.3. Rendering Errors</h4>
+<div class="paragraph">
+<p>The JSON API specification has <a href="http://jsonapi.org/format/#errors">instructions on how to render errors</a>. In the case of the Grails implementation, this applies to both exceptions and validation errors.</p>
+</div>
+<div class="sect4">
+<h5 id="_exceptions">Exceptions</h5>
+<div class="paragraph">
+<p>If an exception is passed to the <code>render</code> method, it will be rendered within the specification.</p>
+</div>
+<div class="paragraph">
+<p>In the example of an exception <code>new RuntimeException("oops!")</code>, the following will be rendered:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">errors</span><span class="delimiter">&quot;</span></span>: [
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>: <span class="integer">500</span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java.lang.RuntimeException</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">detail</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">oops!</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">stacktrace</span><span class="delimiter">&quot;</span></span>: [
+          <span class="error">/</span><span class="error">/</span><span class="error">A</span><span class="error">n</span> <span class="error">a</span><span class="error">r</span><span class="error">r</span><span class="error">a</span><span class="error">y</span> <span class="error">o</span><span class="error">f</span> <span class="error">i</span><span class="error">n</span><span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">r</span><span class="error">e</span><span class="error">l</span><span class="error">a</span><span class="error">t</span><span class="error">i</span><span class="error">n</span><span class="error">g</span> <span class="error">t</span><span class="error">o</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span> <span class="error">s</span><span class="error">t</span><span class="error">a</span><span class="error">c</span><span class="error">k</span><span class="error">t</span><span class="error">r</span><span class="error">a</span><span class="error">c</span><span class="error">e</span>
+        ]
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_validation_errors">Validation Errors</h5>
+<div class="paragraph">
+<p>In the case of validation errors, the response will look like the following when a <code>name</code> property fails the blank constraint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">errors</span><span class="delimiter">&quot;</span></span>: [
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">blank</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">detail</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Property [name] of class [class com.foo.Bar] cannot be blank</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">object</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">com.foo.Bar</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">field</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">rejectedValue</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">bindingError</span><span class="delimiter">&quot;</span></span>: <span class="value">false</span>
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_links">2.10.4. Links</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_pagination">2.10.5. Pagination</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_associations">2.10.6. Associations</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_expand">2.10.7. Expand</h4>
+
+</div>
 </div>
 <div class="sect2">
 <h3 id="_the_jsontemplateengine">2.11. The JsonTemplateEngine</h3>
@@ -2780,7 +2948,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-02 14:22:47 UTC
+Last updated 2017-03-02 18:41:42 UTC
 </div>
 </div>
 </body>
