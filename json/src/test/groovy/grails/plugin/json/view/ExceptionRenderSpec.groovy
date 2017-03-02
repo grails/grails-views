@@ -48,9 +48,7 @@ catch(Throwable e) {
         ''')
 
         then:"The exception is rendered"
-        renderResult.json.errors[0].status == 500
-        renderResult.json.errors[0].title == 'java.lang.RuntimeException'
-        renderResult.json.errors[0].detail == 'bad'
+        renderResult.jsonText.startsWith('{"errors":[{"status":500,"title":"java.lang.RuntimeException","detail":"bad","source":{"stacktrace"')
         renderResult.json.errors[0].source.stacktrace[0] == '6 | JsonView0.run'
 
     }

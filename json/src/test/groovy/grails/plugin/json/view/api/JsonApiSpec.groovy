@@ -34,7 +34,6 @@ json jsonapi.render(widget)
 
         then:
             result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
-            result.contentType == 'application/vnd.api+json'
     }
 
     void 'test Relationships'() {
@@ -58,16 +57,7 @@ json jsonapi.render(book)
 ''', [book: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-            result.json
-            def relationships = result.json.data.relationships
-            relationships.size() == 1
-            relationships.author
-            relationships.author.data.id
-            relationships.author.data.type == "author"
-
-        and: 'the links are in order '
-            result.json.links.self == '/book/3'
-            result.json.links.related.href == '/author/9'
+            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3","related":{"href":"/author/9"}}}'
     }
 
     void 'test errors'() {
@@ -103,7 +93,7 @@ model {
     Widget widget
 }
 
-json jsonapi.render(widget, [showJsonApiObject: true])
+json jsonapi.render(widget, [jsonApiObject: true])
 ''', [widget: theWidget])
 
         then:
@@ -132,6 +122,56 @@ json jsonapi.render(book, [expand: 'author'])
 
         then: 'The JSON relationships are in place'
             result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3","related":{"href":"/author/9"}},"included":[{"type":"author","id":"9","attributes":{"name":"J.R.R. Tolkien"},"links":{"self":"/author/9"}}]}'
+    }
+
+    void "test meta object rendering with jsonApiObject"() {
+        given:
+        Widget theWidget = new Widget(name: 'One', width: 4, height: 7)
+        theWidget.id = 5
+        def meta = [copyright: "Copyright 2015 Example Corp.",
+                    authors: [
+                        "Yehuda Katz",
+                        "Steve Klabnik"
+                    ]]
+
+        when:
+        def result = render('''
+import grails.plugin.json.view.api.Widget
+model {
+    Widget widget
+    Object meta
+}
+
+json jsonapi.render(widget, [jsonApiObject: true, meta: meta])
+''', [widget: theWidget, meta: meta])
+
+        then:
+        result.jsonText == '''{"jsonapi":{"version":"1.0","meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]}},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
+    }
+
+    void "test meta object rendering without jsonApiObject"() {
+        given:
+        Widget theWidget = new Widget(name: 'One', width: 4, height: 7)
+        theWidget.id = 5
+        def meta = [copyright: "Copyright 2015 Example Corp.",
+                    authors: [
+                            "Yehuda Katz",
+                            "Steve Klabnik"
+                    ]]
+
+        when:
+        def result = render('''
+import grails.plugin.json.view.api.Widget
+model {
+    Widget widget
+    Object meta
+}
+
+json jsonapi.render(widget, [meta: meta])
+''', [widget: theWidget, meta: meta])
+
+        then:
+        result.jsonText == '''{"meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
 }

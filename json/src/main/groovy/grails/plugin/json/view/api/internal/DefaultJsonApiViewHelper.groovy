@@ -34,9 +34,28 @@ import org.springframework.http.HttpMethod
 class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiViewHelper {
 
     GrailsJsonViewHelper viewHelper
-    String contentType = "application/vnd.api+json"
-
     JsonApiIdGenerator jsonApiIdGenerator
+
+    /**
+     * The jsonapiobject parameter
+     */
+    String JSON_API_OBJECT = "jsonApiObject"
+
+    /**
+     * The meta parameter
+     */
+    String META = "meta"
+
+
+    /**
+     * The meta parameter
+     */
+    String SHOW_LINKS = "showLinks"
+
+    /**
+     * The pagination parameter
+     */
+    String PAGINATION = "pagination"
 
     public static final JsonOutput.JsonWritable NOOP_OUTPUT = new JsonOutput.JsonWritable() {
         @Override
@@ -57,9 +76,6 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
     @Override
     JsonOutput.JsonWritable render(Object object, Map arguments) {
-        if(view instanceof HttpView) {
-            ((HttpView)view).response?.contentType(contentType)
-        }
         if (object == null) {
             return NULL_OUTPUT
         }
@@ -68,12 +84,16 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
             @CompileStatic
             Writer writeTo(Writer out) throws IOException {
                 out.write(JsonOutput.OPEN_BRACE)
-                if (arguments.showJsonApiObject) {
-                    renderJsonApiMember().writeTo(out)
+                def meta = arguments.get(META)
+                if (arguments.get(JSON_API_OBJECT)) {
+                    renderJsonApiMember(out, meta)
+                    out.write(JsonOutput.COMMA)
+                } else if (meta != null) {
+                    renderMetaObject(out, meta)
                     out.write(JsonOutput.COMMA)
                 }
                 if (object instanceof Throwable) {
-                    renderException(object).writeTo(out)
+                    renderException(out, object)
                 } else if (objectHasErrors(object)) {
                     renderErrors(object).writeTo(out)
                 } else {
@@ -139,7 +159,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
     }
 
     private void renderResource(Object object, Writer out, Map arguments, String basePath) {
-        boolean showLinks = ViewUtils.getBooleanFromMap('showLinks', arguments, false)
+        boolean showLinks = ViewUtils.getBooleanFromMap(SHOW_LINKS, arguments, false)
         PersistentEntity entity = findEntity(object)
 
         List<String> includes = getIncludes(arguments)
@@ -374,13 +394,13 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 if (object instanceof Collection) {
                     out.write(generator.toJson(view.request.uri))
 
-                    if (arguments.pagination instanceof Map) {
-                        Map paginationArgs = (Map)arguments.pagination
-                        if (!paginationArgs.containsKey('total') || !paginationArgs.containsKey('resource')) {
+                    if (arguments.get(PAGINATION) instanceof Map) {
+                        Map paginationArgs = (Map)arguments.get(PAGINATION)
+                        if (!paginationArgs.containsKey(PAGINATION_TOTAL) || !paginationArgs.containsKey(PAGINATION_RESROUCE)) {
                             throw new IllegalArgumentException("JSON API pagination arguments must contain resource and total")
                         }
-                        Integer total = (Integer)paginationArgs.total
-                        Object resource = paginationArgs.resource
+                        Integer total = (Integer)paginationArgs.get(PAGINATION_TOTAL)
+                        Object resource = paginationArgs.get(PAGINATION_RESROUCE)
                         Parameters params = defaultPaginateParams(paginationArgs)
                         List<Link> links = getPaginationLinks(resource, total, params)
                         for(link in links) {
@@ -441,7 +461,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         if (!expandProperties.empty && includeAssociations(arguments)) {
 
             arguments = new LinkedHashMap(arguments)
-            arguments.showLinks = true
+            arguments.put(SHOW_LINKS, true)
 
             new JsonOutput.JsonWritable() {
 
@@ -483,60 +503,43 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
     }
 
-    JsonOutput.JsonWritable renderJsonApiMember() {
-        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
-            @Override
-            @CompileStatic
-            Writer writeTo(Writer out) throws IOException {
-                writeKey(out, "jsonapi")
-                out.write(JsonOutput.OPEN_BRACE)
-                writeKeyValue(out, 'version', '1.0')
-                out.write(JsonOutput.CLOSE_BRACE)
-                return out
-            }
-        }
-        return writable
+    void renderMetaObject(Writer out, Object meta) {
+        writeKey(out, "meta")
+        viewHelper.render(meta, [:]).writeTo(out)
     }
 
-    JsonOutput.JsonWritable renderException(Throwable object) {
-        JsonGenerator generator = getGenerator()
-        JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
-
-            @Override
-            Writer writeTo(Writer out) throws IOException {
-
-                StackTraceUtils.sanitize(object)
-
-                out.write(generator.toJson("errors"))
-
-                out.write(JsonOutput.COLON)
-
-                out.write(JsonOutput.OPEN_BRACKET)
-
-                out.write(JsonOutput.OPEN_BRACE)
-
-                writeKeyValue(out, 'status', 500)
-                out.write(JsonOutput.COMMA)
-                writeKeyValue(out, 'title', object.class.name)
-                out.write(JsonOutput.COMMA)
-                writeKeyValue(out, 'detail', object.localizedMessage)
-                out.write(JsonOutput.COMMA)
-                out.write(generator.toJson("source"))
-                out.write(JsonOutput.COLON)
-                out.write(JsonOutput.OPEN_BRACE)
-
-                writeKeyValue(out, 'stacktrace', getJsonStackTrace(object))
-
-                out.write(JsonOutput.CLOSE_BRACE)//source
-
-                out.write(JsonOutput.CLOSE_BRACE)//error
-
-                out.write(JsonOutput.CLOSE_BRACKET)
-
-                return out
-            }
+    void renderJsonApiMember(Writer out, Object meta) {
+        writeKey(out, "jsonapi")
+        out.write(JsonOutput.OPEN_BRACE)
+        writeKeyValue(out, 'version', '1.0')
+        if (meta != null) {
+            out.write(JsonOutput.COMMA)
+            renderMetaObject(out, meta)
         }
-        return writable
+        out.write(JsonOutput.CLOSE_BRACE)
+    }
+
+    void renderException(Writer out, Throwable object) {
+        JsonGenerator generator = getGenerator()
+
+        StackTraceUtils.sanitize(object)
+        out.write(generator.toJson("errors"))
+        out.write(JsonOutput.COLON)
+        out.write(JsonOutput.OPEN_BRACKET)
+        out.write(JsonOutput.OPEN_BRACE)
+        writeKeyValue(out, 'status', 500)
+        out.write(JsonOutput.COMMA)
+        writeKeyValue(out, 'title', object.class.name)
+        out.write(JsonOutput.COMMA)
+        writeKeyValue(out, 'detail', object.localizedMessage)
+        out.write(JsonOutput.COMMA)
+        out.write(generator.toJson("source"))
+        out.write(JsonOutput.COLON)
+        out.write(JsonOutput.OPEN_BRACE)
+        writeKeyValue(out, 'stacktrace', getJsonStackTrace(object))
+        out.write(JsonOutput.CLOSE_BRACE)//source
+        out.write(JsonOutput.CLOSE_BRACE)//error
+        out.write(JsonOutput.CLOSE_BRACKET)
     }
 
     JsonApiIdGenerator getIdGenerator() {

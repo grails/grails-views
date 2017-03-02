@@ -30,6 +30,8 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
     static final String PAGINATION_ORDER = "order"
     static final String PAGINATION_MAX = "max"
     static final String PAGINATION_OFFSET = "offset"
+    static final String PAGINATION_TOTAL = "total"
+    static final String PAGINATION_RESROUCE = "resource"
 
     
     /**
