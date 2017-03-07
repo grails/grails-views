@@ -13,8 +13,7 @@ import spock.lang.Specification
 @TestMixin(GrailsUnitTestMixin)
 class JsonApiSpec extends Specification implements JsonViewTest {
     void setup() {
-        mappingContext.addPersistentEntities(Widget, Author, Book)
-
+        mappingContext.addPersistentEntities(Widget, Author, Book, ResearchPaper)
     }
 
     void 'test simple case'() {
@@ -36,7 +35,7 @@ json jsonapi.render(widget)
             result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
-    void 'test Relationships'() {
+    void 'test Relationships - hasOne'() {
         given:
             Book returnOfTheKing = new Book(
                 title: 'The Return of the King',
@@ -57,7 +56,36 @@ json jsonapi.render(book)
 ''', [book: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3","related":{"href":"/author/9"}}}'
+            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3"}}'
+    }
+
+    void 'test Relationships - multiple'() {
+        given:
+        ResearchPaper returnOfTheKing = new ResearchPaper(
+                title: 'The Return of the King',
+                leadAuthor: new Author(name: "J.R.R. Tolkien"),
+                coAuthor: new Author(name: "Sally Jones"),
+                subAuthors: [new Author(name: "Will"), new Author(name: "Smith")]
+        )
+        returnOfTheKing.id = 3
+        returnOfTheKing.leadAuthor.id = 9
+        returnOfTheKing.coAuthor.id = 10
+        returnOfTheKing.subAuthors[0].id = 12
+        returnOfTheKing.subAuthors[1].id = 13
+
+
+        when:
+        JsonRenderResult result = render('''
+import grails.plugin.json.view.api.ResearchPaper
+model {
+    ResearchPaper researchPaper
+}
+
+json jsonapi.render(researchPaper)
+''', [researchPaper: returnOfTheKing])
+
+        then: 'The JSON relationships are in place'
+        result.jsonText == '{"data":{"type":"researchPaper","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"coAuthor":{"links":{"self":"/author/10"},"data":{"type":"author","id":"10"}},"leadAuthor":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}},"subAuthors":{"data":[{"type":"author","id":"12"},{"type":"author","id":"13"}]}}},"links":{"self":"/researchPaper/3"}}'
     }
 
     void 'test errors'() {
@@ -121,7 +149,7 @@ json jsonapi.render(book, [expand: 'author'])
 ''', [book: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3","related":{"href":"/author/9"}},"included":[{"type":"author","id":"9","attributes":{"name":"J.R.R. Tolkien"},"links":{"self":"/author/9"}}]}'
+            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3"},"included":[{"type":"author","id":"9","attributes":{"name":"J.R.R. Tolkien"},"links":{"self":"/author/9"}}]}'
     }
 
     void "test meta object rendering with jsonApiObject"() {
@@ -187,6 +215,14 @@ class Widget {
 class Book {
     String title
     Author author
+}
+
+@Entity
+class ResearchPaper {
+    String title
+    static hasMany = [subAuthors: Author]
+    Author leadAuthor
+    Author coAuthor
 }
 
 @Entity

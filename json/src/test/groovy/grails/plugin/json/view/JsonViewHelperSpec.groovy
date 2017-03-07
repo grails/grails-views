@@ -93,7 +93,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"}}'
     }
 
     void "test render toOne association"() {
@@ -170,7 +170,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{}},"links":{"self":"/team/1","related":{}}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{}},"links":{"self":"/team/1"}}'
 
         when:"We render an object without deep argument and no child id"
         renderResult = render('''
@@ -183,7 +183,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{"captain":{"data":null}}},"links":{"self":"/team/1","related":{}}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{"captain":{"data":null}}},"links":{"self":"/team/1"}}'
     }
 
     void "test excludes with json api"() {
@@ -207,7 +207,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{}},"links":{"self":"/team/1","related":{}}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona"},"relationships":{}},"links":{"self":"/team/1"}}'
 
         when:"We render an object with a single excludes"
         renderResult = render('''
@@ -220,7 +220,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"}}'
 
         when:"We expand a relationship"
         renderResult = render('''
@@ -233,7 +233,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"1","attributes":{"name":"Iniesta"},"relationships":{"team":{"data":null}},"links":{"self":"/player/1","related":{"href":""}}},{"type":"player","id":"2","attributes":{"name":"Messi"},"relationships":{"team":{"data":null}},"links":{"self":"/player/2","related":{"href":""}}}]}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"1","attributes":{"name":"Iniesta"},"relationships":{"team":{"data":null}},"links":{"self":"/player/1"}},{"type":"player","id":"2","attributes":{"name":"Messi"},"relationships":{"team":{"data":null}},"links":{"self":"/player/2"}}]}'
 
         when:"We expand a relationship and exclude a nested property"
         team.captain = new Player(name: "Captain Hook")
@@ -248,7 +248,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"10","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/10","related":{"href":""}}}]}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"links":{"self":"/player/10"},"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"10","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/10"}}]}'
 
         when:"We expand a relationship and exclude a nested property"
         team.captain = new Player(name: "Captain Hook")
@@ -263,7 +263,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1","related":{}},"included":[{"type":"player","id":"1","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/1","related":{"href":""}}},{"type":"player","id":"2","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/2","related":{"href":""}}}]}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"links":{"self":"/player/10"},"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"1","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/1"}},{"type":"player","id":"2","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/2"}}]}'
     }
 
     void "Test render object method with customizer"() {

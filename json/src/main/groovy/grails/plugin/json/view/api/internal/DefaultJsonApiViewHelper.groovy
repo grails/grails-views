@@ -13,6 +13,7 @@ import grails.util.TypeConvertingMap
 import grails.views.api.HttpView
 import grails.views.api.http.Parameters
 import grails.views.utils.ViewUtils
+import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.grails.core.util.ClassPropertyFetcher
@@ -21,6 +22,7 @@ import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
 import org.grails.datastore.mapping.model.types.ToMany
+import org.grails.datastore.mapping.model.types.ToOne
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
@@ -45,12 +47,6 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
      * The meta parameter
      */
     String META = "meta"
-
-
-    /**
-     * The meta parameter
-     */
-    String SHOW_LINKS = "showLinks"
 
     /**
      * The pagination parameter
@@ -159,8 +155,11 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
     }
 
     private void renderResource(Object object, Writer out, Map arguments, String basePath) {
-        boolean showLinks = ViewUtils.getBooleanFromMap(SHOW_LINKS, arguments, false)
         PersistentEntity entity = findEntity(object)
+
+        if (entity == null) {
+            throw new IllegalArgumentException("Rendering non persistent entities is not supported")
+        }
 
         List<String> includes = getIncludes(arguments)
         List<String> excludes = getExcludes(arguments)
@@ -222,8 +221,13 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                     firstRelationship = false
                     out.write(generator.toJson(association.name))
                     out.write(JsonOutput.COLON)
-
                     out.write(JsonOutput.OPEN_BRACE)
+
+                    if (association instanceof ToOne && value != null) {
+                        renderRelationshipLinks(value).writeTo(out)
+                        out.write(JsonOutput.COMMA)
+                    }
+
                     out.write(generator.toJson("data"))
                     out.write(JsonOutput.COLON)
                     if (association instanceof ToMany && Iterable.isAssignableFrom(association.type)) {
@@ -270,10 +274,11 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
             }
-            if (showLinks) {
-                out.write(JsonOutput.COMMA)
-                renderLinks(object, arguments).writeTo(out)
-            }
+        }
+
+        if (basePath != "") {
+            out.write(JsonOutput.COMMA)
+            renderRelationshipLinks(object).writeTo(out)
         }
         out.write(JsonOutput.CLOSE_BRACE)
     }
@@ -377,6 +382,23 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         return writable
     }
 
+    JsonOutput.JsonWritable renderRelationshipLinks(Object object) {
+        JsonGenerator generator = getGenerator()
+        new JsonOutput.JsonWritable() {
+            @Override
+            Writer writeTo(Writer out) throws IOException {
+                out.write(generator.toJson("links"))
+                out.write(JsonOutput.COLON)
+                out.write(JsonOutput.OPEN_BRACE)
+                out.write(generator.toJson("self"))
+                out.write(JsonOutput.COLON)
+                out.write(generator.toJson(view.linkGenerator.link(resource: object, method: HttpMethod.GET)))
+                out.write(JsonOutput.CLOSE_BRACE)
+                out
+            }
+        }
+    }
+
     JsonOutput.JsonWritable renderLinks(Object object, Map arguments) {
         JsonGenerator generator = getGenerator()
         JsonOutput.JsonWritable writable = new JsonOutput.JsonWritable() {
@@ -409,43 +431,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                         }
                     }
                 } else {
-                    PersistentEntity entity = findEntity(object)
-                    def linkGenerator = view.linkGenerator
-                    out.write(generator.toJson(linkGenerator.link(resource: object, method: HttpMethod.GET)))
-                    List<Association> associations = getRelationships(entity)
-                    if (associations && includeAssociations(arguments)) {
-                        out.write(JsonOutput.COMMA)
-                        out.write(generator.toJson("related"))
-                        out.write(JsonOutput.COLON)
-                        out.write(JsonOutput.OPEN_BRACE)
-                        associations.eachWithIndex { Association association, int idx ->
-                            if (!association.isOwningSide()) {
-                                def instance = object.properties[association.name]
-
-                                out.write(generator.toJson("href"))
-                                out.write(JsonOutput.COLON)
-                                out.write(generator.toJson(linkGenerator.link(resource: instance, method: HttpMethod.GET)))
-
-                                if (instance instanceof Collection) {
-                                    Collection instanceCollection = (Collection) instance
-                                    out.write(generator.toJson("meta"))
-                                    out.write(JsonOutput.COLON)
-                                    out.write(JsonOutput.OPEN_BRACE)
-
-                                    Integer count = instanceCollection.size()
-                                    out.write(generator.toJson("count"))
-                                    out.write(JsonOutput.COLON)
-                                    out.write(generator.toJson(count))
-
-                                    out.write(JsonOutput.CLOSE_BRACE)
-                                }
-                                if (idx < associations.size() - 1) {
-                                    out.write(JsonOutput.COMMA)
-                                }
-                            }
-                        }
-                        out.write(JsonOutput.CLOSE_BRACE)
-                    }
+                    out.write(generator.toJson(view.linkGenerator.link(resource: object, method: HttpMethod.GET)))
                 }
 
                 out.write(JsonOutput.CLOSE_BRACE)
@@ -459,9 +445,6 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
         List<String> expandProperties = getExpandProperties((JsonView)view, arguments)
         if (!expandProperties.empty && includeAssociations(arguments)) {
-
-            arguments = new LinkedHashMap(arguments)
-            arguments.put(SHOW_LINKS, true)
 
             new JsonOutput.JsonWritable() {
 

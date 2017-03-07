@@ -98,6 +98,6 @@ json jsonapi.render(player, [expand: 'team'])
 ''', [player: player])
 
         then: 'The JSON relationships are in place'
-        result.jsonText == '{"data":{"type":"player","id":"3","attributes":{"name":"Cantona"},"relationships":{"team":{"data":{"type":"team","id":"9"}}}},"links":{"self":"/player/3","related":{"href":"/team/9"}},"included":[{"type":"team","id":"9","attributes":{"name":"Manchester United","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[]}},"links":{"self":"/team/9","related":{}}}]}'
+        result.jsonText == '{"data":{"type":"player","id":"3","attributes":{"name":"Cantona"},"relationships":{"team":{"links":{"self":"/team/9"},"data":{"type":"team","id":"9"}}}},"links":{"self":"/player/3"},"included":[{"type":"team","id":"9","attributes":{"name":"Manchester United","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[]}},"links":{"self":"/team/9"}}]}'
     }
 }
