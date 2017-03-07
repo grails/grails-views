@@ -485,6 +485,9 @@ json jsonapi.render(book)</code></pre>
     },
     "relationships": {
       "author": {
+        "links": {
+          "self": "/author/9"
+        },
         "data": {
           "type": "author",
           "id": "9"
@@ -493,10 +496,7 @@ json jsonapi.render(book)</code></pre>
     }
   },
   "links": {
-    "self": "http://localhost:8080/book/3",
-    "related": {
-      "href": "http://localhost:8080/author/9"
-    }
+    "self": "http://localhost:8080/book/3"
   }
 }</code></pre>
 </div>
@@ -594,11 +594,81 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_links">Links</h4>
-
+<div class="paragraph">
+<p>In general, links for relationships will be provided when the relationship has a value.</p>
+</div>
+<div class="paragraph">
+<p>Example output for a has one relationship where the value is null:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">"captain": {
+  "data": null
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And when the value is not null:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">"author": {
+  "links": {
+    "self": "/author/9"
+  },
+  "data": {
+    "type": "author",
+    "id": "9"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the case of to many relationships, the JSON API specification only allows a single links object for the collection. Due to no enforced standard for how to link to those nested resources, a link will not be included in the response.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_pagination">Pagination</h4>
-
+<div class="paragraph">
+<p>The JSON API specification has a section which explains <a href="http://jsonapi.org/format/#fetching-pagination">pagination</a>. The Grails implementation follows that specification as it is written.</p>
+</div>
+<div class="paragraph">
+<p>To enable pagination links in your output you must be rendering a collection and also include some arguments in addition to the collection being rendered. There are two required arguments: total and resource. The default offset is 0 and max is 10.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;Book&gt; books
+    Integer bookTotal
+}
+json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example links output if <code>bookTotal == 20</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">links": {
+  "self": "/books",
+  "first": "http://localhost:8080/books?offset=0&amp;max=10",
+  "next": "http://localhost:8080/player?offset=10&amp;max=10",
+  "last": "http://localhost:8080/player?offset=10&amp;max=10"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default the values for <code>offset</code>, <code>sort</code>, <code>max</code>, and <code>order</code> will come from the parameters with the same names. You can override their values by passing the corresponding argument in the pagination Map.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;Book&gt; books
+    Integer bookTotal
+}
+json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book, max: 20, sort: params.myCustomSortArgument]])</code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_associations">Associations</h4>
@@ -611,7 +681,7 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-07 06:54:09 UTC
+Last updated 2017-03-07 22:59:10 UTC
 </div>
 </div>
 </body>
