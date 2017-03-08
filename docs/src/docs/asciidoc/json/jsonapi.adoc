@@ -165,7 +165,7 @@ json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book]])
 Example links output if `bookTotal == 20`:
 
 [source,json]
-links": {
+"links": {
   "self": "/books",
   "first": "http://localhost:8080/books?offset=0&max=10",
   "next": "http://localhost:8080/books?offset=10&max=10",
