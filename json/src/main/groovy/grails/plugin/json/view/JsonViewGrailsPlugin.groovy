@@ -1,6 +1,8 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.renderer.ErrorsJsonViewRenderer
+import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdRenderer
+import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.plugins.*
 import grails.util.BuildSettings
@@ -46,6 +48,7 @@ A plugin that allows rendering of JSON views
     def scm = [ url: "http://github.com/grails/grails-views" ]
 
     Closure doWithSpring() { {->
+            jsonApiIdRenderStrategy(DefaultJsonApiIdRenderer)
             jsonViewConfiguration(JsonViewConfiguration)
             jsonTemplateEngine(JsonViewTemplateEngine, jsonViewConfiguration)
             jsonSmartViewResolver(JsonViewResolver, jsonTemplateEngine) {

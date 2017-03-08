@@ -6,6 +6,7 @@ import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.DefaultHalViewHelper
 import grails.plugin.json.view.api.internal.DefaultJsonApiViewHelper
 import grails.plugin.json.view.api.internal.TemplateRenderer
+import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.views.GrailsViewTemplate
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewException
@@ -25,6 +26,11 @@ trait JsonView extends GrailsView {
      * The default generator
      */
     JsonGenerator generator
+
+    /**
+     * The strategy to use to render identifiers in the JSON API specification
+     */
+    JsonApiIdRenderStrategy jsonApiIdRenderStrategy
 
     /**
      * The {@link StreamingJsonBuilder} instance

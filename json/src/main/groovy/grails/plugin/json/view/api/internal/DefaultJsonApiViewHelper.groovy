@@ -5,25 +5,17 @@ import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonApiViewHelper
 import grails.plugin.json.view.api.JsonView
-import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdGenerator
-import grails.plugin.json.view.api.jsonapi.JsonApiIdGenerator
+import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.rest.Link
-import grails.util.Holders
-import grails.util.TypeConvertingMap
-import grails.views.api.HttpView
 import grails.views.api.http.Parameters
-import grails.views.utils.ViewUtils
-import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.StackTraceUtils
-import org.grails.core.util.ClassPropertyFetcher
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
 import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
-import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
@@ -36,7 +28,6 @@ import org.springframework.http.HttpMethod
 class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiViewHelper {
 
     GrailsJsonViewHelper viewHelper
-    JsonApiIdGenerator jsonApiIdGenerator
 
     /**
      * The jsonapiobject parameter
@@ -174,8 +165,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
         if(idName != null) {
             out.write(JsonOutput.COMMA)
-            JsonApiIdGenerator idGenerator = getIdGenerator()
-            writeKeyValue(out, 'id', idGenerator.generateId(object, idName))
+            writeKeyValue(out, 'id', idGenerator.render(object, identity))
         }
 
         if (entity.persistentProperties) {
@@ -230,19 +220,19 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                     out.write(generator.toJson("data"))
                     out.write(JsonOutput.COLON)
+                    PersistentEntity associatedEntity = association.associatedEntity
                     if (association instanceof ToMany && Iterable.isAssignableFrom(association.type)) {
                         out.write(JsonOutput.OPEN_BRACKET)
-
                         if (value != null) {
                             Iterator iterator = ((Iterable) value).iterator()
-                            String type = association.associatedEntity.decapitalizedName
+                            String type = associatedEntity.decapitalizedName
 
                             while (iterator.hasNext()) {
                                 def o = iterator.next()
                                 out.write(JsonOutput.OPEN_BRACE)
                                 writeKeyValue(out, 'type', type)
                                 out.write(JsonOutput.COMMA)
-                                writeKeyValue(out, 'id', idGenerator.generateId(o))
+                                writeKeyValue(out, 'id', idGenerator.render(o, associatedEntity.identity))
                                 out.write(JsonOutput.CLOSE_BRACE)
                                 if (iterator.hasNext()) {
                                     out.write(JsonOutput.COMMA)
@@ -258,12 +248,12 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                             out.write(generator.toJson("type"))
                             out.write(JsonOutput.COLON)
-                            out.write(generator.toJson(association.associatedEntity.decapitalizedName))
+                            out.write(generator.toJson(associatedEntity.decapitalizedName))
                             out.write(JsonOutput.COMMA)
 
                             out.write(generator.toJson("id"))
                             out.write(JsonOutput.COLON)
-                            out.write(generator.toJson(idGenerator.generateId(value)))
+                            out.write(generator.toJson(idGenerator.render(value, associatedEntity.identity)))
 
                             out.write(JsonOutput.CLOSE_BRACE)
                         } else {
@@ -525,14 +515,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         out.write(JsonOutput.CLOSE_BRACKET)
     }
 
-    JsonApiIdGenerator getIdGenerator() {
-        if (jsonApiIdGenerator == null) {
-            try {
-                this.jsonApiIdGenerator = Holders.getApplicationContext().getBean("jsonApiIdGenerator") as JsonApiIdGenerator
-            } catch (NoSuchBeanDefinitionException nsbde) {
-                this.jsonApiIdGenerator = new DefaultJsonApiIdGenerator()
-            }
-        }
-        return jsonApiIdGenerator
+    JsonApiIdRenderStrategy getIdGenerator() {
+        ((JsonView)view).jsonApiIdRenderStrategy
     }
 }

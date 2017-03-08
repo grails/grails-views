@@ -1,6 +1,7 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.builder.JsonGenerator
+import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension
 import grails.plugin.json.view.internal.JsonViewsTransform
 import grails.plugin.json.view.template.JsonViewTemplate
@@ -13,6 +14,7 @@ import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.OrderComparator
 
 /**
@@ -28,6 +30,9 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     private final boolean compileStatic
 
     final JsonGenerator generator
+
+    @Autowired
+    JsonApiIdRenderStrategy jsonApiIdRenderStrategy
 
     /**
      * Constructs a JsonTemplateEngine with the default configuration
@@ -59,7 +64,6 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         for (JsonGenerator.Converter converter : loader) {
             converters.add(converter)
         }
-        println converters
         OrderComparator.sort(converters)
         converters.each {
             options.addConverter(it)
@@ -91,6 +95,7 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
     protected WritableScriptTemplate createTemplate(Class<? extends Template> cls, File sourceFile) {
         def template = new JsonViewTemplate((Class<? extends GrailsView>) cls, sourceFile)
         template.generator = this.generator
+        template.jsonApiIdRenderStrategy = this.jsonApiIdRenderStrategy
         return initializeTemplate(template, sourceFile)
     }
 

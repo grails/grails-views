@@ -168,8 +168,8 @@ Example links output if `bookTotal == 20`:
 links": {
   "self": "/books",
   "first": "http://localhost:8080/books?offset=0&max=10",
-  "next": "http://localhost:8080/player?offset=10&max=10",
-  "last": "http://localhost:8080/player?offset=10&max=10"
+  "next": "http://localhost:8080/books?offset=10&max=10",
+  "last": "http://localhost:8080/books?offset=10&max=10"
 }
 
 By default the values for `offset`, `sort`, `max`, and `order` will come from the parameters with the same names. You can override their values by passing the corresponding argument in the pagination Map.
@@ -183,4 +183,36 @@ json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book, max: 
 
 ==== Associations
 
-==== Expand
+The JSON API specification details how relationships should be rendered. The first way is through a relationships object described http://jsonapi.org/format/#document-resource-object-relationships[here]. By default that is now relationships will be rendered in json views.
+
+If you do not wish to render the relationships at all, the `associations` argument can be passed to `render` with the value of false.
+
+ [source,groovy]
+ model {
+     Book book
+ }
+ json jsonapi.render(book, [associations: false])
+
+The specification also has a section that describes http://jsonapi.org/format/#document-compound-documents[compound documents]. If you want one or more of your relationships to be rendered in that manner, you can include the `expand` argument.
+
+[source,groovy]
+model {
+    Book book
+}
+json jsonapi.render(book, [expand: "author"]) //can also be a list of strings
+
+==== Includes / Excludes
+
+The JSON API implementation in Grails supports the same includes and excludes support as normal json views. Please see the section on link:rendering.html[rendering] for details.
+
+==== Identifier Rendering
+
+Grails provides a way to customize the rendering of your domain class identifiers. To override the default behavior, register a bean that implements link:api/grails/plugin/json/view/api/jsonapi/JsonApiIdRenderStrategy.html[JsonApiIdRenderStrategy].
+
+[source,groovy]
+.grails-app/conf/spring/resources.groovy
+----
+beans = {
+    jsonApiIdRenderStrategy(MyCustomImplementation)
+}
+----

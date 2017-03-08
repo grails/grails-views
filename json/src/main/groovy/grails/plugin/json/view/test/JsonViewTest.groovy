@@ -4,6 +4,8 @@ import grails.core.GrailsApplication
 import grails.plugin.json.view.JsonViewConfiguration
 import grails.plugin.json.view.JsonViewTemplateEngine
 import grails.plugin.json.view.api.JsonView
+import grails.plugin.json.view.api.jsonapi.DefaultJsonApiIdRenderer
+import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.views.api.HttpView
 import grails.views.api.http.Response
 import grails.web.mapping.LinkGenerator
@@ -52,6 +54,9 @@ trait JsonViewTest {
         viewConfiguration.setGrailsApplication(grailsApplication)
     }
 
+    @Autowired(required = false)
+    JsonApiIdRenderStrategy jsonApiIdRenderStrategy = new DefaultJsonApiIdRenderer()
+
     @Lazy JsonViewTemplateEngine templateEngine = {
 
         def templateEngine = new JsonViewTemplateEngine(viewConfiguration)
@@ -65,6 +70,7 @@ trait JsonViewTest {
         if(mappingContext != null) {
             templateEngine.setMappingContext(mappingContext)
         }
+        templateEngine.setJsonApiIdRenderStrategy(jsonApiIdRenderStrategy)
         return templateEngine
     }()
 
