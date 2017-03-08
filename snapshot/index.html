@@ -2377,12 +2377,12 @@ json jsonapi.render(books, [<span class="key">pagination</span>: [<span class="k
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json"><span class="error">l</span><span class="error">i</span><span class="error">n</span><span class="error">k</span><span class="error">s</span><span class="string"><span class="delimiter">&quot;</span><span class="content">: {
-  </span><span class="delimiter">&quot;</span></span><span class="error">s</span><span class="error">e</span><span class="error">l</span><span class="error">f</span><span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span><span class="error">/</span><span class="error">b</span><span class="error">o</span><span class="error">o</span><span class="error">k</span><span class="error">s</span><span class="string"><span class="delimiter">&quot;</span><span class="content">,
-  </span><span class="delimiter">&quot;</span></span><span class="error">f</span><span class="error">i</span><span class="error">r</span><span class="error">s</span><span class="error">t</span><span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span><span class="error">h</span><span class="error">t</span><span class="error">t</span><span class="error">p</span>:<span class="error">/</span><span class="error">/</span><span class="error">l</span><span class="error">o</span><span class="error">c</span><span class="error">a</span><span class="error">l</span><span class="error">h</span><span class="error">o</span><span class="error">s</span><span class="error">t</span>:<span class="integer">8080</span><span class="error">/</span><span class="error">b</span><span class="error">o</span><span class="error">o</span><span class="error">k</span><span class="error">s</span><span class="error">?</span><span class="error">o</span><span class="error">f</span><span class="error">f</span><span class="error">s</span><span class="error">e</span><span class="error">t</span><span class="error">=</span><span class="integer">0</span><span class="error">&amp;</span><span class="error">m</span><span class="error">a</span><span class="error">x</span><span class="error">=</span><span class="integer">10</span><span class="string"><span class="delimiter">&quot;</span><span class="content">,
-  </span><span class="delimiter">&quot;</span></span><span class="error">n</span><span class="error">e</span><span class="error">x</span><span class="error">t</span><span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span><span class="error">h</span><span class="error">t</span><span class="error">t</span><span class="error">p</span>:<span class="error">/</span><span class="error">/</span><span class="error">l</span><span class="error">o</span><span class="error">c</span><span class="error">a</span><span class="error">l</span><span class="error">h</span><span class="error">o</span><span class="error">s</span><span class="error">t</span>:<span class="integer">8080</span><span class="error">/</span><span class="error">b</span><span class="error">o</span><span class="error">o</span><span class="error">k</span><span class="error">s</span><span class="error">?</span><span class="error">o</span><span class="error">f</span><span class="error">f</span><span class="error">s</span><span class="error">e</span><span class="error">t</span><span class="error">=</span><span class="integer">10</span><span class="error">&amp;</span><span class="error">m</span><span class="error">a</span><span class="error">x</span><span class="error">=</span><span class="integer">10</span><span class="string"><span class="delimiter">&quot;</span><span class="content">,
-  </span><span class="delimiter">&quot;</span></span><span class="error">l</span><span class="error">a</span><span class="error">s</span><span class="error">t</span><span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span><span class="error">h</span><span class="error">t</span><span class="error">t</span><span class="error">p</span>:<span class="error">/</span><span class="error">/</span><span class="error">l</span><span class="error">o</span><span class="error">c</span><span class="error">a</span><span class="error">l</span><span class="error">h</span><span class="error">o</span><span class="error">s</span><span class="error">t</span>:<span class="integer">8080</span><span class="error">/</span><span class="error">b</span><span class="error">o</span><span class="error">o</span><span class="error">k</span><span class="error">s</span><span class="error">?</span><span class="error">o</span><span class="error">f</span><span class="error">f</span><span class="error">s</span><span class="error">e</span><span class="error">t</span><span class="error">=</span><span class="integer">10</span><span class="error">&amp;</span><span class="error">m</span><span class="error">a</span><span class="error">x</span><span class="error">=</span><span class="integer">10</span><span class="string"><span class="delimiter">&quot;</span><span class="content">
-}</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">links</span><span class="delimiter">&quot;</span></span>: {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/books</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">first</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/books?offset=0&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">next</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/books?offset=10&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">last</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/books?offset=10&amp;max=10</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2960,11 +2960,11 @@ cars {
 <div class="sect2">
 <h3 id="_installation_2">3.2. Installation</h3>
 <div class="paragraph">
-<p>To activate Markup views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code> where <code>VERSION</code> is the version of the plugin you plan to use:</p>
+<p>To activate Markup views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:views-markup:VERSION</span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-markup:1.2.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2976,7 +2976,7 @@ cars {
     ...
     dependencies {
         ...
-        classpath <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:views-gradle:VERSION</span><span class="delimiter">&quot;</span></span>
+        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -3059,7 +3059,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-08 16:21:00 UTC
+Last updated 2017-03-08 16:29:38 UTC
 </div>
 </div>
 </body>
