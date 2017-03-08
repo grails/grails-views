@@ -147,7 +147,7 @@ And when the value is not null:
   }
 }
 
-In the case of to many relationships, the JSON API specification only allows a single links object for the collection. Due to no enforced standard for how to link to those nested resources, a link will not be included in the response.
+Currently links are not supported in the case of to many relationships.
 
 ==== Pagination
 
@@ -187,11 +187,11 @@ The JSON API specification details how relationships should be rendered. The fir
 
 If you do not wish to render the relationships at all, the `associations` argument can be passed to `render` with the value of false.
 
- [source,groovy]
- model {
-     Book book
- }
- json jsonapi.render(book, [associations: false])
+[source,groovy]
+model {
+    Book book
+}
+json jsonapi.render(book, [associations: false])
 
 The specification also has a section that describes http://jsonapi.org/format/#document-compound-documents[compound documents]. If you want one or more of your relationships to be rendered in that manner, you can include the `expand` argument.
 
