@@ -2352,7 +2352,7 @@ json jsonapi.render(book, [<span class="key">meta</span>: [<span class="key">nam
 </div>
 </div>
 <div class="paragraph">
-<p>In the case of to many relationships, the JSON API specification only allows a single links object for the collection. Due to no enforced standard for how to link to those nested resources, a link will not be included in the response.</p>
+<p>Currently links are not supported in the case of to many relationships.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2406,13 +2406,12 @@ json jsonapi.render(books, [<span class="key">pagination</span>: [<span class="k
 <div class="paragraph">
 <p>If you do not wish to render the relationships at all, the <code>associations</code> argument can be passed to <code>render</code> with the value of false.</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>[source,groovy]
-model {
-    Book book
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
 }
-json jsonapi.render(book, [associations: false])</pre>
+json jsonapi.render(book, [<span class="key">associations</span>: <span class="predefined-constant">false</span>])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3059,7 +3058,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-08 16:29:38 UTC
+Last updated 2017-03-08 20:25:20 UTC
 </div>
 </div>
 </body>

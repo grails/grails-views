@@ -2222,7 +2222,7 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the case of to many relationships, the JSON API specification only allows a single links object for the collection. Due to no enforced standard for how to link to those nested resources, a link will not be included in the response.</p>
+<p>Currently links are not supported in the case of to many relationships.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2276,13 +2276,12 @@ json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book, max: 
 <div class="paragraph">
 <p>If you do not wish to render the relationships at all, the <code>associations</code> argument can be passed to <code>render</code> with the value of false.</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>[source,groovy]
-model {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
     Book book
 }
-json jsonapi.render(book, [associations: false])</pre>
+json jsonapi.render(book, [associations: false])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2782,7 +2781,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-08 16:29:38 UTC
+Last updated 2017-03-08 20:25:20 UTC
 </div>
 </div>
 </body>
