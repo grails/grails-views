@@ -429,7 +429,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_links">Links</a></li>
 <li><a href="#_pagination">Pagination</a></li>
 <li><a href="#_associations">Associations</a></li>
-<li><a href="#_expand">Expand</a></li>
+<li><a href="#_includes_excludes">Includes / Excludes</a></li>
+<li><a href="#_identifier_rendering">Identifier Rendering</a></li>
 </ul>
 </div>
 </div>
@@ -652,8 +653,8 @@ json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book]])</co
 <pre class="highlight"><code class="language-json" data-lang="json">links": {
   "self": "/books",
   "first": "http://localhost:8080/books?offset=0&amp;max=10",
-  "next": "http://localhost:8080/player?offset=10&amp;max=10",
-  "last": "http://localhost:8080/player?offset=10&amp;max=10"
+  "next": "http://localhost:8080/books?offset=10&amp;max=10",
+  "last": "http://localhost:8080/books?offset=10&amp;max=10"
 }</code></pre>
 </div>
 </div>
@@ -672,16 +673,57 @@ json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book, max: 
 </div>
 <div class="sect3">
 <h4 id="_associations">Associations</h4>
-
+<div class="paragraph">
+<p>The JSON API specification details how relationships should be rendered. The first way is through a relationships object described <a href="http://jsonapi.org/format/#document-resource-object-relationships">here</a>. By default that is now relationships will be rendered in json views.</p>
+</div>
+<div class="paragraph">
+<p>If you do not wish to render the relationships at all, the <code>associations</code> argument can be passed to <code>render</code> with the value of false.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[source,groovy]
+model {
+    Book book
+}
+json jsonapi.render(book, [associations: false])</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The specification also has a section that describes <a href="http://jsonapi.org/format/#document-compound-documents">compound documents</a>. If you want one or more of your relationships to be rendered in that manner, you can include the <code>expand</code> argument.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json jsonapi.render(book, [expand: "author"]) //can also be a list of strings</code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_expand">Expand</h4>
-
+<h4 id="_includes_excludes">Includes / Excludes</h4>
+<div class="paragraph">
+<p>The JSON API implementation in Grails supports the same includes and excludes support as normal json views. Please see the section on <a href="rendering.html">rendering</a> for details.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_identifier_rendering">Identifier Rendering</h4>
+<div class="paragraph">
+<p>Grails provides a way to customize the rendering of your domain class identifiers. To override the default behavior, register a bean that implements <a href="api/grails/plugin/json/view/api/jsonapi/JsonApiIdRenderStrategy.html">JsonApiIdRenderStrategy</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/conf/spring/resources.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">beans = {
+    jsonApiIdRenderStrategy(MyCustomImplementation)
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-07 22:59:10 UTC
+Last updated 2017-03-08 16:21:00 UTC
 </div>
 </div>
 </body>
