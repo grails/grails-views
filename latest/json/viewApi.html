@@ -428,6 +428,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_accessing_the_request">Accessing the Request</a></li>
 <li><a href="#_default_static_imports">Default Static Imports</a></li>
 <li><a href="#_i18n_locale_integration">I18n &amp; Locale Integration</a></li>
+<li><a href="#_accessing_configuration">Accessing Configuration</a></li>
+<li><a href="#_miscellaneous_properties">Miscellaneous Properties</a></li>
 </ul>
 </div>
 </div>
@@ -577,10 +579,49 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_accessing_configuration">Accessing Configuration</h4>
+<div class="paragraph">
+<p>The application configuration is injected automatically into your json views. To access it, simply reference <code>config</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json {
+    foo config.getProperty("bar", String, null)
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_miscellaneous_properties">Miscellaneous Properties</h4>
+<div class="paragraph">
+<p>Other properties are also available:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controllerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the current controller</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>actionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the current controller action</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controllerNamespace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of the current controller</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-01-31 16:07:40 UTC
+Last updated 2017-03-09 17:19:21 UTC
 </div>
 </div>
 </body>

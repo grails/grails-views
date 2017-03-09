@@ -427,35 +427,36 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonConverter.html">JsonConverter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter</code>.</p>
+<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">package foo
 
-class MyCustomConverter implements JsonConverter {
+class MyConverter implements JsonGenerator.Converter {
 
     @Override
-    Closure&lt;? extends CharSequence&gt; getConverter() {
-        { CustomClass c -&gt;
-            JsonOutput.toJson(c.name)
-        }
+    boolean handles(Class&lt;?&gt; type) {
+        CustomClass.isAssignableFrom(type)
     }
 
     @Override
-    Class getType() {
-        CustomClass
+    Object convert(Object value, String key) {
+        ((CustomClass)value).name
     }
-
 }
+
 
 class CustomClass {
     String name
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Because plugins could potentially provide converters, you can also determine the order by implementing the <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/Ordered.html">Ordered</a> interface in your converter.</p>
+</div>
 <div class="listingblock">
-<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonConverter</div>
+<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
 <div class="content">
 <pre class="highlight"><code>foo.MyCustomConverter</code></pre>
 </div>
@@ -475,7 +476,7 @@ If you have multiple classes to register, put each one on it&#8217;s own line
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-16 05:44:53 UTC
+Last updated 2017-03-09 17:19:21 UTC
 </div>
 </div>
 </body>
