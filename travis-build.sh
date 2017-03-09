@@ -28,6 +28,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_P
   # If this is the master branch then update the snapshot
   if [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ ]]; then
      mkdir -p snapshot
+     rm -rf ./snapshot/**
      cp -r ../docs/build/docs/. ./snapshot/
 
      git add snapshot/*
