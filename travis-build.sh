@@ -31,7 +31,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_P
      rm -rf ./snapshot/**
      cp -r ../docs/build/docs/. ./snapshot/
 
-     git add snapshot/*
+     git add --all snapshot/*
   fi
 
   # If there is a tag present then this becomes the latest
