@@ -2166,7 +2166,7 @@ json {
 <p><a href="http://http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
 </div>
 <div class="paragraph">
-<p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views implement the <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a> trait, which provides an API for writing JSON API views.</p>
+<p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views have access to the <code>jsonapi</code> instance which implements <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a>.</p>
 </div>
 <div class="paragraph">
 <p>Grails views makes a best effort to conform to the JSON API standard, however that only applies to the format of the data. The specification makes many assertions about response codes, url conventions, and other server related concepts that are overreaching.</p>
@@ -3058,7 +3058,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-08 20:25:20 UTC
+Last updated 2017-03-09 16:33:51 UTC
 </div>
 </div>
 </body>
