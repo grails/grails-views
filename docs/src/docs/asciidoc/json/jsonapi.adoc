@@ -1,6 +1,6 @@
 http://http://jsonapi.org/[JSON API] is a standard format for representing JSON.
 
-The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views implement the link:api/grails/plugin/json/view/api/JsonApiViewHelper.html[JsonApiViewHelper] trait, which provides an API for writing JSON API views.
+The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views have access to the `jsonapi` instance which implements link:api/grails/plugin/json/view/api/JsonApiViewHelper.html[JsonApiViewHelper].
 
 Grails views makes a best effort to conform to the JSON API standard, however that only applies to the format of the data. The specification makes many assertions about response codes, url conventions, and other server related concepts that are overreaching.
 
