@@ -251,6 +251,12 @@ class Player {
 }
 
 @Entity
+class PlayerWithAge {
+    String name
+    int age
+}
+
+@Entity
 class Test {
     String title
     TestAuthor author

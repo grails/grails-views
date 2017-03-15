@@ -1,15 +1,12 @@
 package grails.plugin.json.view.api.internal
 
-import grails.core.support.proxy.ProxyHandler
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
-import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import grails.views.ResolvableGroovyTemplateEngine
-import grails.views.ViewConfiguration
 import grails.views.ViewException
 import grails.views.ViewUriResolver
 import grails.views.api.GrailsView
@@ -17,7 +14,6 @@ import grails.views.api.internal.DefaultGrailsViewHelper
 import grails.views.resolve.TemplateResolverUtils
 import grails.views.utils.ViewUtils
 import groovy.text.Template
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
@@ -27,7 +23,6 @@ import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.gorm.GormEnhancer
 import org.grails.datastore.mapping.collection.PersistentCollection
-import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -39,7 +34,6 @@ import org.grails.datastore.mapping.model.types.EmbeddedCollection
 import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
 import org.springframework.util.ReflectionUtils
-
 import java.beans.PropertyDescriptor
 import java.lang.reflect.ParameterizedType
 
@@ -148,7 +142,8 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         return null
     }
 
-    private JsonOutput.JsonWritable renderTemplate(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+
+    private JsonOutput.JsonWritable renderTemplate(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects, String path = "") {
         JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects)
         if (preProcessed != null) {
             return preProcessed
@@ -162,10 +157,10 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                 return renderChildTemplate(childTemplate, object.class, object)
             }
         }
-        return renderDefault(object, arguments, customizer, processedObjects)
+        return renderDefault(object, arguments, customizer, processedObjects, path)
     }
 
-    private JsonOutput.JsonWritable renderDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+    private JsonOutput.JsonWritable renderDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects, String path = "") {
         JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects)
         if (preProcessed != null) {
             return preProcessed
@@ -181,11 +176,11 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         final Closure beforeClosure = (Closure)arguments.get(BEFORE_CLOSURE)
 
         Closure doProcessEntity = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->
-            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, expandProperties, true, customizer)
+            process(jsonDelegate, entity, object, processedObjects, incs, excs, path, isDeep, expandProperties, true, customizer)
         }
 
         Closure doProcessSimple = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->
-            processSimple(jsonDelegate, object, processedObjects, incs, excs, "", customizer)
+            processSimple(jsonDelegate, object, processedObjects, incs, excs, path, customizer)
         }
 
         def jsonWritable = new JsonOutput.JsonWritable() {
@@ -267,9 +262,9 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         return jsonWritable
     }
 
-    protected JsonOutput.JsonWritable getIterableWritable(Iterable object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+    protected JsonOutput.JsonWritable getIterableWritable(Iterable object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects, String path = "") {
         return getIterableWritable(object) { Object o, Writer out ->
-            handleValue(o, out, arguments, customizer, processedObjects)
+            handleValue(o, out, arguments, customizer, processedObjects, path)
         }
 
     }
@@ -298,19 +293,24 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
 
             @Override
             Writer writeTo(Writer out) throws IOException {
-
+                List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
+                List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.EXCLUDES_PROPERTY, arguments)
                 Map map = (Map)object
                 int size = map.size()
                 int i = 0
                 out.append JsonOutput.OPEN_BRACE
                 for(entry in map.entrySet()) {
+                    if (!includeExcludeSupport.shouldInclude(incs, excs, entry.key.toString())) {
+                        i++
+                        continue
+                    }
                     out.append(JsonOutput.toJson(entry.key.toString()))
                     out.append(JsonOutput.COLON)
                     def value = entry.value
                     if (value instanceof Iterable) {
-                        getIterableWritable(value, arguments, customizer, processedObjects).writeTo(out)
+                        getIterableWritable(value, arguments, customizer, processedObjects, entry.key.toString() + ".").writeTo(out)
                     } else {
-                        handleValue(value, out, arguments, customizer, processedObjects)
+                        handleValue(value, out, arguments, customizer, processedObjects, entry.key.toString() + ".")
                     }
 
                     if(++i != size) {
@@ -323,12 +323,12 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
     }
 
-    protected void handleValue(Object value, Writer out, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+    protected void handleValue(Object value, Writer out, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects, String path = "") {
         if(isSimpleValue(value)) {
             out.append(JsonOutput.toJson((Object)value))
         }
         else {
-            JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects)
+            JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects, path)
             writable.writeTo(out)
         }
     }
@@ -533,6 +533,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         }
         processedObjects.put(object, NULL_OUTPUT)
 */
+
         ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
         Locale locale = view.locale
 
