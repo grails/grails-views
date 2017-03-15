@@ -32,6 +32,41 @@ json g.render(map)
 
     }
 
+    void "Test render a map type with excludes"() {
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map, [excludes: ['player1','player2.name']])
+'''
+
+        when:"An entity is used in a map"
+        mappingContext.addPersistentEntity(PlayerWithAge)
+        def renderResult = render(templateText, [map:[player1:new PlayerWithAge(name: "Cantona", age: 22), player2: new PlayerWithAge(name: "Giggs", age: 33)]])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"player2":{"age":33}}'
+
+    }
+
+    void "Test render a map type with excludes on a collection"() {
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map, [excludes: ['players.name']])
+'''
+
+        when:"An entity is used in a map"
+        mappingContext.addPersistentEntity(PlayerWithAge)
+        def renderResult = render(templateText, [map:[players:[new PlayerWithAge(name: "Cantona", age: 22), new PlayerWithAge(name: "Giggs", age: 33)]]])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"players":[{"age":22},{"age":33}]}'
+    }
+
     void "Test render a map type with a simple array"() {
 
         when:"A map is rendered"

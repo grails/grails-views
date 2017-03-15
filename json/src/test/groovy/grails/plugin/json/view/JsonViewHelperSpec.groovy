@@ -396,6 +396,12 @@ class Player {
 }
 
 @Entity
+class PlayerWithAge {
+    String name
+    int age
+}
+
+@Entity
 class Circular {
     String name
 }
