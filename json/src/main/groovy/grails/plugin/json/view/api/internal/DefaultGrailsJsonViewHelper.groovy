@@ -6,6 +6,7 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.builder.StreamingJsonBuilder.StreamingJsonDelegate
 import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
+import grails.plugin.json.view.template.JsonViewTemplate
 import grails.util.GrailsNameUtils
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewException
@@ -99,21 +100,36 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         return null
     }
 
-    private JsonOutput.JsonWritable renderTemplate(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
+    private void checkTemplate(JsonViewTemplate template) {
+        if (template.templateClass == view.class) {
+            throw new RuntimeException("Circular view render occurred for view ${template.templatePath}")
+        }
+    }
+
+    private JsonOutput.JsonWritable renderTemplate(Object value, Class type, String...qualifiers) {
+        Locale locale = view.locale
+        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
+        JsonViewTemplate childTemplate = (JsonViewTemplate)templateEngine?.resolveTemplate(type, locale, qualifiers)
+        if(childTemplate != null) {
+            checkTemplate(childTemplate)
+            renderChildTemplate(childTemplate, type, value)
+        } else {
+            null
+        }
+    }
+
+    private JsonOutput.JsonWritable renderTemplateOrDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
         JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects)
         if (preProcessed != null) {
             return preProcessed
         }
-
         if (arguments == Collections.emptyMap() && customizer == null) {
-            ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
-            Locale locale = view.locale
-            Template childTemplate = templateEngine?.resolveTemplate(object.class, locale)
-            if(childTemplate != null) {
-                return renderChildTemplate(childTemplate, object.class, object)
+            def template = renderTemplate(object, object.class)
+            if(template != null) {
+                return template
             }
         }
-        return renderDefault(object, arguments, customizer, processedObjects)
+        renderDefault(object, arguments, customizer, processedObjects)
     }
 
     private JsonOutput.JsonWritable renderDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects) {
@@ -280,8 +296,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             out.append(generator.toJson((Object)value))
         }
         else {
-            JsonOutput.JsonWritable writable = renderTemplate(value, arguments, customizer, processedObjects)
-            writable.writeTo(out)
+            renderTemplateOrDefault(value, arguments, customizer, processedObjects).writeTo(out)
         }
     }
 
@@ -314,8 +329,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             }
         }
         else {
-
-            return renderDefault(object, arguments, customizer, processedObjects)
+            return renderTemplateOrDefault(object, arguments, customizer, processedObjects)
         }
     }
 
@@ -388,11 +402,9 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                             }
                             else {
                                 if(!processedObjects.containsKey(value)) {
-                                    ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
-                                    def childTemplate = templateEngine?.resolveTemplate(propertyType, view.locale)
-                                    if(childTemplate != null) {
-                                        JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, propertyType, value)
-                                        jsonDelegate.call(propertyName, jsonWritable)
+                                    def template = renderTemplate(value, propertyType)
+                                    if(template != null) {
+                                        jsonDelegate.call(propertyName, template)
                                     }
                                     else {
                                         jsonDelegate.call( propertyName ) {
@@ -460,17 +472,16 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             if(value == null) continue
 
             if (!(prop instanceof Association)) {
-                processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value, templateEngine, locale)
+                processSimpleProperty(jsonDelegate, (PersistentProperty) prop, propertyName, value)
             } else if(includeAssociations) {
                 Association ass = (Association) prop
                 def associatedEntity = ass.associatedEntity
 
                 if (ass instanceof Embedded) {
                     def propertyType = ass.type
-                    def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
-                    if(childTemplate != null) {
-                        JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, propertyType, value)
-                        jsonDelegate.call(propertyName, jsonWritable)
+                    def template = renderTemplate(value, propertyType)
+                    if(template != null) {
+                        jsonDelegate.call(propertyName, template)
                     }
                     else {
                         jsonDelegate.call(propertyName) {
@@ -491,6 +502,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                         if(!ass.circular && (isDeep || expandProperties.contains(propertyName))) {
                             def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
                             if(childTemplate != null) {
+                                checkTemplate((JsonViewTemplate)childTemplate)
                                 def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
                                 def childView = prepareWritable(childTemplate, model)
                                 def writer = new FastStringWriter()
@@ -539,6 +551,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                             def propertyType = ass.associatedEntity.javaClass
                             def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
                             if(childTemplate != null) {
+                                checkTemplate((JsonViewTemplate)childTemplate)
                                 def writer = new FastStringWriter()
                                 def iterator = ((Iterable) value).iterator()
                                 writer.write(JsonOutput.OPEN_BRACKET)
@@ -598,13 +611,12 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
     }
 
-    protected void processSimpleProperty(StreamingJsonDelegate jsonDelegate, PersistentProperty prop, String propertyName, Object value, ResolvableGroovyTemplateEngine templateEngine, Locale locale) {
+    protected void processSimpleProperty(StreamingJsonDelegate jsonDelegate, PersistentProperty prop, String propertyName, Object value) {
         if (prop instanceof Custom) {
             def propertyType = value.getClass()
-            def childTemplate = templateEngine.resolveTemplate(propertyType, locale)
-            if (childTemplate != null) {
-                JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, propertyType, value)
-                jsonDelegate.call(propertyName, jsonWritable)
+            def template = renderTemplate(value, propertyType)
+            if (template != null) {
+                jsonDelegate.call(propertyName, template)
                 return
             }
         }
@@ -647,17 +659,14 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
     }
 
     private renderEntityId(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, Map<Object, JsonOutput.JsonWritable> processedObjects, List<String> incs, List<String> excs, String path, boolean isDeep, List<String> expandProperties, Map<PersistentProperty, Object> idProperties) {
-        ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
-        Locale locale = view.locale
 
         idProperties.each { PersistentProperty property, Object idValue ->
             def idType = property.type
             def idName = property.name
             String idQualified = "${path}${idName}"
-            def childTemplate = templateEngine?.resolveTemplate(idType, locale)
-            if(childTemplate != null) {
-                JsonOutput.JsonWritable jsonWritable = renderChildTemplate(childTemplate, idType, idValue)
-                jsonDelegate.call(idName, jsonWritable)
+            def template = renderTemplate(idValue, idType)
+            if(template != null) {
+                jsonDelegate.call(idName, template)
             }
             else {
                 if (property instanceof Association) {
@@ -726,6 +735,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
             Template childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             if(childTemplate != null) {
+                checkTemplate((JsonViewTemplate)childTemplate)
                 return new JsonOutput.JsonWritable() {
 
                     @Override

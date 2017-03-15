@@ -56,7 +56,15 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         if (!config.escapeUnicode) {
             options.disableUnicodeEscaping()
         }
-        options.dateFormat(config.dateFormat)
+        Locale locale
+        String[] localeData = config.locale.split('/')
+        if (localeData.length > 1) {
+            locale = new Locale(localeData[0], localeData[1])
+        } else {
+            locale = new Locale(localeData[0])
+        }
+
+        options.dateFormat(config.dateFormat, locale)
         options.timezone(config.timeZone)
 
         ServiceLoader<JsonGenerator.Converter> loader = ServiceLoader.load(JsonGenerator.Converter.class);

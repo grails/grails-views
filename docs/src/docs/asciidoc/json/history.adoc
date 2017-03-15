@@ -1,5 +1,10 @@
 The current release is {version}. Below is a version history.
 
+*1.2.0*
+* JSON API support
+* Ability to register custom converters
+* New configuration options for date formatting and unicode escaping
+
 *1.1.0*
 
 * Global template support

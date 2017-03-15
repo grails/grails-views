@@ -10,4 +10,6 @@ class JsonViewGeneratorConfiguration {
     String dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
     String timeZone = "GMT"
+
+    String locale = "en/US"
 }

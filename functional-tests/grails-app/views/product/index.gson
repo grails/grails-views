@@ -14,7 +14,7 @@ response.contentType "application/hal+json"
 json {
     hal.paginate(Product, productCount, offset, max, sort, order)
     _embedded {
-        products tmpl.product(productList ?: [])
+        products g.render(productList ?: [])
     }
     count productCount
     max max

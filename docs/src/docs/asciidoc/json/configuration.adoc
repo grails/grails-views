@@ -74,3 +74,45 @@ grails:
             mimeTypes:
               - application/json
               - application/hal+json
+
+==== Unicode Escaping
+
+By default, unicode characters will not be escaped. If you would like unicode characters to be escaped in your output, set the following configuration.
+
+[source,yaml]
+grails:
+    views:
+        json:
+            generator:
+                escapeUnicode: true
+
+==== Default Date Format
+
+The default format for `java.util.Date` can be configured.
+
+[source,yaml]
+grails:
+    views:
+        json:
+            generator:
+                dateFormat: "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
+In addition, the default locale can also be specified.
+
+[source,yaml]
+grails:
+    views:
+        json:
+            generator:
+                locale: "en/US"
+
+==== Default Time Zone
+
+The default time zone can be configured. The value here will be passed to `TimeZone.getTimeZone(...)`
+
+[source,yaml]
+grails:
+    views:
+        json:
+            generator:
+                timeZone: "GMT"

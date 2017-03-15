@@ -1,0 +1,45 @@
+==== Upgrade to Views 1.2.x
+
+The only breaking change likely to affect users upgrading to views 1.2 revolves around rendering a template for the main object being passed to the `render` method.
+
+In this example we are rendering a team which hasMany players:
+
+[source,groovy]
+.grails-app/views/team/index.gson
+----
+model {
+    Team team
+}
+json {
+    id team.id
+    players g.render(team.players)
+}
+----
+
+A template has been provided that will render a player as JSON.
+
+[source,groovy]
+.grails-app/views/player/_player.gson
+----
+model {
+    Player player
+}
+
+json g.render(player)
+----
+
+The above template will cause an exception to occur with a message like "Circular view render occurred for view /player/_player.gson". That is happening because by default `g.render` will look for a template for the object being rendered. Since a player object is being rendered, it tries to find a template for that player. The current player template is found, which causes the circular exception to occur.
+
+To keep the current structure in place, you can pass an argument to render that will cause it to not attempt to resolve a template for the player object.
+
+[source,groovy]
+.grails-app/views/player/_player.gson
+----
+model {
+    Player player
+}
+
+json g.render(player, [resolveTemplate: false])
+----
+
+The other option is to simply remove the player template since it is not providing any further functionality than what `g.render` is providing.

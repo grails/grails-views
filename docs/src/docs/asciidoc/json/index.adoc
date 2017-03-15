@@ -6,6 +6,10 @@ include::introduction.adoc[]
 
 include::history.adoc[]
 
+=== Upgrading
+
+include::upgrading.adoc[]
+
 === Installation
 
 include::installation.adoc[]

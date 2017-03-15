@@ -396,6 +396,11 @@ class Player {
 }
 
 @Entity
+class Circular {
+    String name
+}
+
+@Entity
 class Test {
     String title
     TestAuthor author
