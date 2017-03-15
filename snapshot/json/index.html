@@ -425,6 +425,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_version_history">Version History</a></li>
+<li><a href="#_upgrading">Upgrading</a></li>
 <li><a href="#_installation">Installation</a></li>
 <li><a href="#_templates">Templates</a></li>
 <li><a href="#_rendering_domain_classes">Rendering Domain Classes</a></li>
@@ -521,7 +522,13 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="sect2">
 <h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.2.0.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 1.2.0.RC1. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>1.2.0</strong>
+* JSON API support
+* Ability to register custom converters
+* New configuration options for date formatting and unicode escaping</p>
 </div>
 <div class="paragraph">
 <p><strong>1.1.0</strong></p>
@@ -572,13 +579,69 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 </div>
 <div class="sect2">
+<h3 id="_upgrading">Upgrading</h3>
+<div class="sect3">
+<h4 id="_upgrade_to_views_1_2_x">Upgrade to Views 1.2.x</h4>
+<div class="paragraph">
+<p>The only breaking change likely to affect users upgrading to views 1.2 revolves around rendering a template for the main object being passed to the <code>render</code> method.</p>
+</div>
+<div class="paragraph">
+<p>In this example we are rendering a team which hasMany players:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/team/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Team team
+}
+json {
+    id team.id
+    players g.render(team.players)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A template has been provided that will render a player as JSON.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/player/_player.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Player player
+}
+
+json g.render(player)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above template will cause an exception to occur with a message like "Circular view render occurred for view /player/_player.gson". That is happening because by default <code>g.render</code> will look for a template for the object being rendered. Since a player object is being rendered, it tries to find a template for that player. The current player template is found, which causes the circular exception to occur.</p>
+</div>
+<div class="paragraph">
+<p>To keep the current structure in place, you can pass an argument to render that will cause it to not attempt to resolve a template for the player object.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/player/_player.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Player player
+}
+
+json g.render(player, [resolveTemplate: false])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The other option is to simply remove the player template since it is not providing any further functionality than what <code>g.render</code> is providing.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_installation">Installation</h3>
 <div class="paragraph">
 <p>To activate JSON views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.2.0.RC1"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -586,7 +649,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.0.RC1"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -598,7 +661,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.2.0.RC1"
     }
 }</code></pre>
 </div>
@@ -2509,7 +2572,7 @@ result.json.age == 10</code></pre>
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.2.0.RC1"
     }
 }
 
@@ -2523,7 +2586,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:1.2.0.RC1"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
@@ -2667,6 +2730,63 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_unicode_escaping">Unicode Escaping</h4>
+<div class="paragraph">
+<p>By default, unicode characters will not be escaped. If you would like unicode characters to be escaped in your output, set the following configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            generator:
+                escapeUnicode: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_default_date_format">Default Date Format</h4>
+<div class="paragraph">
+<p>The default format for <code>java.util.Date</code> can be configured.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            generator:
+                dateFormat: "yyyy-MM-dd'T'HH:mm:ss'Z'"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, the default locale can also be specified.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            generator:
+                locale: "en/US"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_default_time_zone">Default Time Zone</h4>
+<div class="paragraph">
+<p>The default time zone can be configured. The value here will be passed to <code>TimeZone.getTimeZone(...)</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            generator:
+                timeZone: "GMT"</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_custom_converters">Custom Converters</h3>
@@ -2781,7 +2901,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-09 17:14:49 UTC
+Last updated 2017-03-15 06:20:08 UTC
 </div>
 </div>
 </body>
