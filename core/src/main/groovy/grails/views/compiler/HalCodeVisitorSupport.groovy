@@ -1,19 +1,13 @@
 package grails.views.compiler
 
-import grails.views.ViewCompilationException
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.CodeVisitorSupport
-import org.codehaus.groovy.ast.DynamicVariable
-import org.codehaus.groovy.ast.FieldNode
-import org.codehaus.groovy.ast.expr.MethodCallExpression
-import org.codehaus.groovy.ast.expr.PropertyExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilationUnit
 import org.codehaus.groovy.control.CompilePhase
-import org.grails.compiler.injection.GrailsASTUtils
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 
@@ -49,7 +43,10 @@ class HalCodeVisitorSupport extends CodeVisitorSupport {
             if (newStatements.containsKey(currentBlock)) {
                 throw new CompilationFailedException(CompilePhase.SEMANTIC_ANALYSIS.phaseNumber, unit, new Exception("Going to set newStatement when it was already set"))
             }
-            newStatements.put(currentBlock, stmt(callX(varX("hal"), 'setDelegate', varX('delegate'))))
+            Statement statement = stmt(
+                assignX(propX(varX(expression.accessedVariable), 'delegate'), varX('delegate'))
+            )
+            newStatements.put(currentBlock, statement)
         }
     }
 }
