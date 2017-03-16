@@ -28,6 +28,7 @@ class TestRequestConfigurer implements Request {
     Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>().withDefault { String name ->
         return []
     }
+    Map<String, Object> attributes = new LinkedHashMap<String, Object>()
 
     TestRequestConfigurer(JsonView jsonView) {
         this.jsonView = jsonView
@@ -83,6 +84,11 @@ class TestRequestConfigurer implements Request {
         return this
     }
 
+    TestRequestConfigurer attribute(String name, Object value) {
+        this.attributes.put(name, value)
+        return this
+    }
+
     TestRequestConfigurer params(Map parameters) {
         this.jsonView.setParams( new DelegatingParameters(new TypeConvertingMap(parameters)))
         return this
@@ -110,5 +116,15 @@ class TestRequestConfigurer implements Request {
     @Override
     Collection<String> getHeaders(String name) {
         headers.get(name)
+    }
+
+    @Override
+    Object getAttribute(String name) {
+        attributes.get(name)
+    }
+
+    @Override
+    Collection<String> getAttributeNames() {
+        attributes.keySet()
     }
 }

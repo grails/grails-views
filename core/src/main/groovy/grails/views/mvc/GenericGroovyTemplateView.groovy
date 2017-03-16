@@ -164,6 +164,15 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
         @Lazy Collection<String> headerNames =  {
             request.getHeaderNames().toList()
         }()
+
+        @Override
+        Object getAttribute(String name) {
+            request.getAttribute(name)
+        }
+
+        @Lazy Collection<String> attributeNames = {
+            request.getAttributeNames().toList()
+        }()
     }
 
     @CompileStatic
