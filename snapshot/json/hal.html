@@ -436,7 +436,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><a href="http://stateless.co/hal_specification.html">HAL</a> is a standard format for representing JSON that has gained traction for its ability to represent links between resources and provide navigable APIs.</p>
 </div>
 <div class="paragraph">
-<p>The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON views have access to the <code>hal</code> instance which implements <a href="api/grails/plugin/json/view/api/HalViewHelper.html">HalViewHelper</a>.</p>
+<p>The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON views implement the <a href="api/grails/plugin/json/view/api/HalView.html">HalView</a> trait, which provides an API for writing HAL views.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -852,7 +852,7 @@ json {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-15 20:52:37 UTC
+Last updated 2017-03-16 16:53:13 UTC
 </div>
 </div>
 </body>
