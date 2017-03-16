@@ -47,11 +47,11 @@ A plugin that allows rendering of JSON views
 
     Closure doWithSpring() { {->
             jsonViewConfiguration(JsonViewConfiguration)
-            jsonSmartViewResolver(JsonViewResolver, jsonViewConfiguration) {
+            jsonTemplateEngine(JsonViewTemplateEngine, jsonViewConfiguration)
+            jsonSmartViewResolver(JsonViewResolver, jsonTemplateEngine) {
                 templateResolver = bean(PluginAwareTemplateResolver, jsonViewConfiguration)
             }
-            jsonTemplateEngine(jsonSmartViewResolver:"getTemplateEngine")
-            jsonViewResolver(GenericGroovyTemplateViewResolver,  jsonSmartViewResolver )
+            jsonViewResolver(GenericGroovyTemplateViewResolver, jsonSmartViewResolver )
         }
     }
 }

@@ -18,7 +18,7 @@ class ObjectTemplateSpec extends GebSpec {
 
         when:"A POST is issued"
 
-        def resp = builder.get("$baseUrl/place/test")
+        def resp = builder.get("${baseUrl}place/test")
 
         then:"The correct response is returned"
         resp.status == 200
