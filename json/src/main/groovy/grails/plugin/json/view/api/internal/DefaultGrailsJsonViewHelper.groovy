@@ -84,10 +84,8 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         render object, Collections.emptyMap(), customizer
     }
 
-    @Override
-    void inline(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
+    void inline(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null, StreamingJsonDelegate jsonDelegate) {
         JsonView jsonView = (JsonView)view
-        def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
         Map<Object, JsonOutput.JsonWritable> processedObjects = initializeProcessedObjects(jsonView.binding)
         boolean isDeep = ViewUtils.getBooleanFromMap(DEEP, arguments)
         boolean includeAssociations = ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
@@ -108,8 +106,12 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
         else {
             processSimple(jsonDelegate, object, processedObjects, incs, excs, "", customizer)
         }
+    }
 
-
+    @Override
+    void inline(Object object, Map arguments = Collections.emptyMap(), @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
+        def jsonDelegate = new StreamingJsonDelegate(view.out, true)
+        inline(object, arguments, customizer, jsonDelegate)
     }
 
     private List<String> getExpandProperties(JsonView jsonView, Map arguments) {
@@ -573,7 +575,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                     if(associatedEntity != null) {
                         def propertyType = ass.type
 
-                        if(!ass.circular && (isDeep || expandProperties.contains(propertyName))) {
+                        if(!ass.circular && (isDeep || expandProperties.contains(qualified))) {
                             def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
                             if(childTemplate != null) {
                                 def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
@@ -608,7 +610,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
                         jsonDelegate.call(propertyName, value)
                     }
                     else {
-                        boolean shouldExpand = expandProperties.contains(propertyName)
+                        boolean shouldExpand = expandProperties.contains(qualified)
                         if(!isDeep && !shouldExpand) {
                             def proxyHandler = ((JsonView) view).getProxyHandler()
                             if(proxyHandler?.isProxy(value) && !proxyHandler.isInitialized(value)) {
@@ -747,7 +749,7 @@ class DefaultGrailsJsonViewHelper extends DefaultGrailsViewHelper implements Gra
             else {
                 if (property instanceof Association) {
                     def ass = (Association)property
-                    if(!ass.circular && (isDeep || expandProperties.contains(idName))) {
+                    if(!ass.circular && (isDeep || expandProperties.contains(idQualified))) {
                         jsonDelegate.call(idName) {
                             StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
                             process(embeddedDelegate, ass.associatedEntity, idValue, processedObjects, incs, excs , "${idQualified}.", isDeep, expandProperties)

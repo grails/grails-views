@@ -114,7 +114,7 @@ class DefaultHalViewHelper implements HalViewHelper {
     @Override
     void inline(Object object, Map arguments = [:], @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
         arguments.put(GrailsJsonViewHelper.ASSOCIATIONS, false)
-        viewHelper.inline(object, arguments, customizer)
+        viewHelper.inline(object, arguments, customizer, jsonDelegate)
     }
 
 

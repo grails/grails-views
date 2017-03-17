@@ -29,7 +29,6 @@ json g.render(map)
 
         then:"The result is correct"
         renderResult.jsonText == '{"player1":{"name":"Cantona"},"player2":{"name":"Giggs"}}'
-
     }
 
     void "Test render a map type with a simple array"() {

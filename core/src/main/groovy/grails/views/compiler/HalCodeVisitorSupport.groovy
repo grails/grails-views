@@ -5,9 +5,7 @@ import org.codehaus.groovy.ast.CodeVisitorSupport
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.Statement
-import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.CompilationUnit
-import org.codehaus.groovy.control.CompilePhase
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 
@@ -40,9 +38,6 @@ class HalCodeVisitorSupport extends CodeVisitorSupport {
     @Override
     void visitVariableExpression(VariableExpression expression) {
         if (expression.accessedVariable && expression.accessedVariable.name == "hal") {
-            if (newStatements.containsKey(currentBlock)) {
-                throw new CompilationFailedException(CompilePhase.SEMANTIC_ANALYSIS.phaseNumber, unit, new Exception("Going to set newStatement when it was already set"))
-            }
             Statement statement = stmt(
                 assignX(propX(varX(expression.accessedVariable), 'delegate'), varX('delegate'))
             )
