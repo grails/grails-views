@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Customizing the Compile Task</title>
+<title>Grails Plugins</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -423,17 +423,87 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel3">
+<li><a href="#_grails_plugins">Grails Plugins</a></li>
+<li><a href="#_basic_libraries">Basic Libraries</a></li>
 <li><a href="#_customizing_the_compile_task">Customizing the Compile Task</a></li>
-<li><a href="#_global_templates">Global Templates</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="paragraph">
+<p>Grails plugins as well as standard Gradle Java/Groovy projects can provide json views to your application.</p>
+</div>
+<div class="sect3">
+<h4 id="_grails_plugins">Grails Plugins</h4>
+<div class="paragraph">
 <p>Since JSON views are compiled all of a plugin&#8217;s views and templates are available for use in your applications.</p>
 </div>
 <div class="paragraph">
-<p>The view resolution will look through all of the application&#8217;s configured plugins for views that match a particular name.</p>
+<p>The view resolution will look through all of the application&#8217;s configured plugins for views that match a particular name. By default, the views a plugin supplies should be stored in <code>grails-app/views</code>, just like applications.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_libraries">Basic Libraries</h4>
+<div class="paragraph">
+<p>The most common use case to provide views in a standard library is to provide global templates. Global templates are templates designed to render a given class as JSON. In order to provide views in a standard Gradle project, you should configure your own view compilation task.</p>
+</div>
+<div class="paragraph">
+<p>Below is an example Gradle build that adds a <code>compileViews</code> task for templates located into <code>src/main/gson</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails.plugins:views-gradle:1.1.6"
+    }
+}
+
+import grails.views.gradle.json.*
+
+apply plugin:"java"
+
+repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencies {
+    compile "org.grails.plugins:views-json:1.1.6"
+    compileOnly "org.grails:grails-plugin-rest:3.1.7"
+    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
+}
+
+task( compileViews, type:JsonViewCompilerTask ) {
+    source = project.file('src/main/gson')
+    destinationDir = project.file('build/classes/main')
+    packageName = ""
+    classpath = configurations.compile + configurations.compileOnly
+}
+classes.dependsOn compileViews</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once this is in place any applications that includes this library will have access to the templates provided.</p>
+</div>
+<div class="paragraph">
+<p>For example if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/main/gson/foo/bar/_birthday.gson</code> then compile the template and place the JAR on the classpath of your application.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+See the <a href="https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo">GeoJSON templates</a> for MongoDB for example of how it provides global templates for Mongo specific classes.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_customizing_the_compile_task">Customizing the Compile Task</h4>
@@ -460,70 +530,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>By setting the <code>packageName</code> property to correctly match the convention of the plugin named (<code>FooBarGrailsPlugin</code> maps to <code>foo-bar</code>) view resolution will succeed.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_global_templates">Global Templates</h4>
-<div class="paragraph">
-<p>You can create global templates that should apply to all types of a particular class (excluding primitive and simple types for performance reasons).</p>
-</div>
-<div class="paragraph">
-<p>Below is an example Gradle build that adds a <code>compileViews</code> task for templates located into <code>src/main/gson</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
-    repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails.plugins:views-gradle:1.2.0.RC1"
-    }
-}
-
-import grails.views.gradle.json.*
-
-apply plugin:"java"
-
-repositories {
-    mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
-}
-
-dependencies {
-    compile "org.grails.plugins:views-json:1.2.0.RC1"
-    compileOnly "org.grails:grails-plugin-rest:3.1.7"
-    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
-}
-
-task( compileViews, type:JsonViewCompilerTask ) {
-    source = project.file('src/main/gson')
-    destinationDir = project.file('build/classes/main')
-    packageName = ""
-    classpath = configurations.compile + configurations.compileOnly
-}
-classes.dependsOn compileViews</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once this is in place if you want to render all instances of type <code>foo.bar.Birthday</code> create a template called <code>src/main/gson/foo/bar/_birthday.gson</code> then compile the template and place the JAR on the classpath of your application.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-See the <a href="https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo">GeoJSON templates</a> for MongoDB for example of global templates in action.
-</td>
-</tr>
-</table>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-09 17:19:21 UTC
+Last updated 2017-03-17 17:04:05 UTC
 </div>
 </div>
 </body>
