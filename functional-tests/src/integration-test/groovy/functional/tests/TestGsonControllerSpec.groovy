@@ -77,4 +77,12 @@ class TestGsonControllerSpec extends GebSpec {
         then:"The result is correct"
         content == '{"message":"Hello from Plugin"}'
     }
+
+    void "Test view that inherits from plugins are rendered"() {
+        when:
+        def content = new URL("${baseUrl}/testGson/testInheritsFromPlugin").text
+
+        then:
+        content == '{"message":"Hello from Plugin Template","foo":"bar"}'
+    }
 }
