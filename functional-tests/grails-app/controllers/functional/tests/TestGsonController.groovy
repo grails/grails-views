@@ -44,6 +44,10 @@ class TestGsonController {
         render view:"/fromPlugin"
     }
 
+    def testInheritsFromPlugin() {
+        [:]
+    }
+
     def testRespondWithMap() {
         respond one:'two'
     }
