@@ -3,12 +3,13 @@ set -e
 rm -rf *.zip
 
 # Set Gradle daemon JVM args
-mkdir ~/.gradle
+mkdir -p ~/.gradle
 echo "org.gradle.jvmargs=-XX\:MaxPermSize\=512m -Xmx1024m" >> ~/.gradle/gradle.properties
 echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
 
 ./gradlew clean check assemble
-./gradlew —stop
+./gradlew --stop
+
 EXIT_STATUS=0
 echo "Publishing archives for branch $TRAVIS_BRANCH"
 if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_PULL_REQUEST == 'false' ]]; then
@@ -20,10 +21,10 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_P
   else
       ./gradlew publish || EXIT_STATUS=$?
   fi
-  ./gradlew —stop
+  ./gradlew --stop
 
   ./gradlew views-docs:docs || EXIT_STATUS=$?
-  ./gradlew —stop
+  ./gradlew --stop
 
   git config --global user.name "$GIT_NAME"
   git config --global user.email "$GIT_EMAIL"
