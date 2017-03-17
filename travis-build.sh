@@ -3,7 +3,7 @@ set -e
 rm -rf *.zip
 
 # Set Gradle daemon JVM args
-mkdir ~/.gradle
+mkdir -p ~/.gradle
 echo "org.gradle.jvmargs=-XX\:MaxPermSize\=512m -Xmx1024m" >> ~/.gradle/gradle.properties
 echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
 
