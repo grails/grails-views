@@ -1,4 +1,6 @@
-JSON views configuration can be altered within `grails-app/conf/application.yml`. Any of the properties within the link:api/grails/plugin/json/view/JsonViewConfiguration.html[JsonViewConfiguration] interface can be set. For example:
+JSON views configuration can be altered within `grails-app/conf/application.yml`. Any of the properties within the link:api/grails/plugin/json/view/JsonViewConfiguration.html[JsonViewConfiguration] interface can be set. The json view configuration extends link:api/grails/views/GenericViewConfiguration.html[GenericViewConfiguration], therefore any properties in that interface can be set as well.
+
+ For example:
 
 [source,yaml]
 grails:
