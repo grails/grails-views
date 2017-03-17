@@ -525,20 +525,23 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel2">
 <li><a href="#_introduction_2">2.1. Introduction</a></li>
 <li><a href="#_version_history">2.2. Version History</a></li>
-<li><a href="#_installation">2.3. Installation</a></li>
-<li><a href="#_templates">2.4. Templates</a></li>
-<li><a href="#_rendering_domain_classes">2.5. Rendering Domain Classes</a></li>
-<li><a href="#_json_view_api">2.6. JSON View API</a></li>
-<li><a href="#_model_naming">2.7. Model Naming</a></li>
-<li><a href="#_content_negotiation">2.8. Content Negotiation</a></li>
-<li><a href="#_hal_support">2.9. HAL Support</a></li>
-<li><a href="#_the_jsontemplateengine">2.10. The JsonTemplateEngine</a></li>
-<li><a href="#_static_compilation">2.11. Static Compilation</a></li>
-<li><a href="#_testing">2.12. Testing</a></li>
-<li><a href="#_plugin_support">2.13. Plugin Support</a></li>
-<li><a href="#_configuration">2.14. Configuration</a></li>
-<li><a href="#_intellij_support">2.15. IntelliJ Support</a></li>
-<li><a href="#_debugging_views">2.16. Debugging Views</a></li>
+<li><a href="#_upgrading">2.3. Upgrading</a></li>
+<li><a href="#_installation">2.4. Installation</a></li>
+<li><a href="#_templates">2.5. Templates</a></li>
+<li><a href="#_rendering_domain_classes">2.6. Rendering Domain Classes</a></li>
+<li><a href="#_json_view_api">2.7. JSON View API</a></li>
+<li><a href="#_model_naming">2.8. Model Naming</a></li>
+<li><a href="#_content_negotiation">2.9. Content Negotiation</a></li>
+<li><a href="#_hal_support">2.10. HAL Support</a></li>
+<li><a href="#_json_api_support">2.11. JSON API Support</a></li>
+<li><a href="#_the_jsontemplateengine">2.12. The JsonTemplateEngine</a></li>
+<li><a href="#_static_compilation">2.13. Static Compilation</a></li>
+<li><a href="#_testing">2.14. Testing</a></li>
+<li><a href="#_plugin_support">2.15. Plugin Support</a></li>
+<li><a href="#_configuration">2.16. Configuration</a></li>
+<li><a href="#_custom_converters">2.17. Custom Converters</a></li>
+<li><a href="#_intellij_support">2.18. IntelliJ Support</a></li>
+<li><a href="#_debugging_views">2.19. Debugging Views</a></li>
 </ul>
 </li>
 <li><a href="#_markup_views">3. Markup Views</a>
@@ -649,7 +652,13 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="sect2">
 <h3 id="_version_history">2.2. Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.1.7.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 1.2.0.BUILD-SNAPSHOT. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>1.2.0</strong>
+* JSON API support
+* Ability to register custom converters
+* New configuration options for date formatting and unicode escaping</p>
 </div>
 <div class="paragraph">
 <p><strong>1.1.0</strong></p>
@@ -700,13 +709,69 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installation">2.3. Installation</h3>
+<h3 id="_upgrading">2.3. Upgrading</h3>
+<div class="sect3">
+<h4 id="_upgrade_to_views_1_2_x">2.3.1. Upgrade to Views 1.2.x</h4>
+<div class="paragraph">
+<p>The only breaking change likely to affect users upgrading to views 1.2 revolves around rendering a template for the main object being passed to the <code>render</code> method.</p>
+</div>
+<div class="paragraph">
+<p>In this example we are rendering a team which hasMany players:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/team/index.gson</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    Team team
+}
+json {
+    id team.id
+    players g.render(team.players)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A template has been provided that will render a player as JSON.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/player/_player.gson</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    Player player
+}
+
+json g.render(player)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above template will cause an exception to occur with a message like "Circular view render occurred for view /player/_player.gson". That is happening because by default <code>g.render</code> will look for a template for the object being rendered. Since a player object is being rendered, it tries to find a template for that player. The current player template is found, which causes the circular exception to occur.</p>
+</div>
+<div class="paragraph">
+<p>To keep the current structure in place, you can pass an argument to render that will cause it to not attempt to resolve a template for the player object.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/player/_player.gson</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    Player player
+}
+
+json g.render(player, [<span class="key">resolveTemplate</span>: <span class="predefined-constant">false</span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The other option is to simply remove the player template since it is not providing any further functionality than what <code>g.render</code> is providing.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installation">2.4. Installation</h3>
 <div class="paragraph">
 <p>To activate JSON views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:1.1.7.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -714,7 +779,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.1.7.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -726,7 +791,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.1.7.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -746,9 +811,9 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 </div>
 <div class="sect2">
-<h3 id="_templates">2.4. Templates</h3>
+<h3 id="_templates">2.5. Templates</h3>
 <div class="sect3">
-<h4 id="_template_basics">2.4.1. Template Basics</h4>
+<h4 id="_template_basics">2.5.1. Template Basics</h4>
 <div class="paragraph">
 <p>You can define templates starting with underscore <code>_</code>. For example given the following template called <code>_person.gson</code>:</p>
 </div>
@@ -790,7 +855,7 @@ json g.render(<span class="key">template</span>:<span class="string"><span class
 </div>
 </div>
 <div class="sect3">
-<h4 id="_template_namespace">2.4.2. Template Namespace</h4>
+<h4 id="_template_namespace">2.5.2. Template Namespace</h4>
 <div class="paragraph">
 <p>The previous example can be simplified using the template namespace:</p>
 </div>
@@ -867,7 +932,7 @@ json tmpl.person(<span class="key">people</span>:people)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_more_ways_to_render_templates">2.4.3. More Ways to Render Templates</h4>
+<h4 id="_more_ways_to_render_templates">2.5.3. More Ways to Render Templates</h4>
 <div class="paragraph">
 <p>The <code>g.render</code> method is flexible, you can render templates in many forms:</p>
 </div>
@@ -902,7 +967,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_template_inheritance">2.4.4. Template Inheritance</h4>
+<h4 id="_template_inheritance">2.5.4. Template Inheritance</h4>
 <div class="paragraph">
 <p>JSON templates can inherit from a parent template. For example consider the following parent template:</p>
 </div>
@@ -981,9 +1046,9 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_rendering_domain_classes">2.5. Rendering Domain Classes</h3>
+<h3 id="_rendering_domain_classes">2.6. Rendering Domain Classes</h3>
 <div class="sect3">
-<h4 id="_basics_of_domain_class_rendering">2.5.1. Basics of Domain Class Rendering</h4>
+<h4 id="_basics_of_domain_class_rendering">2.6.1. Basics of Domain Class Rendering</h4>
 <div class="paragraph">
 <p>Typically your model may involve one or many domain instances. JSON views provide a <code>render</code> method for rendering these.</p>
 </div>
@@ -1039,14 +1104,14 @@ json g.render(book)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">includes</span>:[<span class="string"><span class="delimiter">'</span><span class="content">title</span><span class="delimiter">'</span></span>]) {
+<pre class="CodeRay highlight"><code data-lang="groovy">json g.render(book, [<span class="key">includes</span>:[<span class="string"><span class="delimiter">'</span><span class="content">title</span><span class="delimiter">'</span></span>]]) {
     pages <span class="integer">1000</span>
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_deep_rendering_of_domain_classes">2.5.2. Deep Rendering of Domain Classes</h4>
+<h4 id="_deep_rendering_of_domain_classes">2.6.2. Deep Rendering of Domain Classes</h4>
 <div class="paragraph">
 <p>Typically the <code>g.render(..)</code> method will only render objects one level deep. In other words if you have a domain class such as:</p>
 </div>
@@ -1134,7 +1199,7 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 <div class="sect3">
-<h4 id="_domain_class_rendering_and_templates">2.5.3. Domain Class Rendering and Templates</h4>
+<h4 id="_domain_class_rendering_and_templates">2.6.3. Domain Class Rendering and Templates</h4>
 <div class="paragraph">
 <p>An alternative to the default behaviour of the <code>render</code> method is to rely on templates.</p>
 </div>
@@ -1152,7 +1217,7 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 <div class="sect2">
-<h3 id="_json_view_api">2.6. JSON View API</h3>
+<h3 id="_json_view_api">2.7. JSON View API</h3>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -1163,7 +1228,7 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 <p>Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.</p>
 </div>
 <div class="sect3">
-<h4 id="_creating_links">2.6.1. Creating Links</h4>
+<h4 id="_creating_links">2.7.1. Creating Links</h4>
 <div class="paragraph">
 <p>Links can be generated using the <code>g.link(..)</code> method:</p>
 </div>
@@ -1180,7 +1245,7 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 <div class="sect3">
-<h4 id="_altering_the_response_headers">2.6.2. Altering the Response Headers</h4>
+<h4 id="_altering_the_response_headers">2.7.2. Altering the Response Headers</h4>
 <div class="paragraph">
 <p>To customize content types and headers use the <code>response</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -1210,7 +1275,7 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_accessing_the_request">2.6.3. Accessing the Request</h4>
+<h4 id="_accessing_the_request">2.7.3. Accessing the Request</h4>
 <div class="paragraph">
 <p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -1236,7 +1301,7 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_default_static_imports">2.6.4. Default Static Imports</h4>
+<h4 id="_default_static_imports">2.7.4. Default Static Imports</h4>
 <div class="paragraph">
 <p>The following classes' static properties are imported by default:</p>
 </div>
@@ -1271,7 +1336,7 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 <div class="sect3">
-<h4 id="_i18n_locale_integration">2.6.5. I18n &amp; Locale Integration</h4>
+<h4 id="_i18n_locale_integration">2.7.5. I18n &amp; Locale Integration</h4>
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
 </div>
@@ -1299,7 +1364,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_accessing_configuration">2.6.6. Accessing Configuration</h4>
+<h4 id="_accessing_configuration">2.7.6. Accessing Configuration</h4>
 <div class="paragraph">
 <p>The application configuration is injected automatically into your json views. To access it, simply reference <code>config</code>.</p>
 </div>
@@ -1312,7 +1377,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_miscellaneous_properties">2.6.7. Miscellaneous Properties</h4>
+<h4 id="_miscellaneous_properties">2.7.7. Miscellaneous Properties</h4>
 <div class="paragraph">
 <p>Other properties are also available:</p>
 </div>
@@ -1339,7 +1404,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 <div class="sect2">
-<h3 id="_model_naming">2.7. Model Naming</h3>
+<h3 id="_model_naming">2.8. Model Naming</h3>
 <div class="paragraph">
 <p>Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
 </div>
@@ -1357,7 +1422,7 @@ Some model names are <em>reserved</em> since there are properties of the same na
 </table>
 </div>
 <div class="sect3">
-<h4 id="_explicit_model_naming">2.7.1. Explicit Model Naming</h4>
+<h4 id="_explicit_model_naming">2.8.1. Explicit Model Naming</h4>
 <div class="paragraph">
 <p>Given a view:</p>
 </div>
@@ -1426,7 +1491,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_model_by_convention">2.7.2. Model By Convention</h4>
+<h4 id="_model_by_convention">2.8.2. Model By Convention</h4>
 <div class="sect4">
 <h5 id="_property_type">Property Type</h5>
 <div class="paragraph">
@@ -1576,7 +1641,7 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_content_negotiation">2.8. Content Negotiation</h3>
+<h3 id="_content_negotiation">2.9. Content Negotiation</h3>
 <div class="paragraph">
 <p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
 </div>
@@ -1595,7 +1660,7 @@ json {
 <p>In addition, if the client sends a request with the <code>Accept</code> header containing <code>application/json</code> the <code>show.gson</code> view will be rendered.</p>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_domain_classes">2.8.1. Content Negotiation and Domain Classes</h4>
+<h4 id="_content_negotiation_and_domain_classes">2.9.1. Content Negotiation and Domain Classes</h4>
 <div class="paragraph">
 <p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
 </div>
@@ -1647,7 +1712,7 @@ When responding with a list of objects Grails automatically appends the suffix "
 </div>
 </div>
 <div class="sect3">
-<h4 id="_global_default_template">2.8.2. Global Default Template</h4>
+<h4 id="_global_default_template">2.9.2. Global Default Template</h4>
 <div class="paragraph">
 <p>You can also define a <code>/object/_object</code> template that is rendered by default if no other template is found during content negotiation. To do this create a file called <code>/grails-app/views/object/_object.gson</code> where the name of the model is <code>object</code>, for example:</p>
 </div>
@@ -1661,7 +1726,7 @@ json g.render(object)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_versioned_apis">2.8.3. Content Negotiation and Versioned APIs</h4>
+<h4 id="_content_negotiation_and_versioned_apis">2.9.3. Content Negotiation and Versioned APIs</h4>
 <div class="paragraph">
 <p>A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.</p>
 </div>
@@ -1676,7 +1741,7 @@ json g.render(object)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_content_negotiation_and_view_resolving_strategy">2.8.4. Content Negotiation and View Resolving Strategy</h4>
+<h4 id="_content_negotiation_and_view_resolving_strategy">2.9.4. Content Negotiation and View Resolving Strategy</h4>
 <div class="paragraph">
 <p>Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
 </div>
@@ -1719,7 +1784,7 @@ json g.render(object)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="mimeTypes">2.8.5. Content Negotiation and Custom Mime Types</h4>
+<h4 id="mimeTypes">2.9.5. Content Negotiation and Custom Mime Types</h4>
 <div class="paragraph">
 <p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
 </div>
@@ -1739,12 +1804,12 @@ json g.render(object)</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hal_support">2.9. HAL Support</h3>
+<h3 id="_hal_support">2.10. HAL Support</h3>
 <div class="paragraph">
 <p><a href="http://stateless.co/hal_specification.html">HAL</a> is a standard format for representing JSON that has gained traction for its ability to represent links between resources and provide navigable APIs.</p>
 </div>
 <div class="paragraph">
-<p>The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON views implement the <a href="api/grails/plugin/json/view/api/HalView.html">HalView</a> trait, which provides an API for writing HAL views.</p>
+<p>The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON views have access to the <code>hal</code> instance which implements <a href="api/grails/plugin/json/view/api/HalViewHelper.html">HalViewHelper</a>.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -1807,7 +1872,7 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 </div>
 </div>
 <div class="sect3">
-<h4 id="_generating_hal_links">2.9.1. Generating HAL Links</h4>
+<h4 id="_generating_hal_links">2.10.1. Generating HAL Links</h4>
 <div class="paragraph">
 <p>The above example uses the <code>hal.links(..)</code> method to render links for a domain resource and the <code>hal.embedded(..)</code> method to define any embedded objects that form part of the HAL response.</p>
 </div>
@@ -1858,7 +1923,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rendering_domain_classes_as_hal">2.9.2. Rendering Domain Classes as HAL</h4>
+<h4 id="_rendering_domain_classes_as_hal">2.10.2. Rendering Domain Classes as HAL</h4>
 <div class="paragraph">
 <p>If you prefer to let the plugin handle the rendering of your object you can use the <code>hal.render(..)</code> method:</p>
 </div>
@@ -1888,7 +1953,7 @@ json hal.render(book) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_embedded_association_and_hal">2.9.3. Embedded Association and HAL</h4>
+<h4 id="_embedded_association_and_hal">2.10.3. Embedded Association and HAL</h4>
 <div class="paragraph">
 <p>Generally, when using the <code>hal.render(..)</code> method, <code>_embedded</code> associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the <code>book.authors</code> association:</p>
 </div>
@@ -2025,7 +2090,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_specifying_the_hal_content_type">2.9.4. Specifying the HAL Content Type</h4>
+<h4 id="_specifying_the_hal_content_type">2.10.4. Specifying the HAL Content Type</h4>
 <div class="paragraph">
 <p>The default HAL response content type is <code>application/hal+json</code>, however as discussed in the section on <a href="#mimeTypes">Custom Mime Type</a> you can define your own response content types to represent your resources.</p>
 </div>
@@ -2057,7 +2122,7 @@ json {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_hal_pagination">2.9.5. HAL Pagination</h4>
+<h4 id="_hal_pagination">2.10.5. HAL Pagination</h4>
 <div class="paragraph">
 <p>The JSON views plugin for Grails provides navigable pagination support.
 Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
@@ -2159,7 +2224,294 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_jsontemplateengine">2.10. The JsonTemplateEngine</h3>
+<h3 id="_json_api_support">2.11. JSON API Support</h3>
+<div class="paragraph">
+<p><a href="http://http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
+</div>
+<div class="paragraph">
+<p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views have access to the <code>jsonapi</code> instance which implements <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a>.</p>
+</div>
+<div class="paragraph">
+<p>Grails views makes a best effort to conform to the JSON API standard, however that only applies to the format of the data. The specification makes many assertions about response codes, url conventions, and other server related concepts that are overreaching.</p>
+</div>
+<div class="paragraph">
+<p>The JSON API support in Grails also only applies to domain classes. Because the specification relies on concepts of relationships and identifiers, there is no clear way to determine how those concepts would apply to conventional Groovy classes. As a result, normal Groovy classes are not supported.</p>
+</div>
+<div class="paragraph">
+<p>The simplest example of using JSON API simply passes a domain class to the <code>render</code> method of the <code>jsonapi</code> object.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example where <code>Book</code> looks like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">Book</span> {
+    <span class="predefined-type">String</span> title
+    Author author
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is what an example <code>Book</code> instance rendered with JSON API might look like.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">book</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">3</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">attributes</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">The Return of the King</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">relationships</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">links</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/author/9</span><span class="delimiter">&quot;</span></span>
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>,
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">9</span><span class="delimiter">&quot;</span></span>
+        }
+      }
+    }
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">links</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/book/3</span><span class="delimiter">&quot;</span></span>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_json_api_object">2.11.1. JSON API Object</h4>
+<div class="paragraph">
+<p>To include the <a href="http://jsonapi.org/format/#document-jsonapi-object">JSON API Object</a> in the response, include a <code>jsonApiObject</code> argument to the <code>render</code> method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book, [<span class="key">jsonApiObject</span>: <span class="predefined-constant">true</span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response will contain <code>"jsonapi":{"version":"1.0"}</code> as the first key in the resulting object.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_meta_object">2.11.2. Meta Object</h4>
+<div class="paragraph">
+<p>To add <a href="http://jsonapi.org/format/#document-meta">metadata</a> to your response, the <code>meta</code> argument can be passed to render with the value being the object that should be rendered. If this functionality is used in addition to <code>jsonApiObject: true</code>, the metadata will be rendered as the "meta" property of the "jsonapi" object.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book, [<span class="key">meta</span>: [<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Metadata Information</span><span class="delimiter">&quot;</span></span>]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response will contain <code>"meta":{"name":"Metadata Information"}</code> as the first key in the resulting object.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rendering_errors">2.11.3. Rendering Errors</h4>
+<div class="paragraph">
+<p>The JSON API specification has <a href="http://jsonapi.org/format/#errors">instructions on how to render errors</a>. In the case of the Grails implementation, this applies to both exceptions and validation errors.</p>
+</div>
+<div class="sect4">
+<h5 id="_exceptions">Exceptions</h5>
+<div class="paragraph">
+<p>If an exception is passed to the <code>render</code> method, it will be rendered within the specification.</p>
+</div>
+<div class="paragraph">
+<p>In the example of an exception <code>new RuntimeException("oops!")</code>, the following will be rendered:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">errors</span><span class="delimiter">&quot;</span></span>: [
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>: <span class="integer">500</span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java.lang.RuntimeException</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">detail</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">oops!</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">stacktrace</span><span class="delimiter">&quot;</span></span>: [
+          <span class="error">/</span><span class="error">/</span><span class="error">A</span><span class="error">n</span> <span class="error">a</span><span class="error">r</span><span class="error">r</span><span class="error">a</span><span class="error">y</span> <span class="error">o</span><span class="error">f</span> <span class="error">i</span><span class="error">n</span><span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">r</span><span class="error">e</span><span class="error">l</span><span class="error">a</span><span class="error">t</span><span class="error">i</span><span class="error">n</span><span class="error">g</span> <span class="error">t</span><span class="error">o</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span> <span class="error">s</span><span class="error">t</span><span class="error">a</span><span class="error">c</span><span class="error">k</span><span class="error">t</span><span class="error">r</span><span class="error">a</span><span class="error">c</span><span class="error">e</span>
+        ]
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_validation_errors">Validation Errors</h5>
+<div class="paragraph">
+<p>In the case of validation errors, the response will look like the following when a <code>name</code> property fails the blank constraint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">errors</span><span class="delimiter">&quot;</span></span>: [
+    {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">blank</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">detail</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Property [name] of class [class com.foo.Bar] cannot be blank</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">object</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">com.foo.Bar</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">field</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">rejectedValue</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">bindingError</span><span class="delimiter">&quot;</span></span>: <span class="value">false</span>
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_links">2.11.4. Links</h4>
+<div class="paragraph">
+<p>In general, links for relationships will be provided when the relationship has a value.</p>
+</div>
+<div class="paragraph">
+<p>Example output for a has one relationship where the value is null:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">captain</span><span class="delimiter">&quot;</span></span>: {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: <span class="value">null</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And when the value is not null:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>: {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">links</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/author/9</span><span class="delimiter">&quot;</span></span>
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">9</span><span class="delimiter">&quot;</span></span>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Currently links are not supported in the case of to many relationships.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pagination">2.11.5. Pagination</h4>
+<div class="paragraph">
+<p>The JSON API specification has a section which explains <a href="http://jsonapi.org/format/#fetching-pagination">pagination</a>. The Grails implementation follows that specification as it is written.</p>
+</div>
+<div class="paragraph">
+<p>To enable pagination links in your output you must be rendering a collection and also include some arguments in addition to the collection being rendered. There are two required arguments: total and resource. The default offset is 0 and max is 10.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">List</span>&lt;<span class="predefined-type">Book</span>&gt; books
+    <span class="predefined-type">Integer</span> bookTotal
+}
+json jsonapi.render(books, [<span class="key">pagination</span>: [<span class="key">total</span>: bookTotal, <span class="key">resource</span>: <span class="predefined-type">Book</span>]])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example links output if <code>bookTotal == 20</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">links</span><span class="delimiter">&quot;</span></span>: {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">self</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/books</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">first</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/books?offset=0&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">next</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/books?offset=10&amp;max=10</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">last</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/books?offset=10&amp;max=10</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default the values for <code>offset</code>, <code>sort</code>, <code>max</code>, and <code>order</code> will come from the parameters with the same names. You can override their values by passing the corresponding argument in the pagination Map.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">List</span>&lt;<span class="predefined-type">Book</span>&gt; books
+    <span class="predefined-type">Integer</span> bookTotal
+}
+json jsonapi.render(books, [<span class="key">pagination</span>: [<span class="key">total</span>: bookTotal, <span class="key">resource</span>: <span class="predefined-type">Book</span>, <span class="key">max</span>: <span class="integer">20</span>, <span class="key">sort</span>: params.myCustomSortArgument]])</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_associations">2.11.6. Associations</h4>
+<div class="paragraph">
+<p>The JSON API specification details how relationships should be rendered. The first way is through a relationships object described <a href="http://jsonapi.org/format/#document-resource-object-relationships">here</a>. By default that is now relationships will be rendered in json views.</p>
+</div>
+<div class="paragraph">
+<p>If you do not wish to render the relationships at all, the <code>associations</code> argument can be passed to <code>render</code> with the value of false.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book, [<span class="key">associations</span>: <span class="predefined-constant">false</span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The specification also has a section that describes <a href="http://jsonapi.org/format/#document-compound-documents">compound documents</a>. If you want one or more of your relationships to be rendered in that manner, you can include the <code>expand</code> argument.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">Book</span> book
+}
+json jsonapi.render(book, [<span class="key">expand</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">author</span><span class="delimiter">&quot;</span></span>]) <span class="comment">//can also be a list of strings</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_includes_excludes">2.11.7. Includes / Excludes</h4>
+<div class="paragraph">
+<p>The JSON API implementation in Grails supports the same includes and excludes support as normal json views. Please see the section on <a href="rendering.html">rendering</a> for details.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_identifier_rendering">2.11.8. Identifier Rendering</h4>
+<div class="paragraph">
+<p>Grails provides a way to customize the rendering of your domain class identifiers. To override the default behavior, register a bean that implements <a href="api/grails/plugin/json/view/api/jsonapi/JsonApiIdRenderStrategy.html">JsonApiIdRenderStrategy</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/conf/spring/resources.groovy</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">beans = {
+    jsonApiIdRenderStrategy(MyCustomImplementation)
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_jsontemplateengine">2.12. The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
@@ -2184,7 +2536,7 @@ JsonViewTemplateEngine templateEngine
 </div>
 </div>
 <div class="sect2">
-<h3 id="_static_compilation">2.11. Static Compilation</h3>
+<h3 id="_static_compilation">2.13. Static Compilation</h3>
 <div class="paragraph">
 <p>JSON views are statically compiled. You can disable static compilation if you prefer by setting <code>grails.views.json.compileStatic</code>:</p>
 </div>
@@ -2224,7 +2576,7 @@ json {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_testing">2.12. Testing</h3>
+<h3 id="_testing">2.14. Testing</h3>
 <div class="paragraph">
 <p>Although generally testing can be done using functional tests via an HTTP client, the JSON views plugin also provides a trait which helps in writing either unit or integration tests.</p>
 </div>
@@ -2314,12 +2666,12 @@ Links generated by json views in a unit test may not match what they would norma
 </div>
 </div>
 <div class="sect2">
-<h3 id="_plugin_support">2.13. Plugin Support</h3>
+<h3 id="_plugin_support">2.15. Plugin Support</h3>
 <div class="paragraph">
 <p>Grails plugins as well as standard Gradle Java/Groovy projects can provide json views to your application.</p>
 </div>
 <div class="sect3">
-<h4 id="_grails_plugins">2.13.1. Grails Plugins</h4>
+<h4 id="_grails_plugins">2.15.1. Grails Plugins</h4>
 <div class="paragraph">
 <p>Since JSON views are compiled all of a plugin&#8217;s views and templates are available for use in your applications.</p>
 </div>
@@ -2328,7 +2680,7 @@ Links generated by json views in a unit test may not match what they would norma
 </div>
 </div>
 <div class="sect3">
-<h4 id="_basic_libraries">2.13.2. Basic Libraries</h4>
+<h4 id="_basic_libraries">2.15.2. Basic Libraries</h4>
 <div class="paragraph">
 <p>The most common use case to provide views in a standard library is to provide global templates. Global templates are templates designed to render a given class as JSON. In order to provide views in a standard Gradle project, you should configure your own view compilation task.</p>
 </div>
@@ -2343,7 +2695,7 @@ Links generated by json views in a unit test may not match what they would norma
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:1.1.7.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
     }
 }
 
@@ -2357,7 +2709,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:1.1.7.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:1.2.0.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
@@ -2391,7 +2743,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 </div>
 <div class="sect3">
-<h4 id="_customizing_the_compile_task">2.13.3. Customizing the Compile Task</h4>
+<h4 id="_customizing_the_compile_task">2.15.3. Customizing the Compile Task</h4>
 <div class="paragraph">
 <p>Unless otherwise configured, the project name of the plugin (the gradle <code>project.name</code>) is used as the <code>packageName</code> when compiling JSON views.</p>
 </div>
@@ -2417,7 +2769,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration">2.14. Configuration</h3>
+<h3 id="_configuration">2.16. Configuration</h3>
 <div class="paragraph">
 <p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. The json view configuration extends <a href="api/grails/views/GenericViewConfiguration.html">GenericViewConfiguration</a>, therefore any properties in that interface can be set as well.</p>
 </div>
@@ -2456,7 +2808,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 <p>See the API for <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html">GroovyForkOptions</a> for more information.</p>
 </div>
 <div class="sect3">
-<h4 id="_changing_the_view_base_class">2.14.1. Changing the view base class</h4>
+<h4 id="_changing_the_view_base_class">2.16.1. Changing the view base class</h4>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -2474,7 +2826,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 </div>
 <div class="sect3">
-<h4 id="_adding_new_helper_methods_via_traits">2.14.2. Adding New Helper Methods via Traits</h4>
+<h4 id="_adding_new_helper_methods_via_traits">2.16.2. Adding New Helper Methods via Traits</h4>
 <div class="paragraph">
 <p>Alternatively, rather than modifying the base class, you can instead just add new methods via traits.</p>
 </div>
@@ -2519,7 +2871,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect3">
-<h4 id="_default_mime_types">2.14.3. Default Mime Types</h4>
+<h4 id="_default_mime_types">2.16.3. Default Mime Types</h4>
 <div class="paragraph">
 <p>The mime types that will be accepted by default for JSON view rendering is configurable.</p>
 </div>
@@ -2534,9 +2886,116 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_unicode_escaping">2.16.4. Unicode Escaping</h4>
+<div class="paragraph">
+<p>By default, unicode characters will not be escaped. If you would like unicode characters to be escaped in your output, set the following configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">grails</span>:
+    <span class="key">views</span>:
+        <span class="key">json</span>:
+            <span class="key">generator</span>:
+                <span class="key">escapeUnicode</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_default_date_format">2.16.5. Default Date Format</h4>
+<div class="paragraph">
+<p>The default format for <code>java.util.Date</code> can be configured.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">grails</span>:
+    <span class="key">views</span>:
+        <span class="key">json</span>:
+            <span class="key">generator</span>:
+                <span class="key">dateFormat</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">yyyy-MM-dd'T'HH:mm:ss'Z'</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, the default locale can also be specified.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">grails</span>:
+    <span class="key">views</span>:
+        <span class="key">json</span>:
+            <span class="key">generator</span>:
+                <span class="key">locale</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">en/US</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_default_time_zone">2.16.6. Default Time Zone</h4>
+<div class="paragraph">
+<p>The default time zone can be configured. The value here will be passed to <code>TimeZone.getTimeZone(...)</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">grails</span>:
+    <span class="key">views</span>:
+        <span class="key">json</span>:
+            <span class="key">generator</span>:
+                <span class="key">timeZone</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">GMT</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_intellij_support">2.15. IntelliJ Support</h3>
+<h3 id="_custom_converters">2.17. Custom Converters</h3>
+<div class="paragraph">
+<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> foo
+
+<span class="type">class</span> <span class="class">MyConverter</span> <span class="directive">implements</span> JsonGenerator.Converter {
+
+    <span class="annotation">@Override</span>
+    <span class="type">boolean</span> handles(<span class="predefined-type">Class</span>&lt;?&gt; type) {
+        CustomClass.isAssignableFrom(type)
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="predefined-type">Object</span> convert(<span class="predefined-type">Object</span> value, <span class="predefined-type">String</span> key) {
+        ((CustomClass)value).name
+    }
+}
+
+
+<span class="type">class</span> <span class="class">CustomClass</span> {
+    <span class="predefined-type">String</span> name
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Because plugins could potentially provide converters, you can also determine the order by implementing the <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/Ordered.html">Ordered</a> interface in your converter.</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>foo.MyCustomConverter</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you have multiple classes to register, put each one on it&#8217;s own line
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_intellij_support">2.18. IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
@@ -2551,7 +3010,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 <div class="sect2">
-<h3 id="_debugging_views">2.16. Debugging Views</h3>
+<h3 id="_debugging_views">2.19. Debugging Views</h3>
 <div class="paragraph">
 <p>Generally views should be kept simple and if you arrive to the point where you need to debug a view you probably have too much logic in the view that would be better off handled by the controller prior to supplying the model.</p>
 </div>
@@ -2559,7 +3018,7 @@ The trait cannot be defined in the same project as you are compilation as it nee
 <p>Nevertheless here are a few view debugging tips to help identify problems in the view.</p>
 </div>
 <div class="sect3">
-<h4 id="_introspecting_the_model">2.16.1. Introspecting the Model</h4>
+<h4 id="_introspecting_the_model">2.19.1. Introspecting the Model</h4>
 <div class="paragraph">
 <p>Every JSON view is a Groovy script and like any Groovy script the model is defined in a <code>binding</code> variable. Therefore you can easily find out the model at any time by either logging or printing the binding variables:</p>
 </div>
@@ -2589,7 +3048,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connecting_a_debugger">2.16.2. Connecting a Debugger</h4>
+<h4 id="_connecting_a_debugger">2.19.2. Connecting a Debugger</h4>
 <div class="paragraph">
 <p>Some IDEs like Intellij IDE allow you to set break points and step debug within the view itself. As mentioned previously you shouldn&#8217;t arrive to this point and if you do you have too much logic in your view, but if you do need it the feature is there.</p>
 </div>
@@ -2646,11 +3105,11 @@ cars {
 <div class="sect2">
 <h3 id="_installation_2">3.2. Installation</h3>
 <div class="paragraph">
-<p>To activate Markup views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code> where <code>VERSION</code> is the version of the plugin you plan to use:</p>
+<p>To activate Markup views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:views-markup:VERSION</span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-markup:1.2.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2662,7 +3121,7 @@ cars {
     ...
     dependencies {
         ...
-        classpath <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:views-gradle:VERSION</span><span class="delimiter">&quot;</span></span>
+        classpath "org.grails.plugins:views-gradle:1.2.0.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -2745,7 +3204,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-17 17:42:57 UTC
+Last updated 2017-03-17 17:48:42 UTC
 </div>
 </div>
 </body>
