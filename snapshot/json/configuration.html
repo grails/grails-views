@@ -426,15 +426,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_changing_the_view_base_class">Changing the view base class</a></li>
 <li><a href="#_adding_new_helper_methods_via_traits">Adding New Helper Methods via Traits</a></li>
 <li><a href="#_default_mime_types">Default Mime Types</a></li>
-<li><a href="#_unicode_escaping">Unicode Escaping</a></li>
-<li><a href="#_default_date_format">Default Date Format</a></li>
-<li><a href="#_default_time_zone">Default Time Zone</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. For example:</p>
+<p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. The json view configuration extends <a href="api/grails/views/GenericViewConfiguration.html">GenericViewConfiguration</a>, therefore any properties in that interface can be set as well.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>For example:</pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -544,67 +546,10 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_unicode_escaping">Unicode Escaping</h4>
-<div class="paragraph">
-<p>By default, unicode characters will not be escaped. If you would like unicode characters to be escaped in your output, set the following configuration.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
-    views:
-        json:
-            generator:
-                escapeUnicode: true</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_default_date_format">Default Date Format</h4>
-<div class="paragraph">
-<p>The default format for <code>java.util.Date</code> can be configured.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
-    views:
-        json:
-            generator:
-                dateFormat: "yyyy-MM-dd'T'HH:mm:ss'Z'"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In addition, the default locale can also be specified.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
-    views:
-        json:
-            generator:
-                locale: "en/US"</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_default_time_zone">Default Time Zone</h4>
-<div class="paragraph">
-<p>The default time zone can be configured. The value here will be passed to <code>TimeZone.getTimeZone(...)</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
-    views:
-        json:
-            generator:
-                timeZone: "GMT"</code></pre>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-17 03:57:50 UTC
+Last updated 2017-03-17 15:50:34 UTC
 </div>
 </div>
 </body>
