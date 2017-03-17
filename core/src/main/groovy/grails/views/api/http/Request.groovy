@@ -48,4 +48,17 @@ interface Request {
      * @return all of the views
      */
     Collection<String> getHeaders(String name)
+
+    /**
+     * Obtains the value of an attribute
+     *
+     * @param name The name of the attribute
+     * @return The value of the attribute
+     */
+    Object getAttribute(String name)
+
+    /**
+     * @return All of the attribute names
+     */
+    Collection<String> getAttributeNames()
 }

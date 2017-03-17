@@ -40,6 +40,9 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
     public static final String EMBEDDED_ATTRIBUTE = "_embedded"
     public static final String EMBEDDED_PARAMETER = "embedded"
 
+
+    private StreamingJsonDelegate jsonDelegate
+
     GrailsJsonViewHelper viewHelper
     String contentType = MimeType.HAL_JSON.name
 
@@ -73,7 +76,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 Writer writeTo(Writer out) throws IOException {
                     StreamingJsonBuilder builder = new StreamingJsonBuilder(out, generator)
                     builder.call {
-
+                        helper.setDelegate(delegate)
                         if(firstObject != null) {
                             helper.links( GrailsNameUtils.getPropertyName(firstObject.getClass()) )
                         }
@@ -113,7 +116,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
     @Override
     void inline(Object object, Map arguments = [:], @DelegatesTo(StreamingJsonDelegate) Closure customizer = null) {
         arguments.put(ASSOCIATIONS, false)
-        viewHelper.inline(object, arguments, customizer)
+        viewHelper.inline(object, arguments, customizer, jsonDelegate)
     }
 
 
@@ -141,27 +144,23 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
      */
     @Override
     void links(Closure callable) {
-        new StreamingJsonDelegate(view.out, true).call(LINKS_ATTRIBUTE) {
+        jsonDelegate.call(LINKS_ATTRIBUTE) {
 
             callable.setDelegate(new HalStreamingJsonDelegate(this, (StreamingJsonDelegate)delegate))
             callable.call()
         }
-        view.out.write(JsonOutput.COMMA)
-
     }
     /**
      * Creates HAL links for the given object
      *
      * @param object The object to create links for
      */
-    void links(Object object, String contentType = this.contentType, boolean writeComma = true) {
-        def jsonDelegate = new StreamingJsonDelegate(view.out, true)
-        writeLinks(jsonDelegate, object, contentType, writeComma)
+    void links(Object object, String contentType = this.contentType) {
+        writeLinks(jsonDelegate, object, contentType)
     }
 
     void links(Map model, Object paginationObject, Number total, String contentType = this.contentType) {
         def jsonView = view
-        def jsonDelegate = new StreamingJsonDelegate(jsonView.out, true)
         jsonDelegate.call(LINKS_ATTRIBUTE) {
             def linkGenerator = jsonView.linkGenerator
             def locale = jsonView.locale
@@ -213,7 +212,6 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 }
             }
         }
-        jsonView.out.write(JsonOutput.COMMA)
     }
 
     void links(Map model, String contentType = this.contentType) {
@@ -243,7 +241,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         String contentType = this.contentType
         def locale = jsonView.locale ?: Locale.ENGLISH
         contentType = jsonView.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
-        new StreamingJsonDelegate(jsonView.out, true).call(LINKS_ATTRIBUTE) {
+        jsonDelegate.call(LINKS_ATTRIBUTE) {
             call(SELF_ATTRIBUTE) {
                 call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true, params: linkParams)  //TODO handle the max/offset here
                 call HREFLANG_ATTRIBUTE, locale.toString()
@@ -263,7 +261,6 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
             }
 
         }
-        jsonView.out.write(JsonOutput.COMMA)
     }
 
     /**
@@ -388,7 +385,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         }
     }
 
-    protected void writeLinks(StreamingJsonDelegate jsonDelegate, object, String contentType, boolean writeComma = false) {
+    protected void writeLinks(StreamingJsonDelegate jsonDelegate, object, String contentType) {
         def locale = view.locale ?: Locale.ENGLISH
         contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
         jsonDelegate.call(LINKS_ATTRIBUTE) {
@@ -410,10 +407,6 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                     }
                 }
             }
-
-        }
-        if (writeComma) {
-            view.out.write(JsonOutput.COMMA)
         }
     }
 
@@ -489,12 +482,11 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
      * @param callable The callable
      */
     void embedded(@DelegatesTo(StreamingJsonDelegate) Closure callable) {
-        new StreamingJsonDelegate(view.out, true).call(EMBEDDED_ATTRIBUTE) {
+        jsonDelegate.call(EMBEDDED_ATTRIBUTE) {
 
             callable.setDelegate(new HalStreamingJsonDelegate(this, (StreamingJsonDelegate)delegate))
             callable.call()
         }
-        view.out.write(JsonOutput.COMMA)
     }
 
     /**
@@ -503,12 +495,11 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
      * @param callable The callable
      */
     void embedded(String contentType, @DelegatesTo(StreamingJsonDelegate) Closure callable) {
-        new StreamingJsonDelegate(view.out, true).call(EMBEDDED_ATTRIBUTE) {
+        jsonDelegate.call(EMBEDDED_ATTRIBUTE) {
 
             callable.setDelegate(new HalStreamingJsonDelegate(contentType, this, (StreamingJsonDelegate)delegate))
             callable.call()
         }
-        view.out.write(JsonOutput.COMMA)
     }
 
     @CompileDynamic
@@ -623,8 +614,15 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
 
         protected void writeObject(value, Closure callable) {
             writer.write(JsonOutput.OPEN_BRACE)
+            StreamingJsonDelegate delegate = new StreamingJsonDelegate(writer, true)
+            Closure curried = callable.curry(value)
+            curried.setDelegate(delegate)
+            curried.setResolveStrategy(Closure.DELEGATE_FIRST)
+            def oldDelegate = this.delegate
+            viewHelper.setDelegate(delegate)
             viewHelper.links(value, contentType)
-            curryDelegateAndGetContent(writer, callable, value)
+            curried.call()
+            viewHelper.setDelegate(oldDelegate)
             writer.write(JsonOutput.CLOSE_BRACE)
         }
 
@@ -643,21 +641,20 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
 
     @CompileDynamic
     protected Closure<Void> createlinksRenderingClosure(Map<String, Object> arguments = [:]) {
+        def hal = this
         return { Object object ->
             StreamingJsonDelegate local = (StreamingJsonDelegate) getDelegate()
-
-            def previous = view.getOut()
-            view.setOut(local.writer)
-            try {
-
-                def shouldRenderEmbedded = ViewUtils.getBooleanFromMap(EMBEDDED_PARAMETER, arguments, true)
-                if(shouldRenderEmbedded) {
-                    embedded(object, arguments)
-                }
-                links(object)
-            } finally {
-                view.setOut(previous)
+            hal.setDelegate(local)
+            def shouldRenderEmbedded = ViewUtils.getBooleanFromMap(EMBEDDED_PARAMETER, arguments, true)
+            if(shouldRenderEmbedded) {
+                embedded(object, arguments)
             }
+            links(object)
         }
+    }
+
+    @Override
+    void setDelegate(StreamingJsonDelegate jsonDelegate) {
+        this.jsonDelegate = jsonDelegate
     }
 }

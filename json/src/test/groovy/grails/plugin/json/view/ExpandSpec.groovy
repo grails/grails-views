@@ -45,6 +45,30 @@ json g.render(player)
         result.jsonText == '{"name":"Cantona","team":{"id":1,"name":"Manchester United"}}'
     }
 
+    void "Test expand parameter on nested property"() {
+        def mockSession = Mock(Session)
+        mockSession.getMappingContext() >> mappingContext
+        mockSession.retrieve(Team, 1L) >> new Team(name: "Manchester United")
+        def teamProxy = mappingContext.proxyFactory.createProxy(mockSession, Team, 1L)
+
+        Player player = new Player(name: "Cantona", team: teamProxy)
+        def templateText = '''
+import grails.plugin.json.view.*
+
+@Field Map map
+
+json g.render(map)
+'''
+
+        when:"The domain is rendered with expand parameters"
+        def result = render(templateText, [map: [player:player]]) {
+            params expand:'player.team'
+        }
+
+        then:"The association is expanded"
+        result.jsonText == '{"player":{"name":"Cantona","team":{"id":1,"name":"Manchester United"}}}'
+    }
+
     void "Test expand parameter allows expansion of child associations with HAL"() {
 
         given:"A entity with a proxy association"

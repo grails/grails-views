@@ -173,4 +173,6 @@ interface HalViewHelper {
      * @param callable The callable
      */
     void embedded(String contentType, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure callable)
+
+    void setDelegate(StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate)
 }
