@@ -2,6 +2,7 @@ package grails.plugin.json.view
 
 import grails.core.DefaultGrailsApplication
 import grails.core.GrailsDomainClass
+import grails.core.support.proxy.ProxyHandler
 import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
@@ -376,6 +377,10 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         jsonView.getTemplateEngine() >> templateEngine
 
         jsonView.getViewTemplate() >> new GrailsViewTemplate(JsonView)
+
+        jsonView.getProxyHandler() >> Mock(ProxyHandler) {
+            isProxy(_) >> false
+        }
 
         viewHelper
     }
