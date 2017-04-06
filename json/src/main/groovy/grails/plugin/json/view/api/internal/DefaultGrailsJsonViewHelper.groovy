@@ -1,5 +1,6 @@
 package grails.plugin.json.view.api.internal
 
+import grails.core.support.proxy.ProxyHandler
 import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
@@ -112,6 +113,10 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
     private JsonOutput.JsonWritable renderTemplate(Object value, Class type, String...qualifiers) {
         Locale locale = view.locale
+        ProxyHandler proxyHandler = view.proxyHandler
+        if (proxyHandler.isProxy(value) && proxyHandler.isInitialized(value)) {
+            value = proxyHandler.unwrapIfProxy(value)
+        }
         ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
         JsonViewTemplate childTemplate = (JsonViewTemplate)templateEngine?.resolveTemplate(type, locale, qualifiers)
         if(childTemplate != null) {
@@ -122,13 +127,21 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         }
     }
 
+    private JsonOutput.JsonWritable renderTemplate(Object value, String...qualifiers) {
+        ProxyHandler proxyHandler = view.proxyHandler
+        if (proxyHandler.isProxy(value) && proxyHandler.isInitialized(value)) {
+            value = proxyHandler.unwrapIfProxy(value)
+        }
+        renderTemplate(value, value.class, qualifiers)
+    }
+
     private JsonOutput.JsonWritable renderTemplateOrDefault(Object object, Map arguments, Closure customizer, Map<Object, JsonOutput.JsonWritable> processedObjects, String path = "") {
         JsonOutput.JsonWritable preProcessed = preProcessedOutput(object, processedObjects)
         if (preProcessed != null) {
             return preProcessed
         }
         if (arguments == Collections.emptyMap() && customizer == null) {
-            def template = renderTemplate(object, object.class)
+            def template = renderTemplate(object)
             if(template != null) {
                 return template
             }

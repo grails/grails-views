@@ -2,6 +2,7 @@ import functional.tests.Circular
 import functional.tests.MyEnum
 import functional.tests.Player
 import functional.tests.Team
+import functional.tests.Proxy
 
 class BootStrap {
 
@@ -19,6 +20,7 @@ class BootStrap {
         c.addToCirculars([name: "topLevel-3", myEnum: MyEnum.BAR])
         c.save(flush: true, failOnError: true)
 
+        new Proxy(name: "Sally").save(flush: true, failOnError: true)
     }
     def destroy = {
     }
