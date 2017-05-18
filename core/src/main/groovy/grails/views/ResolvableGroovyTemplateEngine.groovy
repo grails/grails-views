@@ -3,6 +3,7 @@ package grails.views
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.core.support.proxy.ProxyHandler
+import grails.util.Environment
 import grails.util.GrailsStringUtils
 import grails.views.api.GrailsView
 import grails.views.compiler.ViewsTransform
@@ -54,26 +55,23 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             .maximumWeightedCapacity(250)
             .build()
             .withDefault { String path ->
-        Class cls = templateResolver.resolveTemplateClass(path)
-        if(cls != null) {
-            log.debug("Found template class [${cls.name}] for path [$path]")
-            WritableScriptTemplate template = createTemplate((Class<? extends Template>) cls)
-            template.templatePath = path
-            return template
-        }
-        else {
-            def url = templateResolver.resolveTemplate(path)
-            if(url == null && !path.endsWith(extension)) {
-                url = templateResolver.resolveTemplate("${path}.${extension}")
+
+        WritableScriptTemplate template
+        if (Environment.isDevelopmentEnvironmentAvailable()) {
+            template = attemptResolvePath(path)
+            if (template == null) {
+                template = attemptResolveClass(path)
             }
-            if(url != null) {
-                log.debug("Found template URL [${url}] for path [$path]")
-                WritableScriptTemplate template = createTemplate(path, url)
-                template.templatePath = path
-                return template
+        } else {
+            template = attemptResolveClass(path)
+            if (template == null) {
+                template = attemptResolvePath(path)
             }
         }
-        return NULL_ENTRY
+        if (template == null) {
+            template = NULL_ENTRY
+        }
+        template
     }
 
     private int templateCounter
@@ -173,6 +171,30 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         return compilerConfiguration
     }
 
+    private WritableScriptTemplate attemptResolvePath(String path) {
+        def url = templateResolver.resolveTemplate(path)
+        if(url == null && !path.endsWith(extension)) {
+            url = templateResolver.resolveTemplate("${path}.${extension}")
+        }
+        if(url != null) {
+            log.debug("Found template URL [${url}] for path [$path]")
+            WritableScriptTemplate template = createTemplate(path, url)
+            template.templatePath = path
+            return template
+        }
+        null
+    }
+
+    private WritableScriptTemplate attemptResolveClass(String path) {
+        Class cls = templateResolver.resolveTemplateClass(path)
+        if(cls != null) {
+            log.debug("Found template class [${cls.name}] for path [$path]")
+            WritableScriptTemplate template = createTemplate((Class<? extends Template>) cls)
+            template.templatePath = path
+            return template
+        }
+        null
+    }
 
     /**
      * Creates a template for the given template class

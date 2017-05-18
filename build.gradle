@@ -19,4 +19,3 @@ subprojects {
         maven { url "https://repo.grails.org/grails/core" }
     }
 }
-
