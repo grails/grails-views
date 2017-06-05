@@ -538,6 +538,36 @@ json tmpl.person(people)</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>When rendering an <code>Iterable</code>, you can also specify the model name:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/person/show.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;Person&gt; people = []
+}
+json tmpl.person("owner", people)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>person</code> template would have a field defined: <code>Person owner</code></p>
+</div>
+<div class="paragraph">
+<p>If you need additional data that will be static over each iteration of the template, you can also pass in a model:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/person/show.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;Person&gt; people = []
+}
+json tmpl.person(people, [relationship: "Father"])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>person</code> template could have a field defined: <code>String relationship</code></p>
+</div>
+<div class="paragraph">
 <p>By passing in a collection the plugin will iterate over each element on the collection and render the template as a JSON array. If you do not want this to happen then use the variation of the method that takes a map instead:</p>
 </div>
 <div class="listingblock">
@@ -666,7 +696,7 @@ json {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-19 13:40:05 UTC
+Last updated 2017-06-05 15:28:53 UTC
 </div>
 </div>
 </body>
