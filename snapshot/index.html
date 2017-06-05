@@ -919,6 +919,36 @@ json tmpl.person(people)</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>When rendering an <code>Iterable</code>, you can also specify the model name:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/person/show.gson</code></div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">List</span>&lt;Person&gt; people = <span class="type">[]</span>
+}
+json tmpl.person(<span class="string"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>, people)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>person</code> template would have a field defined: <code>Person owner</code></p>
+</div>
+<div class="paragraph">
+<p>If you need additional data that will be static over each iteration of the template, you can also pass in a model:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/person/show.gson</code></div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">model {
+    <span class="predefined-type">List</span>&lt;Person&gt; people = <span class="type">[]</span>
+}
+json tmpl.person(people, [<span class="key">relationship</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Father</span><span class="delimiter">&quot;</span></span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>person</code> template could have a field defined: <code>String relationship</code></p>
+</div>
+<div class="paragraph">
 <p>By passing in a collection the plugin will iterate over each element on the collection and render the template as a JSON array. If you do not want this to happen then use the variation of the method that takes a map instead:</p>
 </div>
 <div class="listingblock">
@@ -3204,7 +3234,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-05 13:24:14 UTC
+Last updated 2017-06-05 15:28:07 UTC
 </div>
 </div>
 </body>
