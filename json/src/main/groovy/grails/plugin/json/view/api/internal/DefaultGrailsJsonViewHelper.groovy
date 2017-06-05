@@ -758,7 +758,6 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
             Template childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             if(childTemplate != null) {
-                checkTemplate((JsonViewTemplate)childTemplate)
                 return new JsonOutput.JsonWritable() {
 
                     @Override
