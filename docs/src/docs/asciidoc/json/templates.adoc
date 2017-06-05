@@ -77,6 +77,28 @@ In this case the output is a JSON array. For example:
 [source,javascript]
     [{"name":"Fred",age:10},{"name":"Bob",age:12}]
 
+When rendering an `Iterable`, you can also specify the model name:
+
+[source,groovy]
+.`grails-app/views/person/show.gson`
+model {
+    List<Person> people = []
+}
+json tmpl.person("owner", people)
+
+The `person` template would have a field defined: `Person owner`
+
+If you need additional data that will be static over each iteration of the template, you can also pass in a model:
+
+[source,groovy]
+.`grails-app/views/person/show.gson`
+model {
+    List<Person> people = []
+}
+json tmpl.person(people, [relationship: "Father"])
+
+The `person` template could have a field defined: `String relationship`
+
 By passing in a collection the plugin will iterate over each element on the collection and render the template as a JSON array. If you do not want this to happen then use the variation of the method that takes a map instead:
 
 [source,groovy] 

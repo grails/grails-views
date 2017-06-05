@@ -47,9 +47,20 @@ class TemplateRenderer {
         else if(len == 2) {
             def var = argArray[0]
             def coll = argArray[1]
-            if(coll instanceof Iterable) {
+            if (var instanceof Iterable) {
+                if (coll instanceof Map) {
+                    return jsonViewHelper.render(template:name, var:modelName, collection:var, model:coll)
+                }
+            }
+            else if (coll instanceof Iterable) {
                 return jsonViewHelper.render(template:name, var:var.toString(), collection:coll)
             }
+        }
+        else if(len == 3) {
+            def var = argArray[0]
+            def coll = argArray[1]
+            def model = (Map)argArray[2]
+            jsonViewHelper.render(template:name, model:model, collection:coll, var:var.toString())
         }
 
     }

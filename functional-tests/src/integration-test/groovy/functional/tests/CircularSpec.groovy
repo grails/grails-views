@@ -29,4 +29,22 @@ class CircularSpec extends GebSpec {
         json.circulars.find { it.id == 3 }.parent.id == 1
         json.circulars.find { it.id == 2 }.parent.id == 1
     }
+
+    void "test nested template rendering of circular domain relationships"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:"A GET is issued"
+
+        def resp = builder.get("${baseUrl}circular/circular/1")
+        def json = resp.json
+
+        then:"The REST resource is retrieved and the correct JSON is returned"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        json.name == "topLevel"
+        json.children.size() == 2
+        json.children.find { it.name == "topLevel-3" }
+        json.children.find { it.name == "topLevel-2" }
+    }
 }

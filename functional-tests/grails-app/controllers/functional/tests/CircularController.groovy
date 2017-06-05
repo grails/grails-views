@@ -11,4 +11,8 @@ class CircularController extends RestfulController {
     CircularController() {
         super(Circular)
     }
+
+    def circular() {
+        super.show()
+    }
 }

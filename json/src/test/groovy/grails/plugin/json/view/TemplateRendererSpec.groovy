@@ -51,5 +51,23 @@ class TemplateRendererSpec extends Specification {
 
         then:
         1 * mockViewHelper.render([template:"/foo/foo", var:'foo', collection:[o]])
+
+        when:
+        tmpl."/foo/foo"("bar", [o])
+
+        then:
+        1 * mockViewHelper.render([template:"/foo/foo", var:'bar', collection:[o]])
+
+        when:
+        tmpl."/foo/foo"("bar", [o], [foo:null])
+
+        then:
+        1 * mockViewHelper.render([template:"/foo/foo", model:[foo:null], collection:[o], var:'bar'])
+
+        when:
+        tmpl."/foo/foo"([o], [foo:null])
+
+        then:
+        1 * mockViewHelper.render([template:"/foo/foo", model:[foo:null], collection:[o], var:'foo'])
     }
 }

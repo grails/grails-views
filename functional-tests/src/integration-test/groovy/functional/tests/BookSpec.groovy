@@ -137,4 +137,30 @@ class BookSpec extends GebSpec {
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '[{"title":"The Changeling"}]'
     }
+
+    void "Object type of list is used for model variable in addition to specified model when rendering templates"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:
+        def resp = builder.get("${baseUrl}books/listCallsTmplExtraData")
+
+        then:"The template was rendered successfully"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.text == '[{"title":"The Changeling","value":true}]'
+    }
+
+    void "Object type of list is used for model variable in addition to specified model and var when rendering templates"() {
+        given:"A rest client"
+        def builder = new RestBuilder()
+
+        when:
+        def resp = builder.get("${baseUrl}books/listCallsTmplVar")
+
+        then:"The template was rendered successfully"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.text == '[{"title":"The Changeling","value":true}]'
+    }
 }

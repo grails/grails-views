@@ -15,6 +15,8 @@ class UrlMappings {
         "/books/listExcludes"(controller: "book", action: "listExcludes")
         "/books/listExcludesRespond"(controller: "book", action: "listExcludesRespond")
         "/books/listCallsTmpl"(controller: "book", action: "listCallsTmpl")
+        "/books/listCallsTmplVar"(controller: "book", action: "listCallsTmplVar")
+        "/books/listCallsTmplExtraData"(controller: "book", action: "listCallsTmplExtraData")
         "/books/non-standard-template"(controller:"book", action:"nonStandardTemplate")
         "/teams"(resources:"team")
         "/products"(resources:"product")

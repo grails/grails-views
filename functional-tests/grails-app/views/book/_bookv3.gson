@@ -1,0 +1,11 @@
+import functional.tests.Book
+
+model {
+    Book book
+    Boolean additionalProp
+}
+
+json {
+    title book.title
+    value additionalProp
+}
