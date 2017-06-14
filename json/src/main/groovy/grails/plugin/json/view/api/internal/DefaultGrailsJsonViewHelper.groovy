@@ -742,21 +742,24 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                                                  .getViewUriResolver()
 
             String templateUri
+            Template childTemplate
 
             if(controllerName != null) {
                 log.debug("Resolving template [{}] for namespace [{}] and controller [{}]", templateName, namespace, controllerName)
                 templateUri = viewUriResolver
                                 .resolveTemplateUri(namespace, controllerName, templateName)
+                childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             }
-            else {
+
+            if (childTemplate == null) {
                 String parentPath = view.viewTemplate.parentPath
                 log.debug("Resolving template [{}] for parent path [{}]", templateName, parentPath)
 
                 templateUri = viewUriResolver
-                                    .resolveTemplateUri(parentPath, templateName)
+                        .resolveTemplateUri(parentPath, templateName)
+                childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             }
 
-            Template childTemplate = templateEngine.resolveTemplate(templateUri, view.locale)
             if(childTemplate != null) {
                 return new JsonOutput.JsonWritable() {
 
