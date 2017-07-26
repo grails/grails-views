@@ -105,10 +105,8 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         return null
     }
 
-    private void checkTemplate(JsonViewTemplate template) {
-        if (template.templateClass == view.class) {
-            throw new RuntimeException("Circular view render occurred for view ${template.templatePath}")
-        }
+    private boolean notCircular(JsonViewTemplate template) {
+        template.templateClass != view.class
     }
 
     private JsonOutput.JsonWritable renderTemplate(Object value, Class type, String...qualifiers) {
@@ -119,8 +117,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         }
         ResolvableGroovyTemplateEngine templateEngine = view.templateEngine
         JsonViewTemplate childTemplate = (JsonViewTemplate)templateEngine?.resolveTemplate(type, locale, qualifiers)
-        if(childTemplate != null) {
-            checkTemplate(childTemplate)
+        if(childTemplate != null && notCircular(childTemplate)) {
             renderChildTemplate(childTemplate, type, value)
         } else {
             null
@@ -524,8 +521,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
                         if(!ass.circular && (isDeep || expandProperties.contains(qualified))) {
                             def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
-                            if(childTemplate != null) {
-                                checkTemplate((JsonViewTemplate)childTemplate)
+                            if(childTemplate != null && notCircular((JsonViewTemplate)childTemplate)) {
                                 def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
                                 def childView = prepareWritable(childTemplate, model)
                                 def writer = new FastStringWriter()
@@ -573,8 +569,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                         if(isDeep || shouldExpand) {
                             def propertyType = ass.associatedEntity.javaClass
                             def childTemplate = templateEngine?.resolveTemplate(propertyType, locale)
-                            if(childTemplate != null) {
-                                checkTemplate((JsonViewTemplate)childTemplate)
+                            if(childTemplate != null && notCircular((JsonViewTemplate)childTemplate)) {
                                 def writer = new FastStringWriter()
                                 def iterator = ((Iterable) value).iterator()
                                 writer.write(JsonOutput.OPEN_BRACKET)

@@ -37,12 +37,11 @@ class TemplateInheritanceSpec extends Specification implements JsonViewTest {
 
     void "test circular rendering is handled"() {
         when:
-        render(template:'circular/circular', model:[circular: new Circular(name: "Cantona")])
+        def result = render(template:'circular/circular', model:[circular: new Circular(name: "Cantona")])
 
         then:
-        def ex = thrown(ViewException)
-        ex.cause instanceof RuntimeException
-        ex.cause.message == "Circular view render occurred for view /circular/_circular.gson"
+        notThrown(StackOverflowError)
+        result.jsonText == '{"name":"Cantona"}'
     }
 
 }
