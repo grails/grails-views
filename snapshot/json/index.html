@@ -1631,13 +1631,13 @@ json g.render(object)</code></pre>
 <p>A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.</p>
 </div>
 <div class="paragraph">
-<p>Grails will then use the <code>ACCEPT_VERSION</code> header when resolving the view.</p>
+<p>Grails will then use the <code>ACCEPT-VERSION</code> header when resolving the view.</p>
 </div>
 <div class="paragraph">
 <p>For example given a view called <code>/book/show.gson</code> if you wish to deprecate your previous API and create a version 2.0 API, you can rename the previous view <code>/book/show_v1.0.gson</code> and create a new <code>/book/show.gson</code> representing the new version of the API.</p>
 </div>
 <div class="paragraph">
-<p>Then when the client sends a request with the <code>ACCEPT_VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
+<p>Then when the client sends a request with the <code>ACCEPT-VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1651,28 +1651,28 @@ json g.render(object)</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_de_hal_v1.0.gson)</p>
+<p>view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT-VERSION].gson (Example: show_de_hal_v1.0.gson)</p>
 </li>
 <li>
 <p>view_name[_LOCALE][_ACCEPT_CONTENT_TYPE].gson (Example: show_de_hal.gson)</p>
 </li>
 <li>
-<p>view_name[_LOCALE][_ACCEPT_VERSION].gson (Example: show_de_v1.0.gson)</p>
+<p>view_name[_LOCALE][_ACCEPT-VERSION].gson (Example: show_de_v1.0.gson)</p>
 </li>
 <li>
 <p>view_name[_LOCALE].gson (Example: show_de.gson)</p>
 </li>
 <li>
-<p>view_name[_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_hal_v1.0.gson)</p>
+<p>view_name[_ACCEPT_CONTENT_TYPE][_ACCEPT-VERSION].gson (Example: show_hal_v1.0.gson)</p>
 </li>
 <li>
-<p>view_name[_ACCEPT_VERSION][_ACCEPT_CONTENT_TYPE].gson (Example: show_v1.0_hal.gson)</p>
+<p>view_name[_ACCEPT-VERSION][_ACCEPT_CONTENT_TYPE].gson (Example: show_v1.0_hal.gson)</p>
 </li>
 <li>
 <p>view_name[_ACCEPT_CONTENT_TYPE].gson (Example: show_hal.gson)</p>
 </li>
 <li>
-<p>view_name[_ACCEPT_VERSION].gson (Example: show_v1.0.gson)</p>
+<p>view_name[_ACCEPT-VERSION].gson (Example: show_v1.0.gson)</p>
 </li>
 <li>
 <p>view_name.gson (Example: show.gson)</p>
@@ -2957,7 +2957,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-13 18:52:31 UTC
+Last updated 2017-08-02 20:05:11 UTC
 </div>
 </div>
 </body>
