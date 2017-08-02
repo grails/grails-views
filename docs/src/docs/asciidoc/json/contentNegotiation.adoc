@@ -58,11 +58,11 @@ json g.render(object)
 
 A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.
 
-Grails will then use the `ACCEPT_VERSION` header when resolving the view.
+Grails will then use the `ACCEPT-VERSION` header when resolving the view.
 
 For example given a view called `/book/show.gson` if you wish to deprecate your previous API and create a version 2.0 API, you can rename the previous view `/book/show_v1.0.gson` and create a new `/book/show.gson` representing the new version of the API.
 
-Then when the client sends a request with the `ACCEPT_VERSION` header containing `v1.0` the `/book/show_v1.0.gson` view will be rendered instead of `/book/show.gson`.
+Then when the client sends a request with the `ACCEPT-VERSION` header containing `v1.0` the `/book/show_v1.0.gson` view will be rendered instead of `/book/show.gson`.
 
 ==== Content Negotiation and View Resolving Strategy
 
@@ -70,14 +70,14 @@ Grails takes into account a number of factors when attempting to resolve the vie
 
 The following paths are searched:
 
-* view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_de_hal_v1.0.gson)
+* view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT-VERSION].gson (Example: show_de_hal_v1.0.gson)
 * view_name[_LOCALE][_ACCEPT_CONTENT_TYPE].gson (Example: show_de_hal.gson)
-* view_name[_LOCALE][_ACCEPT_VERSION].gson (Example: show_de_v1.0.gson)
+* view_name[_LOCALE][_ACCEPT-VERSION].gson (Example: show_de_v1.0.gson)
 * view_name[_LOCALE].gson (Example: show_de.gson)
-* view_name[_ACCEPT_CONTENT_TYPE][_ACCEPT_VERSION].gson (Example: show_hal_v1.0.gson)
-* view_name[_ACCEPT_VERSION][_ACCEPT_CONTENT_TYPE].gson (Example: show_v1.0_hal.gson)
+* view_name[_ACCEPT_CONTENT_TYPE][_ACCEPT-VERSION].gson (Example: show_hal_v1.0.gson)
+* view_name[_ACCEPT-VERSION][_ACCEPT_CONTENT_TYPE].gson (Example: show_v1.0_hal.gson)
 * view_name[_ACCEPT_CONTENT_TYPE].gson (Example: show_hal.gson)
-* view_name[_ACCEPT_VERSION].gson (Example: show_v1.0.gson)
+* view_name[_ACCEPT-VERSION].gson (Example: show_v1.0.gson)
 * view_name.gson (Example: show.gson)
 
 The content type (defined by either the `ACCEPT` header or file extension in the URI) is taken into account to allow different formats for the same view.
