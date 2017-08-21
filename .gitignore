@@ -5,6 +5,7 @@ classes/
 .idea/
 .idea_modules
 build/
+**/out/
 *.iml
 *.ipr
 *.iws

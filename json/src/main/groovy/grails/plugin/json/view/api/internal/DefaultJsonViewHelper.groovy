@@ -76,6 +76,10 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         ViewUtils.getStringListFromMap(IncludeExcludeSupport.EXCLUDES_PROPERTY, arguments)
     }
 
+    Boolean getRenderNulls(Map arguments) {
+        ViewUtils.getBooleanFromMap('renderNulls', arguments, false)
+    }
+
     protected PersistentEntity findEntity(Object object) {
         def clazz = object.getClass()
         try {
