@@ -425,7 +425,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_version_history">Version History</a></li>
-<li><a href="#_upgrading">Upgrading</a></li>
 <li><a href="#_installation">Installation</a></li>
 <li><a href="#_templates">Templates</a></li>
 <li><a href="#_rendering_domain_classes">Rendering Domain Classes</a></li>
@@ -576,62 +575,6 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <p>Initial 1.0.0 GA Release</p>
 </li>
 </ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_upgrading">Upgrading</h3>
-<div class="sect3">
-<h4 id="_upgrade_to_views_1_2_x">Upgrade to Views 1.2.x</h4>
-<div class="paragraph">
-<p>The only breaking change likely to affect users upgrading to views 1.2 revolves around rendering a template for the main object being passed to the <code>render</code> method.</p>
-</div>
-<div class="paragraph">
-<p>In this example we are rendering a team which hasMany players:</p>
-</div>
-<div class="listingblock">
-<div class="title">grails-app/views/team/index.gson</div>
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
-    Team team
-}
-json {
-    id team.id
-    players g.render(team.players)
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A template has been provided that will render a player as JSON.</p>
-</div>
-<div class="listingblock">
-<div class="title">grails-app/views/player/_player.gson</div>
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
-    Player player
-}
-
-json g.render(player)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The above template will cause an exception to occur with a message like "Circular view render occurred for view /player/_player.gson". That is happening because by default <code>g.render</code> will look for a template for the object being rendered. Since a player object is being rendered, it tries to find a template for that player. The current player template is found, which causes the circular exception to occur.</p>
-</div>
-<div class="paragraph">
-<p>To keep the current structure in place, you can pass an argument to render that will cause it to not attempt to resolve a template for the player object.</p>
-</div>
-<div class="listingblock">
-<div class="title">grails-app/views/player/_player.gson</div>
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
-    Player player
-}
-
-json g.render(player, [resolveTemplate: false])</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The other option is to simply remove the player template since it is not providing any further functionality than what <code>g.render</code> is providing.</p>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -2957,7 +2900,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-08-02 20:05:11 UTC
+Last updated 2017-08-22 16:00:25 UTC
 </div>
 </div>
 </body>
