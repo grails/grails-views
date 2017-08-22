@@ -6,7 +6,10 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.SourceSetOutput
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.War
 import org.gradle.api.tasks.compile.GroovyCompile
@@ -46,12 +49,12 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
         AbstractGroovyTemplateCompileTask templateCompileTask = (AbstractGroovyTemplateCompileTask)allTasks.create("compile${upperCaseName}Views".toString(), (Class<? extends Task>)taskClass)
 
 
-        def mainSourceSet = SourceSets.findMainSourceSet(project)
-        def output = mainSourceSet?.output
-        def classesDir = output?.classesDir ?: new File(project.buildDir, "classes/main")
-        def destDir = new File(project.buildDir, "${templateCompileTask.fileExtension}-classes/main")
+        SourceSet mainSourceSet = SourceSets.findMainSourceSet(project)
+        SourceSetOutput output = mainSourceSet?.output
+        FileCollection classesDir = resolveClassesDirs(output, project)
+        File destDir = new File(project.buildDir, "${templateCompileTask.fileExtension}-classes/main")
         output?.dir(destDir)
-        def providedConfig = project.configurations.findByName('provided')
+        Configuration providedConfig = project.configurations.findByName('provided')
 
 
         FileCollection allClasspath
@@ -66,7 +69,7 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             }
         }
 
-        allClasspath = project.files(classesDir) + project.configurations.getByName('compile')
+        allClasspath = classesDir + project.configurations.getByName('compile')
         if(providedConfig) {
             allClasspath += providedConfig
         }
@@ -93,4 +96,16 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             }
         }
     }
+
+    protected FileCollection resolveClassesDirs(SourceSetOutput output, Project project) {
+        FileCollection classesDirs
+        try {
+            classesDirs = output?.classesDirs ?: project.files(new File(project.buildDir, "classes/main"))
+        }
+        catch(e) {
+            classesDirs = output?.classesDir ? project.files(output.classesDir) : project.files(new File(project.buildDir, "classes/main"))
+        }
+        return classesDirs
+    }
+
 }
