@@ -56,6 +56,7 @@ dependencies {
     provided 'javax.servlet:javax.servlet-api:3.1.0'
 
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+    testCompile "org.javassist:javassist:3.21.0-GA"
 }
 
 task sourcesJar(type:Jar) {
