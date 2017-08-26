@@ -1,6 +1,7 @@
 package grails.views.gradle
 
 import grails.util.GrailsNameUtils
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Plugin
@@ -97,7 +98,8 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
         }
     }
 
-    protected FileCollection resolveClassesDirs(SourceSetOutput output, Project project) {
+    @CompileDynamic
+    protected FileCollection resolveClassesDirs(Object output, Project project) {
         FileCollection classesDirs
         try {
             classesDirs = output?.classesDirs ?: project.files(new File(project.buildDir, "classes/main"))
