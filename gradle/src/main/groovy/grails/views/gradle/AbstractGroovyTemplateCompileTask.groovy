@@ -1,6 +1,7 @@
 package grails.views.gradle
 
 import grails.io.ResourceUtils
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.tools.shell.util.PackageHelper
 import org.gradle.api.Action
@@ -22,6 +23,7 @@ import org.gradle.process.JavaExecSpec
  */
 @CompileStatic
 abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
+
     @Input
     @Optional
     String packageName
@@ -64,6 +66,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
         ExecResult result = project.javaexec(
                 new Action<JavaExecSpec>() {
                     @Override
+                    @CompileDynamic
                     void execute(JavaExecSpec javaExecSpec) {
                         javaExecSpec.setMain(getCompilerName())
                         javaExecSpec.setClasspath(getClasspath())
