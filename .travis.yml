@@ -2,6 +2,7 @@ language: groovy
 sudo: false
 services:
 - mongodb
+dist: precise
 cache:
   directories:
   - $HOME/.gradle
