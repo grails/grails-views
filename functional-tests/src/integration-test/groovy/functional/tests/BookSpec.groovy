@@ -110,6 +110,15 @@ class BookSpec extends GebSpec {
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.text == '[{"id":1,"timeZone":"America/New_York","vendor":"ConfigVendor","fromParams":4}]'
+
+        when:"A GET is issued for a specific book rendered by a template"
+        resp = builder.get("${baseUrl}books/showWithParams/1?expand=foo")
+
+        then:"view rendering with template passes parameters"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.json.paramsFromView == resp.json.book.paramsFromTemplate
+
     }
 
     void "View parameter passed to the render method can be used for non-standard view locations"() {

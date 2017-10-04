@@ -34,4 +34,8 @@ class BookController extends RestfulController<Book> {
     def nonStandardTemplate() {
         respond([book: new Book(title: 'template found'), custom: new CustomClass(name: "Sally")], view:'/non-standard/template')
     }
+
+    def showWithParams() {
+        show()
+    }
 }

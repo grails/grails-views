@@ -9,6 +9,10 @@ cache:
 jdk:
 - openjdk7
 script: ./travis-build.sh
+addons:
+  hosts:
+    - grails-views
+  hostname: grails-views
 env:
   global:
   - GIT_NAME="Graeme Rocher"
