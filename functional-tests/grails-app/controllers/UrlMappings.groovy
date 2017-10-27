@@ -17,6 +17,7 @@ class UrlMappings {
         "/books/listCallsTmpl"(controller: "book", action: "listCallsTmpl")
         "/books/listCallsTmplVar"(controller: "book", action: "listCallsTmplVar")
         "/books/listCallsTmplExtraData"(controller: "book", action: "listCallsTmplExtraData")
+        "/books/showWithParams/$id"(controller: "book", action: "showWithParams")
         "/books/non-standard-template"(controller:"book", action:"nonStandardTemplate")
         "/teams"(resources:"team")
         "/products"(resources:"product")
