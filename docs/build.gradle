@@ -24,13 +24,14 @@ dependencies {
   documentation project(':views-json')
   documentation project(':views-markup')
   documentation project(':views-gradle')
+  documentation project(':views-json-testing-support')
 }
 
 
 
 task apidocs(type: Groovydoc) {
     def allProjects = rootProject.allprojects.findAll { project ->
-      ['views-core', 'views-json', 'views-markup','views-gradle'].contains(project.name)
+      ['views-core', 'views-json', 'views-json-testing-support', 'views-markup','views-gradle'].contains(project.name)
     }
     source allProjects.collect { project ->
       project.files('src/main/groovy')

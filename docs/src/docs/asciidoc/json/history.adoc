@@ -4,6 +4,7 @@ The current release is {version}. Below is a version history.
 * JSON API support
 * Ability to register custom converters
 * New configuration options for date formatting and unicode escaping
+* New testing trait that integrates with the testing-support framework (1.2.5)
 
 *1.1.0*
 

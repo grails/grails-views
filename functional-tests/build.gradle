@@ -87,7 +87,7 @@ dependencies {
     runtime project(":views-json-templates")
 
     testCompile 'org.grails:grails-datastore-rest-client:4.0.6.RELEASE'
-
+    testCompile project(":views-json-testing-support")
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
 
