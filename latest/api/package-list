@@ -22,6 +22,8 @@ grails.views.compiler
 grails.views.gradle
 grails.views.gradle.json
 grails.views.gradle.markup
+grails.views.json.test
+grails.views.json.test.spock
 grails.views.mvc
 grails.views.mvc.http
 grails.views.mvc.renderer
