@@ -44,7 +44,7 @@ repositories {
 dependencies {
     provided "org.grails:grails-dependencies:$grailsVersion"
     provided 'javax.servlet:javax.servlet-api:3.1.0'
-    compile("org.grails:grails-testing-support:1.1.2") {
+    compile("org.grails:grails-testing-support:1.1.3") {
         exclude group: "org.codehaus.groovy", module: "groovy"
     }
     compile project(":views-json")
