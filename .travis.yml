@@ -2,12 +2,17 @@ language: groovy
 sudo: false
 services:
 - mongodb
+dist: precise
 cache:
   directories:
   - $HOME/.gradle
 jdk:
 - openjdk7
 script: ./travis-build.sh
+addons:
+  hosts:
+    - grails-views
+  hostname: grails-views
 env:
   global:
   - GIT_NAME="Graeme Rocher"

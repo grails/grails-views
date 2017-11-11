@@ -1,0 +1,65 @@
+buildscript {
+    ext {
+        grailsVersion = project.grailsVersion
+    }
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+    }
+}
+
+plugins {
+    id "io.spring.dependency-management" version "0.5.2.RELEASE"
+    id "com.jfrog.bintray" version "1.2"
+}
+
+group "org.grails"
+
+apply plugin:'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'provided-base'
+
+ext {
+    grailsVersion = project.grailsVersion
+    gradleWrapperVersion = project.gradleWrapperVersion
+    userOrg = 'grails'
+    repo = 'grails-core'
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencies {
+    provided "org.grails:grails-dependencies:$grailsVersion"
+    provided 'javax.servlet:javax.servlet-api:3.1.0'
+    compile("org.grails:grails-testing-support:1.1.3") {
+        exclude group: "org.codehaus.groovy", module: "groovy"
+    }
+    compile project(":views-json")
+}
+
+task sourcesJar(type:Jar) {
+    classifier = 'sources'
+    from project.sourceSets.main.allSource
+}
+
+task javadocJar(type:Jar) {
+    classifier = 'javadoc'
+    from groovydoc.outputs
+}
+
+// Used for publishing to central repository, remove if not needed
+apply from:'../publishing/grailsCentralPublishing.gradle'
+apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
