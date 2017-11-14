@@ -33,11 +33,6 @@ trait GrailsView extends HttpView implements WriterProvider, WritableScript {
     boolean prettyPrint = false
 
     /**
-     * Determine if this is a nested view
-     */
-    Integer renderLevel = null
-
-    /**
      * The GORM mapping context
      */
     MappingContext getMappingContext() {

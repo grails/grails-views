@@ -789,7 +789,9 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         GrailsView writable = (GrailsView) (model ? childTemplate.make((Map) model) : childTemplate.make())
         writable.locale = view.locale
         writable.response = view.response
-        writable.renderLevel = renderLevel
+        if (writable instanceof JsonView) {
+            ((JsonView) writable).renderLevel = renderLevel
+        }
         writable.request = view.request
         writable.params = view.params
         writable.controllerNamespace = view.controllerNamespace
