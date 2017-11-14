@@ -71,7 +71,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         PersistentEntity entity = mappingContext.getPersistentEntity(object.getClass().name)
 
         if (entity != null) {
-            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, renderNulls, 0, expandProperties, includeAssociations, customizer)
+            process(jsonDelegate, entity, object, processedObjects, incs, excs, "", isDeep, renderNulls, jsonView.renderLevel ? jsonView.renderLevel : 0, expandProperties, includeAssociations, customizer)
         } else {
             processSimple(jsonDelegate, object, processedObjects, incs, excs, "", renderNulls, customizer)
         }
@@ -165,7 +165,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
         Closure doProcessEntity = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->
             int startingCount = path.length() - path.replace(".", "").length()
-            process(jsonDelegate, entity, object, processedObjects, incs, excs, path, isDeep, renderNulls, startingCount, expandProperties, true, customizer)
+            process(jsonDelegate, entity, object, processedObjects, incs, excs, path, isDeep, renderNulls, jsonView.renderLevel ? jsonView.renderLevel : startingCount, expandProperties, true, customizer)
         }
 
         Closure doProcessSimple = { StreamingJsonBuilder.StreamingJsonDelegate jsonDelegate, List<String> incs, List<String> excs ->
@@ -514,7 +514,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                             def childTemplate = templateEngine?.resolveTemplate(TemplateResolverUtils.shortTemplateNameForClass(propertyType), locale)
                             if (childTemplate != null && notCircular((JsonViewTemplate) childTemplate)) {
                                 def model = [(GrailsNameUtils.getPropertyName(propertyType)): value]
-                                def childView = prepareWritable(childTemplate, model)
+                                def childView = prepareWritable(childTemplate, model, renderLevel + 1)
                                 def writer = new FastStringWriter()
                                 childView.writeTo(writer)
                                 jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
@@ -566,7 +566,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                                     def o = iterator.next()
 
                                     def model = [(childPropertyName): o]
-                                    def childView = prepareWritable(childTemplate, model)
+                                    def childView = prepareWritable(childTemplate, model, renderLevel + 1)
                                     childView.writeTo(writer)
                                     if (iterator.hasNext()) {
                                         writer.write(JsonOutput.COMMA)
@@ -784,11 +784,12 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         }
     }
 
-    protected GrailsView prepareWritable(Template childTemplate, Map model) {
+    protected GrailsView prepareWritable(Template childTemplate, Map model, Integer renderLevel = null) {
         populateModelWithViewState(model)
         GrailsView writable = (GrailsView) (model ? childTemplate.make((Map) model) : childTemplate.make())
         writable.locale = view.locale
         writable.response = view.response
+        writable.renderLevel = renderLevel
         writable.request = view.request
         writable.params = view.params
         writable.controllerNamespace = view.controllerNamespace
