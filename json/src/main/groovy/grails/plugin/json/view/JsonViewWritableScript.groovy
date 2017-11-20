@@ -54,7 +54,7 @@ abstract class JsonViewWritableScript extends AbstractWritableScript implements 
             def parentWritable = prepareParentWritable()
             parentWritable.writeTo(out)
             resetProcessedObjects()
-            def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, false)
+            def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, false, generator)
             callable.setDelegate(jsonDelegate)
             callable.call()
             if (!inline) {
@@ -65,7 +65,7 @@ abstract class JsonViewWritableScript extends AbstractWritableScript implements 
 
             this.root = callable
             if(inline) {
-                def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, true)
+                def jsonDelegate = new StreamingJsonBuilder.StreamingJsonDelegate(out, true, generator)
                 callable.setDelegate(jsonDelegate)
                 callable.call()
             }
