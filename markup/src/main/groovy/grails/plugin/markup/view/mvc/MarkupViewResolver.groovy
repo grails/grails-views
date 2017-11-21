@@ -2,7 +2,9 @@ package grails.plugin.markup.view.mvc
 
 import grails.core.support.proxy.ProxyHandler
 import grails.plugin.markup.view.MarkupViewConfiguration
+import grails.plugin.markup.view.MarkupViewTemplate
 import grails.plugin.markup.view.MarkupViewTemplateEngine
+import grails.plugin.markup.view.MarkupViewWritableScriptTemplate
 import grails.plugin.markup.view.renderer.MarkupViewXmlRenderer
 import grails.rest.render.RendererRegistry
 import grails.views.mvc.SmartViewResolver
@@ -18,6 +20,8 @@ import javax.annotation.PostConstruct
 @CompileStatic
 class MarkupViewResolver extends SmartViewResolver {
 
+    public static final String MARKUP_VIEW_SUFFIX = ".${MarkupViewTemplate.EXTENSION}"
+
 
     @Autowired(required = false)
     ProxyHandler proxyHandler
@@ -32,8 +36,7 @@ class MarkupViewResolver extends SmartViewResolver {
     }
 
     MarkupViewResolver(MarkupViewTemplateEngine templateEngine) {
-        super(templateEngine)
-        viewConfiguration = (MarkupViewConfiguration)templateEngine.viewConfiguration
+        this(templateEngine, MARKUP_VIEW_SUFFIX, MimeType.XML.name)
     }
 
     MarkupViewResolver(MarkupViewTemplateEngine templateEngine, String suffix, String contentType) {
