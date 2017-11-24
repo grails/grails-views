@@ -24,6 +24,7 @@ import org.grails.buffer.FastStringWriter
 import org.grails.core.util.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.mapping.collection.PersistentCollection
+import org.grails.datastore.mapping.model.IdentityMapping
 import org.grails.datastore.mapping.model.MappingFactory
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -665,7 +666,11 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
     private Map<PersistentProperty, Object> getValidIdProperties(PersistentEntity entity, Object object, List<String> incs, List<String> excs, String path) {
         Map<PersistentProperty, Object> ids = [:]
-        String[] identity = entity.mapping.identifier.identifierName
+        IdentityMapping identityMapping = entity.mapping.identifier
+        if (identityMapping == null) {
+            return ids
+        }
+        String[] identity = identityMapping.identifierName
         for (String idName : identity) {
             String idQualified = "${path}${idName}"
 
