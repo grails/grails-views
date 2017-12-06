@@ -683,7 +683,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                     property = entity.getPropertyByName(idName)
                 }
                 if (property != null) {
-                    def idValue = ((GroovyObject) object).getProperty(idName)
+                    def idValue = entity.mappingContext.createEntityAccess(entity, object).getProperty(idName)
                     if (idValue != null) {
                         ids[property] = idValue
                     }
