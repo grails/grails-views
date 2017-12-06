@@ -50,6 +50,16 @@ dependencyManagement {
     applyMavenExclusions false
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if( details.requested.group == 'org.grails' &&
+                details.requested.name.startsWith('grails-datastore')) {
+            details.useVersion("6.0.12.RELEASE")
+        }
+    }
+}
+
+
 dependencies {
     provided 'org.springframework.boot:spring-boot-starter-logging'
     provided "org.springframework.boot:spring-boot-starter-actuator"
