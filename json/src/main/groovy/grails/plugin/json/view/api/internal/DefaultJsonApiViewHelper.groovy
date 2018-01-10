@@ -14,6 +14,8 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
+import org.grails.datastore.mapping.model.types.Embedded
+import org.grails.datastore.mapping.model.types.EmbeddedCollection
 import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
 import org.springframework.validation.Errors
@@ -188,7 +190,25 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                     out.write(generator.toJson(persistentProperty.name))
                     out.write(JsonOutput.COLON)
-                    out.write(generator.toJson(((GroovyObject) object).getProperty(persistentProperty.name)))
+
+                    Object prop = ((GroovyObject) object).getProperty(persistentProperty.name)
+                    if (persistentProperty instanceof Embedded) {
+                        renderEmbeddedEntity(prop, (Association)persistentProperty, out, "${basePath}${persistentProperty.name}.".toString(), includes, excludes)
+                    } else if (persistentProperty instanceof EmbeddedCollection && prop instanceof Iterable) {
+                        out.write(JsonOutput.OPEN_BRACKET)
+                        Iterator iterator = ((Iterable) prop).iterator()
+                        while (iterator.hasNext()) {
+                            def o = iterator.next()
+                            renderEmbeddedEntity(o, (Association)persistentProperty, out, "${basePath}${persistentProperty.name}.".toString(), includes, excludes)
+                            if (iterator.hasNext()) {
+                                out.write(JsonOutput.COMMA)
+                            }
+                        }
+                        out.write(JsonOutput.CLOSE_BRACKET)
+                    } else {
+                        out.write(generator.toJson(((GroovyObject) object).getProperty(persistentProperty.name)))
+                    }
+
                     firstAttribute = false
                 }
                 out.write(JsonOutput.CLOSE_BRACE)
@@ -269,6 +289,27 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         if (basePath != "") {
             out.write(JsonOutput.COMMA)
             renderRelationshipLinks(object).writeTo(out)
+        }
+        out.write(JsonOutput.CLOSE_BRACE)
+    }
+
+    private void renderEmbeddedEntity(Object object, Association property, Writer out, String basePath, List<String> includes, List<String> excludes) {
+        PersistentEntity persistentEntity = property.getAssociatedEntity()
+        out.write(JsonOutput.OPEN_BRACE)
+        boolean firstAttribute = true
+        for (PersistentProperty prop: persistentEntity.getPersistentProperties()) {
+            if (!includeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${prop.name}".toString())) continue
+
+            if (!firstAttribute) {
+                out.write(JsonOutput.COMMA)
+            }
+
+            out.write(generator.toJson(prop.name))
+            out.write(JsonOutput.COLON)
+            out.write(generator.toJson(((GroovyObject) object).getProperty(prop.name)))
+
+
+            firstAttribute = false
         }
         out.write(JsonOutput.CLOSE_BRACE)
     }
