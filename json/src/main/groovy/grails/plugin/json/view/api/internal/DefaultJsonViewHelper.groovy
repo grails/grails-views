@@ -137,6 +137,18 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         expandProperties
     }
 
+    protected
+    static boolean findMatchingExpandByLevel(List<String> expandParameters, String field, Integer renderLevel) {
+        return expandParameters.find {
+            parseExpandParamsByLevel(it, renderLevel) == field
+        } != null
+    }
+
+    protected static String parseExpandParamsByLevel(String expandParameter, Integer renderLevel) {
+        String[] splitParams = expandParameter ? expandParameter.split("\\.") : [] as String[]
+        splitParams.size() > renderLevel ? splitParams[renderLevel] : ""
+    }
+
     protected boolean includeAssociations(Map arguments) {
         ViewUtils.getBooleanFromMap(ASSOCIATIONS, arguments, true)
     }

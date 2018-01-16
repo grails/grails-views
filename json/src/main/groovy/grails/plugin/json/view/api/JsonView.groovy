@@ -46,6 +46,12 @@ trait JsonView extends GrailsView {
      * The parent model, if any
      */
     Map parentModel
+
+    /**
+     * Determine if this is a nested view
+     */
+    Integer renderLevel = null
+
     /**
      * Overrides the default helper with new methods specific to JSON building
      */
