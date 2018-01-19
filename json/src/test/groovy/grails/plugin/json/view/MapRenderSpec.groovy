@@ -99,6 +99,34 @@ json g.render(list)
     }
 
 
+    void "Test render a map with includes"() {
+        when:"A map is rendered"
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map, [includes: ['a', 'b']])
+'''
+        def renderResult = render(templateText, [map:[a: "1", b: "2", c: "3"]])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"a":"1","b":"2"}'
+
+        when:"A map is rendered"
+        templateText = '''
+model {
+    Map map
+}
+
+json g.render(map, [includes: ['a', 'd']])
+'''
+        renderResult = render(templateText, [map:[a: "1", b: "2", c: "3", d: "4"]])
+
+        then:"The result is correct"
+        renderResult.jsonText == '{"a":"1","d":"4"}'
+    }
+
 
 }
 

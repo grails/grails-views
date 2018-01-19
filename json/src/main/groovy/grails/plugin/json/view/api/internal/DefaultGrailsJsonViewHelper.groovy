@@ -287,13 +287,16 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                 List<String> incs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
                 List<String> excs = ViewUtils.getStringListFromMap(IncludeExcludeSupport.EXCLUDES_PROPERTY, arguments)
                 Map map = (Map)object
-                int size = map.size()
-                int i = 0
+                boolean entryRendered = false
+
                 out.append JsonOutput.OPEN_BRACE
                 for(entry in map.entrySet()) {
                     if (!includeExcludeSupport.shouldInclude(incs, excs, entry.key.toString())) {
-                        i++
                         continue
+                    }
+
+                    if (entryRendered) {
+                        out.append JsonOutput.COMMA
                     }
                     out.append(JsonOutput.toJson(entry.key.toString()))
                     out.append(JsonOutput.COLON)
@@ -303,10 +306,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                     } else {
                         handleValue(value, out, arguments, customizer, processedObjects, entry.key.toString() + ".")
                     }
-
-                    if(++i != size) {
-                        out.append JsonOutput.COMMA
-                    }
+                    entryRendered = true
                 }
                 out.append JsonOutput.CLOSE_BRACE
                 return out
