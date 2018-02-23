@@ -4,6 +4,10 @@ import groovy.transform.CompileStatic
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.servlet.View
 import org.springframework.web.servlet.ViewResolver
+
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
 /**
  * A UrlBasedViewResolver for ResolvableGroovyTemplateEngine
  *
@@ -22,9 +26,9 @@ class GenericGroovyTemplateViewResolver implements ViewResolver {
     @Override
     View resolveViewName(String viewName, Locale locale) throws Exception {
         def webRequest = GrailsWebRequest.lookup()
-        if(webRequest != null) {
+        if (webRequest != null) {
             def currentRequest = webRequest?.currentRequest
-            if(viewName.startsWith('/')) {
+            if (viewName.startsWith('/')) {
                 def controller = webRequest.controllerClass
                 View view
                 if (controller && controller.namespace) {
@@ -37,24 +41,32 @@ class GenericGroovyTemplateViewResolver implements ViewResolver {
                     view = smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
                 }
                 return view
-            }
-            else {
-
+            } else {
                 def controllerUri = webRequest?.attributes?.getControllerUri(currentRequest)
-                if(controllerUri) {
-                    return smartViewResolver.resolveView(
-                            "${controllerUri}/$viewName",
-                            currentRequest,
-                            webRequest.currentResponse
-                    )
+                View view = this.resolveViewWithController(controllerUri, viewName, webRequest)
+
+                if (!view) {
+                    controllerUri = currentRequest?.requestURI
+                    view = this.resolveViewWithController(controllerUri, viewName, webRequest)
                 }
-                else {
+
+                if (view) {
+                    return view
+                } else {
                     return smartViewResolver.resolveView(viewName, currentRequest, webRequest.response)
                 }
             }
-        }
-        else {
+        } else {
             smartViewResolver.resolveView(viewName, locale)
+        }
+    }
+
+    private View resolveViewWithController(String controllerUri, String viewName, GrailsWebRequest webRequest) {
+        HttpServletRequest currentRequest = webRequest?.currentRequest
+        HttpServletResponse currentResponse = webRequest?.currentResponse
+
+        if (controllerUri) {
+            return smartViewResolver.resolveView("${controllerUri}/$viewName", currentRequest, currentResponse)
         }
     }
 }

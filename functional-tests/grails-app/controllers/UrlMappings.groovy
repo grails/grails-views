@@ -9,6 +9,7 @@ class UrlMappings {
 
         "/"(view:"/index")
         "500"(view:'/error')
+        "401"(controller: 'error', action: 'unauthorized')
         "404"(view:'/notFound')
 
         "/books"(resources:"book")

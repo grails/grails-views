@@ -3,19 +3,16 @@ package grails.plugin.json.view
 import grails.plugin.json.view.mvc.JsonViewResolver
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.TemplateResolver
-import grails.views.ViewUriResolver
 import grails.views.WritableScriptTemplate
 import grails.views.api.GrailsView
 import grails.views.mvc.GenericGroovyTemplateView
 import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.web.http.HttpHeaders
-import grails.web.mime.MimeType
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.servlet.View
-import org.springframework.web.servlet.view.AbstractUrlBasedView
+import spock.lang.Issue
 import spock.lang.Specification
 
 import javax.servlet.http.HttpServletRequest
@@ -148,6 +145,43 @@ class JsonViewTemplateResolverSpec extends Specification {
         1 * templateResolver.resolveTemplate('/test/bar_en_html.gson')
 
         cleanup:
-            RequestContextHolder.setRequestAttributes(null)
+        RequestContextHolder.setRequestAttributes(null)
+    }
+
+    @Issue('https://github.com/grails/grails-core/issues/10582')
+    void 'Test that the template resolver works for a Request URI'() {
+        given: 'a viewResolver with a mock template resolver'
+        def smartResolver = new JsonViewResolver()
+        def viewResolver = new GenericGroovyTemplateViewResolver(smartResolver)
+
+        def webRequest = Mock(GrailsWebRequest)
+
+        and: 'the default controller URI'
+        def applicationAttributes = Mock(GrailsApplicationAttributes)
+        applicationAttributes.getControllerUri(_) >> "/test"
+        webRequest.getAttributes() >> applicationAttributes
+
+        and: 'the actual URI because of a redirect'
+        webRequest.getCurrentRequest() >> new MockHttpServletRequest("", "/foo")
+        RequestContextHolder.setRequestAttributes(webRequest)
+        def templateResolver = Mock(TemplateResolver)
+
+        smartResolver.templateEngine.templateResolver = templateResolver
+
+        when: 'we resolve a template'
+        GenericGroovyTemplateView view = (GenericGroovyTemplateView)viewResolver.resolveViewName("bar", Locale.ENGLISH)
+
+        then: 'the view is not null'
+        1 * templateResolver.resolveTemplateClass('/foo/bar.gson')
+        1 * templateResolver.resolveTemplateClass('/foo/bar_en.gson')
+        1 * templateResolver.resolveTemplateClass('/foo/bar_html.gson')
+        1 * templateResolver.resolveTemplateClass('/foo/bar_en_html.gson')
+        1 * templateResolver.resolveTemplate('/foo/bar.gson')
+        1 * templateResolver.resolveTemplate('/foo/bar_en.gson')
+        1 * templateResolver.resolveTemplate('/foo/bar_html.gson')
+        1 * templateResolver.resolveTemplate('/foo/bar_en_html.gson')
+
+        cleanup:
+        RequestContextHolder.setRequestAttributes(null)
     }
 }
