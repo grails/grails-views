@@ -1,6 +1,7 @@
 package functional.tests
 
 import geb.spock.GebSpec
+import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
 import spock.lang.Issue
@@ -11,19 +12,14 @@ class TestControllerSpec extends GebSpec {
 
     @Issue('https://github.com/grails/grails-core/issues/10582')
     void 'test responding after an action triggered by a HTTP 401 response is possible'() {
-        when: 'JSON is requested'
-            URL url = new URL("${baseUrl}/test/triggerUnauthorized")
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection()
+        given: 'a rest client'
+        def builder = new RestBuilder()
 
-            String content = ""
-            try {
-                conn.connect()
-                conn.getInputStream()
-            } catch (IOException ignored) {
-                content = new BufferedReader(new InputStreamReader((conn.getErrorStream()))).text
-            }
+        when:
+        def resp = builder.get("${baseUrl}/test/triggerUnauthorized")
 
-        then: 'the JSON view is rendered'
-            content == '{"message":"Unauthorized GSON"}'
+        then: 'the response is correct'
+        resp.status == 401
+        resp.text == '{"message":"Unauthorized GSON"}'
     }
 }
