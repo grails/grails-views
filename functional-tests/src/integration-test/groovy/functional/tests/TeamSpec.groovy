@@ -5,6 +5,7 @@ import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
 import grails.web.http.HttpHeaders
 import org.springframework.beans.factory.annotation.Value
+import spock.lang.Shared
 
 /**
  */
@@ -13,6 +14,13 @@ class TeamSpec extends GebSpec {
 
     @Value('${local.server.port}')
     Integer port
+
+    @Shared
+    String lang
+
+    void setupSpec() {
+        this.lang = "${System.properties.getProperty('user.language')}_${System.properties.getProperty('user.country')}"
+    }
 
     void "Test association template rendering"() {
         given:"A rest client"
@@ -52,7 +60,7 @@ class TeamSpec extends GebSpec {
         then:"The response is correct"
         resp.status == 200
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
-        resp.text == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/1","hreflang":"en_US","type":"application/hal+json"}},"name":"Iniesta","version":0},"players":[{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/1","hreflang":"en_US","type":"application/hal+json"}},"name":"Iniesta","version":0},{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/2","hreflang":"en_US","type":"application/hal+json"}},"name":"Messi","version":0}]},"_links":{"self":{"href":"http://localhost:'+port+'/teams/1","hreflang":"en_US","type":"application/hal+json"}},"id":1,"name":"Barcelona","sport":"football","another":{"foo":"bar"}}'
+        resp.text == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},"players":[{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/2","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Messi","version":0}]},"_links":{"self":{"href":"http://localhost:'+port+'/teams/1","hreflang":"' + lang + '","type":"application/hal+json"}},"id":1,"name":"Barcelona","sport":"football","another":{"foo":"bar"}}'
 
     }
 
