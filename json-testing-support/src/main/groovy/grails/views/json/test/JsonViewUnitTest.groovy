@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus
 trait JsonViewUnitTest extends GrailsUnitTest {
 
     private static JsonViewTemplateEngine _templateEngine
-    private static JsonViewTemplateEngine _mappingContext
+    private static MappingContext _mappingContext
 
     JsonViewTemplateEngine getTemplateEngine() {
         if (_templateEngine == null) {
