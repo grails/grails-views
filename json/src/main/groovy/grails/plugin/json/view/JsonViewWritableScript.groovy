@@ -1,6 +1,5 @@
 package grails.plugin.json.view
 
-import grails.plugin.json.builder.JsonGenerator
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.JsonView
@@ -109,14 +108,18 @@ abstract class JsonViewWritableScript extends AbstractWritableScript implements 
      */
     StreamingJsonBuilder json(JsonOutput.JsonWritable writable) {
         if(parentTemplate != null) {
-            out.write(JsonOutput.OPEN_BRACE)
+            if (!inline) {
+                out.write(JsonOutput.OPEN_BRACE)
+            }
             def parentWritable = prepareParentWritable()
             parentWritable.writeTo(out)
             resetProcessedObjects()
             writable.setInline(true)
             writable.setFirst(false)
             writable.writeTo(out)
-            out.write(JsonOutput.CLOSE_BRACE)
+            if (!inline) {
+                out.write(JsonOutput.CLOSE_BRACE)
+            }
         }
         else {
             writable.setInline(inline)

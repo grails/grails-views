@@ -1,0 +1,7 @@
+import functional.tests.Person
+
+model {
+    Person person
+}
+
+json g.render(person, [includes: ['dob']])
