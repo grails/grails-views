@@ -73,14 +73,19 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         }
 
         def webRequest = ((ServletRenderContext) context).getWebRequest()
-        if (webRequest.controllerNamespace) {
-            viewUri = "/${webRequest.controllerNamespace}" + viewUri
-        }
-
         def request = webRequest.currentRequest
         def response = webRequest.currentResponse
 
-        AbstractUrlBasedView view = (AbstractUrlBasedView)viewResolver.resolveView(viewUri, request, response)
+        AbstractUrlBasedView view
+        String namespace = webRequest.controllerNamespace
+        if (namespace) {
+            view = (AbstractUrlBasedView)viewResolver.resolveView("${namespace}/${viewUri}", request, response)
+
+            if (view == null) {
+                view = (AbstractUrlBasedView)viewResolver.resolveView(viewUri, request, response)
+            }
+        }
+
         if(view == null) {
             if(proxyHandler != null) {
                 object = (T)proxyHandler.unwrapIfProxy(object)
