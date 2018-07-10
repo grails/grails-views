@@ -79,11 +79,13 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         AbstractUrlBasedView view
         String namespace = webRequest.controllerNamespace
         if (namespace) {
-            view = (AbstractUrlBasedView)viewResolver.resolveView("${namespace}/${viewUri}", request, response)
+            view = (AbstractUrlBasedView)viewResolver.resolveView("/${namespace}${viewUri}", request, response)
 
             if (view == null) {
                 view = (AbstractUrlBasedView)viewResolver.resolveView(viewUri, request, response)
             }
+        } else {
+            view = (AbstractUrlBasedView)viewResolver.resolveView(viewUri, request, response)
         }
 
         if(view == null) {
