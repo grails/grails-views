@@ -719,6 +719,8 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                             renderEntityId(getDelegate(), processedObjects, incs, excs, "${idQualified}.", isDeep, renderNulls, expandProperties, getValidIdProperties(ass.associatedEntity, idValue, incs, excs, "${idQualified}."))
                         }
                     }
+                } else if (isStringType(idValue.getClass())) {
+                    jsonDelegate.call(idName, idValue.toString())
                 } else {
                     jsonDelegate.call(idName, idValue)
                 }
