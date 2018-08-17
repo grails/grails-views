@@ -745,6 +745,11 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
         def templateEngine = view.templateEngine
         if(template) {
+            // Reset the previous state in case were are rendering the same template
+            if (view.binding.variables.containsKey(PROCESSED_OBJECT_VARIABLE)) {
+                view.binding.variables.remove(PROCESSED_OBJECT_VARIABLE)
+            }
+
             Map model = (Map)arguments.model ?: [:]
             def collection = arguments.containsKey('collection') ? (arguments.collection ?: []) : null
             def var = arguments.var ?: 'it'
