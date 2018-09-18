@@ -19,4 +19,18 @@ class EmbeddedController {
         embedded.save(flush: true)
         [embedded: embedded]
     }
+
+    @Transactional
+    def embeddedWithIncludes() {
+        Embedded embedded = new Embedded(name: "Foo3", customClass: new CustomClass(name: "Bar3"), inSameFile: new InSameFile(text: "FooBar3"))
+        embedded.save(flush: true)
+        [embedded: embedded]
+    }
+
+    @Transactional
+    def embeddedWithIncludesJsonapi() {
+        Embedded embedded = new Embedded(name: "Foo4", customClass: new CustomClass(name: "Bar4"), inSameFile: new InSameFile(text: "FooBar4"))
+        embedded.save(flush: true)
+        [embedded: embedded]
+    }
 }
