@@ -1,4 +1,4 @@
-http://http://jsonapi.org/[JSON API] is a standard format for representing JSON.
+http://jsonapi.org/[JSON API] is a standard format for representing JSON.
 
 The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views have access to the `jsonapi` instance which implements link:api/grails/plugin/json/view/api/JsonApiViewHelper.html[JsonApiViewHelper].
 
