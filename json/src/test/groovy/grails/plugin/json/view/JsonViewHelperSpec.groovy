@@ -144,7 +144,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest {
         when:"We render an object with deep argument and a child id and includes"
 
         player.id = 1L
-        result = viewHelper.render(team, [deep:true, includes: ['captain','captain.name']])
+        result = viewHelper.render(team, [deep:true, includes: ['captain.name']])
 
         then:"The result is correct"
         result.toString() == '{"captain":{"name":"Iniesta"}}'

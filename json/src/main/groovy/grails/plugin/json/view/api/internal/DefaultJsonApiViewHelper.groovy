@@ -300,17 +300,8 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         for (PersistentProperty prop: persistentEntity.getPersistentProperties()) {
             String qualified = "${basePath}${prop.name}".toString()
 
-            if (basePath) {
-                List<String> defaultExcs = includeExcludeSupport.defaultExcludes
-                if (includeExcludeSupport.excludes(excludes, qualified) ||
-                    includeExcludeSupport.excludes(defaultExcs, qualified) ||
-                    includeExcludeSupport.excludes(defaultExcs, prop.name)) {
-                    continue
-                }
-            } else {
-                if (!includeExcludeSupport.shouldInclude(includes, excludes, qualified)) {
-                    continue
-                }
+            if (!includeExcludeSupport.shouldInclude(includes, excludes, qualified)) {
+                continue
             }
 
             if (!firstAttribute) {
