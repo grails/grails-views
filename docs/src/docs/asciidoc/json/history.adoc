@@ -1,5 +1,10 @@
 The current release is {version}. Below is a version history.
 
+*1.3.0*
+
+* Breaking change when using `includes`. Having `includes: ['captain', 'captain.name']]` previously included `id` in
+ the output and the other properties as well. Now is the same as `includes: ['captain.name']`
+
 *1.2.0*
 
 * JSON API support
