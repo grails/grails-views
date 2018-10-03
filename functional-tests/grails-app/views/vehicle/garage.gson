@@ -1,0 +1,6 @@
+import functional.tests.Garage
+import groovy.transform.Field
+
+@Field Garage garage
+
+json g.render(garage, [deep: true])

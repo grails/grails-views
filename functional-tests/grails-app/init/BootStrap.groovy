@@ -1,4 +1,7 @@
+import functional.tests.Bus
+import functional.tests.Car
 import functional.tests.Circular
+import functional.tests.Garage
 import functional.tests.MyEnum
 import functional.tests.Player
 import functional.tests.Team
@@ -21,6 +24,12 @@ class BootStrap {
         c.save(flush: true, failOnError: true)
 
         new Proxy(name: "Sally").save(flush: true, failOnError: true)
+
+        new Garage(owner: "Jay Leno")
+            .addToVehicles(new Bus(maxPassengers: 30, route: "around town"))
+            .addToVehicles(new Car(maxPassengers: 4, make: "Subaru", model: "WRX", year: 2016))
+            .save(flush: true, failOnError: true)
+
     }
     def destroy = {
     }
