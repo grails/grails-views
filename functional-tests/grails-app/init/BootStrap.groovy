@@ -1,9 +1,13 @@
 import functional.tests.Bus
 import functional.tests.Car
 import functional.tests.Circular
+import functional.tests.Customer
+import functional.tests.Employee
 import functional.tests.Garage
 import functional.tests.MyEnum
 import functional.tests.Player
+import functional.tests.Project
+import functional.tests.Site
 import functional.tests.Team
 import functional.tests.Proxy
 
@@ -28,6 +32,16 @@ class BootStrap {
         new Garage(owner: "Jay Leno")
             .addToVehicles(new Bus(maxPassengers: 30, route: "around town"))
             .addToVehicles(new Car(maxPassengers: 4, make: "Subaru", model: "WRX", year: 2016))
+            .save(flush: true, failOnError: true)
+
+        new Customer(name: "Nokia")
+            .addToSites(new Site(name: "Salo"))
+            .addToSites(new Site(name: "Helsinki"))
+            .save(flush: true, failOnError: true)
+
+        new Project(name: "Grails Views")
+            .addToEmployees(new Employee(name: "James Kleeh"))
+            .addToEmployees(new Employee(name: "Iván López"))
             .save(flush: true, failOnError: true)
 
     }

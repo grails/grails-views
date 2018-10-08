@@ -532,6 +532,8 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                                 def writer = new FastStringWriter()
                                 childView.writeTo(writer)
                                 jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                            } else if (!ass.isOwningSide() && ass.isBidirectional() && !expandProperties.contains(qualified)) {
+                                continue
                             }
                             else {
                                 jsonDelegate.call(propertyName) {
@@ -593,6 +595,8 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                                 }
                                 writer.write(JsonOutput.CLOSE_BRACKET)
                                 jsonDelegate.call(propertyName, JsonOutput.unescaped(writer.toString()))
+                            }  else if (!ass.isOwningSide() && ass.isBidirectional() && !expandProperties.contains(qualified)) {
+                                continue
                             } else {
                                 jsonDelegate.call(propertyName, (Iterable)value) { child ->
                                     StreamingJsonBuilder.StreamingJsonDelegate embeddedDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
