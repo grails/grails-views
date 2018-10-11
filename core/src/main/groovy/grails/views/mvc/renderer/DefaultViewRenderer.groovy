@@ -105,13 +105,14 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
                     // avoid stack overflow by making a copy of the map
                     model.put(MODEL_OBJECT, new LinkedHashMap(map))
                 }
-
-            }
-            else {
+            } else {
                 model = [(resolveModelVariableName(object)): object]
                 if(view == viewResolver.objectView) {
                     model.put(MODEL_OBJECT, object)
                 }
+            }
+            if (arguments?.model) {
+                model.putAll((Map)arguments.model)
             }
             view.render(model, request, response)
         }
