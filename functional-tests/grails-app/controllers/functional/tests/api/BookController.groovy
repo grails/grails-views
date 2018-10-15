@@ -28,4 +28,8 @@ class BookController {
     def testRespondOutsideNamespace() {
         respond(new Book(title: 'API - The Shining'), view: 'indexOutsideNamespace')
     }
+
+    def message() {
+        [value: 'Hello API']
+    }
 }

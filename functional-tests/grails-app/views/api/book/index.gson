@@ -1,5 +1,3 @@
-package api.book
-
 model {
     functional.tests.Book book
 }
