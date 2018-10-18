@@ -36,9 +36,8 @@ Or with the `@Field` transformation provided by Groovy:
 
 [source,groovy]
 .`grails-app/views/hello.gson`
+import groovy.transform.Field
 @Field String message
 json.message {
     hello message
 }
-
-NOTE: Although an import isn't required to use `@Field`, the IDE may prompt you to do so.
