@@ -59,4 +59,8 @@ class TestGsonController {
     def testLinks() {
 
     }
+
+    def testAugmentModel() {
+        respond new Test(name: "John"), model: [age: 20]
+    }
 }

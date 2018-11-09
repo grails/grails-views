@@ -68,8 +68,6 @@ class TestGsonControllerSpec extends GebSpec {
         content == '{"test":{"name":"Bob","child":{"child":{"name":"Joe","age":10}},"children":[{"child":{"name":"Joe","age":10}}]}}'
     }
 
-
-
     void "Test views from plugins are rendered"() {
         when:"A view that renders templates is rendered"
         def content = new URL("${baseUrl}/testGson/testGsonFromPlugin").text
@@ -84,5 +82,20 @@ class TestGsonControllerSpec extends GebSpec {
 
         then:
         content == '{"message":"Hello from Plugin Template","foo":"bar"}'
+    }
+
+
+    void "Test augmenting model"() {
+        when:"When JSON is requested"
+        def content = new URL("${baseUrl}/testGson/testAugmentModel.json").text
+
+        then:"The JSON view is rendered"
+        content == '{"test":{"name":"John","age":20}}'
+
+        when:"When HTML is requested"
+        go '/testGson/testAugmentModel'
+
+        then:"The GSP is rendered"
+        $('h1').text() == "Test John (20) HTML"
     }
 }
