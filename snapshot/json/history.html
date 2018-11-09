@@ -427,7 +427,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The current release is 1.2.9.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 1.3.0.BUILD-SNAPSHOT. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>1.3.0</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>includes</code> support has changed in a way that may break existing use cases. Having <code>includes: ['captain', 'captain.name']]</code> previously excluded all other fields except for <code>captain.name</code>. The <code>captain</code> in the list was necessary for <code>captain.name</code> to function as expected. Now the <code>captain</code> entry will cause all fields in <code>captain</code> to be rendered. To restore the previous behavior, simply remove the <code>captain</code> entry.  <code>includes: ['captain', 'captain.name']</code> &#8594; <code>includes: ['captain.name]</code>.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>1.2.0</strong></p>
@@ -498,7 +508,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-10-15 17:37:50 UTC
+Last updated 2018-11-09 15:03:44 UTC
 </div>
 </div>
 </body>
