@@ -298,7 +298,11 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         out.write(JsonOutput.OPEN_BRACE)
         boolean firstAttribute = true
         for (PersistentProperty prop: persistentEntity.getPersistentProperties()) {
-            if (!includeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${prop.name}".toString())) continue
+            String qualified = "${basePath}${prop.name}".toString()
+
+            if (!includeExcludeSupport.shouldInclude(includes, excludes, qualified)) {
+                continue
+            }
 
             if (!firstAttribute) {
                 out.write(JsonOutput.COMMA)

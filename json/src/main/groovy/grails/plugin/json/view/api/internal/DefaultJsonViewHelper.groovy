@@ -66,6 +66,14 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
             String unqualified = i > -1 ? object.substring(i + 1) : null
             return super.shouldInclude(incs, excs, object) && (unqualified == null || (includes(defaultIncludes, unqualified) && !excludes(defaultExcludes, unqualified)))
         }
+
+        @Override
+        boolean includes(List<String> includes, String object) {
+            includes == null ||
+                    includes.contains(object) ||
+                    includes.any { object.startsWith(it + ".") } ||
+                    includes.any { it.startsWith(object + ".") }
+        }
     }
 
     List<String> getIncludes(Map arguments) {

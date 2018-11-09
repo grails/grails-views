@@ -486,7 +486,10 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         for (prop in entity.persistentProperties) {
             def propertyName = prop.name
             String qualified = "${path}${propertyName}"
-            if (!includeExcludeSupport.shouldInclude(incs, excs, qualified)) continue
+
+            if (!includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
+                continue
+            }
 
             def value = ((GroovyObject) object).getProperty(propertyName)
             if(value == null) {
