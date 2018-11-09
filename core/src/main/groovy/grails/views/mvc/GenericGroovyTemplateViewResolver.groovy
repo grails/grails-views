@@ -42,12 +42,25 @@ class GenericGroovyTemplateViewResolver implements ViewResolver {
                 }
                 return view
             } else {
-                def controllerUri = webRequest?.attributes?.getControllerUri(currentRequest)
-                View view = this.resolveViewWithController(controllerUri, viewName, webRequest)
+                View view
+                def controller = webRequest.controllerClass
+                if (controller && controller.namespace) {
+                    String namespacePrefix = controller.namespace
+                    def controllerUri = webRequest?.attributes?.getControllerUri(currentRequest)
+                    view = this.resolveViewWithController(namespacePrefix + controllerUri, viewName, webRequest)
 
-                if (!view) {
-                    controllerUri = currentRequest?.requestURI
+                    if (!view) {
+                        controllerUri = currentRequest?.requestURI
+                        view = this.resolveViewWithController(namespacePrefix + controllerUri, viewName, webRequest)
+                    }
+                } else {
+                    def controllerUri = webRequest?.attributes?.getControllerUri(currentRequest)
                     view = this.resolveViewWithController(controllerUri, viewName, webRequest)
+
+                    if (!view) {
+                        controllerUri = currentRequest?.requestURI
+                        view = this.resolveViewWithController(controllerUri, viewName, webRequest)
+                    }
                 }
 
                 if (view) {

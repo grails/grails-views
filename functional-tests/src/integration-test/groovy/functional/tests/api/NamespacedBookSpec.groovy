@@ -6,7 +6,7 @@ import grails.plugins.rest.client.RestResponse
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
 import grails.web.http.HttpHeaders
-import org.grails.web.json.JSONElement
+import spock.lang.Issue
 
 @Integration
 @Rollback
@@ -113,5 +113,19 @@ class NamespacedBookSpec extends GebSpec {
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
         resp.json.api == "version 1.0 (Non-Namespaced)"
         resp.json.title == "API - The Shining"
+    }
+
+    @Issue("https://github.com/grails/grails-views/issues/186")
+    void "test view rendering with a namespace from a map"() {
+        given: "A rest client"
+        def builder = new RestBuilder()
+
+        when: "A request is sent to a controller with a namespace"
+        RestResponse resp = builder.get("${baseUrl}api/book/message")
+
+        then: "The response is correct"
+        resp.status == 200
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.json.message == "Controller says Hello API"
     }
 }
