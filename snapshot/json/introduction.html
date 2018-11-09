@@ -478,28 +478,17 @@ json.message {
 <div class="listingblock">
 <div class="title"><code>grails-app/views/hello.gson</code></div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Field String message
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import groovy.transform.Field
+@Field String message
 json.message {
     hello message
 }</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may prompt you to do so.
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-11-09 15:03:59 UTC
+Last updated 2018-11-09 15:04:32 UTC
 </div>
 </div>
 </body>
