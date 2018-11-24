@@ -82,7 +82,7 @@ NOTE: request parameters can also be used to expand associations (eg. `?expand=a
 Finally, if you prefer to handle the rendering yourself you can do by excluding the property:
 
 [source,groovy]
-json g.render(book, [excludes:['author']) {
+json g.render(book, [excludes:['author']]) {
     author {
         name book.author.name
     }
