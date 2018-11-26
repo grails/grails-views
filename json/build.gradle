@@ -21,8 +21,8 @@ apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: 'optional-base'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 grailsPublish {
