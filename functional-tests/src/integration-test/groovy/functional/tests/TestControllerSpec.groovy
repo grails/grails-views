@@ -1,25 +1,25 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.client.exceptions.HttpClientException
 import spock.lang.Issue
 
 @Integration
-@Rollback
-class TestControllerSpec extends GebSpec {
+class TestControllerSpec extends HttpClientSpec {
 
     @Issue('https://github.com/grails/grails-core/issues/10582')
     void 'test responding after an action triggered by a HTTP 401 response is possible'() {
-        given: 'a rest client'
-        def builder = new RestBuilder()
-
         when:
-        def resp = builder.get("${baseUrl}/test/triggerUnauthorized")
+        HttpRequest request = HttpRequest.GET("/test/triggerUnauthorized")
+        HttpResponse<String> resp = client.toBlocking().exchange(request, Argument.of(String), Argument.of(String))
 
         then: 'the response is correct'
-        resp.status == 401
-        resp.text == '{"message":"Unauthorized GSON"}'
+        HttpClientException e = thrown()
+        e.response.status == HttpStatus.UNAUTHORIZED
+        e.response.body() == '{"message":"Unauthorized GSON"}'
     }
 }

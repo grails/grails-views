@@ -1,39 +1,33 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 
 @Integration
-@Rollback
-class VehicleSpec extends GebSpec {
+class VehicleSpec extends HttpClientSpec {
 
     void "Test that domain subclasses render their properties"() {
-        given:"A rest client"
-        def builder = new RestBuilder()
-
-        when:"A POST is issued"
-
-        def resp = builder.get("${baseUrl}vehicle/list")
+        when:
+        HttpRequest request = HttpRequest.GET('/vehicle/list')
+        HttpResponse<String> resp = client.toBlocking().exchange(request, String)
 
         then:"The correct response is returned"
-        resp.status == 200
-        resp.text == '[{"id":1,"maxPassengers":30,"route":"around town"},{"id":2,"make":"Subaru","maxPassengers":4,"model":"WRX","year":2016}]'
+        resp.status == HttpStatus.OK
+        resp.body() == '[{"id":1,"maxPassengers":30,"route":"around town"},{"id":2,"make":"Subaru","maxPassengers":4,"model":"WRX","year":2016}]'
 
     }
 
     void "Test that domain association subclasses render their properties"() {
-        given:"A rest client"
-        def builder = new RestBuilder()
-
-        when:"A POST is issued"
-
-        def resp = builder.get("${baseUrl}vehicle/garage")
-        def json = resp.json
+        when:
+        HttpRequest request = HttpRequest.GET('/vehicle/garage')
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
+        def json = resp.body()
 
         then:"The correct response is returned"
-        resp.status == 200
+        resp.status == HttpStatus.OK
+
         json.id == 1
         json.owner == "Jay Leno"
         json.vehicles.find { it.id == 1 }.maxPassengers == 30

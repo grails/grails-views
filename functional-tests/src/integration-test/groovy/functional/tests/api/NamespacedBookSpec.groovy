@@ -1,131 +1,120 @@
 package functional.tests.api
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
-import grails.plugins.rest.client.RestResponse
+import functional.tests.HttpClientSpec
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
 import grails.web.http.HttpHeaders
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.MediaType
 import spock.lang.Issue
 
 @Integration
-@Rollback
-class NamespacedBookSpec extends GebSpec {
+class NamespacedBookSpec extends HttpClientSpec {
 
     void "test view rendering with a namespace"() {
-        given: "A rest client"
-            def builder = new RestBuilder()
-
         when: "A request is sent to a controller with a namespace"
-            RestResponse resp = builder.get("${baseUrl}api/book")
+        HttpRequest request = HttpRequest.GET('/api/book')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response is correct"
-            resp.status == 200
-            resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-            resp.json.api == "version 1.0 (Namespaced)"
-            resp.json.title == "API - The Shining"
+        then: "The rsponse is correct"
+            rsp.status() == HttpStatus.OK
+            rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+            rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+            rsp.body().api == "version 1.0 (Namespaced)"
+            rsp.body().title == "API - The Shining"
     }
 
     void "test nested template rendering with a namespace"() {
-        given: "A rest client"
-            def builder = new RestBuilder()
-
         when: "A request is sent to a controller with a namespace"
-            RestResponse resp = builder.get("${baseUrl}api/book/nested")
+        HttpRequest request = HttpRequest.GET('/api/book/nested')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response contains the child template"
-            resp.status == 200
-            resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-            resp.json.foo == "bar"
+
+        then: "The rsponse contains the child template"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        rsp.body().foo == "bar"
     }
 
     void "test the correct content type is chosen (json)"() {
-        given: "A rest client"
-        def builder = new RestBuilder()
-
         when: "A request is sent to a controller with a namespace"
-        RestResponse resp = builder.get("${baseUrl}api/book") {
-            accept "application/json"
-        }
+        HttpRequest request = HttpRequest.GET('/api/book')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response contains the child template"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        !resp.json.containsKey("_links")
-        resp.json.api == "version 1.0 (Namespaced)"
-        resp.json.title == "API - The Shining"
+        then: "The rsponse contains the child template"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        !rsp.body()['_links']
+        rsp.body().api == "version 1.0 (Namespaced)"
+        rsp.body().title == "API - The Shining"
     }
 
     void "test the correct content type is chosen (hal)"() {
-        given: "A rest client"
-        def builder = new RestBuilder()
-
         when: "A request is sent to a controller with a namespace"
-        RestResponse resp = builder.get("${baseUrl}api/book") {
-            accept "application/hal+json"
-        }
+        HttpRequest request = HttpRequest.GET('/api/book').accept(MediaType.APPLICATION_HAL_JSON_TYPE)
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response contains the child template"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
-        resp.json.containsKey("_links")
-        resp.json.api == "version 1.0 (Namespaced HAL)"
-        resp.json.title == "API - The Shining"
+        then: "The rsponse contains the child template"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
+        rsp.body()['_links']
+        rsp.body().api == "version 1.0 (Namespaced HAL)"
+        rsp.body().title == "API - The Shining"
     }
 
     void "test render(view: '..', model: ..) in controllers with namespaces works"() {
-        given: "A rest client"
-        def builder = new RestBuilder()
-
         when: "A request is sent to a controller with a namespace"
-        RestResponse resp = builder.get("${baseUrl}api/book/testRender")
+        HttpRequest request = HttpRequest.GET('/api/book/testRender')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.json.api == "version 1.0 (Namespaced)"
-        resp.json.title == "API - The Shining"
+        then: "The rsponse is correct"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        rsp.body().api == "version 1.0 (Namespaced)"
+        rsp.body().title == "API - The Shining"
     }
 
-    void "test respond(foo, view: ..) in controllers with namespaces works"() {
-        given: "A rest client"
-        def builder = new RestBuilder()
-
+    void "test rspond(foo, view: ..) in controllers with namespaces works"() {
         when: "A request is sent to a controller with a namespace"
-        RestResponse resp = builder.get("${baseUrl}api/book/testRespond")
+        HttpRequest request = HttpRequest.GET('/api/book/testRespond')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.json.api == "version 1.0 (Namespaced)"
-        resp.json.title == "API - The Shining"
+        then: "The rsponse is correct"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        rsp.body().api == "version 1.0 (Namespaced)"
+        rsp.body().title == "API - The Shining"
     }
 
-    void "test respond(foo, view: ..) in controllers with namespaces works, view outside of namespace"() {
-        given: "A rest client"
-        def builder = new RestBuilder()
-
+    void "test rspond(foo, view: ..) in controllers with namespaces works, view outside of namespace"() {
         when: "A request is sent to a controller with a namespace"
-        RestResponse resp = builder.get("${baseUrl}api/book/testRespondOutsideNamespace")
+        HttpRequest request = HttpRequest.GET('/api/book/testRespondOutsideNamespace')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.json.api == "version 1.0 (Non-Namespaced)"
-        resp.json.title == "API - The Shining"
+        then: "The rsponse is correct"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        rsp.body().api == "version 1.0 (Non-Namespaced)"
+        rsp.body().title == "API - The Shining"
     }
 
     @Issue("https://github.com/grails/grails-views/issues/186")
     void "test view rendering with a namespace from a map"() {
-        given: "A rest client"
-        def builder = new RestBuilder()
-
         when: "A request is sent to a controller with a namespace"
-        RestResponse resp = builder.get("${baseUrl}api/book/message")
+        HttpRequest request = HttpRequest.GET('/api/book/message')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        then: "The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.json.message == "Controller says Hello API"
+        then: "The rsponse is correct"
+        rsp.status() == HttpStatus.OK
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        rsp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        rsp.body().message == "Controller says Hello API"
     }
 }

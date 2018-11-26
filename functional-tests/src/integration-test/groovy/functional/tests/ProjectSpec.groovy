@@ -1,30 +1,32 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 
 @Integration
-@Rollback
-class ProjectSpec extends GebSpec {
+class ProjectSpec extends HttpClientSpec {
 
     void "Test that circular references are correctly rendered for many to many relationship"() {
         given:"A rest client"
-        def builder = new RestBuilder()
 
         when:"A POST is issued"
+        HttpRequest request = HttpRequest.GET('/project')
+        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Map)
 
-        def resp = builder.get("${baseUrl}project/")
-        def json = resp.json
+        then:
+        rsp.status() == HttpStatus.OK
+
+        when:
+        Map project = rsp.body()
 
         then:"The correct response is returned"
-        resp.status == 200
-        json.id == 1
-        json.name == "Grails Views"
-        json.employees.find { it.id == 1 }.name == "James Kleeh"
-        json.employees.find { it.id == 1 }.project == null
-        json.employees.find { it.id == 2 }.name == "Iván López"
-        json.employees.find { it.id == 2 }.project == null
+        project.id == 1
+        project.name == "Grails Views"
+        project.employees.find { it.id == 1 }.name == "James Kleeh"
+        project.employees.find { it.id == 1 }.project == null
+        project.employees.find { it.id == 2 }.name == "Iván López"
+        project.employees.find { it.id == 2 }.project == null
     }
 }

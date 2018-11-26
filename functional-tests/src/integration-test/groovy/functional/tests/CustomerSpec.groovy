@@ -1,25 +1,21 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 
 @Integration
-@Rollback
-class CustomerSpec extends GebSpec {
+class CustomerSpec extends HttpClientSpec {
 
     void "Test that circular references are correctly rendered for one to many relationship"() {
-        given:"A rest client"
-        def builder = new RestBuilder()
-
-        when:"A POST is issued"
-
-        def resp = builder.get("${baseUrl}customer/")
-        def json = resp.json
+        when:
+        HttpRequest request = HttpRequest.GET("/customer")
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
+        Map json = resp.body()
 
         then:"The correct response is returned"
-        resp.status == 200
+        resp.status == HttpStatus.OK
         json.id == 1
         json.name == "Nokia"
         json.sites.find { it.id == 1 }.name == "Salo"

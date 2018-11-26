@@ -1,19 +1,14 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
 import grails.web.http.HttpHeaders
-import org.springframework.beans.factory.annotation.Value
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import spock.lang.Shared
 
-/**
- */
 @Integration
-class TeamSpec extends GebSpec {
-
-    @Value('${local.server.port}')
-    Integer port
+class TeamSpec extends HttpClientSpec {
 
     @Shared
     String lang
@@ -23,44 +18,42 @@ class TeamSpec extends GebSpec {
     }
 
     void "Test association template rendering"() {
-        given:"A rest client"
-        def builder = new RestBuilder()
-
         when:
-        def resp = builder.get("${baseUrl}teams/1")
+        HttpRequest request = HttpRequest.GET("/teams/1")
+        HttpResponse<String> resp = client.toBlocking().exchange(request, String)
 
         then:"The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
 
         // Note current behaviour is that the captain is not rendered twice
-        resp.text == '{"id":1,"captain":{"id":1},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football"}'
+        resp.body() == '{"id":1,"captain":{"id":1},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football"}'
     }
 
     void "Test deep association template rendering"() {
-        given:"A rest client"
-        def builder = new RestBuilder()
-
         when:
-        def resp = builder.get("${baseUrl}teams/deep/1")
+        HttpRequest request = HttpRequest.GET("/teams/deep/1")
+        HttpResponse<String> resp = client.toBlocking().exchange(request, String)
 
         then:"The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        resp.body() == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
     }
 
     void "Test HAL rendering"() {
-        given:"A rest client"
-        def builder = new RestBuilder()
-
         when:
-        def resp = builder.get("${baseUrl}teams/hal/1")
+        HttpRequest request = HttpRequest.GET("/teams/hal/1")
+        HttpResponse<String> resp = client.toBlocking().exchange(request, String)
 
         then:"The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
-        resp.text == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},"players":[{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},{"_links":{"self":{"href":"http://localhost:'+port+'/player/show/2","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Messi","version":0}]},"_links":{"self":{"href":"http://localhost:'+port+'/teams/1","hreflang":"' + lang + '","type":"application/hal+json"}},"id":1,"name":"Barcelona","sport":"football","another":{"foo":"bar"}}'
+        resp.status == HttpStatus.OK
+
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
+        resp.body() == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},"players":[{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/2","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Messi","version":0}]},"_links":{"self":{"href":"http://localhost:'+serverPort+'/teams/1","hreflang":"' + lang + '","type":"application/hal+json"}},"id":1,"name":"Barcelona","sport":"football","another":{"foo":"bar"}}'
 
     }
 
@@ -68,14 +61,14 @@ class TeamSpec extends GebSpec {
         Composite.withNewSession {
             new Composite(name: "foo", team: Team.load(1), player: Player.load(2)).save(flush: true, failOnError: true)
         }
-        def builder = new RestBuilder()
-
         when:
-        def resp = builder.get("$baseUrl/team/composite")
+        HttpRequest request = HttpRequest.GET("/team/composite")
+        HttpResponse<String> resp = client.toBlocking().exchange(request, String)
 
         then:"The response is correct"
-        resp.status == 200
-        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/json;charset=UTF-8'
-        resp.text == '{"player":{"id":2,"name":"Messi","sport":"football"},"team":{"id":1,"captain":{"id":1},"name":"Barcelona","sport":"football"},"name":"foo"}'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
+        resp.body() == '{"player":{"id":2,"name":"Messi","sport":"football"},"team":{"id":1,"captain":{"id":1},"name":"Barcelona","sport":"football"},"name":"foo"}'
     }
 }

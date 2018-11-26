@@ -1,26 +1,23 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import spock.lang.Issue
 
 @Integration
-@Rollback
-class BulletinSpec extends GebSpec {
+class BulletinSpec extends HttpClientSpec {
 
     @Issue('https://github.com/grails/grails-views/issues/175')
     void 'test render collections with same objects'() {
-        given: 'a rest client'
-        def builder = new RestBuilder()
-
         when: 'a GET is issued'
-        def resp = builder.get("${baseUrl}bulletin")
-        def json = resp.json
+        HttpRequest request = HttpRequest.GET("/bulletin")
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
+        Map json = resp.body()
 
         then: 'The REST resource is retrieved and the correct JSON is returned'
-        resp.status == 200
+        resp.status == HttpStatus.OK
         json.content == 'Hi everyone!'
 
         and: 'the username is the same as the publicId'

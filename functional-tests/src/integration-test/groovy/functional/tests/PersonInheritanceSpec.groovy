@@ -1,22 +1,20 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 
 @Integration
-class PersonInheritanceSpec extends GebSpec {
+class PersonInheritanceSpec extends HttpClientSpec {
 
     void 'test template inheritance produces correct json'() {
-        given: 'a rest client'
-        def builder = new RestBuilder()
-
         when:
-        def resp = builder.get("${baseUrl}person-inheritance")
+        HttpRequest request = HttpRequest.GET('/person-inheritance')
+        HttpResponse<String> rsp = client.toBlocking().exchange(request, String)
 
         then: 'the response is correct'
-        resp.status == 200
-
-        resp.text == '{"dob":"01/01/1970","lastName":"Doe","firstName":"John"}'
+        rsp.status() == HttpStatus.OK
+        rsp.body() == '{"dob":"01/01/1970","lastName":"Doe","firstName":"John"}'
     }
 }

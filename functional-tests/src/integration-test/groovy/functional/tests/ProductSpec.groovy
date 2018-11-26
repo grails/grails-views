@@ -1,177 +1,167 @@
 package functional.tests
 
-import geb.spock.GebSpec
-import grails.plugins.rest.client.RestBuilder
 import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
 import grails.web.http.HttpHeaders
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 
 @Integration
-@Rollback
-class ProductSpec extends GebSpec {
-
-    def setup() {
-    }
-
-    def cleanup() {
-    }
+class ProductSpec extends HttpClientSpec {
 
     void testEmptyProducts() {
-        given:
-            def builder = new RestBuilder()
-
         when:
-            def resp = builder.get("${baseUrl}products")
+        HttpRequest request = HttpRequest.GET("/products")
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
 
         then:
-            resp.status == 200
-            resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
 
         and: "The values returned are there"
-            resp.json.count == 0
-            resp.json.max == 10
-            resp.json.offset == 0
-            resp.json.sort == null
-            resp.json.order == null
+        resp.body().count == 0
+        resp.body().max == 10
+        resp.body().offset == 0
+        resp.body().sort == null
+        resp.body().order == null
         and: "the hal _links attribute is present"
-            resp.json._links.size() == 1
-            resp.json._links.self.href.startsWith("${baseUrl}product")
+        resp.body()._links.size() == 1
+        resp.body()._links.self.href.startsWith("${baseUrl}/product")
 
         and: "there are no products yet"
-            resp.json._embedded.products.size() == 0
+        resp.body()._embedded.products.size() == 0
     }
 
     void testSingleProduct() {
         given:
-            def builder = new RestBuilder()
-
-            def createResp = builder.post("${baseUrl}products") {
-                json {
-                    name = "Product 1"
-                    description = "product 1 description"
-                    price = 123.45
-                }
-            }
-            assert createResp.status == 201
+        HttpResponse<Map> createResp = client.toBlocking()
+                .exchange(HttpRequest.POST("/products", [name: "Product 1",
+                description: "product 1 description",
+                price: 123.45]), Map)
+        assert createResp.status == HttpStatus.CREATED
 
         when: "We get the products"
-            def resp = builder.get("${baseUrl}products")
+        HttpRequest request = HttpRequest.GET("/products")
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
 
         then:
-            resp.status == 200
-            resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
 
         and: "The values returned are there"
-            resp.json.count == 1
-            resp.json.max == 10
-            resp.json.offset == 0
-            resp.json.sort == null
-            resp.json.order == null
+        resp.body().count == 1
+        resp.body().max == 10
+        resp.body().offset == 0
+        resp.body().sort == null
+        resp.body().order == null
         and: "the hal _links attribute is present"
-            resp.json._links.size() == 1
-            resp.json._links.self.href.startsWith("${baseUrl}product")
+        resp.body()._links.size() == 1
+        resp.body()._links.self.href.startsWith("${baseUrl}/product")
 
         and: "the product is present"
-            resp.json._embedded.products.size() == 1
-            resp.json._embedded.products.first().name == "Product 1"
+        resp.body()._embedded.products.size() == 1
+        resp.body()._embedded.products.first().name == "Product 1"
 
         cleanup:
-            def delResp = builder.delete("${baseUrl}products/${createResp.json.id}")
-            assert delResp.status == 204
+        resp = client.toBlocking().exchange(HttpRequest.DELETE("/products/${createResp.body().id}"))
+        assert resp.status() == HttpStatus.NO_CONTENT
     }
 
     void "test a page worth of products"() {
         given:
-            def builder = new RestBuilder()
-            def productsIds = []
-            15.times { productNumber ->
-                def createResp = builder.post("${baseUrl}products") {
-                    json {
-                        name = "Product $productNumber"
-                        description = "product ${productNumber} description"
-                        price = productNumber + (productNumber / 100)
-                    }
-                }
-                assert createResp.status == 201
-                productsIds << createResp.json.id
-            }
-
+        def productsIds = []
+        15.times { productNumber ->
+            ProductVM product = new ProductVM(name: "Product $productNumber",
+                           description: "product ${productNumber} description",
+                           price: productNumber + (productNumber / 100))
+            HttpResponse<Map> createResp = client.toBlocking()
+                    .exchange(HttpRequest.POST("/products", product), Map)
+            assert createResp.status == HttpStatus.CREATED
+            productsIds << createResp.body().id
+        }
 
         when: "We get the products"
-            def resp = builder.get("${baseUrl}products")
-
+        HttpRequest request = HttpRequest.GET("/products")
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
+        def json = resp.body()
         then:
-            resp.status == 200
-            resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
 
         and: "The values returned are there"
-            resp.json.count == 15
-            resp.json.max == 10
-            resp.json.offset == 0
-            resp.json.sort == null
-            resp.json.order == null
+        json.count == 15
+        json.max == 10
+        json.offset == 0
+        json.sort == null
+        json.order == null
         and: "the hal _links attribute is present"
-            resp.json._links.size() == 4
-            resp.json._links.self.href.startsWith("${baseUrl}product")
-            resp.json._links.first.href.startsWith("${baseUrl}product")
-            resp.json._links.next.href.startsWith("${baseUrl}product")
-            resp.json._links.last.href.startsWith("${baseUrl}product")
+        json._links.size() == 4
+        json._links.self.href.startsWith("${baseUrl}/product")
+        json._links.first.href.startsWith("${baseUrl}/product")
+        json._links.next.href.startsWith("${baseUrl}/product")
+        json._links.last.href.startsWith("${baseUrl}/product")
 
         and: "the product is present"
-            resp.json._embedded.products.size() == 10
+        json._embedded.products.size() == 10
 
         cleanup:
-            productsIds.each { id ->
-                def delResp = builder.delete("${baseUrl}products/${id}")
-                assert delResp.status == 204
-            }
+        productsIds.each { id ->
+            resp = client.toBlocking().exchange(HttpRequest.DELETE("/products/${id}"))
+            assert resp.status() == HttpStatus.NO_CONTENT
+        }
     }
 
     void "test a middle page worth of products"() {
         given:
-            def builder = new RestBuilder()
-            def productsIds = []
-            30.times { productNumber ->
-                def createResp = builder.post("${baseUrl}products") {
-                    json {
-                        name = "Product $productNumber"
-                        description = "product ${productNumber} description"
-                        price = productNumber + (productNumber / 100)
-                    }
-                }
-                assert createResp.status == 201
-                productsIds << createResp.json.id
-            }
-
+        def productsIds = []
+        30.times { productNumber ->
+            ProductVM product = new ProductVM(name: "Product $productNumber",
+                           description: "product ${productNumber} description",
+                           price: productNumber + (productNumber / 100))
+            HttpResponse<Map> createResp = client.toBlocking().exchange(HttpRequest.POST("/products", product), Map)
+            assert createResp.status == HttpStatus.CREATED
+            productsIds << createResp.body().id
+        }
 
         when: "We get the products"
-            def resp = builder.get("${baseUrl}products?offset=10")
+        HttpRequest request = HttpRequest.GET("/products?offset=10")
+        HttpResponse<Map> resp = client.toBlocking().exchange(request, Map)
 
         then:
-            resp.status == 200
-            resp.headers.getFirst(HttpHeaders.CONTENT_TYPE) == 'application/hal+json;charset=UTF-8'
+        resp.status == HttpStatus.OK
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
+        resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
 
         and: "The values returned are there"
-            resp.json.count == 30
-            resp.json.max == 10
-            resp.json.offset == 10
-            resp.json.sort == null
-            resp.json.order == null
+        resp.body().count == 30
+        resp.body().max == 10
+        resp.body().offset == 10
+        resp.body().sort == null
+        resp.body().order == null
         and: "the hal _links attribute is present"
-            resp.json._links.size() == 5
-            resp.json._links.self.href.startsWith("${baseUrl}product")
-            resp.json._links.first.href.startsWith("${baseUrl}product")
-            resp.json._links.prev.href.startsWith("${baseUrl}product")
-            resp.json._links.next.href.startsWith("${baseUrl}product")
-            resp.json._links.last.href.startsWith("${baseUrl}product")
+        resp.body()._links.size() == 5
+        resp.body()._links.self.href.startsWith("${baseUrl}/product")
+        resp.body()._links.first.href.startsWith("${baseUrl}/product")
+        resp.body()._links.prev.href.startsWith("${baseUrl}/product")
+        resp.body()._links.next.href.startsWith("${baseUrl}/product")
+        resp.body()._links.last.href.startsWith("${baseUrl}/product")
 
         and: "the product is present"
-            resp.json._embedded.products.size() == 10
+        resp.body()._embedded.products.size() == 10
 
         cleanup:
-            productsIds.each { id ->
-                def delResp = builder.delete("${baseUrl}products/${id}")
-                assert delResp.status == 204
-            }
+        productsIds.each { id ->
+            resp = client.toBlocking().exchange(HttpRequest.DELETE("/products/${id}"))
+            assert resp.status() == HttpStatus.NO_CONTENT
+        }
     }
+}
+
+class ProductVM {
+    String name
+    String description
+    BigDecimal price
 }
