@@ -11,7 +11,6 @@ buildscript {
     }
 }
 
-
 group "org.grails.plugins"
 
 apply plugin: 'eclipse'
@@ -23,7 +22,6 @@ apply plugin: 'optional-base'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
 
 grailsPublish {
     userOrg = 'grails'
@@ -59,7 +57,6 @@ configurations.all {
     }
 }
 
-
 dependencies {
     provided 'org.springframework.boot:spring-boot-starter-logging'
     provided "org.springframework.boot:spring-boot-starter-actuator"
@@ -79,12 +76,9 @@ dependencies {
     console "org.grails:grails-console"
 }
 
-
-
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
-
 
 jar {
   exclude "*.gson"

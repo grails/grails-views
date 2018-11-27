@@ -27,8 +27,6 @@ dependencies {
   documentation project(':views-json-testing-support')
 }
 
-
-
 task apidocs(type: Groovydoc) {
     def allProjects = rootProject.allprojects.findAll { project ->
       ['views-core', 'views-json', 'views-json-testing-support', 'views-markup','views-gradle'].contains(project.name)
