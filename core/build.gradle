@@ -14,14 +14,14 @@ buildscript {
 plugins {
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id "com.jfrog.bintray" version "1.8.4"
+    id 'eclipse'
+    id 'idea'
 }
 
 group "org.grails"
 
 apply plugin:'groovy'
 apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'provided-base'
 
 ext {

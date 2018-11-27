@@ -15,6 +15,8 @@ buildscript {
 
 plugins {
     id "io.spring.dependency-management" version "0.6.0.RELEASE"
+    id 'eclipse'
+    id 'idea'
 }
 
 version "0.1"
@@ -23,8 +25,6 @@ group "functional.tests"
 apply plugin: "spring-boot"
 apply plugin: "war"
 apply plugin: "com.bertramlabs.asset-pipeline"
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: "org.grails.grails-web"
 apply plugin: "org.grails.grails-gsp"
 

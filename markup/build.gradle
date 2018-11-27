@@ -11,6 +11,11 @@ buildscript {
     }
 }
 
+plugins {
+    id 'eclipse'
+    id 'idea'
+}
+
 
 ext {
     userOrg = 'grails'
@@ -18,8 +23,6 @@ ext {
 
 group "org.grails.plugins"
 
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-plugin-publish"

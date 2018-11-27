@@ -14,15 +14,14 @@ buildscript {
 
 plugins {
     id "io.spring.dependency-management" version "0.6.0.RELEASE"
-
+    id 'eclipse'
+    id 'idea'
 }
 
 version "0.1-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.plugins.views-json"
