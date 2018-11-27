@@ -20,10 +20,10 @@ package grails.plugin.json.builder;
 
 import groovy.json.JsonDelegate;
 import groovy.json.JsonException;
-import grails.plugin.json.builder.internal.CharBuf;
 import groovy.json.internal.Chr;
 import groovy.lang.Closure;
 import groovy.util.Expando;
+import org.apache.groovy.json.internal.CharBuf;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.io.File;

@@ -21,11 +21,11 @@ package grails.plugin.json.builder;
 import groovy.json.JsonException;
 import groovy.json.JsonLexer;
 import groovy.json.JsonToken;
-import grails.plugin.json.builder.internal.CharBuf;
 import groovy.json.internal.Chr;
 import groovy.lang.Closure;
 import groovy.lang.Writable;
 import groovy.util.Expando;
+import org.apache.groovy.json.internal.CharBuf;
 import org.grails.buffer.FastStringWriter;
 
 import java.io.*;
