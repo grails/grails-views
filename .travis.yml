@@ -9,11 +9,7 @@ cache:
 jdk:
 - oraclejdk8
 - openjdk11
-before_install:
-  # Workaround for https://github.com/gradle/gradle/issues/2421:
-  # download all Gradle distributions with openjdk8
-  - JAVA_HOME=$(jdk_switcher home openjdk8) ./gradlew
-script: JAVA_HOME=$(jdk_switcher home openjdk7) "./travis-build.sh"
+script: ./travis-build.sh
 addons:
   hosts:
   - grails-views
