@@ -1,6 +1,7 @@
 package grails.views
 
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.core.support.proxy.ProxyHandler
 import grails.util.Environment
@@ -47,15 +48,25 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         }
     }
 
-    protected Map<List, WritableScriptTemplate> resolveCache = new ConcurrentLinkedHashMap.Builder<List, WritableScriptTemplate>()
-                                                                            .maximumWeightedCapacity(250)
-                                                                            .build()
-
-    protected Map<String, WritableScriptTemplate> cachedTemplates = new ConcurrentLinkedHashMap.Builder<String, WritableScriptTemplate>()
-            .maximumWeightedCapacity(250)
+    protected Cache<List, WritableScriptTemplate> resolveCache = Caffeine.newBuilder()
+            .maximumSize(250)
             .build()
-            .withDefault { String path ->
 
+    protected Cache<String, WritableScriptTemplate> cachedTemplates = Caffeine.newBuilder()
+            .maximumSize(250)
+            .build()
+    }
+
+    private WritableScriptTemplate getCachedTemplatesWithDefault(String key) {
+        WritableScriptTemplate template = cachedTemplates.getIfPresent(key)
+        if (template == null) {
+            template = templateByPath(key)
+            cachedTemplates.put(key, template)
+        }
+        return template
+    }
+
+    private WritableScriptTemplate templateByPath(String path) {
         WritableScriptTemplate template
         if (Environment.isDevelopmentEnvironmentAvailable()) {
             template = attemptResolvePath(path)
@@ -276,7 +287,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
         cacheKey.addAll(qualifiers)
         WritableScriptTemplate template = null
         if(shouldCache) {
-            template = resolveCache.get(cacheKey)
+            template = resolveCache.getIfPresent(cacheKey)
             if(template != null) {
                 if(template.is(NULL_ENTRY)) {
                     log.debug("No template found for path [$path] and locale [$locale]")
@@ -288,8 +299,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 }
                 else {
                     log.debug("Reloading template modified for path [$path] and locale [$locale]. ")
-                    cachedTemplates.remove(path)
-                    resolveCache.remove(cacheKey)
+                    cachedTemplates.invalidate(path)
+                    cachedTemplates.invalidate(cacheKey)
                     template = null
                 }
             }
@@ -316,9 +327,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 qualifiedPaths.add qualifiedPath
                 qualifiedPaths.add qualifiedLanguageSpecificPath
 
-                template = cachedTemplates[qualifiedLanguageSpecificPath]
+                template = getCachedTemplatesWithDefault(qualifiedLanguageSpecificPath)
                 if(template.is(NULL_ENTRY)) {
-                    template = cachedTemplates[qualifiedPath]
+                    template = getCachedTemplatesWithDefault(qualifiedPath)
                     if(template.is(NULL_ENTRY) && !isEmpty) {
                         qualifierQueue.removeLast()
                     }
@@ -341,9 +352,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                     qualifiedPaths.add qualifiedPath
                     qualifiedPaths.add qualifiedLanguageSpecificPath
 
-                    template = cachedTemplates[qualifiedLanguageSpecificPath]
+                    template = getCachedTemplatesWithDefault(qualifiedLanguageSpecificPath)
                     if(template.is(NULL_ENTRY)) {
-                        template = cachedTemplates[qualifiedPath]
+                        template = getCachedTemplatesWithDefault(qualifiedPath)
                         if(template.is(NULL_ENTRY) && !isEmpty) {
                             qualifierQueue.removeLast()
                         }
@@ -358,9 +369,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             }
         }
         if(template == null || template.is(NULL_ENTRY)) {
-            template = cachedTemplates[defaultLanguageSpecificPath]
+            template = getCachedTemplatesWithDefault(defaultLanguageSpecificPath)
             if(template.is(NULL_ENTRY)) {
-                template = cachedTemplates[defaultPath]
+                template = getCachedTemplatesWithDefault(defaultPath)
             }
         }
         if(template != null) {
@@ -368,8 +379,8 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             boolean isNull = template.is(NULL_ENTRY)
             if(!isNull && ((WritableScriptTemplate)template).wasModified()) {
                 for(p in qualifiedPaths) {
-                    cachedTemplates.remove(p)
-                    resolveCache.remove(cacheKey)
+                    cachedTemplates.invalidate(p)
+                    resolveCache.invalidate(cacheKey)
                 }
                 return resolveTemplate(path, locale, qualifiers)
             }
