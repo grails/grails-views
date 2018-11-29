@@ -1,5 +1,4 @@
 language: groovy
-sudo: false
 services:
 - mongodb
 dist: trusty
