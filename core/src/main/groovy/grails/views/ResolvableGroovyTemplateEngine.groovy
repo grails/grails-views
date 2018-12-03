@@ -55,7 +55,6 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
     protected Cache<String, WritableScriptTemplate> cachedTemplates = Caffeine.newBuilder()
             .maximumSize(250)
             .build()
-    }
 
     private WritableScriptTemplate getCachedTemplatesWithDefault(String key) {
         WritableScriptTemplate template = cachedTemplates.getIfPresent(key)
