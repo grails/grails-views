@@ -521,7 +521,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 <div class="sect2">
 <h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 1.2.8. Below is a version history.</p>
+<p>The current release is 1.2.9.BUILD-SNAPSHOT. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>1.2.0</strong></p>
@@ -597,7 +597,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.2.8"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:1.2.9.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -605,7 +605,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.8"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:1.2.9.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -617,7 +617,7 @@ Although an import isn&#8217;t required to use <code>@Field</code>, the IDE may 
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:1.2.8"
+        classpath "org.grails.plugins:views-gradle:1.2.9.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -1272,7 +1272,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </td>
 <td class="content">
 Some model names are <em>reserved</em> since there are properties of the same name injected into the view:
-<code>locale</code>, <code>response</code>, <code>request</code>, <code>page</code>, <code>controllerNamespace</code>, <code>controllerName</code>, <code>actionName</code>, <code>config</code>
+<code>locale</code>, <code>response</code>, <code>request</code>, <code>page</code>, <code>controllerNamespace</code>, <code>controllerName</code>, <code>actionName</code>, <code>config</code>, <code>generator</code>
 </td>
 </tr>
 </table>
@@ -2082,7 +2082,7 @@ json {
 <div class="sect2">
 <h3 id="_json_api_support">JSON API Support</h3>
 <div class="paragraph">
-<p><a href="http://http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
+<p><a href="http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
 </div>
 <div class="paragraph">
 <p>The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views have access to the <code>jsonapi</code> instance which implements <a href="api/grails/plugin/json/view/api/JsonApiViewHelper.html">JsonApiViewHelper</a>.</p>
@@ -2575,7 +2575,7 @@ The new testing trait, like the testing framework, requires Spock.
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:1.2.8"
+        classpath "org.grails.plugins:views-gradle:1.2.9.BUILD-SNAPSHOT"
     }
 }
 
@@ -2589,7 +2589,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:1.2.8"
+    compile "org.grails.plugins:views-json:1.2.9.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:3.0.1"
 }
@@ -2937,7 +2937,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-06-15 14:01:25 UTC
+Last updated 2018-12-03 15:39:39 UTC
 </div>
 </div>
 </body>
