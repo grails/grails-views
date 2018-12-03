@@ -1,3 +1,10 @@
-// include "views-core", "views-json"
-include 'core', 'json', 'markup', 'gradle', 'functional-tests','functional-tests-plugin', 'docs', 'json-templates', 'json-testing-support'
+include 'core'
+include 'json'
+include 'markup'
+include 'gradle'
+include 'functional-tests'
+include 'functional-tests-plugin'
+include 'docs'
+include 'json-templates'
+include 'json-testing-support'
 rootProject.children.each { it.name = "views-${it.name}" }
