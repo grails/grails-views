@@ -22,7 +22,6 @@ version "0.1-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
-apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.plugins.views-json"
 //apply plugin: "org.grails.plugins.views-markup"
