@@ -68,8 +68,8 @@ dependencies {
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
 
-    compile "org.grails.plugins:mongodb:5.0.7.BUILD-SNAPSHOT"
     compile "org.grails.plugins:hibernate5"
+    compile "org.grails.plugins:mongodb:$gormVersion"
     compile "org.grails.plugins:cache"
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
