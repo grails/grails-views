@@ -75,9 +75,6 @@ dependencies {
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
 
-
-//    compile "org.grails:grails-datastore-gorm-mongodb:5.0.6.RELEASE"
-
     compile project(":views-json")
     compile project(":views-markup")
     compile project(":views-functional-tests-plugin")
