@@ -15,14 +15,14 @@
  */
 package grails.views.mvc
 
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import grails.config.Config
 import grails.core.support.GrailsConfigurationAware
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.resolve.TemplateResolverUtils
 import grails.web.http.HttpHeaders
 import grails.web.mime.MimeType
-import groovy.text.Template
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,9 +58,21 @@ class SmartViewResolver implements GrailsConfigurationAware {
 
     final View objectView
 
-    private Map<String, GenericGroovyTemplateView> viewCache = new ConcurrentLinkedHashMap.Builder<String, GenericGroovyTemplateView>()
-                                                                                            .maximumWeightedCapacity(150)
-                                                                                            .build().withDefault { String path ->
+    private Cache<String, GenericGroovyTemplateView> viewCache  = Caffeine.newBuilder()
+            .maximumSize(150)
+            .build()
+
+    private GenericGroovyTemplateView getViewCacheWithDefault(String key) {
+        GenericGroovyTemplateView templateView = viewCache.getIfPresent(key)
+        if (templateView == null) {
+            templateView = viewCacheWithPath(key)
+            viewCache.put(key, templateView)
+        }
+        return templateView
+    }
+
+
+    private GenericGroovyTemplateView viewCacheWithPath(String path) {
         GenericGroovyTemplateView view = BeanUtils.instantiateClass(viewClass)
         String contentType = getContentType()
         if (contentType != null) {
@@ -87,11 +99,12 @@ class SmartViewResolver implements GrailsConfigurationAware {
 
     View resolveView(String viewName, Locale locale) {
         String url = "${viewName}${suffix}"
-        View v = viewCache.containsKey(url) ? viewCache.get(url) : null
+
+        View v = viewCache.getIfPresent(url)
         if(v == null) {
             def template = resolveTemplate(url, locale)
             if(template != null) {
-                return viewCache.get(url)
+                return getViewCacheWithDefault(url)
             }
         }
         return v
@@ -99,14 +112,14 @@ class SmartViewResolver implements GrailsConfigurationAware {
 
     View resolveView(String viewName, HttpServletRequest request, HttpServletResponse response) {
         String url = "${viewName}${suffix}"
-        View v = viewCache.containsKey(url) ? viewCache.get(url) : null
+        View v = viewCache.getIfPresent(url)
         if(v == null) {
 
             def locale = localeResolver?.resolveLocale(request) ?: request.locale
             List qualifiers = buildQualifiers(request, response)
             def template = resolveTemplate(url, locale, qualifiers as String[])
             if(template != null) {
-                return viewCache.get(url)
+                return getViewCacheWithDefault(url)
             }
         }
         return v
