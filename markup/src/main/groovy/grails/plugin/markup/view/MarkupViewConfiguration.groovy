@@ -57,15 +57,10 @@ class MarkupViewConfiguration extends TemplateConfiguration implements GenericVi
         MODULE_NAME
     }
 
-    @Override
     PropertyDescriptor[] findViewConfigPropertyDescriptor() {
-        def allDescriptors = []
-        allDescriptors.addAll(
-            GenericViewConfiguration.super.findViewConfigPropertyDescriptor()
-        )
-        allDescriptors.addAll(
-            BeanUtils.getPropertyDescriptors(TemplateConfiguration)
-        )
+        List<PropertyDescriptor> allDescriptors = []
+        allDescriptors.addAll(BeanUtils.getPropertyDescriptors(GenericViewConfiguration))
+        allDescriptors.addAll(BeanUtils.getPropertyDescriptors(TemplateConfiguration))
         return allDescriptors as PropertyDescriptor[]
     }
 }

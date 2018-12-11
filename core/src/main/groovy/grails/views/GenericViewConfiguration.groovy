@@ -103,7 +103,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
         String moduleName = viewModuleName
         GroovyObject configObject = (GroovyObject)this
         if (config != null) {
-            def descriptors = findViewConfigPropertyDescriptor()
+            PropertyDescriptor[] descriptors =  BeanUtils.getPropertyDescriptors(GenericViewConfiguration)
             for (PropertyDescriptor desc in descriptors) {
                 if (desc.writeMethod != null) {
                     String propertyName = desc.name
@@ -130,9 +130,5 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
             packages << cls.packageName
         }
         packages as String[]
-    }
-
-    PropertyDescriptor[] findViewConfigPropertyDescriptor() {
-        BeanUtils.getPropertyDescriptors(GenericViewConfiguration)
     }
 }

@@ -3,6 +3,8 @@ package grails.views
 import grails.util.GrailsUtil
 import org.grails.config.CodeGenConfig
 import spock.lang.IgnoreIf
+import org.springframework.beans.BeanUtils
+import java.beans.PropertyDescriptor
 import spock.lang.Specification
 
 //Fixed in 3.2.5
@@ -33,5 +35,9 @@ class TestClass implements GenericViewConfiguration {
     @Override
     String getViewModuleName() {
         "json"
+    }
+
+    PropertyDescriptor[] findViewConfigPropertyDescriptor() {
+        BeanUtils.getPropertyDescriptors(GenericViewConfiguration)
     }
 }
