@@ -19,7 +19,7 @@ import org.grails.io.support.GrailsResourceUtils
 class MarkupViewGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "3.1.0 > *"
+    def grailsVersion = "4.0.0.BUILD-SNAPSHOT > *"
 
     def title = "JSON View" // Headline display name of the plugin
     def author = "Graeme Rocher"
