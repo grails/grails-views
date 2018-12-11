@@ -2,13 +2,10 @@ package grails.plugin.json.view
 
 import grails.gorm.annotation.Entity
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import spock.lang.Issue
 import spock.lang.Specification
 
-@TestMixin(GrailsUnitTestMixin)
-class EmbeddedAssociationsSpec extends Specification implements JsonViewTest {
+class EmbeddedAssociationsSpec extends Specification implements JsonViewTest, GrailsUnitTest {
 
     void "Test render domain object with embedded associations"() {
         given:"A domain class with embedded associations"

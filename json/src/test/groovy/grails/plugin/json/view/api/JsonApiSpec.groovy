@@ -3,15 +3,12 @@ package grails.plugin.json.view.api
 import grails.persistence.Entity
 import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.validation.Validateable
 import grails.validation.ValidationErrors
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
-
-@TestMixin(GrailsUnitTestMixin)
-class JsonApiSpec extends Specification implements JsonViewTest {
+class JsonApiSpec extends Specification implements JsonViewTest, GrailsUnitTest {
     void setup() {
         mappingContext.addPersistentEntities(Widget, Author, Book, ResearchPaper)
     }

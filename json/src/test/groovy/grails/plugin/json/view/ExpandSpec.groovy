@@ -2,13 +2,11 @@ package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import org.grails.datastore.mapping.core.Session
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
-@TestMixin(GrailsUnitTestMixin)
-class ExpandSpec extends Specification implements JsonViewTest {
+class ExpandSpec extends Specification implements JsonViewTest, GrailsUnitTest {
 
     void setup() {
         mappingContext.addPersistentEntities(Team, Player)

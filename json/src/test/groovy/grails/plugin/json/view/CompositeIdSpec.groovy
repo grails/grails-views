@@ -2,8 +2,6 @@ package grails.plugin.json.view
 
 import grails.gorm.annotation.Entity
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import org.grails.orm.hibernate.cfg.HibernateMappingContext
 import spock.lang.Specification
 

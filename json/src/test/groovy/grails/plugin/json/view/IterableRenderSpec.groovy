@@ -1,13 +1,11 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.views.ViewException
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
-@TestMixin(GrailsUnitTestMixin)
-class IterableRenderSpec extends Specification implements JsonViewTest {
+class IterableRenderSpec extends Specification implements JsonViewTest, GrailsUnitTest {
 
     void "Test render a collection type"() {
         given:"A collection"

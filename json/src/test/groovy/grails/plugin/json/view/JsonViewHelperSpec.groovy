@@ -7,8 +7,6 @@ import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.views.GrailsViewTemplate
 import grails.views.api.internal.EmptyParameters
 import org.grails.core.artefact.DomainClassArtefactHandler
@@ -16,6 +14,7 @@ import org.grails.core.support.GrailsDomainConfigurationUtil
 import org.grails.datastore.gorm.config.GrailsDomainClassMappingContext
 import org.grails.datastore.gorm.config.GrailsDomainClassPersistentEntity
 import org.grails.datastore.mapping.model.MappingContext
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
 /*
@@ -37,8 +36,7 @@ import spock.lang.Specification
 /**
  * @author graemerocher
  */
-@TestMixin(GrailsUnitTestMixin)
-class JsonViewHelperSpec extends Specification implements JsonViewTest {
+class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUnitTest {
     void "test render toMany association"() {
         given:"A view helper"
         DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)

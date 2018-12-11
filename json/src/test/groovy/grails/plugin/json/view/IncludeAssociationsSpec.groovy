@@ -1,12 +1,10 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonViewTest
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
-@TestMixin(GrailsUnitTestMixin)
-class IncludeAssociationsSpec extends Specification implements JsonViewTest {
+class IncludeAssociationsSpec extends Specification implements JsonViewTest, GrailsUnitTest {
 
     void "test includeAssociations with json api"() {
         given: "A collection"
