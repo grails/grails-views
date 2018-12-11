@@ -8,8 +8,8 @@ import grails.views.api.GrailsView
 import grails.views.mvc.GenericGroovyTemplateView
 import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.web.http.HttpHeaders
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
 import spock.lang.Issue
