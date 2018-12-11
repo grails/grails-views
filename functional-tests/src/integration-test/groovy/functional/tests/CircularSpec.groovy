@@ -1,6 +1,6 @@
 package functional.tests
 
-import grails.transaction.Rollback
+import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import grails.web.http.HttpHeaders
 import io.micronaut.http.HttpRequest
