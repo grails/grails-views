@@ -3,6 +3,7 @@ package grails.plugin.json.view
 import grails.gorm.annotation.Entity
 import grails.plugin.json.view.test.JsonViewTest
 import groovy.json.JsonSlurper
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Issue
 import spock.lang.Specification
 
