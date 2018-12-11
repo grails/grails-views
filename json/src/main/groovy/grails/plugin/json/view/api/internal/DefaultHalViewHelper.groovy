@@ -540,14 +540,14 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
             Object[] arr = (Object[]) args
                 switch(arr.length) {
                     case 1:
-                        final Object value = arr[0];
+                        final Object value = arr[0]
                         if(value instanceof Closure) {
-                            call(name, (Closure)value);
+                            call(name, (Closure)value)
                         }
                         else {
-                            call(name, value);
+                            call(name, value)
                         }
-                        return null;
+                        return null
                     case 2:
                         if(arr[-1] instanceof Closure) {
                             final Object obj = arr[0]
