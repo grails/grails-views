@@ -4,7 +4,6 @@ import grails.persistence.Entity
 import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
 import grails.validation.Validateable
-import grails.validation.ValidationErrors
 import groovy.json.JsonSlurper
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
