@@ -21,7 +21,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
 import org.grails.buffer.FastStringWriter
-import org.grails.core.util.ClassPropertyFetcher
+import org.grails.datastore.mapping.reflect.ClassPropertyFetcher
 import org.grails.core.util.IncludeExcludeSupport
 import org.grails.datastore.mapping.collection.PersistentCollection
 import org.grails.datastore.mapping.model.IdentityMapping
