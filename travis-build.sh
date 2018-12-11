@@ -1,13 +1,7 @@
 #!/bin/bash
 set -e
-rm -rf *.zip
 
 EXIT_STATUS=0
-
-# Set Gradle daemon JVM args
-mkdir -p ~/.gradle
-echo "org.gradle.jvmargs=-XX\:MaxPermSize\=512m -Xmx1024m" >> ~/.gradle/gradle.properties
-echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
 
 echo "Gradle Task Check for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 
