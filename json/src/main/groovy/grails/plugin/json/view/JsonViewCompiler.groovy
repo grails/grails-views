@@ -20,7 +20,7 @@ class JsonViewCompiler extends AbstractGroovyTemplateCompiler {
 
     @Override
     protected CompilerConfiguration configureCompiler() {
-        def compiler = super.configureCompiler()
+        CompilerConfiguration compiler = super.configureCompiler()
         if(viewConfiguration.compileStatic) {
             configuration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension"), CompileStatic.class))

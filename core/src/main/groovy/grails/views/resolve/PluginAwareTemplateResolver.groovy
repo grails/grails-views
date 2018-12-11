@@ -45,7 +45,7 @@ class PluginAwareTemplateResolver extends GenericGroovyTemplateResolver implemen
 
     @Override
     Class<? extends Template> resolveTemplateClass(String path) {
-        def applicationTemplate = super.resolveTemplateClass(path)
+        Class<? extends Template> applicationTemplate = super.resolveTemplateClass(path)
         if(applicationTemplate == null) {
             // try global template
             applicationTemplate = resolveTemplateClass(null, path)
@@ -53,7 +53,7 @@ class PluginAwareTemplateResolver extends GenericGroovyTemplateResolver implemen
         if(applicationTemplate == null && pluginManager != null) {
             // search plugins for template
             for( plugin in pluginManager.allPlugins ) {
-                def pluginTemplate = resolveTemplateClass(plugin.fileSystemShortName, path)
+                Class<? extends Template> pluginTemplate = resolveTemplateClass(plugin.fileSystemShortName, path)
                 if(pluginTemplate != null) {
                     return pluginTemplate
                 }

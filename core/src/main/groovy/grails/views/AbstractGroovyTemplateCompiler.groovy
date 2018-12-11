@@ -37,7 +37,7 @@ abstract class AbstractGroovyTemplateCompiler {
     protected CompilerConfiguration configureCompiler() {
         configuration.compilationCustomizers.clear()
 
-        def importCustomizer = new ImportCustomizer()
+        ImportCustomizer importCustomizer = new ImportCustomizer()
         importCustomizer.addStarImports( viewConfiguration.packageImports )
         importCustomizer.addStaticStars( viewConfiguration.staticImports )
 
@@ -52,13 +52,13 @@ abstract class AbstractGroovyTemplateCompiler {
 
     void compile(Iterable<File> sources) {
         configuration.setClasspathList(classpath)
-        def pathToSourceDir = sourceDir.canonicalPath
-        for(source in sources) {
+        String pathToSourceDir = sourceDir.canonicalPath
+        for(File source in sources) {
             configureCompiler()
-            def unit = new CompilationUnit(configuration)
-            def pathToSource = source.canonicalPath
-            def path = pathToSource - pathToSourceDir
-            def templateName = GenericGroovyTemplateResolver.resolveTemplateName(
+            CompilationUnit unit = new CompilationUnit(configuration)
+            String pathToSource = source.canonicalPath
+            String path = pathToSource - pathToSourceDir
+            String templateName = GenericGroovyTemplateResolver.resolveTemplateName(
                     packageName, path
             )
             unit.addSource(new SourceUnit(
@@ -108,7 +108,7 @@ Usage: java -cp CLASSPATH ${compilerClass.name} [srcDir] [destDir] [targetCompat
         }
 
 
-        def fileExtension = configuration.extension
+        String fileExtension = configuration.extension
         compiler.setDefaultScriptExtension(fileExtension)
 
         List<File> allFiles = []
