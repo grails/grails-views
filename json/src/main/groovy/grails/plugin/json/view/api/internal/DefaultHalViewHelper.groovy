@@ -242,14 +242,14 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         order = order ?: httpParams.get(PAGINATION_ORDER)
 
         String contentType = this.contentType
-        contentType = jsonView.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
+        MimeType contentTypeMimeType = jsonView.mimeUtility?.getMimeTypeForExtension(contentType)
         Locale locale = jsonView.locale ?: Locale.ENGLISH
         jsonDelegate.call(LINKS_ATTRIBUTE) {
             call(SELF_ATTRIBUTE) {
                 call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true, params: linkParams)  //TODO handle the max/offset here
                 call HREFLANG_ATTRIBUTE, locale.toString()
 
-                call TYPE_ATTRIBUTE, contentType
+                call TYPE_ATTRIBUTE, contentTypeMimeType ?: contentType
             }
             List<Link> links = getPaginationLinks(object, total, max, offset, sort, order)
             for(link in links) {
