@@ -11,7 +11,7 @@ echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
 
 echo "Gradle Task Check for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 
-./gradlew check --no-daemon || EXIT_STATUS=$?
+./gradlew check --no-daemon --console=plain || EXIT_STATUS=$?
 
 if [ $EXIT_STATUS -ne 0 ]; then
   exit $EXIT_STATUS
@@ -19,7 +19,7 @@ fi
 
 echo "Gradle Task Assemble for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 
-./gradlew assemble --no-daemon || EXIT_STATUS=$?
+./gradlew assemble --no-daemon --console=plain || EXIT_STATUS=$?
 
 if [ $EXIT_STATUS -ne 0 ]; then
   exit $EXIT_STATUS
@@ -38,14 +38,14 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_P
   echo "Publishing archives"
 
   if [[ -n $TRAVIS_TAG ]]; then
-      ./gradlew bintrayUpload || EXIT_STATUS=$?
+      ./gradlew bintrayUpload --no-daemon --console=plain || EXIT_STATUS=$?
   else
-      ./gradlew publish || EXIT_STATUS=$?
+      ./gradlew publish --no-daemon --console=plain || EXIT_STATUS=$?
   fi
   ./gradlew --stop
 
-  ./gradlew views-docs:docs || EXIT_STATUS=$?
   ./gradlew --stop
+  ./gradlew views-docs:docs --no-daemon --console=plain || EXIT_STATUS=$?
 
   git config --global user.name "$GIT_NAME"
   git config --global user.email "$GIT_EMAIL"
