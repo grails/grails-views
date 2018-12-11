@@ -70,6 +70,7 @@ dependencies {
     compile project(":views-core")
 
     testCompile "org.grails:grails-plugin-testing"
+    testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
 
     testRuntime "org.javassist:javassist:3.18.1-GA"
 
