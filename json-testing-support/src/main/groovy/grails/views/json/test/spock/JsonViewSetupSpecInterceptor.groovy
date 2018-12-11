@@ -6,8 +6,6 @@ import grails.views.json.test.JsonViewUnitTest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import org.grails.datastore.mapping.keyvalue.mapping.config.KeyValueMappingContext
-import org.grails.plugins.converters.ConvertersGrailsPlugin
-import org.grails.plugins.web.mime.MimeTypesGrailsPlugin
 import org.grails.web.mapping.DefaultLinkGenerator
 import org.grails.web.mapping.UrlMappingsHolderFactoryBean
 import org.spockframework.runtime.extension.IMethodInterceptor
