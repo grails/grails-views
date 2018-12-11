@@ -2,6 +2,7 @@ package grails.plugin.json.view
 
 import grails.gorm.annotation.Entity
 import grails.plugin.json.view.test.JsonViewTest
+import groovy.json.JsonSlurper
 import spock.lang.Ignore
 import spock.lang.Issue
 import spock.lang.Specification
@@ -169,8 +170,20 @@ json hal.render(team)
 ''', [team: team])
 
         then:'the result is correct'
-        result.jsonText == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:8080/player/2","hreflang":"en","type":"application/hal+json"}},"name":"Keane"},"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"_links":{"self":{"href":"http://localhost:8080/team/1","hreflang":"en","type":"application/hal+json"}},"id":1,"name":"Manchester United"}'
-        result.json.'_embedded'
+        Map m = new JsonSlurper().parseText(result.jsonText)
+        m['_embedded']['captain']['_links']['self']['href'] == 'http://localhost:8080/player/2'
+        m['_embedded']['captain']['_links']['self']['hreflang'] == 'en'
+        m['_embedded']['captain']['_links']['self']['type'] == 'application/hal+json'
+        m['_embedded']['captain']['name'] == 'Keane'
+        m['_embedded']['players']['_links']['self']['href'] == 'http://localhost:8080/player/1'
+        m['_embedded']['players']['_links']['self']['hreflang'] == 'en'
+        m['_embedded']['players']['_links']['self']['type'] == 'application/hal+json'
+        m['_embedded']['players']['name'] == 'Cantona'
+        m['_links']['self']['href'] == 'http://localhost:8080/team/1'
+        m['_links']['self']['hreflang'] == 'en'
+        m['_links']['self']['type'] == 'application/hal+json'
+        m['id'] == 1
+        m['name'] == 'Manchester United'
     }
 
     @Ignore
@@ -198,8 +211,16 @@ json {
 ''', [team: team])
 
         then:'the result is correct'
-        result.jsonText == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:8080/player","hreflang":"en","type":"application/hal+json"}},"name":"Keane"},"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"name":"Manchester United"}'
-        result.json.'_embedded'
+        Map m = new JsonSlurper().parseText(result.jsonText)
+        m['_embedded']['captain']['_links']['self']['href'] == 'http://localhost:8080/player'
+        m['_embedded']['captain']['_links']['self']['hreflang'] == 'en'
+        m['_embedded']['captain']['_links']['self']['type'] == 'application/hal+json'
+        m['_embedded']['captain']['name'] == 'Keane'
+        m['_embedded']['players']['_links']['self']['href'] == 'http://localhost:8080/player/1'
+        m['_embedded']['players']['_links']['self']['hreflang'] == 'en'
+        m['_embedded']['players']['_links']['self']['type'] == 'application/hal+json'
+        m['_embedded']['players']['name'] == 'Cantona'
+        m['name'] == 'Manchester United'
     }
 
     void "test hal embedded method for many-to-one associations"() {
@@ -222,8 +243,12 @@ json {
 ''', [player: player])
 
         then:'the result is correct'
-        result.jsonText == '{"_embedded":{"team":{"_links":{"self":{"href":"http://localhost:8080/team/1","hreflang":"en","type":"application/hal+json"}},"name":"Manchester United"}},"name":"Cantona"}'
-        result.json.'_embedded'.team.name == "Manchester United"
+        Map m = new JsonSlurper().parseText(result.jsonText)
+        m['_embedded']['team']['_links']['self']['href'] == 'http://localhost:8080/team/1'
+        m['_embedded']['team']['_links']['self']['hreflang'] == 'en'
+        m['_embedded']['team']['_links']['self']['type'] == 'application/hal+json'
+        m['_embedded']['team']['name'] == 'Manchester United'
+        m['name'] == 'Cantona'
     }
 
     void "test hal embedded with associations that have GORM embedded properties"() {
@@ -246,9 +271,19 @@ json hal.render(parent)
 ''', [parent:parent])
 
         then:"The result is correct"
-        result.jsonText == '{"_embedded":{"person":{"_links":{"self":{"href":"http://localhost:8080/person","hreflang":"en","type":"application/hal+json"}},"homeAddress":{"postCode":"12345"},"name":"Robert","nickNames":["Rob","Bob"],"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}]}},"_links":{"self":{"href":"http://localhost:8080/parent","hreflang":"en","type":"application/hal+json"}},"name":"Joe"}'
-
-
+        Map m = new JsonSlurper().parseText(result.jsonText)
+        m['_embedded']['person']['_links']['self']['href'] == 'http://localhost:8080/person'
+        m['_embedded']['person']['_links']['self']['hreflang'] == 'en'
+        m['_embedded']['person']['_links']['self']['type'] == 'application/hal+json'
+        m['_embedded']['person']['homeAddress']['postCode'] == '12345'
+        m['_embedded']['person']['name'] == 'Robert'
+        m['_embedded']['person']['nickNames'] == ['Rob', 'Bob']
+        m['_embedded']['person']['otherAddresses'].collect { it['postCode'] }.contains('6789')
+        m['_embedded']['person']['otherAddresses'].collect { it['postCode'] }.contains('54321')
+        m['_links']['self']['href'] == 'http://localhost:8080/parent'
+        m['_links']['self']['hreflang'] == 'en'
+        m['_links']['self']['type'] == 'application/hal+json'
+        m['name'] == 'Joe'
     }
 }
 

@@ -2,6 +2,7 @@ package grails.plugin.json.view
 
 import grails.persistence.Entity
 import grails.plugin.json.view.test.JsonViewTest
+import groovy.json.JsonSlurper
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
@@ -47,7 +48,12 @@ json jsonapi.render(object)
 ''', [object: enumTest])
 
         then:"the json is rendered correctly"
-        result.jsonText == '''{"data":{"type":"enumTest","id":"1","attributes":{"bar":"BAR","name":"Fred"}},"links":{"self":"/enumTest/1"}}'''
+        Map m = new JsonSlurper().parseText(result.jsonText)
+        m['data']['type'] == 'enumTest'
+        m['data']['id'] == '1'
+        m['data']['attributes']['bar'] == 'BAR'
+        m['data']['attributes']['name'] == 'Fred'
+        m['links']['self'] == "/enumTest/1"
     }
 }
 
