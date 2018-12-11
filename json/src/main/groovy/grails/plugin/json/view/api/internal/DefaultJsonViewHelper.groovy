@@ -126,11 +126,11 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
 
     protected List<Object> getJsonStackTrace(Throwable e) {
         StackTraceUtils.sanitize(e)
-        (List<Object>) e.stackTrace
+        e.stackTrace
                 .findAll() { StackTraceElement element -> element.lineNumber > -1 }
                 .collect() { StackTraceElement element ->
             "$element.lineNumber | ${element.className}.$element.methodName".toString()
-        }.toList()
+        }.toList() as List<Object>
     }
 
     protected List<String> getExpandProperties(JsonView jsonView, Map arguments) {

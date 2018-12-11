@@ -464,7 +464,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                         List<JsonOutput.JsonWritable> childResults = ((Iterable) propVal).collect() { eo ->
                             ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, associatedType, eo)
                         }.toList()
-                        jsonDelegate.call(embedded.name, (List<Object>) childResults)
+                        jsonDelegate.call(embedded.name, childResults as List<Object>)
                     }
                 }
                 else {
@@ -557,7 +557,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                                 return null
                             }
                             else if(obj.getClass().isArray()) {
-                                call(name, Arrays.asList( (Object[])obj), callable)
+                                call(name, Arrays.asList(obj as Object[]), callable)
                                 return null
                             }
                             else {
