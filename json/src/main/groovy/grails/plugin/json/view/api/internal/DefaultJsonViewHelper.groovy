@@ -246,7 +246,7 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         if (total <= 0) {
             return null
         }
-        Integer laststep = ((int) Math.round(Math.ceil(total / max))) - 1
+        Integer laststep = ((int) Math.round(Math.ceil((Double)(total / max)))) - 1
         return Math.max((laststep * max), 0)
     }
 
