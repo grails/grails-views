@@ -12,6 +12,7 @@ import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
+import spock.lang.Ignore
 import spock.lang.Issue
 import spock.lang.Specification
 
@@ -23,6 +24,8 @@ import javax.servlet.http.HttpServletResponse
  */
 class JsonViewTemplateResolverSpec extends Specification {
 
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test resolve paths for locale"() {
         given:"A view resolver"
         def viewResolver = new JsonViewResolver()
@@ -45,7 +48,8 @@ class JsonViewTemplateResolverSpec extends Specification {
 
     }
 
-
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test resolve paths for local and request version"() {
         given:"A view resolver"
         def viewResolver = new JsonViewResolver()
@@ -87,6 +91,8 @@ class JsonViewTemplateResolverSpec extends Specification {
     }
 
 
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test that the template resolver works for absolute view URI"() {
         given:"A viewResolver with a mock template resolver"
         def viewResolver = new JsonViewResolver()
@@ -109,10 +115,10 @@ class JsonViewTemplateResolverSpec extends Specification {
         view.url == '/foo/bar.gson'
         view.templateEngine != null
         view.contentType == 'application/json'
-
-
     }
 
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test that the template resolver works for relative URI"() {
         given:"A viewResolver with a mock template resolver"
 
@@ -148,7 +154,8 @@ class JsonViewTemplateResolverSpec extends Specification {
         RequestContextHolder.setRequestAttributes(null)
     }
 
-    @Issue('https://github.com/grails/grails-core/issues/10582')
+    @Issue(['https://github.com/grails/grails-core/issues/10582', 'https://github.com/grails/grails-views/issues/195'])
+    @Ignore
     void 'Test that the template resolver works for a Request URI'() {
         given: 'a viewResolver with a mock template resolver'
         def smartResolver = new JsonViewResolver()

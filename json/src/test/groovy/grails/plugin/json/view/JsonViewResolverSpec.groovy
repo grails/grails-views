@@ -5,6 +5,8 @@ import grails.views.resolve.GenericGroovyTemplateResolver
 import grails.web.mapping.LinkGenerator
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
+import spock.lang.Ignore
+import spock.lang.Issue
 import spock.lang.Specification
 
 /**
@@ -13,6 +15,8 @@ import spock.lang.Specification
 class JsonViewResolverSpec extends Specification {
 
     // We need Groovy 2.4.5 with extensible StreamingJsonBuilder to support templates
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test render templates"() {
         given:"A view resolver"
         def resolver = new JsonViewResolver()
@@ -28,6 +32,8 @@ class JsonViewResolverSpec extends Specification {
         response.contentAsString == '{"name":"Joe","age":25,"child":{"name":"Fred","age":4},"children":[{"name":"Fred","age":1},{"name":"Fred","age":2},{"name":"Fred","age":3}],"child2":{"name":"Fred","age":6},"children2":[{"name":"Fred","age":1},{"name":"Fred","age":2},{"name":"Fred","age":3}]}'
     }
 
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test create links using LinkGenerator"() {
         given:"A view resolver"
         def resolver = new JsonViewResolver()
@@ -48,7 +54,8 @@ class JsonViewResolverSpec extends Specification {
         response.contentAsString == '{"person":{"name":"bob","homepage":"http://foo.com/person"}}'
     }
 
-
+    @Issue('https://github.com/grails/grails-views/issues/195')
+    @Ignore
     void "Test that a resolved JSON view can configure the page response"() {
         given:"A view resolver"
         def resolver = new JsonViewResolver()
