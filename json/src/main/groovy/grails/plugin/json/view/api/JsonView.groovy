@@ -125,7 +125,7 @@ trait JsonView extends GrailsView {
      * @param name The name of the empty object to create
      * @throws IOException
      */
-    public void json(String name) throws IOException {
+    void json(String name) throws IOException {
         json.call name
     }
 
@@ -146,7 +146,7 @@ trait JsonView extends GrailsView {
      * @param l a list of values
      * @return a list of values
      */
-    public Object json(List l) throws IOException {
+    Object json(List l) throws IOException {
         json.call l
     }
 
@@ -167,7 +167,7 @@ trait JsonView extends GrailsView {
      * @param args an array of values
      * @return a list of values
      */
-    public Object json(Object... args) throws IOException {
+    Object json(Object... args) throws IOException {
         json.call args
     }
 
@@ -194,7 +194,7 @@ trait JsonView extends GrailsView {
      * @param coll a collection
      * @param c a closure used to convert the objects of coll
      */
-    public Object json(Iterable coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
+    Object json(Iterable coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
         json.call coll, c
     }
 
@@ -216,7 +216,7 @@ trait JsonView extends GrailsView {
      *
      * @param c a closure whose method call statements represent key / values of a JSON object
      */
-    public Object json(@DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
+    Object json(@DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
         json.call c
     }
 
@@ -239,7 +239,7 @@ trait JsonView extends GrailsView {
      * @param name The key for the JSON object
      * @param c a closure whose method call statements represent key / values of a JSON object
      */
-    public void json(String name, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
+    void json(String name, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
         json.call name, c
     }
 
@@ -266,7 +266,7 @@ trait JsonView extends GrailsView {
      * @param coll a collection
      * @param c a closure used to convert the objects of coll
      */
-    public void json(String name, Iterable coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
+    void json(String name, Iterable coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) throws IOException {
         json.call name, coll, c
     }
 
@@ -292,7 +292,7 @@ trait JsonView extends GrailsView {
      * @param callable Additional attributes of the JSON object represented by the closure
      * @throws IOException
      */
-    public void json(String name, Map map, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure callable) throws IOException {
+    void json(String name, Map map, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure callable) throws IOException {
         json.call name, map, callable
     }
 }

@@ -91,7 +91,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
         }
     }
 
-    public void readConfiguration(File configFile) {
+    void readConfiguration(File configFile) {
         if(configFile?.exists()) {
             def config = new CodeGenConfig()
             config.loadYml(configFile)
@@ -99,7 +99,7 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
         }
     }
 
-    public void readConfiguration(ConfigMap config) {
+    void readConfiguration(ConfigMap config) {
         def moduleName = viewModuleName
         GroovyObject configObject = (GroovyObject)this
         if (config != null) {

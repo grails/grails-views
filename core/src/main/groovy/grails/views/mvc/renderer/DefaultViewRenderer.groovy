@@ -121,7 +121,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         }
     }
 
-    public static String templateNameForClass(Class<?> cls) {
+    static String templateNameForClass(Class<?> cls) {
         TemplateResolverUtils.shortTemplateNameForClass(cls)
     }
 }

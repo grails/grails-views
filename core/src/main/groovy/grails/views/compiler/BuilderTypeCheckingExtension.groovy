@@ -157,7 +157,7 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
         }
 
         @Override
-        public Expression transform(final Expression exp) {
+        Expression transform(final Expression exp) {
             if (callsToBeReplaced.contains(exp)) {
                 def args = exp.arguments instanceof TupleExpression ? exp.arguments.expressions : [exp.arguments]
                 if(exp.objectExpression.name == builderVariableName) {

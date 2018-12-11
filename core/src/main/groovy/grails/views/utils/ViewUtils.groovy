@@ -17,7 +17,7 @@ class ViewUtils {
      * @param map The map to look in
      * @return A boolean value which will be false if the map is null, the map doesn't contain the key or the value is false
      */
-    public static boolean getBooleanFromMap(String key, Map<?, ?> map, boolean defaultValue = false) {
+    static boolean getBooleanFromMap(String key, Map<?, ?> map, boolean defaultValue = false) {
         if (map == null) return defaultValue
         if (map.containsKey(key)) {
             Object o = map.get(key)
@@ -37,7 +37,7 @@ class ViewUtils {
      * @param map The map
      * @return A list of strings
      */
-    public static List<String> getStringListFromMap(String key, Map map, List<String> defaultValue = []) {
+    static List<String> getStringListFromMap(String key, Map map, List<String> defaultValue = []) {
         if(map == null) return defaultValue
 
         if(map.containsKey(key)) {

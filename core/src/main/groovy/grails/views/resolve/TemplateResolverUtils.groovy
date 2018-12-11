@@ -12,12 +12,12 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class TemplateResolverUtils {
 
-    public static String shortTemplateNameForClass(Class<?> cls) {
+    static String shortTemplateNameForClass(Class<?> cls) {
         def propertyName = GrailsNameUtils.getPropertyName(cls)
         return "/$propertyName/_$propertyName"
     }
 
-    public static String fullTemplateNameForClass(Class<?> cls) {
+    static String fullTemplateNameForClass(Class<?> cls) {
         def templateName = cls.name.replace('.', '/')
         def lastSlash = templateName.lastIndexOf('/')
         def stem = templateName.substring(0, lastSlash)
