@@ -30,8 +30,6 @@ if [ "${TRAVIS_JDK_VERSION}" == "openjdk11" ] ; then
   exit $EXIT_STATUS
 fi
 
-./gradlew --stop
-
 echo "Publishing archives for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
@@ -42,9 +40,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_P
   else
       ./gradlew publish --no-daemon --console=plain || EXIT_STATUS=$?
   fi
-  ./gradlew --stop
 
-  ./gradlew --stop
   ./gradlew views-docs:docs --no-daemon --console=plain || EXIT_STATUS=$?
 
   git config --global user.name "$GIT_NAME"
