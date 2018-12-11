@@ -100,14 +100,14 @@ trait GenericViewConfiguration implements ViewConfiguration, GrailsApplicationAw
     }
 
     void readConfiguration(ConfigMap config) {
-        def moduleName = viewModuleName
+        String moduleName = viewModuleName
         GroovyObject configObject = (GroovyObject)this
         if (config != null) {
             def descriptors = findViewConfigPropertyDescriptor()
-            for (desc in descriptors) {
+            for (PropertyDescriptor desc in descriptors) {
                 if (desc.writeMethod != null) {
-                    def propertyName = desc.name
-                    def value
+                    String propertyName = desc.name
+                    Object value
                     if (desc.propertyType == Class) {
                         String className = config.getProperty("grails.views.${moduleName}.$propertyName".toString(), String)
                         if (className) {

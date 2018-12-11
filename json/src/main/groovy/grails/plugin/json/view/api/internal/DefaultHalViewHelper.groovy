@@ -10,7 +10,10 @@ import grails.plugin.json.view.api.HalViewHelper
 import grails.plugin.json.view.api.JsonView
 import grails.rest.Link
 import grails.util.GrailsNameUtils
+import grails.views.WritableScriptTemplate
+import grails.views.api.GrailsView
 import grails.views.api.HttpView
+import grails.views.api.http.Parameters
 import grails.views.utils.ViewUtils
 import grails.web.mime.MimeType
 import groovy.transform.CompileDynamic
@@ -231,16 +234,16 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
     void paginate(Object object, Integer total, Integer offset = null, Integer max = null,  String sort = null, String order = null) {
         Map<String, Object> linkParams = buildPaginateParams(max, offset, sort, order)
 
-        def jsonView = view
-        def httpParams = jsonView.params
+        GrailsView jsonView = view
+        Parameters httpParams = jsonView.params
         offset = offset ?: httpParams.int(PAGINATION_OFFSET, 0)
         max = max ?: httpParams.int(PAGINATION_MAX, 10)
         sort = sort ?: httpParams.get(PAGINATION_SORT)
         order = order ?: httpParams.get(PAGINATION_ORDER)
 
         String contentType = this.contentType
-        def locale = jsonView.locale ?: Locale.ENGLISH
         contentType = jsonView.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
+        Locale locale = jsonView.locale ?: Locale.ENGLISH
         jsonDelegate.call(LINKS_ATTRIBUTE) {
             call(SELF_ATTRIBUTE) {
                 call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true, params: linkParams)  //TODO handle the max/offset here
@@ -452,13 +455,13 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 }
             } else if(prop instanceof EmbeddedCollection) {
                 EmbeddedCollection embedded = (EmbeddedCollection)prop
-                def associatedEntity = embedded.associatedEntity
-                def associatedType = associatedEntity.javaClass
-                def embeddedReflector = associatedEntity.getMappingContext().getEntityReflector(associatedEntity)
-                def childTemplate = view.templateEngine.resolveTemplate(associatedType, view.locale)
+                PersistentEntity associatedEntity = embedded.associatedEntity
+                Class associatedType = associatedEntity.javaClass
+                EntityReflector embeddedReflector = associatedEntity.getMappingContext().getEntityReflector(associatedEntity)
+                WritableScriptTemplate childTemplate = view.templateEngine.resolveTemplate(associatedType, view.locale)
                 if (childTemplate != null) {
                     if(propVal instanceof Iterable) {
-                        def childResults = ((Iterable) propVal).collect() { eo ->
+                        List<JsonOutput.JsonWritable> childResults = ((Iterable) propVal).collect() { eo ->
                             ((DefaultGrailsJsonViewHelper) viewHelper).renderChildTemplate(childTemplate, associatedType, eo)
                         }.toList()
                         jsonDelegate.call(embedded.name, (List<Object>) childResults)
@@ -467,7 +470,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 else {
                     if(propVal instanceof Iterable) {
                         jsonDelegate.call(embedded.name, (Iterable)propVal) { eo ->
-                            def associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
+                            StreamingJsonDelegate associationJsonDelegate = (StreamingJsonDelegate) getDelegate()
                             renderEntityProperties(associatedEntity, eo, embeddedReflector , associationJsonDelegate)
                         }
                     }

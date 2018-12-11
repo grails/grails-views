@@ -36,6 +36,8 @@ import org.grails.datastore.mapping.model.types.ToMany
 import org.grails.datastore.mapping.model.types.ToOne
 import org.grails.datastore.mapping.reflect.ClassPropertyFetcher
 
+import java.beans.PropertyDescriptor
+
 
 /**
  * Extended version of {@link DefaultGrailsViewHelper} with methods specific to JSON view rendering
@@ -377,7 +379,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             def declaringClass = object.getClass()
             def cpf = ClassPropertyFetcher.forClass(declaringClass)
             def descriptors = cpf.getPropertyDescriptors()
-            for (desc in descriptors) {
+            for (PropertyDescriptor desc in descriptors) {
                 def readMethod = desc.readMethod
                 if (readMethod != null && desc.writeMethod != null) {
                     def propertyName = desc.name
