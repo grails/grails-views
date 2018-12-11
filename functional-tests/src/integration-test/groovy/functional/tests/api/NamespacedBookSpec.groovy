@@ -1,5 +1,6 @@
 package functional.tests.api
 
+import functional.tests.Application
 import functional.tests.HttpClientSpec
 import grails.testing.mixin.integration.Integration
 import grails.web.http.HttpHeaders
@@ -9,7 +10,7 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
 import spock.lang.Issue
 
-@Integration
+@Integration(applicationClass = Application)
 class NamespacedBookSpec extends HttpClientSpec {
 
     void "test view rendering with a namespace"() {

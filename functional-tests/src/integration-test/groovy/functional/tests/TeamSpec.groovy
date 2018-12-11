@@ -7,7 +7,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import spock.lang.Shared
 
-@Integration
+@Integration(applicationClass = Application)
 class TeamSpec extends HttpClientSpec {
 
     @Shared

@@ -8,7 +8,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 
-@Integration
+@Integration(applicationClass = Application)
 class BookSpec extends HttpClientSpec {
 
     void "Test errors view rendering"() {

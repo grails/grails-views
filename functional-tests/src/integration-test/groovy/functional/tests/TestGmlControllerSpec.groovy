@@ -5,7 +5,7 @@ import groovy.util.slurpersupport.GPathResult
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 
-@Integration
+@Integration(applicationClass = Application)
 class TestGmlControllerSpec extends HttpClientSpec {
 
     void "Test GML response from action that returns a model"() {

@@ -5,7 +5,7 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 
-@Integration
+@Integration(applicationClass = Application)
 class PersonInheritanceSpec extends HttpClientSpec {
 
     void 'test template inheritance produces correct json'() {

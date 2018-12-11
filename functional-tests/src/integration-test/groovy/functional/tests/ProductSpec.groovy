@@ -6,7 +6,7 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 
-@Integration
+@Integration(applicationClass = Application)
 class ProductSpec extends HttpClientSpec {
 
     void testEmptyProducts() {

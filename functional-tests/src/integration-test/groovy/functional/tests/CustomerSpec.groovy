@@ -5,7 +5,7 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 
-@Integration
+@Integration(applicationClass = Application)
 class CustomerSpec extends HttpClientSpec {
 
     void "Test that circular references are correctly rendered for one to many relationship"() {

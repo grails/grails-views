@@ -8,7 +8,7 @@ import io.micronaut.http.HttpStatus
 /**
  * Created by graemerocher on 19/05/16.
  */
-@Integration
+@Integration(applicationClass = Application)
 class GlobalTemplatesSpec extends HttpClientSpec {
 
     void "Test errors view rendering"() {

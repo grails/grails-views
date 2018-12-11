@@ -5,7 +5,7 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 
-@Integration
+@Integration(applicationClass = Application)
 class VehicleSpec extends HttpClientSpec {
 
     void "Test that domain subclasses render their properties"() {

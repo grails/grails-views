@@ -6,7 +6,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import spock.lang.Issue
 
-@Integration
+@Integration(applicationClass = Application)
 class BulletinSpec extends HttpClientSpec {
 
     @Issue('https://github.com/grails/grails-views/issues/175')

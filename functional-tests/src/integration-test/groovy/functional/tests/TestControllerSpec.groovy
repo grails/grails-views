@@ -8,7 +8,7 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.exceptions.HttpClientException
 import spock.lang.Issue
 
-@Integration
+@Integration(applicationClass = Application)
 class TestControllerSpec extends HttpClientSpec {
 
     @Issue('https://github.com/grails/grails-core/issues/10582')

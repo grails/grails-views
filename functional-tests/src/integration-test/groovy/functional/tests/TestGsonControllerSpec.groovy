@@ -4,7 +4,7 @@ import grails.testing.mixin.integration.Integration
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 
-@Integration
+@Integration(applicationClass = Application)
 class TestGsonControllerSpec extends HttpClientSpec {
 
     void "Test that responding with a map is possible"() {
