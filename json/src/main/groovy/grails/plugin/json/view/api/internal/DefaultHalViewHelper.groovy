@@ -284,7 +284,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         arguments.put(IncludeExcludeSupport.EXCLUDES_PROPERTY, excs)
         if(entity != null) {
             EntityReflector entityReflector = mappingContext.getEntityReflector(entity)
-            def associations = entity.associations
+            List<Association> associations = entity.associations
             Map<Association, Object> embeddedValues = [:]
             for(Association association in associations) {
                 if(!association.isEmbedded()) {
@@ -295,13 +295,13 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
 
                             if(association instanceof ToMany && !( association instanceof Basic)) {
                                 if(deep || expandProperties.contains(propertyName) || proxyHandler == null || proxyHandler.isInitialized(value)) {
-                                    embeddedValues.put(association, value)
+                                    embeddedValues.put((Association) association, value)
                                 }
                                 excs.add(propertyName)
                             }
                             else if(association instanceof ToOne) {
                                 if(deep || expandProperties.contains(propertyName) || proxyHandler == null || proxyHandler.isInitialized(value)) {
-                                    embeddedValues.put(association, value)
+                                    embeddedValues.put((Association) association, value)
                                 }
                                 excs.add(propertyName)
                             }
