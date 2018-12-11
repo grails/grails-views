@@ -1,7 +1,7 @@
 package functional.tests
 
-import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
+import grails.testing.mixin.integration.Integration
 import grails.web.http.HttpHeaders
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse

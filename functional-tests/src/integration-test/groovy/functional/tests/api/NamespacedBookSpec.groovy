@@ -1,7 +1,7 @@
 package functional.tests.api
 
 import functional.tests.HttpClientSpec
-import grails.test.mixin.integration.Integration
+import grails.testing.mixin.integration.Integration
 import grails.web.http.HttpHeaders
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
