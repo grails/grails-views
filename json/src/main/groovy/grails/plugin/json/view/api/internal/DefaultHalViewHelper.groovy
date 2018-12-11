@@ -269,6 +269,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
      * @param object The object
      * @param arguments Any arguments. Supported arguments: 'includes', 'excludes', 'deep'
      */
+    @CompileDynamic
     void embedded(Object object, Map arguments = [:]) {
 
         MappingContext mappingContext = view.mappingContext
