@@ -17,7 +17,6 @@ import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 @InheritConstructors
 class JsonViewCompiler extends AbstractGroovyTemplateCompiler {
 
-
     @Override
     protected CompilerConfiguration configureCompiler() {
         CompilerConfiguration compiler = super.configureCompiler()

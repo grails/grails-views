@@ -107,7 +107,6 @@ Usage: java -cp CLASSPATH ${compilerClass.name} [srcDir] [destDir] [targetCompat
             compiler.setTargetBytecode( targetCompatibility )
         }
 
-
         String fileExtension = configuration.extension
         compiler.setDefaultScriptExtension(fileExtension)
 
@@ -119,6 +118,4 @@ Usage: java -cp CLASSPATH ${compilerClass.name} [srcDir] [destDir] [targetCompat
         }
         compiler.compile(allFiles)
     }
-
-
 }
