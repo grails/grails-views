@@ -2,7 +2,6 @@ package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
-import groovy.json.JsonSlurper
 import org.grails.datastore.mapping.core.Session
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
@@ -33,21 +32,15 @@ json g.render(player)
         def result = render(templateText, [player:player])
 
         then:"The result doesn't include the proxied association"
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['name'] == 'Cantona'
-        m['team']['id'] == 1
-        !m['team'].containsKey('name')
+        result.jsonText == '{"name":"Cantona","team":{"id":1}}'
 
         when:"The domain is rendered with expand parameters"
         result = render(templateText, [player:player]) {
             params expand:'team'
         }
-        m = new JsonSlurper().parseText(result.jsonText)
 
         then:"The association is expanded"
-        m['name'] == 'Cantona'
-        m['team']['id'] == 1
-        m['team']['name'] == "Manchester United"
+        result.jsonText == '{"name":"Cantona","team":{"id":1,"name":"Manchester United"}}'
     }
 
     void "Test expand parameter on nested property"() {
@@ -71,10 +64,7 @@ json g.render(map)
         }
 
         then:"The association is expanded"
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['player']['name'] == 'Cantona'
-        m['player']['team']['id'] == 1
-        m['player']['team']['name'] == "Manchester United"
+        result.jsonText == '{"player":{"name":"Cantona","team":{"id":1,"name":"Manchester United"}}}'
     }
 
     void "Test expand parameter allows expansion of child associations with HAL"() {
@@ -130,20 +120,6 @@ json jsonapi.render(player, [expand: 'team'])
 ''', [player: player])
 
         then: 'The JSON relationships are in place'
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['data']['type'] == 'player'
-        m['data']['id'] == '3'
-        m['data']['attributes']['name'] == 'Cantona'
-        m['data']['relationships']['team']['links']['self'] == "/team/9"
-        m['data']['relationships']['team']['data']['type'] == "team"
-        m['data']['relationships']['team']['data']['id'] == "9"
-        m['links']['self'] == "/player/3"
-        m['included'][0]['type'] == "team"
-        m['included'][0]['id'] == "9"
-        m['included'][0]['attributes']['name'] == "Manchester United"
-        m['included'][0]['attributes']['titles'] == null
-        m['included'][0]['relationships']['captain']['data'] == null
-        m['included'][0]['relationships']['players']['data'] == []
-        m['included'][0]['links']['self'] == "/team/9"
+        result.jsonText == '{"data":{"type":"player","id":"3","attributes":{"name":"Cantona"},"relationships":{"team":{"links":{"self":"/team/9"},"data":{"type":"team","id":"9"}}}},"links":{"self":"/player/3"},"included":[{"type":"team","id":"9","attributes":{"name":"Manchester United","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[]}},"links":{"self":"/team/9"}}]}'
     }
 }

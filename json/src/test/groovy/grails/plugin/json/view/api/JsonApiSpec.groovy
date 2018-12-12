@@ -4,7 +4,7 @@ import grails.persistence.Entity
 import grails.plugin.json.view.test.JsonRenderResult
 import grails.plugin.json.view.test.JsonViewTest
 import grails.validation.Validateable
-import groovy.json.JsonSlurper
+import grails.validation.ValidationErrors
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
@@ -29,13 +29,7 @@ json jsonapi.render(widget)
 ''', [widget: theWidget])
 
         then:
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['data']['type'] == 'widget'
-        m['data']['id'] == '5'
-        m['data']['attributes']['height'] == 7
-        m['data']['attributes']['name'] == "One"
-        m['data']['attributes']['width'] == 4
-        m['links']['self'] == "/widget/5"
+            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test Relationships - hasOne'() {
@@ -88,20 +82,7 @@ json jsonapi.render(researchPaper)
 ''', [researchPaper: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['data']['type'] == 'researchPaper'
-        m['data']['id'] == '3'
-        m['data']['attributes']['title'] == 'The Return of the King'
-        m['data']['relationships']['coAuthor']['links']['self'] == "/author/10"
-        m['data']['relationships']['coAuthor']['data']['type'] == "author"
-        m['data']['relationships']['coAuthor']['data']['id'] == "10"
-        m['data']['relationships']['leadAuthor']['links']['self'] == "/author/9"
-        m['data']['relationships']['leadAuthor']['data']['type'] == "author"
-        m['data']['relationships']['leadAuthor']['data']['id'] == "9"
-        m['data']['relationships']['subAuthors']['data'].size() == 2
-        m['data']['relationships']['subAuthors']['data'].any { it['type'] == "author" && it['id'] == "12" }
-        m['data']['relationships']['subAuthors']['data'].any { it['type'] == "author" && it['id'] == "13" }
-        m['links']['self'] == "/researchPaper/3"
+        result.jsonText == '{"data":{"type":"researchPaper","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"coAuthor":{"links":{"self":"/author/10"},"data":{"type":"author","id":"10"}},"leadAuthor":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}},"subAuthors":{"data":[{"type":"author","id":"12"},{"type":"author","id":"13"}]}}},"links":{"self":"/researchPaper/3"}}'
     }
 
     void 'test errors'() {
@@ -122,13 +103,7 @@ json jsonapi.render(hero)
 ''', [hero: mutepool])
 
         then:
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['errors'][0]['code'] == 'blank'
-        m['errors'][0]['detail'] == 'Property [name] of class [class grails.plugin.json.view.api.SuperHero] cannot be blank'
-        m['errors'][0]['source']['object'] == 'grails.plugin.json.view.api.SuperHero'
-        m['errors'][0]['source']['field'] == 'name'
-        m['errors'][0]['source']['rejectedValue'] == ''
-        m['errors'][0]['source']['bindingError'] == false
+            result.jsonText == '''{"errors":[{"code":"blank","detail":"Property [name] of class [class grails.plugin.json.view.api.SuperHero] cannot be blank","source":{"object":"grails.plugin.json.view.api.SuperHero","field":"name","rejectedValue":"","bindingError":false}}]}'''
     }
 
     void 'test jsonapi object'() {
@@ -147,14 +122,7 @@ json jsonapi.render(widget, [jsonApiObject: true])
 ''', [widget: theWidget])
 
         then:
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['jsonapi']['version'] == '1.0'
-        m['data']['type'] == 'widget'
-        m['data']['id'] == '5'
-        m['data']['attributes']['height'] == 7
-        m['data']['attributes']['name'] == 'One'
-        m['data']['attributes']['width'] == 4
-        m['links']['self'] == '/widget/5'
+            result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test compound documents object'() {
@@ -178,18 +146,7 @@ json jsonapi.render(book, [expand: 'author'])
 ''', [book: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['data']['type'] == 'book'
-        m['data']['id'] == '3'
-        m['data']['attributes']['title'] == 'The Return of the King'
-        m['data']['relationships']['author']['links']['self'] == '/author/9'
-        m['data']['relationships']['author']['data']['type'] == 'author'
-        m['data']['relationships']['author']['data']['id'] == '9'
-        m['links']['self'] == '/book/3'
-        m['included'][0]['type'] == 'author'
-        m['included'][0]['id'] == '9'
-        m['included'][0]['attributes']['name'] == 'J.R.R. Tolkien'
-        m['included'][0]['links']['self'] == '/author/9'
+            result.jsonText == '{"data":{"type":"book","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"author":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}}}},"links":{"self":"/book/3"},"included":[{"type":"author","id":"9","attributes":{"name":"J.R.R. Tolkien"},"links":{"self":"/author/9"}}]}'
     }
 
     void "test meta object rendering with jsonApiObject"() {
@@ -214,16 +171,7 @@ json jsonapi.render(widget, [jsonApiObject: true, meta: meta])
 ''', [widget: theWidget, meta: meta])
 
         then:
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        m['jsonapi']['version'] == '1.0'
-        m['jsonapi']['meta']['copyright'] == 'Copyright 2015 Example Corp.'
-        m['jsonapi']['meta']['authors'] == ['Yehuda Katz', 'Steve Klabnik']
-        m['data']['type'] == 'widget'
-        m['data']['id'] == '5'
-        m['data']['attributes']['height'] == 7
-        m['data']['attributes']['name'] == 'One'
-        m['data']['attributes']['width'] == 4
-        m['links']['self'] == '/widget/5'
+        result.jsonText == '''{"jsonapi":{"version":"1.0","meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]}},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
 
     void "test meta object rendering without jsonApiObject"() {
@@ -248,17 +196,9 @@ json jsonapi.render(widget, [meta: meta])
 ''', [widget: theWidget, meta: meta])
 
         then:
-        Map m = new JsonSlurper().parseText(result.jsonText)
-        !m.containsKey('jsonapi')
-        m['meta']['copyright'] == 'Copyright 2015 Example Corp.'
-        m['meta']['authors'] == ['Yehuda Katz', 'Steve Klabnik']
-        m['data']['type'] == 'widget'
-        m['data']['id'] == '5'
-        m['data']['attributes']['height'] == 7
-        m['data']['attributes']['name'] == 'One'
-        m['data']['attributes']['width'] == 4
-        m['links']['self'] == '/widget/5'
+        result.jsonText == '''{"meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
     }
+
 }
 
 @Entity

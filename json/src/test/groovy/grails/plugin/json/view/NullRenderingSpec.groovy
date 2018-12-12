@@ -1,7 +1,6 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonViewTest
-import groovy.json.JsonSlurper
 import spock.lang.Specification
 
 class NullRenderingSpec extends Specification implements JsonViewTest {
@@ -43,9 +42,7 @@ json g.render(player, [renderNulls: true])
         def renderResult = render(templateText, [player: new Player()])
 
         then:"No fields are rendered because they are null"
-        Map m = new JsonSlurper().parseText(renderResult.jsonText)
-        m['name'] == null
-        m['team'] == null
+        renderResult.jsonText == '{"name":null,"team":null}'
     }
 
     void "test rendering nulls with a map"() {
