@@ -63,12 +63,9 @@ class SmartViewResolver implements GrailsConfigurationAware {
             .build()
 
     private GenericGroovyTemplateView getViewCacheWithDefault(String key) {
-        GenericGroovyTemplateView templateView = viewCache.getIfPresent(key)
-        if (templateView == null) {
-            templateView = viewCacheWithPath(key)
-            viewCache.put(key, templateView)
+        viewCache.get(key) { k ->
+            viewCacheWithPath(k)
         }
-        return templateView
     }
 
 

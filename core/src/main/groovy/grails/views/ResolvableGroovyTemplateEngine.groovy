@@ -57,12 +57,9 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
             .build()
 
     private WritableScriptTemplate getCachedTemplatesWithDefault(String key) {
-        WritableScriptTemplate template = cachedTemplates.getIfPresent(key)
-        if (template == null) {
-            template = templateByPath(key)
-            cachedTemplates.put(key, template)
-        }
-        return template
+        cachedTemplates.get(key, { k ->
+            templateByPath(k)
+        })
     }
 
     private WritableScriptTemplate templateByPath(String path) {
@@ -299,7 +296,7 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
                 else {
                     log.debug("Reloading template modified for path [$path] and locale [$locale]. ")
                     cachedTemplates.invalidate(path)
-                    cachedTemplates.invalidate(cacheKey)
+                    resolveCache.invalidate(cacheKey)
                     template = null
                 }
             }
