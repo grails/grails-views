@@ -13,7 +13,6 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetOutput
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.War
-import org.gradle.api.tasks.compile.GroovyCompile
 import org.grails.gradle.plugin.core.GrailsExtension
 import org.grails.gradle.plugin.util.SourceSets
 
@@ -64,7 +63,7 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             GrailsExtension grailsExt = project.extensions.getByType(GrailsExtension)
             if (grailsExt.pathingJar && Os.isFamily(Os.FAMILY_WINDOWS)) {
                 Jar pathingJar = (Jar) allTasks.findByName('pathingJar')
-                allClasspath = project.files("${project.buildDir}/classes/main", "${project.buildDir}/resources/main", "${project.projectDir}/gsp-classes", pathingJar.archivePath)
+                allClasspath = project.files("${project.buildDir}/classes/groovy/main", "${project.buildDir}/resources/main", "${project.projectDir}/gsp-classes", pathingJar.archivePath)
                 templateCompileTask.dependsOn(pathingJar)
                 templateCompileTask.setClasspath(allClasspath)
             }
@@ -99,15 +98,8 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
     }
 
     @CompileDynamic
-    protected FileCollection resolveClassesDirs(Object output, Project project) {
-        FileCollection classesDirs
-        try {
-            classesDirs = output?.classesDirs ?: project.files(new File(project.buildDir, "classes/main"))
-        }
-        catch(e) {
-            classesDirs = output?.classesDir ? project.files(output.classesDir) : project.files(new File(project.buildDir, "classes/main"))
-        }
-        return classesDirs
+    protected FileCollection resolveClassesDirs(SourceSetOutput output, Project project) {
+        return output.classesDirs ?: project.files(new File(project.buildDir, "classes/groovy/main"))
     }
 
 }
