@@ -58,22 +58,23 @@ configurations.all {
 }
 
 dependencies {
-    provided "org.springframework.boot:spring-boot-starter-logging:$springBootVersion"
-    provided "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    provided "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
-    provided "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+    provided 'org.springframework.boot:spring-boot-starter-logging'
+    provided "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-autoconfigure"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
 
-    provided "org.grails:grails-web-boot:$grailsVersion"
-    provided "org.grails:grails-dependencies:$grailsVersion"
-    provided "org.grails.plugins:hibernate5:$gormVersion"
+    provided "org.grails:grails-web-boot"
+    provided "org.grails:grails-dependencies"
+    provided "org.grails.plugins:hibernate5"
 
     compile project(":views-core")
 
+    testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
 
     testRuntime "org.javassist:javassist:3.18.1-GA"
 
-    console "org.grails:grails-console:$grailsVersion"
+    console "org.grails:grails-console"
 }
 
 task wrapper(type: Wrapper) {
