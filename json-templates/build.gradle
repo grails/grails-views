@@ -11,6 +11,8 @@ ext {
     gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = 'grails'
     repo = 'plugins'
+    isGrailsPlugin = false
+    projectDesc = "JSON Views Templates"
 }
 
 repositories {
@@ -49,4 +51,4 @@ classes.dependsOn(compileViews)
 
 // Used for publishing to central repository, remove if not needed
 apply from:'../publishing/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+apply from:'../publishing/bintrayPublishing.gradle'

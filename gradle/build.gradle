@@ -7,6 +7,8 @@ plugins {
 
 ext {
 	userOrg = 'grails'
+	isGrailsPlugin = false
+	projectDesc = "Grails Views Gradle Plugin"
 }
 
 group "org.grails.plugins"
@@ -46,4 +48,5 @@ task javadocJar(type:Jar) {
 
 // Used for publishing to central repository, remove if not needed
 apply from:'../publishing/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+apply from:'../publishing/bintrayPublishing.gradle'
+
