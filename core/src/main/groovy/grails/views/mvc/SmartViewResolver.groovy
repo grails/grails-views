@@ -20,6 +20,8 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import grails.config.Config
 import grails.core.support.GrailsConfigurationAware
 import grails.views.ResolvableGroovyTemplateEngine
+import grails.views.TemplateResolver
+import grails.views.WritableScriptTemplate
 import grails.views.resolve.TemplateResolverUtils
 import grails.web.http.HttpHeaders
 import grails.web.mime.MimeType
@@ -45,7 +47,7 @@ class SmartViewResolver implements GrailsConfigurationAware {
 
     public static final String OBJECT_TEMPLATE_NAME = "/object/_object"
 
-    @Delegate(methodAnnotations = true) ResolvableGroovyTemplateEngine templateEngine
+    ResolvableGroovyTemplateEngine templateEngine
 
     Class<? extends GenericGroovyTemplateView> viewClass = GenericGroovyTemplateView
     String contentType
@@ -152,4 +154,19 @@ class SmartViewResolver implements GrailsConfigurationAware {
     }
 
 
+    WritableScriptTemplate resolveTemplate(Class type, Locale locale, String...qualifiers) {
+        templateEngine.resolveTemplate(type, locale, qualifiers)
+    }
+
+    WritableScriptTemplate resolveTemplate(String path) {
+        templateEngine.resolveTemplate(path)
+    }
+
+    WritableScriptTemplate resolveTemplate(String path, Locale locale, String...qualifiers) {
+        templateEngine.resolveTemplate(path, locale, qualifiers)
+    }
+
+    void setTemplateResolver(TemplateResolver templateResolver) {
+        templateEngine.setTemplateResolver(templateResolver)
+    }
 }

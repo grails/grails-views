@@ -65,6 +65,7 @@ dependencies {
     compile "org.grails:grails-web-boot"
 
     compile "org.grails.plugins:hibernate5"
+    runtime "org.apache.tomcat:tomcat-jdbc:9.0.13"
     compile "org.grails.plugins:mongodb:$mongodbVersion"
     compile "org.grails.plugins:cache"
     compile "org.hibernate:hibernate-ehcache"

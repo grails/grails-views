@@ -1,5 +1,8 @@
 package functional.tests
 
+import grails.gorm.transactions.ReadOnly
+
+@ReadOnly
 class VehicleController {
 
     static responseFormats = ['json', 'xml']

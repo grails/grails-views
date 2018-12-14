@@ -59,7 +59,9 @@ class TeamSpec extends HttpClientSpec {
 
     void "Test composite ID rendering"() {
         Composite.withNewSession {
-            new Composite(name: "foo", team: Team.load(1), player: Player.load(2)).save(flush: true, failOnError: true)
+            Composite.withNewTransaction {
+                new Composite(name: "foo", team: Team.load(1), player: Player.load(2)).save(flush: true, failOnError: true)
+            }
         }
         when:
         HttpRequest request = HttpRequest.GET("/team/composite")

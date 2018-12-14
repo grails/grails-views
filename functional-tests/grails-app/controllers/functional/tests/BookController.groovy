@@ -1,7 +1,9 @@
 package functional.tests
 
+import grails.gorm.transactions.ReadOnly
 import grails.rest.RestfulController
 
+@ReadOnly
 class BookController extends RestfulController<Book> {
 
     static responseFormats = ['json']
