@@ -2,6 +2,7 @@
 set -e
 
 EXIT_STATUS=0
+<<<<<<< HEAD
 
 echo "Gradle Task Check for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 
@@ -24,6 +25,37 @@ if [ "${TRAVIS_JDK_VERSION}" == "openjdk11" ] ; then
   exit $EXIT_STATUS
 fi
 
+=======
+
+# Set Gradle daemon JVM args
+mkdir -p ~/.gradle
+echo "org.gradle.jvmargs=-XX\:MaxPermSize\=512m -Xmx1024m" >> ~/.gradle/gradle.properties
+echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
+
+echo "Gradle Task Check for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
+
+./gradlew check --no-daemon || EXIT_STATUS=$?
+
+if [ $EXIT_STATUS -ne 0 ]; then
+  exit $EXIT_STATUS
+fi
+
+echo "Gradle Task Assemble for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
+
+./gradlew assemble --no-daemon || EXIT_STATUS=$?
+
+if [ $EXIT_STATUS -ne 0 ]; then
+  exit $EXIT_STATUS
+fi
+
+if [ "${TRAVIS_JDK_VERSION}" == "openjdk11" ] ; then
+  echo "Do not publish archives for JDK 11"
+  exit $EXIT_STATUS
+fi
+
+./gradlew --stop
+
+>>>>>>> master
 echo "Publishing archives for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH =~ ^master|[12]\..\.x$ && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
