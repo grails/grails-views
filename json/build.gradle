@@ -11,6 +11,7 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'idea'
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
 
 group "org.grails.plugins"
@@ -58,14 +59,7 @@ configurations.all {
 }
 
 dependencies {
-    provided 'org.springframework.boot:spring-boot-starter-logging'
-    provided "org.springframework.boot:spring-boot-starter-actuator"
-    provided "org.springframework.boot:spring-boot-autoconfigure"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
-
-    provided "org.grails:grails-web-boot"
-    provided "org.grails:grails-dependencies"
-    provided "org.grails.plugins:hibernate5"
+    compile "org.grails:grails-core:$grailsVersion"
 
     compile project(":views-core")
 
