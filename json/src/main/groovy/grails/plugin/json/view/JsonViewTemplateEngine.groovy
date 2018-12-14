@@ -1,6 +1,7 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.builder.JsonGenerator
+import grails.plugin.json.converters.*
 import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.plugin.json.view.internal.JsonTemplateTypeCheckingExtension
 import grails.plugin.json.view.internal.JsonViewsTransform
@@ -72,6 +73,14 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
         for (JsonGenerator.Converter converter : loader) {
             converters.add(converter)
         }
+        converters.add(new InstantJsonConverter())
+        converters.add(new LocalDateJsonConverter())
+        converters.add(new LocalDateTimeJsonConverter())
+        converters.add(new LocalTimeJsonConverter())
+        converters.add(new OffsetDateTimeJsonConverter())
+        converters.add(new OffsetTimeJsonConverter())
+        converters.add(new PeriodJsonConverter())
+        converters.add(new ZonedDateTimeJsonConverter())
         OrderComparator.sort(converters)
         converters.each {
             options.addConverter(it)
