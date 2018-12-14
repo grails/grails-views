@@ -30,7 +30,7 @@ dependencies {
 
 task('compileViews', type:JavaExec) {
     inputs.files 'src/templates'
-    outputs.files 'build/classes/groovy/main'
+    outputs.dir 'build/classes/groovy/main'
     main "grails.plugin.json.view.JsonViewCompiler"
     classpath configurations.compile + configurations.compileOnly
     args("src/templates", "build/classes/groovy/main", "1.8", ' ', ' ', "none", "UTF-8")
