@@ -15,7 +15,7 @@ class VehicleSpec extends HttpClientSpec {
 
         then:"The correct response is returned"
         resp.status == HttpStatus.OK
-        resp.body() == '[{"id":1,"maxPassengers":30,"route":"around town"},{"id":2,"make":"Subaru","maxPassengers":4,"model":"WRX","year":2016}]'
+        resp.body() == '[{"id":1,"route":"around town","maxPassengers":30},{"id":2,"make":"Subaru","year":2016,"model":"WRX","maxPassengers":4}]'
 
     }
 

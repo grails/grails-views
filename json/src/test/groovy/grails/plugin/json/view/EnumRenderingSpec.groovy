@@ -47,7 +47,7 @@ json jsonapi.render(object)
 ''', [object: enumTest])
 
         then:"the json is rendered correctly"
-        result.jsonText == '''{"data":{"type":"enumTest","id":"1","attributes":{"bar":"BAR","name":"Fred"}},"links":{"self":"/enumTest/1"}}'''
+        result.jsonText == '''{"data":{"type":"enumTest","id":"1","attributes":{"name":"Fred","bar":"BAR"}},"links":{"self":"/enumTest/1"}}'''
     }
 }
 

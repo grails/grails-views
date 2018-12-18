@@ -246,7 +246,7 @@ json hal.render(parent)
 ''', [parent:parent])
 
         then:"The result is correct"
-        result.jsonText == '{"_embedded":{"person":{"_links":{"self":{"href":"http://localhost:8080/person","hreflang":"en","type":"application/hal+json"}},"homeAddress":{"postCode":"12345"},"name":"Robert","nickNames":["Rob","Bob"],"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}]}},"_links":{"self":{"href":"http://localhost:8080/parent","hreflang":"en","type":"application/hal+json"}},"name":"Joe"}'
+        result.jsonText == '{"_embedded":{"person":{"_links":{"self":{"href":"http://localhost:8080/person","hreflang":"en","type":"application/hal+json"}},"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}],"name":"Robert","nickNames":["Rob","Bob"],"homeAddress":{"postCode":"12345"}}},"_links":{"self":{"href":"http://localhost:8080/parent","hreflang":"en","type":"application/hal+json"}},"name":"Joe"}'
 
 
     }

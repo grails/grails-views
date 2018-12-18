@@ -65,7 +65,7 @@ dependencies {
 
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
-
+    testCompile "org.grails:grails-datastore-gorm-hibernate5"
     testRuntime "org.javassist:javassist:3.18.1-GA"
 
     console "org.grails:grails-console"

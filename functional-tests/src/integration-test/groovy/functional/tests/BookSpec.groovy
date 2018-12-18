@@ -83,7 +83,7 @@ class BookSpec extends HttpClientSpec {
         resp.status == HttpStatus.OK
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
-        resp.body() == '[{"id":1,"timeZone":"America/New_York","title":"The Changeling","vendor":"MyCompany"}]'
+        resp.body() == '[{"id":1,"title":"The Changeling","timeZone":"America/New_York","vendor":"MyCompany"}]'
 
         when:"A GET is issued for all books with excludes"
         request = HttpRequest.GET("/books/listExcludes?testParam=3")

@@ -32,7 +32,7 @@ json g.render(player)
         def result = render(templateText, [player:player])
 
         then:"The result doesn't include the proxied association"
-        result.jsonText == '{"name":"Cantona","team":{"id":1}}'
+        result.jsonText == '{"team":{"id":1},"name":"Cantona"}'
 
         when:"The domain is rendered with expand parameters"
         result = render(templateText, [player:player]) {
@@ -40,7 +40,7 @@ json g.render(player)
         }
 
         then:"The association is expanded"
-        result.jsonText == '{"name":"Cantona","team":{"id":1,"name":"Manchester United"}}'
+        result.jsonText == '{"team":{"id":1,"name":"Manchester United"},"name":"Cantona"}'
     }
 
     void "Test expand parameter on nested property"() {
@@ -64,7 +64,7 @@ json g.render(map)
         }
 
         then:"The association is expanded"
-        result.jsonText == '{"player":{"name":"Cantona","team":{"id":1,"name":"Manchester United"}}}'
+        result.jsonText == '{"player":{"team":{"id":1,"name":"Manchester United"},"name":"Cantona"}}'
     }
 
     void "Test expand parameter allows expansion of child associations with HAL"() {
@@ -120,6 +120,6 @@ json jsonapi.render(player, [expand: 'team'])
 ''', [player: player])
 
         then: 'The JSON relationships are in place'
-        result.jsonText == '{"data":{"type":"player","id":"3","attributes":{"name":"Cantona"},"relationships":{"team":{"links":{"self":"/team/9"},"data":{"type":"team","id":"9"}}}},"links":{"self":"/player/3"},"included":[{"type":"team","id":"9","attributes":{"name":"Manchester United","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[]}},"links":{"self":"/team/9"}}]}'
+        result.jsonText == '{"data":{"type":"player","id":"3","attributes":{"name":"Cantona"},"relationships":{"team":{"links":{"self":"/team/9"},"data":{"type":"team","id":"9"}}}},"links":{"self":"/player/3"},"included":[{"type":"team","id":"9","attributes":{"titles":null,"name":"Manchester United"},"relationships":{"players":{"data":[]},"captain":{"data":null}},"links":{"self":"/team/9"}}]}'
     }
 }

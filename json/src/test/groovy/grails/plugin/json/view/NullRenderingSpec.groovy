@@ -42,7 +42,7 @@ json g.render(player, [renderNulls: true])
         def renderResult = render(templateText, [player: new Player()])
 
         then:"No fields are rendered because they are null"
-        renderResult.jsonText == '{"name":null,"team":null}'
+        renderResult.jsonText == '{"team":null,"name":null}'
     }
 
     void "test rendering nulls with a map"() {

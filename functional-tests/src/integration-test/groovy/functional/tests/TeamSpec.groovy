@@ -28,7 +28,7 @@ class TeamSpec extends HttpClientSpec {
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
 
         // Note current behaviour is that the captain is not rendered twice
-        resp.body() == '{"id":1,"captain":{"id":1},"name":"Barcelona","players":[{"id":1},{"id":2}],"sport":"football"}'
+        resp.body() == '{"id":1,"name":"Barcelona","players":[{"id":1},{"id":2}],"captain":{"id":1},"sport":"football"}'
     }
 
     void "Test deep association template rendering"() {
@@ -40,7 +40,7 @@ class TeamSpec extends HttpClientSpec {
         resp.status == HttpStatus.OK
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
-        resp.body() == '{"id":1,"captain":{"id":1,"name":"Iniesta","sport":"football"},"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"sport":"football"}'
+        resp.body() == '{"id":1,"name":"Barcelona","players":[{"id":1,"name":"Iniesta","sport":"football"},{"id":2,"name":"Messi","sport":"football"}],"captain":{"id":1,"name":"Iniesta","sport":"football"},"sport":"football"}'
     }
 
     void "Test HAL rendering"() {

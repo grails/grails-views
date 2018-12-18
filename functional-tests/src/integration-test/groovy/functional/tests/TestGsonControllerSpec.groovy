@@ -31,7 +31,7 @@ class TestGsonControllerSpec extends HttpClientSpec {
         HttpResponse<String> resp = client.toBlocking().exchange(request, String)
 
         then:"The JSON view is rendered"
-        resp.body() == '{"timeZone":"America/New_York","title":"The Stand","vendor":"MyCompany"}'
+        resp.body() == '{"title":"The Stand","timeZone":"America/New_York","vendor":"MyCompany"}'
     }
 
     void "Test the respond method returns a GSON view for JSON request"() {

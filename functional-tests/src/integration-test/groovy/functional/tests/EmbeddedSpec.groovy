@@ -20,7 +20,7 @@ class EmbeddedSpec extends HttpClientSpec {
         rsp.status() == HttpStatus.OK
         rsp.getHeaders().get(CONTENT_TYPE)  == 'application/json;charset=UTF-8'
 
-        rsp.body() == '{"id":1,"customClass":{"name":"Bar"},"inSameFile":{"text":"FooBar"},"name":"Foo"}'
+        rsp.body() == '{"id":1,"customClass":{"name":"Bar"},"name":"Foo","inSameFile":{"text":"FooBar"}}'
     }
 
     void "Test jsonapi render can handle a domain with an embedded src/groovy class"() {
@@ -32,7 +32,7 @@ class EmbeddedSpec extends HttpClientSpec {
         rsp.status() == HttpStatus.OK
         rsp.getHeaders().get(CONTENT_TYPE)  == 'application/json;charset=UTF-8'
 
-        rsp.body() == '{"data":{"type":"embedded","id":"2","attributes":{"customClass":{"name":"Bar2"},"inSameFile":{"text":"FooBar2"},"name":"Foo2"}},"links":{"self":"/embedded/show/2"}}'
+        rsp.body() == '{"data":{"type":"embedded","id":"2","attributes":{"customClass":{"name":"Bar2"},"name":"Foo2","inSameFile":{"text":"FooBar2"}}},"links":{"self":"/embedded/show/2"}}'
     }
 
     @Issue("https://github.com/grails/grails-views/issues/171")

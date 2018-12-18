@@ -27,7 +27,7 @@ json g.render(person)
 ''', [person:p])
 
         then:"The result is correct"
-        result.jsonText == '{"homeAddress":{"postCode":"12345"},"name":"Robert","nickNames":["Rob","Bob"],"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}]}'
+        result.jsonText == '{"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}],"name":"Robert","nickNames":["Rob","Bob"],"homeAddress":{"postCode":"12345"}}'
     }
 
     void "Test render domain object with embedded associations in json api"() {
@@ -50,7 +50,7 @@ json jsonapi.render(person)
 ''', [person:p])
 
         then:"The result is correct"
-        result.jsonText == '''{"data":{"type":"person","id":"2","attributes":{"homeAddress":{"postCode":"12345"},"name":"Robert","nickNames":["Rob","Bob"],"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}]}},"links":{"self":"/person/2"}}'''
+        result.jsonText == '''{"data":{"type":"person","id":"2","attributes":{"otherAddresses":[{"postCode":"6789"},{"postCode":"54321"}],"name":"Robert","nickNames":["Rob","Bob"],"homeAddress":{"postCode":"12345"}}},"links":{"self":"/person/2"}}'''
 
     }
 
@@ -74,7 +74,7 @@ json g.render(person, [includes: ['name', 'homeAddress']])
 ''', [person:p])
 
         then: 'the result is correct'
-        result.jsonText == '{"homeAddress":{"postCode":"12345"},"name":"Robert"}'
+        result.jsonText == '{"name":"Robert","homeAddress":{"postCode":"12345"}}'
     }
 
     @Issue("https://github.com/grails/grails-views/issues/171")
@@ -98,7 +98,7 @@ json jsonapi.render(person, [includes: ['name', 'homeAddress']])
 ''', [person:p])
 
         then: 'the result is correct'
-        result.jsonText == '''{"data":{"type":"person","id":"4","attributes":{"homeAddress":{"postCode":"12345"},"name":"Robert"}},"links":{"self":"/person/4"}}'''
+        result.jsonText == '''{"data":{"type":"person","id":"4","attributes":{"name":"Robert","homeAddress":{"postCode":"12345"}}},"links":{"self":"/person/4"}}'''
     }
 }
 

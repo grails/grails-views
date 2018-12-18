@@ -24,8 +24,10 @@ publishing {
             }
             artifactId project.name
             from components.java
-            artifact sourcesJar
-            artifact javadocJar
+            afterEvaluate {
+                artifact source: sourcesJar, classifier: "sources"
+                artifact source: javadocJar, classifier: "javadoc"
+            }
         }
     }
 

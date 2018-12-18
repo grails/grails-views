@@ -29,7 +29,7 @@ json jsonapi.render(widget)
 ''', [widget: theWidget])
 
         then:
-            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
+            result.jsonText == '''{"data":{"type":"widget","id":"5","attributes":{"width":4,"height":7,"name":"One"}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test Relationships - hasOne'() {
@@ -82,7 +82,7 @@ json jsonapi.render(researchPaper)
 ''', [researchPaper: returnOfTheKing])
 
         then: 'The JSON relationships are in place'
-        result.jsonText == '{"data":{"type":"researchPaper","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"coAuthor":{"links":{"self":"/author/10"},"data":{"type":"author","id":"10"}},"leadAuthor":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}},"subAuthors":{"data":[{"type":"author","id":"12"},{"type":"author","id":"13"}]}}},"links":{"self":"/researchPaper/3"}}'
+        result.jsonText == '{"data":{"type":"researchPaper","id":"3","attributes":{"title":"The Return of the King"},"relationships":{"subAuthors":{"data":[{"type":"author","id":"12"},{"type":"author","id":"13"}]},"leadAuthor":{"links":{"self":"/author/9"},"data":{"type":"author","id":"9"}},"coAuthor":{"links":{"self":"/author/10"},"data":{"type":"author","id":"10"}}}},"links":{"self":"/researchPaper/3"}}'
     }
 
     void 'test errors'() {
@@ -122,7 +122,7 @@ json jsonapi.render(widget, [jsonApiObject: true])
 ''', [widget: theWidget])
 
         then:
-            result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
+            result.jsonText == '''{"jsonapi":{"version":"1.0"},"data":{"type":"widget","id":"5","attributes":{"width":4,"height":7,"name":"One"}},"links":{"self":"/widget/5"}}'''
     }
 
     void 'test compound documents object'() {
@@ -171,7 +171,7 @@ json jsonapi.render(widget, [jsonApiObject: true, meta: meta])
 ''', [widget: theWidget, meta: meta])
 
         then:
-        result.jsonText == '''{"jsonapi":{"version":"1.0","meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]}},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
+        result.jsonText == '''{"jsonapi":{"version":"1.0","meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]}},"data":{"type":"widget","id":"5","attributes":{"width":4,"height":7,"name":"One"}},"links":{"self":"/widget/5"}}'''
     }
 
     void "test meta object rendering without jsonApiObject"() {
@@ -196,7 +196,7 @@ json jsonapi.render(widget, [meta: meta])
 ''', [widget: theWidget, meta: meta])
 
         then:
-        result.jsonText == '''{"meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]},"data":{"type":"widget","id":"5","attributes":{"height":7,"name":"One","width":4}},"links":{"self":"/widget/5"}}'''
+        result.jsonText == '''{"meta":{"copyright":"Copyright 2015 Example Corp.","authors":["Yehuda Katz","Steve Klabnik"]},"data":{"type":"widget","id":"5","attributes":{"width":4,"height":7,"name":"One"}},"links":{"self":"/widget/5"}}'''
     }
 
 }
