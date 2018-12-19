@@ -26,6 +26,8 @@ import org.grails.datastore.mapping.model.types.*
 import org.grails.datastore.mapping.reflect.EntityReflector
 import org.springframework.http.HttpMethod
 
+import java.lang.reflect.Field
+
 /**
  * Helps creating HAL links
  *
@@ -583,8 +585,11 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
 
         @Override
         void call(String name, Iterable coll, Closure c) throws IOException {
+            Field field = delegate.getClass().getDeclaredField("first")
+            field.setAccessible(true)
+            field.set(delegate, false)
             writeName(name)
-            verifyValue();
+            verifyValue()
             def w = writer
             w.write(JsonOutput.OPEN_BRACKET)
             boolean first = true
@@ -598,7 +603,6 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 writeObject( it, c)
             }
             w.write(JsonOutput.CLOSE_BRACKET)
-
         }
 
         @Override

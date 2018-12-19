@@ -48,12 +48,14 @@ dependencyManagement {
     }
     applyMavenExclusions false
 }
+
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if(details.requested.group == 'org.grails' && details.requested.name.startsWith('grails-datastore')) {
             details.useVersion("$gormVersion")
         }
     }
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {
@@ -93,6 +95,7 @@ integrationTest {
         exceptionFormat = 'full'
     }
 }
+
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }

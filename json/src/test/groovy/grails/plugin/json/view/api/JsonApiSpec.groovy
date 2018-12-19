@@ -9,6 +9,7 @@ import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
 class JsonApiSpec extends Specification implements JsonViewTest, GrailsUnitTest {
+
     void setup() {
         mappingContext.addPersistentEntities(Widget, Author, Book, ResearchPaper)
     }
@@ -89,7 +90,6 @@ json jsonapi.render(researchPaper)
         given:
             SuperHero mutepool = new SuperHero()
             mutepool.name = ""
-            mutepool.id = 5
             mutepool.validate()
 
         when:
@@ -227,7 +227,6 @@ class Author {
     String name
 }
 
-@Entity
 class SuperHero implements Validateable {
     String name
 

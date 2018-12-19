@@ -50,10 +50,6 @@ task javadocJar(type:Jar) {
 
 classes.dependsOn(compileViews)
 
-jar {
-    from sourceSets.main.output
-}
-
 // Used for publishing to central repository, remove if not needed
 apply from:'../publishing/grailsCentralPublishing.gradle'
 apply from:'../publishing/bintrayPublishing.gradle'

@@ -7,5 +7,5 @@ class Team {
     String name
     Player captain
     List players
-    static hasMany = [players:Player]
+    static hasMany = [players: Player]
 }

@@ -53,8 +53,7 @@ class TeamSpec extends HttpClientSpec {
 
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/hal+json;charset=UTF-8'
-        resp.body() == '{"_embedded":{"captain":{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},"players":[{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/2","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Messi","version":0}]},"_links":{"self":{"href":"http://localhost:'+serverPort+'/teams/1","hreflang":"' + lang + '","type":"application/hal+json"}},"id":1,"name":"Barcelona","sport":"football","another":{"foo":"bar"}}'
-
+        resp.body() == '{"_embedded":{"players":[{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0},{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/2","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Messi","version":0}],"captain":{"_links":{"self":{"href":"http://localhost:'+serverPort+'/player/show/1","hreflang":"' + lang + '","type":"application/hal+json"}},"name":"Iniesta","version":0}},"_links":{"self":{"href":"http://localhost:'+serverPort+'/teams/1","hreflang":"' + lang + '","type":"application/hal+json"}},"id":1,"name":"Barcelona","sport":"football","another":{"foo":"bar"}}'
     }
 
     void "Test composite ID rendering"() {
@@ -71,6 +70,6 @@ class TeamSpec extends HttpClientSpec {
         resp.status == HttpStatus.OK
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).isPresent()
         resp.headers.getFirst(HttpHeaders.CONTENT_TYPE).get() == 'application/json;charset=UTF-8'
-        resp.body() == '{"player":{"id":2,"name":"Messi","sport":"football"},"team":{"id":1,"captain":{"id":1},"name":"Barcelona","sport":"football"},"name":"foo"}'
+        resp.body() == '{"player":{"id":2,"name":"Messi","sport":"football"},"team":{"id":1,"name":"Barcelona","captain":{"id":1},"sport":"football"},"name":"foo"}'
     }
 }
