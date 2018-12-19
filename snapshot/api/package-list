@@ -1,5 +1,4 @@
 grails.plugin.json.builder
-grails.plugin.json.builder.internal
 grails.plugin.json.converters
 grails.plugin.json.renderer
 grails.plugin.json.view
