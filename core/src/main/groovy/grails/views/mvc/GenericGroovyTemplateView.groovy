@@ -66,21 +66,25 @@ class GenericGroovyTemplateView extends AbstractUrlBasedView {
 
             def writable = template.make(map)
             prepareWritable(writable, httpServletRequest, httpServletResponse, locale)
-            def writer = httpServletResponse.writer
             try {
-                // set the default encoding
-                // now write the writable
-                writable.writeTo(writer)
-            } catch (RuntimeException e) {
-                if(!httpServletResponse.isCommitted()) {
-                    // set back to HTML to errors are rendered correctly
-                    httpServletResponse.setContentType(MimeType.HTML.name)
+                def writer = httpServletResponse.writer
+                try {
+                    // set the default encoding
+                    // now write the writable
+                    writable.writeTo(writer)
+                } catch (RuntimeException e) {
+                    if(!httpServletResponse.isCommitted()) {
+                        // set back to HTML to errors are rendered correctly
+                        httpServletResponse.setContentType(MimeType.HTML.name)
+                    }
+                    // clear model and view
+                    httpServletRequest.removeAttribute(GrailsApplicationAttributes.MODEL_AND_VIEW)
+                    throw e
                 }
-                // clear model and view
-                httpServletRequest.removeAttribute(GrailsApplicationAttributes.MODEL_AND_VIEW)
-                throw e
+                writer.flush()
+            } catch (IOException e) {
+                //ignore error retrieving response writer or writing to response
             }
-            writer.flush()
         }
     }
 
