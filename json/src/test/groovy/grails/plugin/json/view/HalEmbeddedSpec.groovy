@@ -2,8 +2,6 @@ package grails.plugin.json.view
 
 import grails.gorm.annotation.Entity
 import grails.plugin.json.view.test.JsonViewTest
-import spock.lang.Ignore
-import spock.lang.Issue
 import spock.lang.Specification
 
 /**
@@ -146,8 +144,6 @@ json {
         result.jsonText == '{"_embedded":{"players":[{"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"_links":{"self":{"href":"http://localhost:8080/player/1","hreflang":"en","type":"application/hal+json"}},"name":"Cantona"}]},"total":1}'
     }
 
-    @Ignore
-    @Issue('https://github.com/grails/grails-views/issues/196')
     void "test hal render method for one-to-many associations"() {
 
         when:"A GSON view that renders hal.render(..) is rendered"
@@ -173,8 +169,6 @@ json hal.render(team)
         result.json.'_embedded'
     }
 
-    @Ignore
-    @Issue('https://github.com/grails/grails-views/issues/196')
     void "test hal embedded method for one-to-many associations"() {
         when:"A GSON view that renders hal.embedded(..) is rendered"
 
