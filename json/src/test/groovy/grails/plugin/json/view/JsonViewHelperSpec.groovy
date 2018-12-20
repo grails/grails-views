@@ -10,13 +10,11 @@ import grails.plugin.json.view.test.JsonViewTest
 import grails.views.GrailsViewTemplate
 import grails.views.api.internal.EmptyParameters
 import org.grails.core.artefact.DomainClassArtefactHandler
-//import org.grails.core.support.GrailsDomainConfigurationUtil
-//import org.grails.datastore.gorm.config.GrailsDomainClassMappingContext
-//import org.grails.datastore.gorm.config.GrailsDomainClassPersistentEntity
+import org.grails.core.support.GrailsDomainConfigurationUtil
+import org.grails.datastore.gorm.config.GrailsDomainClassMappingContext
+import org.grails.datastore.gorm.config.GrailsDomainClassPersistentEntity
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.testing.GrailsUnitTest
-import spock.lang.Ignore
-import spock.lang.Issue
 import spock.lang.Specification
 
 /*
@@ -38,8 +36,6 @@ import spock.lang.Specification
 /**
  * @author graemerocher
  */
-@Issue('https://github.com/grails/grails-views/issues/197')
-@Ignore
 class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUnitTest {
     void "test render toMany association"() {
         given:"A view helper"
@@ -349,43 +345,43 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         result.toString() == '[]'
     }
 
-//    protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
-//        def jsonView = Mock(JsonView)
-//        jsonView.getParams() >> new EmptyParameters()
-//        def mappingContext = Mock(MappingContext)
-//
-//        def app = new DefaultGrailsApplication(classes)
-//        app.initialise()
-//        def domainClasses = app.getArtefacts(DomainClassArtefactHandler.TYPE)
-//        def domainMap = domainClasses.collectEntries { GrailsDomainClass dc ->
-//            [(dc.fullName): dc]
-//        }
-//        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClasses,domainMap)
-//
-//
-//        def mockMappingContxt = new GrailsDomainClassMappingContext(app)
-//        for(dc in domainClasses) {
-//            def entity = new GrailsDomainClassPersistentEntity(dc, mockMappingContxt)
-//            entity.initialize()
-//            mappingContext.getPersistentEntity(dc.fullName) >> entity
-//        }
-//        jsonView.getMappingContext() >> mappingContext
-//
-//        def viewHelper = new DefaultGrailsJsonViewHelper(jsonView)
-//
-//        def binding = new Binding()
-//        jsonView.getBinding() >> binding
-//
-//        jsonView.getTemplateEngine() >> templateEngine
-//
-//        jsonView.getViewTemplate() >> new GrailsViewTemplate(JsonView)
-//
-//        jsonView.getProxyHandler() >> Mock(ProxyHandler) {
-//            isProxy(_) >> false
-//        }
-//
-//        viewHelper
-//    }
+    protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
+        def jsonView = Mock(JsonView)
+        jsonView.getParams() >> new EmptyParameters()
+        def mappingContext = Mock(MappingContext)
+
+        def app = new DefaultGrailsApplication(classes)
+        app.initialise()
+        def domainClasses = app.getArtefacts(DomainClassArtefactHandler.TYPE)
+        def domainMap = domainClasses.collectEntries { GrailsDomainClass dc ->
+            [(dc.fullName): dc]
+        }
+        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClasses,domainMap)
+
+
+        def mockMappingContxt = new GrailsDomainClassMappingContext(app)
+        for(dc in domainClasses) {
+            def entity = new GrailsDomainClassPersistentEntity(dc, mockMappingContxt)
+            entity.initialize()
+            mappingContext.getPersistentEntity(dc.fullName) >> entity
+        }
+        jsonView.getMappingContext() >> mappingContext
+
+        def viewHelper = new DefaultGrailsJsonViewHelper(jsonView)
+
+        def binding = new Binding()
+        jsonView.getBinding() >> binding
+
+        jsonView.getTemplateEngine() >> templateEngine
+
+        jsonView.getViewTemplate() >> new GrailsViewTemplate(JsonView)
+
+        jsonView.getProxyHandler() >> Mock(ProxyHandler) {
+            isProxy(_) >> false
+        }
+
+        viewHelper
+    }
 }
 
 @Entity
