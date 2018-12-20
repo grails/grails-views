@@ -1,7 +1,5 @@
 package grails.plugin.json.view
 
-import grails.core.DefaultGrailsApplication
-import grails.core.GrailsDomainClass
 import grails.core.support.proxy.ProxyHandler
 import grails.persistence.Entity
 import grails.plugin.json.view.api.JsonView
@@ -9,11 +7,7 @@ import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.test.JsonViewTest
 import grails.views.GrailsViewTemplate
 import grails.views.api.internal.EmptyParameters
-import org.grails.core.artefact.DomainClassArtefactHandler
-import org.grails.core.support.GrailsDomainConfigurationUtil
-import org.grails.datastore.gorm.config.GrailsDomainClassMappingContext
-import org.grails.datastore.gorm.config.GrailsDomainClassPersistentEntity
-import org.grails.datastore.mapping.model.MappingContext
+import org.grails.datastore.mapping.keyvalue.mapping.config.KeyValueMappingContext
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
@@ -37,6 +31,7 @@ import spock.lang.Specification
  * @author graemerocher
  */
 class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUnitTest {
+
     void "test render toMany association"() {
         given:"A view helper"
         DefaultGrailsJsonViewHelper viewHelper = mockViewHelper(Team, Player)
@@ -92,7 +87,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null,"name":"Barcelona"},"relationships":{"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]},"captain":{"data":null}}},"links":{"self":"/team/1"}}'
     }
 
     void "test render toOne association"() {
@@ -106,14 +101,14 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         def result = viewHelper.render(team)
 
         then:"The result is correct"
-        result.toString() == '{"name":"Barcelona","titles":["La Liga"]}'
+        result.toString() == '{"titles":["La Liga"],"name":"Barcelona"}'
 
         when:"We render an object with deep argument and no child id"
 
         result = viewHelper.render(team, [deep:true])
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"name":"Iniesta"},"name":"Barcelona","titles":["La Liga"]}'
+        result.toString() == '{"titles":["La Liga"],"name":"Barcelona","captain":{"name":"Iniesta"}}'
 
         when:"We render an object without deep argument and a child id"
 
@@ -121,7 +116,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         result = viewHelper.render(team)
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"id":1},"name":"Barcelona","titles":["La Liga"]}'
+        result.toString() == '{"titles":["La Liga"],"name":"Barcelona","captain":{"id":1}}'
 
         when:"We render an object with deep argument and a child id"
 
@@ -129,7 +124,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         result = viewHelper.render(team, [deep:true])
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"id":1,"name":"Iniesta"},"name":"Barcelona","titles":["La Liga"]}'
+        result.toString() == '{"titles":["La Liga"],"name":"Barcelona","captain":{"id":1,"name":"Iniesta"}}'
 
         when:"We render an object with deep argument and a child id and excludes"
 
@@ -137,7 +132,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         result = viewHelper.render(team, [deep:true, excludes: ['captain.name']])
 
         then:"The result is correct"
-        result.toString() == '{"captain":{"id":1},"name":"Barcelona","titles":["La Liga"]}'
+        result.toString() == '{"titles":["La Liga"],"name":"Barcelona","captain":{"id":1}}'
 
         when:"We render an object with deep argument and a child id and includes"
 
@@ -219,7 +214,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"}}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null},"relationships":{"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]},"captain":{"data":null}}},"links":{"self":"/team/1"}}'
 
         when:"We expand a relationship"
         renderResult = render('''
@@ -232,7 +227,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"data":null},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"1","attributes":{"name":"Iniesta"},"relationships":{"team":{"data":null}},"links":{"self":"/player/1"}},{"type":"player","id":"2","attributes":{"name":"Messi"},"relationships":{"team":{"data":null}},"links":{"self":"/player/2"}}]}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null,"name":"Barcelona"},"relationships":{"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]},"captain":{"data":null}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"1","attributes":{"name":"Iniesta"},"relationships":{"team":{"data":null}},"links":{"self":"/player/1"}},{"type":"player","id":"2","attributes":{"name":"Messi"},"relationships":{"team":{"data":null}},"links":{"self":"/player/2"}}]}'
 
         when:"We expand a relationship and exclude a nested property"
         team.captain = new Player(name: "Captain Hook")
@@ -247,7 +242,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"links":{"self":"/player/10"},"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"10","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/10"}}]}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null,"name":"Barcelona"},"relationships":{"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]},"captain":{"links":{"self":"/player/10"},"data":{"type":"player","id":"10"}}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"10","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/10"}}]}'
 
         when:"We expand a relationship and exclude a nested property"
         team.captain = new Player(name: "Captain Hook")
@@ -262,7 +257,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         ''', [team:team])
 
         then:"The result is correct"
-        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"name":"Barcelona","titles":null},"relationships":{"captain":{"links":{"self":"/player/10"},"data":{"type":"player","id":"10"}},"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"1","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/1"}},{"type":"player","id":"2","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/2"}}]}'
+        renderResult.jsonText == '{"data":{"type":"team","id":"1","attributes":{"titles":null,"name":"Barcelona"},"relationships":{"players":{"data":[{"type":"player","id":"1"},{"type":"player","id":"2"}]},"captain":{"links":{"self":"/player/10"},"data":{"type":"player","id":"10"}}}},"links":{"self":"/team/1"},"included":[{"type":"player","id":"1","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/1"}},{"type":"player","id":"2","attributes":{},"relationships":{"team":{"data":null}},"links":{"self":"/player/2"}}]}'
     }
 
     void "Test render object method with customizer"() {
@@ -277,7 +272,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
             pages 1000
         }
         then:"The result is correct"
-        result.toString() == '{"id":1,"author":{"name":"Stephen King"},"title":"The Stand","pages":1000}'
+        result.toString() == '{"id":1,"title":"The Stand","author":{"name":"Stephen King"},"pages":1000}'
     }
 
     void "Test render object method with customizer when not configured as a domain"() {
@@ -305,7 +300,7 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
         test.id = 1L
         def result = viewHelper.render(test)
         then:"The result is correct"
-        result.toString() == '{"id":1,"author":{"name":"Stephen King"},"title":"The Stand"}'
+        result.toString() == '{"id":1,"title":"The Stand","author":{"name":"Stephen King"}}'
 
         when:"We render an object"
         result = viewHelper.render(new Test(title:"The Stand", author:new TestAuthor(name:"Stephen King")), [excludes:['author']])
@@ -348,23 +343,10 @@ class JsonViewHelperSpec extends Specification implements JsonViewTest, GrailsUn
     protected DefaultGrailsJsonViewHelper mockViewHelper(Class...classes) {
         def jsonView = Mock(JsonView)
         jsonView.getParams() >> new EmptyParameters()
-        def mappingContext = Mock(MappingContext)
 
-        def app = new DefaultGrailsApplication(classes)
-        app.initialise()
-        def domainClasses = app.getArtefacts(DomainClassArtefactHandler.TYPE)
-        def domainMap = domainClasses.collectEntries { GrailsDomainClass dc ->
-            [(dc.fullName): dc]
-        }
-        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClasses,domainMap)
+        KeyValueMappingContext mappingContext = new KeyValueMappingContext("test")
+        mappingContext.addPersistentEntities(classes)
 
-
-        def mockMappingContxt = new GrailsDomainClassMappingContext(app)
-        for(dc in domainClasses) {
-            def entity = new GrailsDomainClassPersistentEntity(dc, mockMappingContxt)
-            entity.initialize()
-            mappingContext.getPersistentEntity(dc.fullName) >> entity
-        }
         jsonView.getMappingContext() >> mappingContext
 
         def viewHelper = new DefaultGrailsJsonViewHelper(jsonView)
