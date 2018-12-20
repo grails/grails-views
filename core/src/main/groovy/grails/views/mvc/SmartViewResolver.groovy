@@ -24,6 +24,7 @@ import grails.views.TemplateResolver
 import grails.views.WritableScriptTemplate
 import grails.views.resolve.TemplateResolverUtils
 import grails.web.http.HttpHeaders
+import grails.web.mapping.LinkGenerator
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
@@ -59,6 +60,10 @@ class SmartViewResolver implements GrailsConfigurationAware {
     Config configuration
 
     final View objectView
+
+    void setLinkGenerator(LinkGenerator linkGenerator) {
+        templateEngine.linkGenerator = linkGenerator
+    }
 
     private Cache<String, GenericGroovyTemplateView> viewCache  = Caffeine.newBuilder()
             .maximumSize(150)
