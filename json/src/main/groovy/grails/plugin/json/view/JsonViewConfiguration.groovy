@@ -2,10 +2,7 @@ package grails.plugin.json.view
 
 import grails.views.GenericViewConfiguration
 import grails.web.mime.MimeType
-import org.springframework.beans.BeanUtils
 import org.springframework.boot.context.properties.ConfigurationProperties
-
-import java.beans.PropertyDescriptor
 
 /**
  * Default configuration for JSON views
@@ -32,9 +29,4 @@ class JsonViewConfiguration implements GenericViewConfiguration {
     String getViewModuleName() {
          MODULE_NAME
     }
-
-    PropertyDescriptor[] findViewConfigPropertyDescriptor() {
-        BeanUtils.getPropertyDescriptors(GenericViewConfiguration)
-    }
-
 }
