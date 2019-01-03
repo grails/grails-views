@@ -467,7 +467,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -480,14 +479,13 @@ import grails.views.gradle.json.*
 apply plugin:"java"
 
 repositories {
-    mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencies {
     compile "org.grails.plugins:views-json:2.0.0.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
-    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
+    compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
 
 task( compileViews, type:JsonViewCompilerTask ) {
@@ -546,7 +544,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-02 10:17:12 UTC
+Last updated 2019-01-03 13:40:53 UTC
 </div>
 </div>
 </body>

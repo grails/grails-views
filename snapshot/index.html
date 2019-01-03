@@ -2713,7 +2713,6 @@ The new testing trait, like the testing framework, requires Spock.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -2726,14 +2725,13 @@ import grails.views.gradle.json.*
 apply plugin:"java"
 
 repositories {
-    mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencies {
     compile "org.grails.plugins:views-json:2.0.0.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
-    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
+    compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
 
 task( compileViews, type:JsonViewCompilerTask ) {
@@ -3226,7 +3224,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-02 10:17:12 UTC
+Last updated 2019-01-03 13:40:53 UTC
 </div>
 </div>
 </body>
