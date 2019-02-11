@@ -37,6 +37,7 @@ class PluginAwareTemplateResolver extends GenericGroovyTemplateResolver implemen
     PluginAwareTemplateResolver(ViewConfiguration viewConfiguration) {
         this.packageName = viewConfiguration.packageName
         this.baseDir = new File(viewConfiguration.templatePath)
+        this.classLoader = Thread.currentThread().contextClassLoader
     }
 
     void setPluginManager(GrailsPluginManager pluginManager) {
