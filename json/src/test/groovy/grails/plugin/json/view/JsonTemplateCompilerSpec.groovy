@@ -20,7 +20,7 @@ class JsonTemplateCompilerSpec extends Specification {
         compiler.setTargetDirectory(dir)
         def resolver = new GenericGroovyTemplateResolver(packageName: "test")
         resolver.classLoader = new URLClassLoader([dir.toURL()] as URL[])
-        def engine = new JsonViewTemplateEngine(config)
+        def engine = new JsonViewTemplateEngine(config, Thread.currentThread().contextClassLoader)
         engine.templateResolver = resolver
         when:"templates are compiled"
 
@@ -42,7 +42,7 @@ class JsonTemplateCompilerSpec extends Specification {
         compiler.setTargetDirectory(dir)
         def resolver = new GenericGroovyTemplateResolver(packageName: "test")
         resolver.classLoader = new URLClassLoader([dir.toURL()] as URL[])
-        def engine = new JsonViewTemplateEngine(config)
+        def engine = new JsonViewTemplateEngine(config, Thread.currentThread().contextClassLoader)
         engine.templateResolver = resolver
         when:"templates are compiled"
 

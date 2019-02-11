@@ -59,7 +59,7 @@ trait JsonViewTest {
 
     @Lazy JsonViewTemplateEngine templateEngine = {
 
-        def templateEngine = new JsonViewTemplateEngine(viewConfiguration)
+        def templateEngine = new JsonViewTemplateEngine(viewConfiguration, Thread.currentThread().contextClassLoader)
         if(messageSource != null) {
             templateEngine.setMessageSource(messageSource)
         }

@@ -67,7 +67,7 @@ json g.render(book, [includes:['title']])
     void "Test HAL JSON view template"() {
         when:"An engine is created and a template parsed"
 
-        def templateEngine = new JsonViewTemplateEngine(new JsonViewConfiguration(prettyPrint: true))
+        def templateEngine = new JsonViewTemplateEngine(new JsonViewConfiguration(prettyPrint: true), Thread.currentThread().contextClassLoader)
         def linkGenerator = Mock(LinkGenerator)
         linkGenerator.link(_) >> "http://localhost:8080/book/show/1"
         templateEngine.setLinkGenerator(linkGenerator)

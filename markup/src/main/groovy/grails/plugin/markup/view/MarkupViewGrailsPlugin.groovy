@@ -51,7 +51,7 @@ A plugin that allows rendering of JSON views
 
     Closure doWithSpring() { {->
         markupViewConfiguration(MarkupViewConfiguration)
-        markupTemplateEngine(MarkupViewTemplateEngine, markupViewConfiguration)
+        markupTemplateEngine(MarkupViewTemplateEngine, markupViewConfiguration, applicationContext.classLoader)
         smartMarkupViewResolver(MarkupViewResolver, markupTemplateEngine) {
             templateResolver = bean(PluginAwareTemplateResolver, markupViewConfiguration)
         }

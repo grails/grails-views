@@ -135,17 +135,19 @@ abstract class ResolvableGroovyTemplateEngine extends TemplateEngine {
      * @param baseClassName The base class name
      * @param extension The file extension
      */
-    ResolvableGroovyTemplateEngine(ViewConfiguration configuration) {
+    ResolvableGroovyTemplateEngine(ViewConfiguration configuration, ClassLoader classLoader) {
         this.viewConfiguration = configuration
         this.enableReloading = configuration.enableReloading
         this.shouldCache = configuration.cache
-        this.templateResolver = new GenericGroovyTemplateResolver(packageName: configuration.packageName, baseDir: new File(configuration.templatePath))
+
+
         this.extension = configuration.extension
         this.compilerConfiguration = new CompilerConfiguration()
         this.viewUriResolver = new GenericViewUriResolver(".$extension")
         compilerConfiguration.setScriptBaseClass(configuration.baseTemplateClass.name)
         prepareCustomizers(compilerConfiguration)
-        classLoader = new GroovyClassLoader(getClass().getClassLoader(), new CompilerConfiguration(compilerConfiguration))
+        this.classLoader = new GroovyClassLoader(classLoader, new CompilerConfiguration(compilerConfiguration))
+        this.templateResolver = new GenericGroovyTemplateResolver(packageName: configuration.packageName, baseDir: new File(configuration.templatePath))
     }
 
     @Autowired(required = false)

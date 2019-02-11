@@ -33,7 +33,7 @@ class GenericGroovyTemplateResolver implements TemplateResolver {
     /**
      * The class loader to use for template loading in production mode
      */
-    ClassLoader classLoader = Thread.currentThread().contextClassLoader
+    ClassLoader classLoader
 
     @Override
     URL resolveTemplate(String path) {

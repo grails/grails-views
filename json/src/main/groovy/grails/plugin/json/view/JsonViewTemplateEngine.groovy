@@ -39,7 +39,14 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
      * Constructs a JsonTemplateEngine with the default configuration
      */
     JsonViewTemplateEngine() {
-        this(new JsonViewConfiguration())
+        this(new JsonViewConfiguration(), Thread.currentThread().contextClassLoader)
+    }
+
+    /**
+     * Constructs a JsonTemplateEngine with the default configuration
+     */
+    JsonViewTemplateEngine(ClassLoader classLoader) {
+        this(new JsonViewConfiguration(), classLoader)
     }
 
     /**
@@ -47,8 +54,8 @@ class JsonViewTemplateEngine extends ResolvableGroovyTemplateEngine {
      *
      * @param baseClassName The name of the base class
      */
-    JsonViewTemplateEngine(ViewConfiguration configuration) {
-        super(configuration)
+    JsonViewTemplateEngine(ViewConfiguration configuration, ClassLoader classLoader) {
+        super(configuration, classLoader)
         this.compileStatic = configuration.compileStatic
 
         JsonGenerator.Options options = new JsonGenerator.Options()

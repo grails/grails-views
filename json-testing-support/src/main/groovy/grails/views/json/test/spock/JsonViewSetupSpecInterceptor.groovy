@@ -38,6 +38,8 @@ class JsonViewSetupSpecInterceptor implements IMethodInterceptor {
                 canInitializeEntities = true
             }
         }
-        test.defineBeans(new JsonViewGrailsPlugin())
+        JsonViewGrailsPlugin plugin = new JsonViewGrailsPlugin()
+        plugin.setApplicationContext(grailsApplication.mainContext)
+        test.defineBeans(plugin)
     }
 }

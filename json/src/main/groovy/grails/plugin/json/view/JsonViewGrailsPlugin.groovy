@@ -50,7 +50,7 @@ A plugin that allows rendering of JSON views
     Closure doWithSpring() { {->
             jsonApiIdRenderStrategy(DefaultJsonApiIdRenderer)
             jsonViewConfiguration(JsonViewConfiguration)
-            jsonTemplateEngine(JsonViewTemplateEngine, jsonViewConfiguration)
+            jsonTemplateEngine(JsonViewTemplateEngine, jsonViewConfiguration, applicationContext.classLoader)
             jsonSmartViewResolver(JsonViewResolver, jsonTemplateEngine) {
                 templateResolver = bean(PluginAwareTemplateResolver, jsonViewConfiguration)
             }

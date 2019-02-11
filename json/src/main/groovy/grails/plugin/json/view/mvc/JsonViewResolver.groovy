@@ -31,8 +31,8 @@ class JsonViewResolver extends SmartViewResolver {
 
     JsonViewConfiguration viewConfiguration
 
-    JsonViewResolver(JsonViewConfiguration configuration = new JsonViewConfiguration()) {
-        this(new JsonViewTemplateEngine(configuration))
+    JsonViewResolver(JsonViewConfiguration configuration = new JsonViewConfiguration(), ClassLoader classLoader = Thread.currentThread().contextClassLoader) {
+        this(new JsonViewTemplateEngine(configuration, classLoader))
     }
 
     JsonViewResolver(JsonViewTemplateEngine templateEngine) {

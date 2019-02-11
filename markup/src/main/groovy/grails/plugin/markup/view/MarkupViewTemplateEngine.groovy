@@ -38,10 +38,10 @@ class MarkupViewTemplateEngine extends ResolvableGroovyTemplateEngine {
 
     private final boolean compileStatic
 
-    MarkupViewTemplateEngine(MarkupViewConfiguration config = new MarkupViewConfiguration()) {
-        super(config)
+    MarkupViewTemplateEngine(MarkupViewConfiguration config = new MarkupViewConfiguration(), ClassLoader classLoader = Thread.currentThread().contextClassLoader) {
+        super(config, classLoader)
         this.compileStatic = compileStatic
-        innerEngine = new MarkupTemplateEngine(Thread.currentThread().contextClassLoader, config, new TemplateResolver() {
+        innerEngine = new MarkupTemplateEngine(classLoader, config, new TemplateResolver() {
             @Override
             void configure(ClassLoader templateClassLoader, TemplateConfiguration configuration) {
             }
