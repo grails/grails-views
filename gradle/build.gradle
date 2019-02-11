@@ -14,7 +14,6 @@ ext {
 group "org.grails.plugins"
 
 repositories {
-	mavenLocal()
 	mavenCentral()
 	maven { url "https://repo.grails.org/grails/core" }
 }

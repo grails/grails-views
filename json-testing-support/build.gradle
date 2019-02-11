@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -34,14 +33,13 @@ targetCompatibility = 1.8
 
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencies {
     provided "org.grails:grails-dependencies:$grailsVersion"
-    provided 'javax.servlet:javax.servlet-api:3.1.0'
+    provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
     compile "org.grails:grails-testing-support:$testingSupportVersion"
 

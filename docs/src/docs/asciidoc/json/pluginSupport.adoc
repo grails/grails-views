@@ -16,7 +16,6 @@ Below is an example Gradle build that adds a `compileViews` task for templates l
 ----
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -29,14 +28,13 @@ import grails.views.gradle.json.*
 apply plugin:"java"
 
 repositories {
-    mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencies {
     compile "org.grails.plugins:views-json:{version}"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
-    compileOnly "javax.servlet:javax.servlet-api:3.0.1"
+    compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
 
 task( compileViews, type:JsonViewCompilerTask ) {

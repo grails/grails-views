@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -34,7 +33,6 @@ targetCompatibility = 1.8
 
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
@@ -52,7 +50,7 @@ dependencies {
     compile "org.grails:grails-web-url-mappings:$grailsVersion"
     provided "org.grails:grails-plugin-rest:$grailsVersion"
     compile "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-    provided 'javax.servlet:javax.servlet-api:3.1.0'
+    provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
     testCompile "org.spockframework:spock-core:$spockVersion"
 }

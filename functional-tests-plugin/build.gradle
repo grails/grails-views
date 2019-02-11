@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -31,7 +30,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
@@ -51,7 +49,8 @@ dependencies {
 
     provided "org.grails:grails-web-boot"
     provided "org.grails:grails-dependencies"
-    provided 'javax.servlet:javax.servlet-api:3.1.0'
+    provided "javax.servlet:javax.servlet-api:$servletApiVersion"
+
     compile project(":views-json")
     compile project(":views-markup")
 
