@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
@@ -5,13 +14,14 @@ ext {
 }
 
 apply plugin:'idea'
+apply plugin: 'com.jfrog.bintray'
 
 subprojects {
     ext {
         userOrg = "grails"
     }
     group "org.grails"
-    version "2.0.0.RC1"
+    version "2.0.0.BUILD-SNAPSHOT"
     //version "1.2.8"
     repositories {
         mavenCentral()
