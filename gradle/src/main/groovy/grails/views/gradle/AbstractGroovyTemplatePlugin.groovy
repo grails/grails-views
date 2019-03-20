@@ -8,6 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.CopySpec
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetOutput
@@ -90,9 +91,16 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             war.classpath = war.classpath + project.files(destDir)
         }
         allTasks.withType(Jar) { Jar jar ->
-            if(!(jar instanceof War) && jar.name != 'pathingJar' ) {
-                jar.dependsOn templateCompileTask
-                jar.from destDir
+            if(!(jar instanceof War)) {
+                if (jar.name == 'bootJar') {
+                    jar.dependsOn templateCompileTask
+                    jar.from(destDir) { CopySpec spec ->
+                        spec.into("BOOT-INF/classes")
+                    }
+                } else if(jar.name == 'jar') {
+                    jar.dependsOn templateCompileTask
+                    jar.from destDir
+                }
             }
         }
     }
