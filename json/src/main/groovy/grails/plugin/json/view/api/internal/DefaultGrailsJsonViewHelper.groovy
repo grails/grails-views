@@ -293,7 +293,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
                 out.append JsonOutput.OPEN_BRACE
                 for(entry in map.entrySet()) {
-                    if (!includeExcludeSupport.shouldInclude(incs, excs, entry.key.toString())) {
+                    if (!simpleIncludeExcludeSupport.shouldInclude(incs, excs, entry.key.toString())) {
                         continue
                     }
 
@@ -384,7 +384,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                 if (readMethod != null && desc.writeMethod != null) {
                     def propertyName = desc.name
                     String qualified = "${path}${propertyName}"
-                    if (includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
+                    if (simpleIncludeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                         def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
                             def propertyType = desc.propertyType
@@ -489,7 +489,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             def propertyName = prop.name
             String qualified = "${path}${propertyName}"
 
-            if (!includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
+            if (!gormIncludeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                 continue
             }
 
@@ -695,7 +695,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         for (String idName : identity) {
             String idQualified = "${path}${idName}"
 
-            if (idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
+            if (idName != null && gormIncludeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
                 PersistentProperty property
                 if (entity.identity != null && entity.identity.name == idName) {
                     property = entity.identity

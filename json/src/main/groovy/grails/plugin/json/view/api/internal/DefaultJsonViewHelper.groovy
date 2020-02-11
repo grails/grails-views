@@ -32,8 +32,9 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
     public static final String PAGINATION_OFFSET = "offset"
     public static final String PAGINATION_TOTAL = "total"
     public static final String PAGINATION_RESROUCE = "resource"
+    public static final List<String> DEFAULT_EXCLUDES = ["class", 'metaClass', 'properties', "errors"]
+    public static final List<String> DEFAULT_GORM_EXCLUDES = ["class", 'metaClass', 'properties', "version", "attached", "errors", "dirty"]
 
-    
     /**
      * The expand parameter
      */
@@ -56,25 +57,14 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         }
     }
 
-    /**
-     * Default includes/excludes for GORM properties
-     */
-    IncludeExcludeSupport<String> includeExcludeSupport = new IncludeExcludeSupport<String>(null, ["class", 'metaClass', 'properties', "version", "attached", "errors", "dirty"]) {
-        @Override
-        boolean shouldInclude(List<String> incs, List excs, String object) {
-            def i = object.lastIndexOf('.')
-            String unqualified = i > -1 ? object.substring(i + 1) : null
-            return super.shouldInclude(incs, excs, object) && (unqualified == null || (includes(defaultIncludes, unqualified) && !excludes(defaultExcludes, unqualified)))
-        }
+    IncludeExcludeSupport<String> simpleIncludeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_EXCLUDES)
+    IncludeExcludeSupport<String> gormIncludeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_GORM_EXCLUDES)
 
-        @Override
-        boolean includes(List<String> includes, String object) {
-            includes == null ||
-                    includes.contains(object) ||
-                    includes.any { object.startsWith(it + ".") } ||
-                    includes.any { it.startsWith(object + ".") }
-        }
-    }
+    /**
+     * @deprecated since 2.0.0, use either #simpleIncludeExcludeSupport or #gormIncludeExcludeSupport
+     */
+    @Deprecated
+    IncludeExcludeSupport<String> includeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_GORM_EXCLUDES)
 
     List<String> getIncludes(Map arguments) {
         ViewUtils.getStringListFromMap(IncludeExcludeSupport.INCLUDES_PROPERTY, arguments, null)
@@ -93,22 +83,22 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         try {
             return GormEnhancer.findEntity(clazz)
         } catch (Throwable e) {
-            return ((JsonView)view)?.mappingContext?.getPersistentEntity(clazz.name)
+            return ((JsonView) view)?.mappingContext?.getPersistentEntity(clazz.name)
         }
     }
 
 
     protected Class getGenericType(Class declaringClass, PropertyDescriptor descriptor) {
         def field = ReflectionUtils.findField(declaringClass, descriptor.getName())
-        if(field != null) {
+        if (field != null) {
 
             def type = field.genericType
-            if(type instanceof ParameterizedType) {
+            if (type instanceof ParameterizedType) {
                 def args = ((ParameterizedType) type).getActualTypeArguments()
-                if(args.length > 0) {
+                if (args.length > 0) {
                     def t = args[0]
-                    if(t instanceof Class) {
-                        return (Class)t
+                    if (t instanceof Class) {
+                        return (Class) t
                     }
                 }
             }
@@ -129,8 +119,8 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
         e.stackTrace
                 .findAll() { StackTraceElement element -> element.lineNumber > -1 }
                 .collect() { StackTraceElement element ->
-            "$element.lineNumber | ${element.className}.$element.methodName".toString()
-        }.toList() as List<Object>
+                    "$element.lineNumber | ${element.className}.$element.methodName".toString()
+                }.toList() as List<Object>
     }
 
     protected List<String> getExpandProperties(JsonView jsonView, Map arguments) {
@@ -251,7 +241,7 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
     }
 
     JsonGenerator getGenerator() {
-        ((JsonView)view).generator
+        ((JsonView) view).generator
     }
 
 }
