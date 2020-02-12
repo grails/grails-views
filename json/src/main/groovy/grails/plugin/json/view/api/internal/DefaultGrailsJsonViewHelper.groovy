@@ -489,7 +489,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             def propertyName = prop.name
             String qualified = "${path}${propertyName}"
 
-            if (!gormIncludeExcludeSupport.shouldInclude(incs, excs, qualified)) {
+            if (!includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                 continue
             }
 
@@ -695,7 +695,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
         for (String idName : identity) {
             String idQualified = "${path}${idName}"
 
-            if (idName != null && gormIncludeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
+            if (idName != null && includeExcludeSupport.shouldInclude(incs, excs, idQualified)) {
                 PersistentProperty property
                 if (entity.identity != null && entity.identity.name == idName) {
                     property = entity.identity

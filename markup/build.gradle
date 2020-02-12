@@ -58,7 +58,6 @@ dependencies {
 
     compile project(":views-core")
 
-    testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
 
     console "org.grails:grails-console"

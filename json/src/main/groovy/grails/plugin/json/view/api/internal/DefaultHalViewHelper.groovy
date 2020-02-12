@@ -293,7 +293,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
             for(Association association in associations) {
                 if(!association.isEmbedded()) {
                     def propertyName = association.name
-                    if (gormIncludeExcludeSupport.shouldInclude(incs, excs, propertyName)) {
+                    if (includeExcludeSupport.shouldInclude(incs, excs, propertyName)) {
                         def value = entityReflector.getProperty(object, propertyName)
                         if(value != null) {
 

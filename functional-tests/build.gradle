@@ -81,7 +81,6 @@ dependencies {
     runtime project(":views-json-templates")
 
     testCompile project(":views-json-testing-support")
-    testCompile "org.grails:grails-plugin-testing"
 
     console "org.grails:grails-console"
 

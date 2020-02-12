@@ -58,12 +58,6 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
     }
 
     IncludeExcludeSupport<String> simpleIncludeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_EXCLUDES)
-    IncludeExcludeSupport<String> gormIncludeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_GORM_EXCLUDES)
-
-    /**
-     * @deprecated since 2.0.0, use either #simpleIncludeExcludeSupport or #gormIncludeExcludeSupport
-     */
-    @Deprecated
     IncludeExcludeSupport<String> includeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_GORM_EXCLUDES)
 
     List<String> getIncludes(Map arguments) {

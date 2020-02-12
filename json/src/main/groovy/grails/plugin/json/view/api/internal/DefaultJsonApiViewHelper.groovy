@@ -182,7 +182,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
 
                 boolean firstAttribute = true
                 for (persistentProperty in attributes) {
-                    if (!gormIncludeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${persistentProperty.name}".toString())) continue
+                    if (!includeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${persistentProperty.name}".toString())) continue
 
                     if (!firstAttribute) {
                         out.write(JsonOutput.COMMA)
@@ -222,7 +222,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
                 boolean firstRelationship = true
 
                 for (association in relationships) {
-                    if (!gormIncludeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${association.name}".toString())) continue
+                    if (!includeExcludeSupport.shouldInclude(includes, excludes, "${basePath}${association.name}".toString())) continue
 
                     def value = ((GroovyObject) object).getProperty(association.name)
                     if (!firstRelationship) {
@@ -300,7 +300,7 @@ class DefaultJsonApiViewHelper extends DefaultJsonViewHelper implements JsonApiV
         for (PersistentProperty prop: persistentEntity.getPersistentProperties()) {
             String qualified = "${basePath}${prop.name}".toString()
 
-            if (!gormIncludeExcludeSupport.shouldInclude(includes, excludes, qualified)) {
+            if (!includeExcludeSupport.shouldInclude(includes, excludes, qualified)) {
                 continue
             }
 
