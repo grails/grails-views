@@ -50,9 +50,19 @@ dependencyManagement {
 
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if(details.requested.group == 'org.grails' && details.requested.name.startsWith('grails-datastore')) {
-            details.useVersion("$gormVersion")
+        if(details.requested.group == 'org.grails' &&
+                details.requested.name.startsWith('grails-datastore')) {
+
+            if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
+                details.useVersion("$hibernateGormVersion")
+            } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
+            details.requested.name.equals("grails-datastore-gorm-bson")) {
+                details.useVersion("$mongodbVersion")
+            } else {
+                details.useVersion("$gormVersion")
+            }
         }
+
     }
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
@@ -67,7 +77,7 @@ dependencies {
 
     compile "org.grails.plugins:hibernate5"
     runtime "org.apache.tomcat:tomcat-jdbc:9.0.13"
-    compile "org.grails.plugins:mongodb:$mongodbVersion"
+    compile "org.grails.plugins:mongodb"
     compile "org.grails.plugins:cache"
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
