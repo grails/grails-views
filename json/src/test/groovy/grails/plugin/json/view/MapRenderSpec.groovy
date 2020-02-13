@@ -50,6 +50,26 @@ json g.render(map)
         renderResult.json.errors == ["test1"]
     }
 
+    void "Test property errors is not excluded for a non validateable"() {
+
+        setup: "An exception is rendered"
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        when:
+        TeamCO team = new TeamCO(name: "Test", errors: ["co-ordination", "team-work"])
+        def renderResult = render(templateText, [map: [team: team]])
+
+        then: "The exception is rendered"
+        renderResult.json.team
+        renderResult.json.team.name == 'Test'
+        renderResult.json.team.errors == ["co-ordination", "team-work"]
+    }
+
     void "Test property errors is excluded for domain"() {
 
         setup:
@@ -257,6 +277,11 @@ json g.render(map, [includes: ['a', 'd']])
             name nullable: false, blank: false
             teamName nullable: false, blank: false
         }
+    }
+
+    static class TeamCO {
+        String name
+        List<String> errors
     }
 
 
