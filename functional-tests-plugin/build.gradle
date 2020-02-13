@@ -54,7 +54,6 @@ dependencies {
     compile project(":views-json")
     compile project(":views-markup")
 
-    testCompile "org.grails:grails-plugin-testing"
 
     console "org.grails:grails-console"
 }

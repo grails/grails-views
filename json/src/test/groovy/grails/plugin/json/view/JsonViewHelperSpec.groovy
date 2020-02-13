@@ -376,6 +376,7 @@ class Team {
 }
 @Entity
 class Player {
+    Long version
     String name
     static belongsTo = [team:Team]
 }

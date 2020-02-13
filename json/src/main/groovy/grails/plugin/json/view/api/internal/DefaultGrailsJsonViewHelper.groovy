@@ -293,7 +293,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
 
                 out.append JsonOutput.OPEN_BRACE
                 for(entry in map.entrySet()) {
-                    if (!includeExcludeSupport.shouldInclude(incs, excs, entry.key.toString())) {
+                    if (!simpleIncludeExcludeSupport.shouldInclude(incs, excs, entry.key.toString())) {
                         continue
                     }
 
@@ -384,7 +384,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                 if (readMethod != null && desc.writeMethod != null) {
                     def propertyName = desc.name
                     String qualified = "${path}${propertyName}"
-                    if (includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
+                    if (simpleIncludeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                         def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
                             def propertyType = desc.propertyType

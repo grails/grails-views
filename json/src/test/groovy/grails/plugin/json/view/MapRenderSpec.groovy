@@ -1,12 +1,60 @@
 package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonViewTest
+import grails.testing.gorm.DataTest
 import spock.lang.Specification
 
 /**
  * Created by graemerocher on 14/10/16.
  */
-class MapRenderSpec extends Specification implements JsonViewTest {
+class MapRenderSpec extends Specification implements JsonViewTest, DataTest {
+
+    @Override
+    Class[] getDomainClassesToMock() {
+        return [Team, Player]
+    }
+
+    void "Test property version is not excluded"() {
+
+        when: "An exception is rendered"
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        def renderResult = render(templateText, [map: [foo: 'bar', version: "one"]])
+
+        then: "The exception is rendered"
+        renderResult.json.foo == 'bar'
+        renderResult.json.version == 'one'
+    }
+
+    void "Test property version is excluded for domain"() {
+
+        setup:
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        when: "An entity is used in a map"
+        mappingContext.addPersistentEntity(Player)
+        Player player1 = new Player(name: "Cantona")
+        Player player2 = new Player(name: "Giggs")
+        Team team = new Team(name: "Test", captain: player1)
+        team.addToPlayers(player1)
+        team.addToPlayers(player2)
+        team.save()
+        player2.version = 1l
+        def renderResult = render(templateText, [map: [player1: player1, player2: player2]])
+
+        then: "The result is correct"
+        renderResult.jsonText == '{"player1":{"id":1,"team":{"id":1},"name":"Cantona"},"player2":{"id":2,"team":{"id":1},"name":"Giggs"}}'
+    }
 
     void "Test render a map type"() {
 
