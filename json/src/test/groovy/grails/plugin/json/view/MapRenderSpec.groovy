@@ -2,6 +2,7 @@ package grails.plugin.json.view
 
 import grails.plugin.json.view.test.JsonViewTest
 import grails.testing.gorm.DataTest
+import grails.validation.Validateable
 import spock.lang.Specification
 
 /**
@@ -29,6 +30,99 @@ json g.render(map)
         then: "The exception is rendered"
         renderResult.json.foo == 'bar'
         renderResult.json.version == 'one'
+    }
+
+    void "Test property errors is not excluded for Map"() {
+
+        when: "An exception is rendered"
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        def renderResult = render(templateText, [map: [foo: 'bar', version: "one", "errors": ["test1"]]])
+
+        then: "The exception is rendered"
+        renderResult.json.foo == 'bar'
+        renderResult.json.version == 'one'
+        renderResult.json.errors == ["test1"]
+    }
+
+    void "Test property errors is not excluded for a non validateable"() {
+
+        setup: "An exception is rendered"
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        when:
+        TeamCO team = new TeamCO(name: "Test", errors: ["co-ordination", "team-work"])
+        def renderResult = render(templateText, [map: [team: team]])
+
+        then: "The exception is rendered"
+        renderResult.json.team
+        renderResult.json.team.name == 'Test'
+        renderResult.json.team.errors == ["co-ordination", "team-work"]
+    }
+
+    void "Test property errors is excluded for domain"() {
+
+        setup:
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        when: "An entity is used in a map"
+        mappingContext.addPersistentEntity(Player)
+        Player player1 = new Player(name: "Cantona")
+        Player player2 = new Player()
+        player2.validate()
+
+        then:
+        player2.hasErrors()
+
+        when:
+        Team team = new Team(name: "Test", captain: player1)
+        team.addToPlayers(player1)
+        team.addToPlayers(player2)
+        team.save(validate: false)
+        player2.version = 1l
+        def renderResult = render(templateText, [map: [player1: player1, player2: player2]])
+
+        then: "The result is correct"
+        renderResult.jsonText == '{"player1":{"id":1,"team":{"id":1},"name":"Cantona"},"player2":{"id":2,"team":{"id":1}}}'
+    }
+
+    void "Test property errors is excluded for command objects"() {
+
+        setup:
+        def templateText = '''
+model {
+    Map map
+}
+
+json g.render(map)
+'''
+        when: "An entity is used in a map"
+        PlayerCO player1 = new PlayerCO(name: "Cantona")
+        player1.validate()
+
+        then:
+        player1.hasErrors()
+
+        when:
+        def renderResult = render(templateText, [map: [player1: player1]])
+
+        then: "The result is correct"
+        renderResult.jsonText == '{"player1":{"name":"Cantona"}}'
     }
 
     void "Test property version is excluded for domain"() {
@@ -173,6 +267,21 @@ json g.render(map, [includes: ['a', 'd']])
 
         then:"The result is correct"
         renderResult.jsonText == '{"a":"1","d":"4"}'
+    }
+
+    static class PlayerCO implements Validateable {
+        String name
+        String teamName
+
+        static constraints = {
+            name nullable: false, blank: false
+            teamName nullable: false, blank: false
+        }
+    }
+
+    static class TeamCO {
+        String name
+        List<String> errors
     }
 
 

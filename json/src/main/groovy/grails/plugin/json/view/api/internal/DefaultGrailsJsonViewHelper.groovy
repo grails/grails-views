@@ -9,6 +9,7 @@ import grails.plugin.json.view.api.GrailsJsonViewHelper
 import grails.plugin.json.view.api.JsonView
 import grails.plugin.json.view.template.JsonViewTemplate
 import grails.util.GrailsNameUtils
+import grails.validation.Validateable
 import grails.views.ResolvableGroovyTemplateEngine
 import grails.views.ViewException
 import grails.views.ViewUriResolver
@@ -22,6 +23,7 @@ import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
 import org.grails.buffer.FastStringWriter
 import org.grails.core.util.IncludeExcludeSupport
+import org.grails.datastore.gorm.GormValidateable
 import org.grails.datastore.mapping.collection.PersistentCollection
 import org.grails.datastore.mapping.model.IdentityMapping
 import org.grails.datastore.mapping.model.MappingFactory
@@ -379,12 +381,13 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
             def declaringClass = object.getClass()
             def cpf = ClassPropertyFetcher.forClass(declaringClass)
             def descriptors = cpf.getPropertyDescriptors()
+            IncludeExcludeSupport includeExcludeSupport = (object instanceof GormValidateable || object instanceof Validateable) ? validateableIncludeExcludeSupport : simpleIncludeExcludeSupport
             for (PropertyDescriptor desc in descriptors) {
                 def readMethod = desc.readMethod
                 if (readMethod != null && desc.writeMethod != null) {
                     def propertyName = desc.name
                     String qualified = "${path}${propertyName}"
-                    if (simpleIncludeExcludeSupport.shouldInclude(incs, excs, qualified)) {
+                    if (includeExcludeSupport.shouldInclude(incs, excs, qualified)) {
                         def value = cpf.getPropertyValue(object, desc.name)
                         if(value != null) {
                             def propertyType = desc.propertyType

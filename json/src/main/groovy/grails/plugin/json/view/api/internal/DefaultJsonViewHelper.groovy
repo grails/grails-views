@@ -32,8 +32,9 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
     public static final String PAGINATION_OFFSET = "offset"
     public static final String PAGINATION_TOTAL = "total"
     public static final String PAGINATION_RESROUCE = "resource"
-    public static final List<String> DEFAULT_EXCLUDES = ["class", 'metaClass', 'properties', "errors"]
-    public static final List<String> DEFAULT_GORM_EXCLUDES = ["class", 'metaClass', 'properties', "version", "attached", "errors", "dirty"]
+    public static final List<String> DEFAULT_EXCLUDES = ["class", 'metaClass', 'properties']
+    public static final List<String> DEFAULT_VALIDATEABLE_EXCLUDES = DEFAULT_EXCLUDES + ["errors"]
+    public static final List<String> DEFAULT_GORM_EXCLUDES = DEFAULT_VALIDATEABLE_EXCLUDES + ["version", "attached", "dirty"]
 
     /**
      * The expand parameter
@@ -58,6 +59,7 @@ class DefaultJsonViewHelper extends DefaultGrailsViewHelper {
     }
 
     IncludeExcludeSupport<String> simpleIncludeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_EXCLUDES)
+    IncludeExcludeSupport<String> validateableIncludeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_VALIDATEABLE_EXCLUDES)
     IncludeExcludeSupport<String> includeExcludeSupport = new DefaultJsonViewIncludeExcludeSupport(null, DEFAULT_GORM_EXCLUDES)
 
     List<String> getIncludes(Map arguments) {
