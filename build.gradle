@@ -14,9 +14,13 @@ ext {
 }
 
 apply plugin:'idea'
-apply plugin: 'com.jfrog.bintray'
 
-subprojects {
+subprojects { subProject->
+
+    if (!(subProject.name.contains("tests") || subProject.name.contains("docs"))) {
+        apply plugin: 'com.jfrog.bintray'
+    }
+
     ext {
         userOrg = "grails"
     }
