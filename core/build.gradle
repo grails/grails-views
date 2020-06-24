@@ -7,18 +7,15 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "com.jfrog.bintray"
-    id 'groovy'
-    id 'maven-publish'
-    id 'eclipse'
-    id 'idea'
-}
-
 group "org.grails"
 
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'provided-base'
+apply plugin: 'java-library'
+apply plugin: 'groovy'
 
 ext {
     gradleWrapperVersion = project.gradleWrapperVersion
@@ -31,28 +28,20 @@ ext {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-
 repositories {
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
-
 dependencies {
-    compile "org.grails:grails-encoder:$grailsVersion"
-    compile "org.grails:grails-web-common:$grailsVersion"
-    compile "org.grails:grails-web-url-mappings:$grailsVersion"
+    api "org.grails:grails-encoder:$grailsVersion"
+    api "org.grails:grails-web-common:$grailsVersion"
+    api "org.grails:grails-web-url-mappings:$grailsVersion"
     provided "org.grails:grails-plugin-rest:$grailsVersion"
-    compile "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+    api "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-    testCompile "org.spockframework:spock-core:$spockVersion"
+    testImplementation "org.spockframework:spock-core:$spockVersion"
 }
 
 task sourcesJar(type:Jar) {

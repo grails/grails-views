@@ -18,35 +18,10 @@ group "org.grails.plugins"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-plugin-publish"
-apply plugin: 'optional-base'
+apply plugin: 'java-library'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-grailsPublish {
-    userOrg = 'grails'
-    githubSlug = 'grails/grails-views'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "JSON Views Plugin"
-    desc = "Adds support for defining views in JSON"
-    developers = [graemerocher:"Graeme Rocher"]
-}
-
-bintray {
-    pkg {
-        desc = "Grails Views"
-        name = 'grails-views'
-    }
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
 
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -68,14 +43,13 @@ configurations.all {
 }
 
 dependencies {
-    compile "org.grails:grails-core:$grailsVersion"
+    api "org.grails:grails-core:$grailsVersion"
+    api project(":views-core")
 
-    compile project(":views-core")
-
-    testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
-    testCompile "org.grails:grails-gorm-testing-support:$testingSupportVersion"
-    testCompile "org.grails:grails-datastore-gorm-hibernate5"
-    testRuntime "org.javassist:javassist:3.18.1-GA"
+    testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion"
+    testImplementation "org.grails:grails-gorm-testing-support:$testingSupportVersion"
+    testImplementation "org.grails:grails-datastore-gorm-hibernate5"
+    testRuntimeOnly "org.javassist:javassist:3.18.1-GA"
 
     console "org.grails:grails-console"
 }
@@ -86,4 +60,22 @@ task wrapper(type: Wrapper) {
 
 jar {
   exclude "*.gson"
+}
+
+grailsPublish {
+    userOrg = 'grails'
+    githubSlug = 'grails/grails-views'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "JSON Views Plugin"
+    desc = "Adds support for defining views in JSON"
+    developers = [graemerocher:"Graeme Rocher"]
+}
+
+bintray {
+    pkg {
+        desc = "Grails Views"
+        name = 'grails-views'
+    }
 }

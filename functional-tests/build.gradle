@@ -55,34 +55,42 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+//TODO: Remove the below {@code integrationTestCompile} logic once the Grails core version is updated.
+configurations {
+    integrationTestCompile.extendsFrom(testCompileClasspath)
+    integrationTestRuntime.extendsFrom(testRuntimeClasspath)
+}
+
+//TODO: Remove the below lines once the {@link org.grails.gradle.plugin.web.gsp.GroovyPageCompileTask} is updated with correct classpath settings.
+compileGroovyPages.classpath += configurations.compileClasspath
+
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-dependencies"
-    compile "org.grails:grails-web-boot"
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.grails:grails-dependencies"
+    implementation "org.grails:grails-web-boot"
 
-    compile "org.grails.plugins:hibernate5"
-    runtime "org.apache.tomcat:tomcat-jdbc:9.0.13"
-    compile "org.grails.plugins:mongodb"
-    compile "org.grails.plugins:cache"
-    compile "org.hibernate:hibernate-ehcache"
-    compile "org.grails.plugins:scaffolding"
+    implementation "org.grails.plugins:hibernate5"
+    implementation "org.grails.plugins:mongodb"
+    implementation "org.grails.plugins:cache"
+    implementation "org.hibernate:hibernate-ehcache"
+    implementation "org.grails.plugins:scaffolding"
 
-    compile project(":views-json")
-    compile project(":views-markup")
-    compile project(":views-functional-tests-plugin")
+    implementation project(":views-json")
+    implementation project(":views-markup")
+    implementation project(":views-functional-tests-plugin")
 
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
-
-    runtime project(":views-json-templates")
+    runtimeOnly "org.apache.tomcat:tomcat-jdbc:9.0.13"
+    runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
+    runtimeOnly project(":views-json-templates")
 
     testCompile project(":views-json-testing-support")
 
     console "org.grails:grails-console"
 
-    testCompile "io.micronaut:micronaut-http-client:$micronautVersion"
+    testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
 }
 
 integrationTest {

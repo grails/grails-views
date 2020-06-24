@@ -1,9 +1,18 @@
-plugins {
-	id "io.spring.dependency-management" version "1.0.6.RELEASE"
-	id "com.jfrog.bintray"
-	id 'groovy'
-	id 'maven-publish'
+buildscript {
+	repositories {
+		maven { url "https://repo.grails.org/grails/core" }
+	}
+	dependencies {
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+	}
 }
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'java-library'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'io.spring.dependency-management'
 
 ext {
 	userOrg = 'grails'
@@ -28,9 +37,9 @@ dependencyManagement {
 
 
 dependencies {
-	compile gradleApi()
-	compile "org.grails:grails-gradle-plugin:$grailsVersion"
-	compile "org.codehaus.groovy:groovy:$groovyVersion"
+	api gradleApi()
+	api "org.grails:grails-gradle-plugin:$grailsVersion"
+	api "org.codehaus.groovy:groovy:$groovyVersion"
 //	compile project(":grails-views-core")
 //	compile project(":grails-views-json")
 }

@@ -8,12 +8,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id 'eclipse'
-    id 'idea'
-}
-
 version "0.1-SNAPSHOT"
 group "org.grails.plugins"
 
@@ -53,7 +47,6 @@ dependencies {
 
     compile project(":views-json")
     compile project(":views-markup")
-
 
     console "org.grails:grails-console"
 }

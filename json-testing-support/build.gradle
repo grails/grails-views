@@ -4,21 +4,20 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
     }
-}
-
-plugins {
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "com.jfrog.bintray"
-    id 'eclipse'
-    id 'idea'
 }
 
 group "org.grails"
 
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'groovy'
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'provided-base'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.jfrog.bintray'
 
 ext {
     gradleWrapperVersion = project.gradleWrapperVersion
@@ -41,9 +40,8 @@ dependencies {
     provided "org.grails:grails-dependencies:$grailsVersion"
     provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-    compile "org.grails:grails-testing-support:$testingSupportVersion"
-
-    compile project(":views-json")
+    api "org.grails:grails-testing-support:$testingSupportVersion"
+    api project(":views-json")
 }
 
 task sourcesJar(type:Jar) {
