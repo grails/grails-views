@@ -41,7 +41,7 @@ task( compileViews, type:JsonViewCompilerTask ) {
     source = project.file('src/main/gson')
     destinationDir = project.file('build/classes/main')
     packageName = ""
-    classpath = configurations.compile + configurations.compileOnly
+    classpath = configurations.compileClasspath + configurations.runtimeClasspath
 }
 classes.dependsOn compileViews
 ----
