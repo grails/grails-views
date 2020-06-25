@@ -11,6 +11,7 @@ buildscript {
 version "0.1-SNAPSHOT"
 group "org.grails.plugins"
 
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.plugins.views-json"
@@ -45,12 +46,16 @@ dependencies {
     provided "org.grails:grails-dependencies"
     provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-    compile project(":views-json")
-    compile project(":views-markup")
+    api project(":views-json")
+    api project(":views-markup")
 
     console "org.grails:grails-console"
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
+}
+
+compileGsonViews {
+    classpath += configurations.compileClasspath
 }

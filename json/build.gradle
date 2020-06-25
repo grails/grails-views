@@ -1,3 +1,5 @@
+import org.grails.gradle.plugin.web.gsp.GroovyPageCompileTask
+
 buildscript {
     repositories {
         maven { url "https://repo.grails.org/grails/core" }
@@ -52,6 +54,10 @@ dependencies {
     testRuntimeOnly "org.javassist:javassist:3.18.1-GA"
 
     console "org.grails:grails-console"
+}
+
+tasks.withType(GroovyPageCompileTask) {
+    classpath += configurations.compileClasspath
 }
 
 task wrapper(type: Wrapper) {
