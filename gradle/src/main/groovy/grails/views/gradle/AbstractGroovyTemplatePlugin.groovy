@@ -88,7 +88,6 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
 
         allTasks.withType(War) { War war ->
             war.dependsOn templateCompileTask
-            war.classpath = war.classpath + project.files(destDir)
         }
         allTasks.withType(Jar) { Jar jar ->
             if(!(jar instanceof War)) {
