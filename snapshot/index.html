@@ -2738,7 +2738,7 @@ task( compileViews, type:JsonViewCompilerTask ) {
     source = project.file('src/main/gson')
     destinationDir = project.file('build/classes/main')
     packageName = ""
-    classpath = configurations.compile + configurations.compileOnly
+    classpath = configurations.compileClasspath + configurations.runtimeClasspath
 }
 classes.dependsOn compileViews</code></pre>
 </div>
@@ -3224,7 +3224,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-25 11:12:47 UTC
+Last updated 2020-06-30 12:23:10 UTC
 </div>
 </div>
 </body>

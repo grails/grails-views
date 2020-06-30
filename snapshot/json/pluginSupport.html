@@ -492,7 +492,7 @@ task( compileViews, type:JsonViewCompilerTask ) {
     source = project.file('src/main/gson')
     destinationDir = project.file('build/classes/main')
     packageName = ""
-    classpath = configurations.compile + configurations.compileOnly
+    classpath = configurations.compileClasspath + configurations.runtimeClasspath
 }
 classes.dependsOn compileViews</code></pre>
 </div>
@@ -544,7 +544,7 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-25 11:12:47 UTC
+Last updated 2020-06-30 12:23:10 UTC
 </div>
 </div>
 </body>
