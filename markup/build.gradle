@@ -7,22 +7,19 @@ buildscript {
     }
 }
 
-plugins {
-    id 'eclipse'
-    id 'idea'
-}
-
-
 ext {
     userOrg = 'grails'
 }
 
 group "org.grails.plugins"
 
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: 'optional-base'
+apply plugin: 'java-library'
 
 
 sourceCompatibility = 1.8
@@ -54,11 +51,10 @@ dependencyManagement {
 }
 
 dependencies {
-    compile "org.grails:grails-core:$grailsVersion"
+    api "org.grails:grails-core:$grailsVersion"
+    api project(":views-core")
 
-    compile project(":views-core")
-
-    testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
+    testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion"
 
     console "org.grails:grails-console"
 }

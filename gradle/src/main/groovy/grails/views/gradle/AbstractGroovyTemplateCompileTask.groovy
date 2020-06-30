@@ -52,7 +52,6 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
         compile()
     }
 
-    @Override
     protected void compile() {
         def projectPackageNames = getProjectPackageNames(project.projectDir)
 

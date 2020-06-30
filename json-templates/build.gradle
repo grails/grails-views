@@ -1,8 +1,5 @@
-plugins {
-    id "com.jfrog.bintray"
-}
 
-apply plugin:"java"
+apply plugin:"java-library"
 apply plugin:"groovy"
 apply plugin: 'maven-publish'
 
@@ -22,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':views-json')
+    api project(':views-json')
     compileOnly "org.grails:grails-plugin-rest:$grailsVersion"
     compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
     compileOnly "org.grails:grails-datastore-gorm-mongodb:5.0.6.RELEASE"
@@ -32,7 +29,7 @@ task('compileViews', type:JavaExec) {
     inputs.files 'src/templates'
     outputs.dir 'build/classes/groovy/main'
     main "grails.plugin.json.view.JsonViewCompiler"
-    classpath configurations.compile + configurations.compileOnly
+    classpath configurations.compileClasspath + configurations.runtimeClasspath
     args("src/templates", "build/classes/groovy/main", "1.8", ' ', ' ', "none", "UTF-8")
 }
 

@@ -15,22 +15,25 @@ ext {
 
 apply plugin:'idea'
 
-subprojects { subProject->
+subprojects { project->
 
-    if (!(subProject.name.contains("tests") || subProject.name.contains("docs"))) {
+    if (!(project.name.contains("tests") || project.name.contains("docs"))) {
         apply plugin: 'com.jfrog.bintray'
     }
 
     ext {
         userOrg = "grails"
     }
+
     group "org.grails"
     version "2.1.0.BUILD-SNAPSHOT"
 //    version "2.0.1"
+
     repositories {
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
+
 }
