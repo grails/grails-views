@@ -86,7 +86,7 @@ dependencies {
     runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
     runtimeOnly project(":views-json-templates")
 
-    testCompile project(":views-json-testing-support")
+    testImplementation project(":views-json-testing-support")
 
     console "org.grails:grails-console"
 
