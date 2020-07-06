@@ -436,7 +436,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The current release is 2.0.1. Below is a version history.</p>
+<p>The current release is 2.0.2. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>2.0.2</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix bug where incorrect JSON was generated when all values are null in the nested object.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>2.0.1</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Optimized Grails compileGroovyPages (gsp) performance and reduced IOPS as well by compiling in parallel threads.</p>
+</li>
+<li>
+<p>Remove duplicate GSON classes from WAR.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>2.0.0</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Grails 4, Gradle 5.</p>
+</li>
+<li>
+<p>Support for render embedded types with "includes".</p>
+</li>
+<li>
+<p>Fixed StackOverflow when rendering bidirectional associations.</p>
+</li>
+<li>
+<p>Allow augmenting model in JSON view.</p>
+</li>
+<li>
+<p>Fixed bugs related to exclude version and error properties from a Map model.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>1.3.0</strong></p>
@@ -517,7 +562,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-06 19:19:09 UTC
+Last updated 2020-07-06 19:44:42 UTC
 </div>
 </div>
 </body>
