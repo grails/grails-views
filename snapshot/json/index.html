@@ -523,7 +523,17 @@ json.message {
 <div class="sect2">
 <h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 2.0.2.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 2.0.3.BUILD-SNAPSHOT. Below is a version history.</p>
+</div>
+<div class="paragraph">
+<p><strong>2.0.2</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix bug where incorrect JSON was generated when all values are null in the nested object.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>2.0.1</strong></p>
@@ -536,8 +546,27 @@ json.message {
 <li>
 <p>Remove duplicate GSON classes from WAR.</p>
 </li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>2.0.0</strong></p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p>Fix bug where incorrect JSON was generated when all values are null in the nested object.</p>
+<p>Grails 4, Gradle 5.</p>
+</li>
+<li>
+<p>Support for render embedded types with "includes".</p>
+</li>
+<li>
+<p>Fixed StackOverflow when rendering bidirectional associations.</p>
+</li>
+<li>
+<p>Allow augmenting model in JSON view.</p>
+</li>
+<li>
+<p>Fixed bugs related to exclude version and error properties from a Map model.</p>
 </li>
 </ul>
 </div>
@@ -625,7 +654,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:2.0.2.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:2.0.3.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -633,7 +662,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.0.2.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.0.3.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -645,7 +674,7 @@ json.message {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.0.2.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.3.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -2602,7 +2631,7 @@ The new testing trait, like the testing framework, requires Spock.
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:2.0.2.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.3.BUILD-SNAPSHOT"
     }
 }
 
@@ -2615,7 +2644,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:2.0.2.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:2.0.3.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
@@ -2963,7 +2992,7 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-06 19:34:59 UTC
+Last updated 2020-07-06 19:57:53 UTC
 </div>
 </div>
 </body>
