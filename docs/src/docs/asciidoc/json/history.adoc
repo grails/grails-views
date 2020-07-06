@@ -1,10 +1,14 @@
 The current release is {version}. Below is a version history.
 
+
+*2.0.2*
+
+* Fix bug where incorrect JSON was generated when all values are null in the nested object.
+
 *2.0.1*
 
 * Optimized Grails compileGroovyPages (gsp) performance and reduced IOPS as well by compiling in parallel threads.
 * Remove duplicate GSON classes from WAR.
-* Fix bug where incorrect JSON was generated when all values are null in the nested object.
 
 *1.3.0*
 
