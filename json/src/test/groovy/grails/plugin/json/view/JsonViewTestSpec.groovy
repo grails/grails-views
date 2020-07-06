@@ -1,9 +1,37 @@
 package grails.plugin.json.view
 
+import grails.persistence.Entity
 import grails.plugin.json.view.test.JsonViewTest
 import spock.lang.Specification
 
 class JsonViewTestSpec extends Specification implements JsonViewTest {
+
+    void "Test render nested object"() {
+
+        given:
+        String source = '''
+import grails.plugin.json.view.Customer
+
+model {
+    Customer customer
+}
+
+json g.render(customer)
+'''
+
+        when:
+        def result = render source, [customer: new Customer(firstName: "John", lastName: "Doe", contactInfo: new ContactInfo())]
+
+        then:
+        result.jsonText == '''{"contactInfo":{},"firstName":"John","lastName":"Doe"}'''
+
+        when:
+        result = render source, [customer: new Customer(firstName: "John", lastName: "Doe", contactInfo: new ContactInfo(phoneNumber: "+123-234479343"))]
+
+        then:
+        result.jsonText == '''{"contactInfo":{"phoneNumber":"+123-234479343"},"firstName":"John","lastName":"Doe"}'''
+
+    }
 
     void "Test render a raw GSON view"() {
         when:"A gson view is rendered"
@@ -58,4 +86,17 @@ json.person {
         result.headers['foo'] == 'bar'
         result.contentType == 'application/hal+json'
     }
+}
+
+
+@Entity
+class Customer {
+    String firstName
+    String lastName
+    ContactInfo contactInfo
+}
+
+@Entity
+class ContactInfo {
+    String phoneNumber
 }

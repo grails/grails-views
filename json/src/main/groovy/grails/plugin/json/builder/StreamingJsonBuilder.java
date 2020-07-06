@@ -700,6 +700,10 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             }
         }
 
+        public void setFirst(boolean first) {
+            this.first = first;
+        }
+
 
         private void writeObjects(Iterable coll, @DelegatesTo(StreamingJsonDelegate.class) Closure c) throws IOException {
             verifyValue();
