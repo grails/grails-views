@@ -433,14 +433,14 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                                     def template = renderTemplate(value, propertyType)
                                     if(template != null) {
                                         jsonDelegate.call(propertyName, template)
-                                    }
-                                    else {
+                                    } else {
                                         jsonDelegate.call( propertyName ) {
-                                            jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate)getDelegate()
+                                            if (delegate instanceof StreamingJsonBuilder.StreamingJsonDelegate ) {
+                                                jsonDelegate = (StreamingJsonBuilder.StreamingJsonDelegate) getDelegate()
+                                            }
                                             processSimple(jsonDelegate, value, processedObjects, incs, excs,"${path}${propertyName}.", renderNulls)
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -450,6 +450,8 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                     }
                 }
             }
+
+            jsonDelegate.first = false
 
             if (customizer != null) {
                 customizer.setDelegate(jsonDelegate)

@@ -21,8 +21,8 @@ import org.codehaus.groovy.control.customizers.CompilationCustomizer
 class MarkupViewCompiler extends AbstractGroovyTemplateCompiler {
 
     @Override
-    protected CompilerConfiguration configureCompiler() {
-        super.configureCompiler()
+    protected CompilerConfiguration configureCompiler(CompilerConfiguration configuration) {
+        super.configureCompiler(configuration)
         def templateCustomizer = (CompilationCustomizer) getClass().classLoader.loadClass("groovy.text.markup.TemplateASTTransformer")
                 .newInstance(viewConfiguration)
         configuration.addCompilationCustomizers(templateCustomizer)
@@ -30,6 +30,7 @@ class MarkupViewCompiler extends AbstractGroovyTemplateCompiler {
             configuration.addCompilationCustomizers(
                     new ASTTransformationCustomizer(Collections.singletonMap("extensions", "groovy.text.markup.MarkupTemplateTypeCheckingExtension"), CompileStatic.class));
         }
+        return configuration
     }
 
     @Override

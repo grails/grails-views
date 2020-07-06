@@ -1,5 +1,23 @@
 The current release is {version}. Below is a version history.
 
+
+*2.0.2*
+
+* Fix bug where incorrect JSON was generated when all values are null in the nested object.
+
+*2.0.1*
+
+* Optimized Grails compileGroovyPages (gsp) performance and reduced IOPS as well by compiling in parallel threads.
+* Remove duplicate GSON classes from WAR.
+
+*2.0.0*
+
+* Grails 4, Gradle 5.
+* Support for render embedded types with "includes".
+* Fixed StackOverflow when rendering bidirectional associations.
+* Allow augmenting model in JSON view.
+* Fixed bugs related to exclude version and error properties from a Map model.
+
 *1.3.0*
 
 * The `includes` support has changed in a way that may break existing use cases. Having `includes: ['captain', 'captain.name']]` previously excluded all other fields except for `captain.name`. The `captain` in the list was necessary for `captain.name` to function as expected. Now the `captain` entry will cause all fields in `captain` to be rendered. To restore the previous behavior, simply remove the `captain` entry.  `includes: ['captain', 'captain.name']` -> `includes: ['captain.name]`.
