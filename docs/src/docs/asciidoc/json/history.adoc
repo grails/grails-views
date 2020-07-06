@@ -7,7 +7,7 @@ The current release is {version}. Below is a version history.
 
 *2.0.1*
 
-* Optimized Grails compileGroovyPages (gsp) performance and reduced IOPS as well by compiling in parallel threads.
+* Optimized `compileGsonViews` performance and reduced IOPS as well by compiling in parallel threads.
 * Remove duplicate GSON classes from WAR.
 
 *2.0.0*
