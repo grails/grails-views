@@ -653,7 +653,7 @@ json.message {
 <div class="sect2">
 <h3 id="_version_history">2.2. Version History</h3>
 <div class="paragraph">
-<p>The current release is 2.0.3.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 2.1.0.BUILD-SNAPSHOT. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>2.0.2</strong></p>
@@ -784,7 +784,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:2.0.3.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:2.1.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -792,7 +792,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.0.3.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.1.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -804,7 +804,7 @@ json.message {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.0.3.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -2761,7 +2761,7 @@ The new testing trait, like the testing framework, requires Spock.
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:2.0.3.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
     }
 }
 
@@ -2774,7 +2774,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:2.0.3.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:2.1.0.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
@@ -2783,7 +2783,7 @@ task( compileViews, type:JsonViewCompilerTask ) {
     source = project.file('src/main/gson')
     destinationDir = project.file('build/classes/main')
     packageName = ""
-    classpath = configurations.compile + configurations.compileOnly
+    classpath = configurations.compileClasspath + configurations.runtimeClasspath
 }
 classes.dependsOn compileViews</code></pre>
 </div>
@@ -3174,7 +3174,7 @@ cars {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-markup:2.0.3.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-markup:2.1.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3186,7 +3186,7 @@ cars {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.0.3.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -3269,7 +3269,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-06 20:08:43 UTC
+Last updated 2020-07-06 20:22:22 UTC
 </div>
 </div>
 </body>
