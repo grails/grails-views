@@ -40,7 +40,7 @@ abstract class AbstractJsonViewContainerRenderer<C,T> extends DefaultJsonRendere
             }
 
             if(view != null) {
-                Map<String, Object> model = [(resolveModelName()): object]
+                Map<String, Object> model = (Map<String, Object>) [(resolveModelName()): object]
                 def contextArguments = context.getArguments()
                 def contextModel = contextArguments?.get(Views.MODEL)
                 if(contextModel instanceof Map) {
