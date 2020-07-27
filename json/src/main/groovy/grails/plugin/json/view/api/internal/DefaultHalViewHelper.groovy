@@ -56,6 +56,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         this.viewHelper = viewHelper
     }
 
+    //TODO: Once GROOVY-9662 is fixed, remove explicit delegate call and typecast to StreamingJsonDelegate
     /**
      * Same as {@link GrailsJsonViewHelper#render(java.lang.Object, java.util.Map, groovy.lang.Closure)} but renders HAL links too
      */
@@ -81,9 +82,9 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 Writer writeTo(Writer out) throws IOException {
                     StreamingJsonBuilder builder = new StreamingJsonBuilder(out, generator)
                     builder.call {
-                        helper.setDelegate(delegate)
+                        helper.setDelegate((StreamingJsonDelegate) delegate)
                         if(firstObject != null) {
-                            helper.links( GrailsNameUtils.getPropertyName(firstObject.getClass()) )
+                            helper.links(GrailsNameUtils.getPropertyName(firstObject.getClass()) )
                         }
                         call(EMBEDDED_ATTRIBUTE, jsonWritable)
 
@@ -164,6 +165,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         writeLinks(jsonDelegate, object, contentType)
     }
 
+    //TODO: Once GROOVY-9662 is fixed, remove explicit delegate call and typecast to StreamingJsonDelegate
     void links(Map model, Object paginationObject, Number total, String contentType = this.contentType) {
         def jsonView = view
         jsonDelegate.call(LINKS_ATTRIBUTE) {
@@ -172,44 +174,42 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
             for(entry in model.entrySet()) {
                 def object = entry.value
                 if(object instanceof Iterable) {
-                    call(entry.key.toString(), (Iterable)object) { o ->
-                        call HREF_ATTRIBUTE, linkGenerator.link(resource:o, absolute:true)
+                    ((StreamingJsonDelegate) delegate).call(entry.key.toString(), (Iterable)object) { o ->
+                        ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, linkGenerator.link(resource:o, absolute:true))
                         if(locale != null) {
-                            call HREFLANG_ATTRIBUTE, locale.toString()
+                            ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, locale.toString())
                         }
                         def linkType = contentType
                         if (linkType) {
-                            call TYPE_ATTRIBUTE, linkType
+                            ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, linkType)
                         }
                     }
                 }
                 else if(object instanceof Map) {
-                    call(entry.key.toString(), (Map)object)
+                    ((StreamingJsonDelegate) delegate).call(entry.key.toString(), (Map) object)
                 }
                 else {
-                    call(entry.key.toString()) {
-                        call HREF_ATTRIBUTE, linkGenerator.link(resource:object, absolute:true)
+                    ((StreamingJsonDelegate) delegate).call(entry.key.toString()) {
+                        ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, linkGenerator.link(resource:object, absolute:true))
                         if(locale != null) {
-                            call HREFLANG_ATTRIBUTE, locale.toString()
+                            ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, locale.toString())
                         }
                         def linkType = contentType
                         if (linkType) {
-                            call TYPE_ATTRIBUTE, linkType
+                            ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, linkType)
                         }
-
                     }
-
                 }
 
                 if(paginationObject != null) {
                     List<Link> links = getPaginationLinks(paginationObject, total.intValue(), jsonView.params)
                     for(link in links) {
-                        call(link.rel) {
-                            call HREF_ATTRIBUTE, link.href
-                            call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
+                        ((StreamingJsonDelegate) delegate).call(link.rel) {
+                            ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, link.href)
+                            ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString())
                             def linkType = link.contentType
                             if(linkType) {
-                                call TYPE_ATTRIBUTE, linkType
+                                ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, linkType)
                             }
                         }
                     }
@@ -233,6 +233,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
      * @param sort The field to sort on (defaults to null)
      * @param order The order in which the results are to be sorted eg: DESC or ASC
      */
+    //TODO: Once GROOVY-9662 is fixed, remove explicit delegate call and typecast to StreamingJsonDelegate
     void paginate(Object object, Integer total, Integer offset = null, Integer max = null,  String sort = null, String order = null) {
         Map<String, Object> linkParams = buildPaginateParams(max, offset, sort, order)
 
@@ -247,20 +248,19 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         MimeType contentTypeMimeType = jsonView.mimeUtility?.getMimeTypeForExtension(contentType)
         Locale locale = jsonView.locale ?: Locale.ENGLISH
         jsonDelegate.call(LINKS_ATTRIBUTE) {
-            call(SELF_ATTRIBUTE) {
-                call HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true, params: linkParams)  //TODO handle the max/offset here
-                call HREFLANG_ATTRIBUTE, locale.toString()
-
-                call TYPE_ATTRIBUTE, contentTypeMimeType ?: contentType
+            ((StreamingJsonDelegate) delegate).call(SELF_ATTRIBUTE) {
+                ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, viewHelper.link(resource:object, method: HttpMethod.GET, absolute:true, params: linkParams))  //TODO handle the max/offset here
+                ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, locale.toString())
+                ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, contentTypeMimeType ?: contentType)
             }
             List<Link> links = getPaginationLinks(object, total, max, offset, sort, order)
             for(link in links) {
-                call(link.rel) {
-                    call HREF_ATTRIBUTE, link.href
-                    call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
+                ((StreamingJsonDelegate) delegate).call(link.rel) {
+                    ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, link.href)
+                    ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString())
                     def linkType = link.contentType
                     if(linkType) {
-                        call TYPE_ATTRIBUTE, linkType
+                        ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, linkType)
                     }
                 }
             }
@@ -390,25 +390,25 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
         }
     }
 
+    //TODO: Once GROOVY-9662 is fixed, remove explicit delegate call and typecast to StreamingJsonDelegate
     protected void writeLinks(StreamingJsonDelegate jsonDelegate, object, String contentType) {
         def locale = view.locale ?: Locale.ENGLISH
         contentType = view.mimeUtility?.getMimeTypeForExtension(contentType) ?: contentType
         jsonDelegate.call(LINKS_ATTRIBUTE) {
-            call(SELF_ATTRIBUTE) {
-                call HREF_ATTRIBUTE, viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true)
-                call HREFLANG_ATTRIBUTE, locale.toString()
-
-                call TYPE_ATTRIBUTE, contentType
+            ((StreamingJsonDelegate) delegate).call(SELF_ATTRIBUTE) {
+                ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, viewHelper.link(resource: object, method: HttpMethod.GET, absolute: true))
+                ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, locale.toString())
+                ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, contentType)
             }
 
             Set<Link> links = getLinks(object)
             for (link in links) {
-                call(link.rel) {
-                    call HREF_ATTRIBUTE, link.href
-                    call HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString()
+                ((StreamingJsonDelegate) delegate).call(link.rel) {
+                    ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, link.href)
+                    ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, link.hreflang?.toString() ?: locale.toString())
                     def linkType = link.contentType
                     if (linkType) {
-                        call TYPE_ATTRIBUTE, linkType
+                        ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, linkType)
                     }
                 }
             }
