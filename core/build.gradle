@@ -41,7 +41,6 @@ dependencies {
     api "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-    testImplementation "org.spockframework:spock-core:$spockVersion"
 }
 
 task sourcesJar(type:Jar) {
