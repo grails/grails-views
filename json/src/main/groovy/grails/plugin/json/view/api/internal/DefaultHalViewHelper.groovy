@@ -81,7 +81,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 Writer writeTo(Writer out) throws IOException {
                     StreamingJsonBuilder builder = new StreamingJsonBuilder(out, generator)
                     builder.call {
-                        helper.setDelegate(delegate)
+                        helper.setDelegate((StreamingJsonDelegate) delegate)
                         if(firstObject != null) {
                             helper.links( GrailsNameUtils.getPropertyName(firstObject.getClass()) )
                         }
