@@ -37,7 +37,7 @@ dependencyManagement {
 
 
 dependencies {
-	api gradleApi()
+	compileOnly gradleApi()
 	api "org.grails:grails-gradle-plugin:$grailsVersion"
 	api "org.codehaus.groovy:groovy:$groovyVersion"
 //	compile project(":grails-views-core")
