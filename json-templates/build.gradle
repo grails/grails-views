@@ -22,7 +22,7 @@ dependencies {
     api project(':views-json')
     compileOnly "org.grails:grails-plugin-rest:$grailsVersion"
     compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
-    compileOnly "org.grails:grails-datastore-gorm-mongodb:5.0.6.RELEASE"
+    compileOnly "org.grails:grails-datastore-gorm-mongodb:$mongodbVersion"
 }
 
 task('compileViews', type:JavaExec) {
