@@ -37,7 +37,7 @@ subprojects { project->
 
     group "org.grails"
     version "2.1.0.BUILD-SNAPSHOT"
-//    version "2.0.1"
+//    version "2.1.0"
 
     repositories {
         mavenCentral()
@@ -48,7 +48,16 @@ subprojects { project->
 
     if (projectName in ["views-core", "views-json", "views-markup"]) {
 
+        configurations {
+            documentation
+        }
+
         dependencies {
+            documentation "org.fusesource.jansi:jansi:$jansiVersion"
+            documentation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
+            documentation 'info.picocli:picocli:4.4.0'
+            documentation ("com.github.javaparser:javaparser-core:$javaParserCoreVersion")
+
             testImplementation "org.spockframework:spock-core:$spockVersion"
             testImplementation "org.codehaus.groovy:groovy-test-junit5:${groovyVersion}"
             testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
@@ -63,6 +72,8 @@ subprojects { project->
                 exceptionFormat = 'full'
             }
         }
+
+        groovydoc.classpath += configurations.documentation
     }
 
 
