@@ -50,19 +50,14 @@ configurations.all {
                 details.useVersion("$gormVersion")
             }
         }
+        if(details.requested.group == 'org.mongodb' && details.requested.module.name != 'mongodb-driver-rx') {
+            details.useVersion(mongodbDriverVersion)
+        }
 
     }
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-//TODO: Remove the below {@code integrationTestCompile} logic once the Grails core version is updated.
-configurations {
-    integrationTestCompile.extendsFrom(testCompileClasspath)
-    integrationTestRuntime.extendsFrom(testRuntimeClasspath)
-}
-
-//TODO: Remove the below lines once the {@link org.grails.gradle.plugin.web.gsp.GroovyPageCompileTask} is updated with correct classpath settings.
-compileGroovyPages.classpath += configurations.compileClasspath
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-logging"
