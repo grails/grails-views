@@ -37,10 +37,12 @@ repositories {
 }
 
 dependencies {
+    provided "org.grails:grails-core:$grailsVersion"
     provided "org.grails:grails-dependencies:$grailsVersion"
     provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-    api "org.grails:grails-testing-support:$testingSupportVersion"
+    api "org.grails:grails-gorm-testing-support:$testingSupportVersion"
+    api "org.grails:grails-web-testing-support:$testingSupportVersion"
     api project(":views-json")
 }
 
