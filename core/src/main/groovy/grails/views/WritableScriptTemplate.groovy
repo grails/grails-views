@@ -130,12 +130,12 @@ class WritableScriptTemplate implements Template {
                 def value = binding.get(modelSetter.key)
                 if(value != null) {
                     VariableSetter setMethod = modelSetter.value
-                    def exceptedType = setMethod.type
-                    if( exceptedType.isInstance(value) || value == null ) {
+                    def expectedType = setMethod.type
+                    if( expectedType.isInstance(value) || value == null ) {
                         setMethod.invoke(writableTemplate, value)
                     }
                     else {
-                        throw new IllegalArgumentException("Model variable [$modelSetter.key] of with value [$value] type [${value?.getClass()?.name}] is not of the correct type [$exceptedType.name]")
+                        throw new IllegalArgumentException("Model variable [$modelSetter.key] with value [$value] of type [${value?.getClass()?.name}] is not of the correct type [$expectedType.name]")
                     }
                 }
             }
