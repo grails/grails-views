@@ -36,7 +36,8 @@ class ProductSpec extends HttpClientSpec {
     void testSingleProduct() {
         given:
         HttpResponse<Map> createResp = client.toBlocking()
-                .exchange(HttpRequest.POST("/products", [name: "Product 1",
+                .exchange(
+                        HttpRequest.POST("/products", [name: "Product 1",
                 description: "product 1 description",
                 price: 123.45]), Map)
         assert createResp.status == HttpStatus.CREATED
@@ -66,7 +67,7 @@ class ProductSpec extends HttpClientSpec {
 
         cleanup:
         resp = client.toBlocking().exchange(HttpRequest.DELETE("/products/${createResp.body().id}"))
-        assert resp.status() == HttpStatus.NO_CONTENT
+        assert resp.status() == HttpStatus.OK
     }
 
     void "test a page worth of products"() {
@@ -110,7 +111,7 @@ class ProductSpec extends HttpClientSpec {
         cleanup:
         productsIds.each { id ->
             resp = client.toBlocking().exchange(HttpRequest.DELETE("/products/${id}"))
-            assert resp.status() == HttpStatus.NO_CONTENT
+            assert resp.status() == HttpStatus.OK
         }
     }
 
@@ -155,7 +156,7 @@ class ProductSpec extends HttpClientSpec {
         cleanup:
         productsIds.each { id ->
             resp = client.toBlocking().exchange(HttpRequest.DELETE("/products/${id}"))
-            assert resp.status() == HttpStatus.NO_CONTENT
+            assert resp.status() == HttpStatus.OK
         }
     }
 }
