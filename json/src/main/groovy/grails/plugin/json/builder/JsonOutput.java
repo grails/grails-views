@@ -78,6 +78,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param bool a {@link Boolean}
      * @return "true" or "false" for a boolean value
      */
     public static String toJson(Boolean bool) {
@@ -85,14 +86,17 @@ public class JsonOutput {
     }
 
     /**
+     * @param n a {@link Number} to write as JSON string
      * @return a string representation for a number
-     * @throws groovy.json.JsonException if the number is infinite or not a number.
+     * @throws groovy.json.JsonException
+     *         If the number is infinite or not a number
      */
     public static String toJson(Number n) {
         return DEFAULT_GENERATOR.toJson(n);
     }
 
     /**
+     * @param c a {@link Character}
      * @return a JSON string representation of the character
      */
     public static String toJson(Character c) {
@@ -100,6 +104,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param s a {@link String} to be represented in JSON
      * @return a properly encoded string with escape sequences
      */
     public static String toJson(String s) {
@@ -127,6 +132,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param uuid a {@link UUID}
      * @return the string representation of an uuid
      */
     public static String toJson(UUID uuid) {
@@ -134,6 +140,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param url a {@link URL}
      * @return the string representation of the URL
      */
     public static String toJson(URL url) {
@@ -141,6 +148,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param closure a {@link Closure} to format to JSON string
      * @return an object representation of a closure
      */
     public static String toJson(Closure closure) {
@@ -148,6 +156,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param expando a {@link Expando} object to format to JSON string
      * @return an object representation of an Expando
      */
     public static String toJson(Expando expando) {
@@ -155,6 +164,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param object an {@link Object} to format to JSON string
      * @return "null" for a null value, or a JSON array representation for a collection, array, iterator or enumeration,
      * or representation for other object.
      */
@@ -163,6 +173,7 @@ public class JsonOutput {
     }
 
     /**
+     * @param m a {@link Map} to format to JSON string
      * @return a JSON object representation for a map
      */
     public static String toJson(Map m) {
@@ -172,7 +183,7 @@ public class JsonOutput {
     /**
      * Pretty print a JSON payload.
      *
-     * @param jsonPayload
+     * @param jsonPayload a JSON payload
      * @return a pretty representation of JSON payload.
      */
     public static String prettyPrint(String jsonPayload) {

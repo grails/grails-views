@@ -70,6 +70,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      * @param writer  A writer to which Json will be written
      * @param content a pre-existing data structure, default to null
      * @throws IOException
+     *         If an I/O error occurs
      */
     public StreamingJsonBuilder(Writer writer, Object content) throws IOException {
         this(writer, content, JsonOutput.DEFAULT_GENERATOR);
@@ -83,6 +84,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      * @param content a pre-existing data structure, default to null
      * @param generator used to generate the output
      * @throws IOException
+     *         If an I/O error occurs
      * @since 2.5
      */
     public StreamingJsonBuilder(Writer writer, Object content, JsonGenerator generator) throws IOException {
@@ -108,6 +110,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      *
      * @param m a map of key / value pairs
      * @return a map of key / value pairs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public Object call(Map m) throws IOException {
         writer.write(generator.toJson(m));
@@ -120,6 +124,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      *
      * @param writable a map of key / value pairs
      * @return a map of key / value pairs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public Object call(Writable writable) throws IOException {
         writable.writeTo(writer);
@@ -139,6 +145,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      *
      * @param name The name of the empty object to create
      * @throws IOException
+     *         If an I/O error occurs
      */
     public void call(String name) throws IOException {
         writer.write(generator.toJson(Collections.singletonMap(name, Collections.emptyMap())));
@@ -160,6 +167,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      *
      * @param l a list of values
      * @return a list of values
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public Object call(List l) throws IOException {
         writer.write(generator.toJson(l));
@@ -183,6 +192,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
 
      * @param args an array of values
      * @return a list of values
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public Object call(Object... args) throws IOException {
         return call(Arrays.asList(args));
@@ -210,6 +221,9 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      * </pre>
      * @param coll a collection
      * @param c a closure used to convert the objects of coll
+     * @return a list of values
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public Object call(Iterable coll, @DelegatesTo(StreamingJsonDelegate.class) Closure c) throws IOException {
         return StreamingJsonDelegate.writeCollectionWithClosure(writer, coll, c, generator);
@@ -232,6 +246,9 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      * </pre>
      *
      * @param c a closure whose method call statements represent key / values of a JSON object
+     * @throws IOException
+     *         If an I/O error occurs
+     * @return a map of key / value pairs
      */
     public Object call(@DelegatesTo(StreamingJsonDelegate.class) Closure c) throws IOException {
         writer.write(JsonOutput.OPEN_BRACE);
@@ -259,6 +276,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      *
      * @param name The key for the JSON object
      * @param c a closure whose method call statements represent key / values of a JSON object
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public void call(String name, @DelegatesTo(StreamingJsonDelegate.class) Closure c) throws IOException {
         writer.write(JsonOutput.OPEN_BRACE);
@@ -288,8 +307,11 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      *     assert w.toString() == '{"people":[{"name":"Guillaume"},{"name":"Jochen"},{"name":"Paul"}]}'
      * }
      * </pre>
+     * @param name The name of the JSON attribute
      * @param coll a collection
      * @param c a closure used to convert the objects of coll
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public void call(String name, Iterable coll, @DelegatesTo(StreamingJsonDelegate.class) Closure c) throws IOException {
         writer.write(JsonOutput.OPEN_BRACE);
@@ -320,6 +342,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      * @param map The attributes of the JSON object
      * @param callable Additional attributes of the JSON object represented by the closure
      * @throws IOException
+     *         If an I/O error occurs
      */
     public void call(String name, Map map, @DelegatesTo(StreamingJsonDelegate.class) Closure callable) throws IOException {
         writer.write(JsonOutput.OPEN_BRACE);
@@ -554,6 +577,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param name The name of the JSON attribute
          * @param list The list representing the array
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, List<Object> list) throws IOException {
             if (generator.isExcludingFieldsNamed(name)) {
@@ -568,6 +592,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param name The name of the JSON attribute
          * @param array The list representing the array
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, Object...array) throws IOException {
             if (generator.isExcludingFieldsNamed(name)) {
@@ -599,8 +624,11 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          *     assert w.toString() == '{"book":{"authors":[{"name":"Guillaume"},{"name":"Jochen"},{"name":"Paul"}]}}'
          * }
          * </pre>
+         * @param name The name of the JSON attribute
          * @param coll a collection
          * @param c a closure used to convert the objects of coll
+         * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, Iterable coll, @DelegatesTo(StreamingJsonDelegate.class)  Closure c) throws IOException {
             if (generator.isExcludingFieldsNamed(name)) {
@@ -612,6 +640,12 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
 
         /**
          * Delegates to {@link #call(String, Iterable, Closure)}
+         *
+         * @param name The name of the JSON attribute
+         * @param coll a collection
+         * @param c a closure used to convert the objects of coll
+         * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, Collection coll, @DelegatesTo(StreamingJsonDelegate.class)  Closure c) throws IOException {
             call(name, (Iterable)coll, c);
@@ -623,6 +657,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param name The attribute name
          * @param value The value
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, Object value) throws IOException {
             if (generator.isExcludingFieldsNamed(name) || generator.isExcludingValues(value)) {
@@ -637,7 +672,9 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          *
          * @param name The attribute name
          * @param value The value
+         * @param callable a closure used to convert the objects of coll
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, Object value, @DelegatesTo(StreamingJsonDelegate.class) Closure callable) throws IOException {
             if (generator.isExcludingFieldsNamed(name)) {
@@ -654,6 +691,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param name The attribute name
          * @param value The value
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name,@DelegatesTo(StreamingJsonDelegate.class) Closure value) throws IOException {
             if (generator.isExcludingFieldsNamed(name)) {
@@ -672,6 +710,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param name The attribute name
          * @param json The value
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, JsonOutput.JsonUnescaped json) throws IOException {
             if (generator.isExcludingFieldsNamed(name)) {
@@ -688,6 +727,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
          * @param name The attribute name
          * @param json The value
          * @throws IOException
+         *         If an I/O error occurs
          */
         public void call(String name, Writable json) throws IOException {
             writeName(name);
