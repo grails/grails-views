@@ -11,6 +11,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.grails.plugins.web.rest.render.ServletRenderContext
 import org.grails.plugins.web.rest.render.html.DefaultHtmlRenderer
+import org.grails.web.util.GrailsApplicationAttributes
+import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.View
 import org.springframework.web.servlet.view.AbstractUrlBasedView
 
@@ -97,7 +99,7 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
         }
 
         if(view != null) {
-            Map<String, Object> model
+            Map<String, ?> model
             if(object instanceof Map) {
                 def map = (Map) object
                 model = map
@@ -112,9 +114,11 @@ abstract class DefaultViewRenderer<T> extends DefaultHtmlRenderer<T> {
                 }
             }
             if (arguments?.model) {
-                model.putAll((Map)arguments.model)
+                model.putAll((Map) arguments.model)
             }
-            view.render(model, request, response)
+            context.setModel(model)
+            ModelAndView modelAndView = (ModelAndView) request.getAttribute(GrailsApplicationAttributes.MODEL_AND_VIEW)
+            modelAndView.setView(view)
         }
         else {
             defaultRenderer.render(object, context)
