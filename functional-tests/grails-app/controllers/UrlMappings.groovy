@@ -27,5 +27,6 @@ class UrlMappings {
         "/authors"(resources:"author")
         "/api/book/$action?"(controller: 'book', namespace: 'api')
         "/person-inheritance"(controller: 'personInheritance', action: 'index')
+        "/person-inheritance/npe"(controller: 'personInheritance', action: 'npe')
     }
 }

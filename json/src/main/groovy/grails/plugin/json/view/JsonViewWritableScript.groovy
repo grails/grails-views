@@ -161,7 +161,9 @@ abstract class JsonViewWritableScript extends AbstractWritableScript implements 
     private GrailsView prepareParentWritable() {
         parentModel.putAll(binding.variables)
         for(o in binding.variables.values()) {
-            parentModel.put(GrailsNameUtils.getPropertyName(o.getClass().getSuperclass().getName()), o)
+            if (o) {
+                parentModel.put(GrailsNameUtils.getPropertyName(o.getClass().getSuperclass().getName()), o)
+            }
         }
         JsonViewWritableScript writable = (JsonViewWritableScript) parentTemplate.make((Map) parentModel)
         writable.inline = true
