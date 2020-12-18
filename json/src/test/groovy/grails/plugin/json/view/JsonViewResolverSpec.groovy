@@ -44,7 +44,7 @@ class JsonViewResolverSpec extends Specification {
         view.render([:], new MockHttpServletRequest(), response)
 
         then:"The page response header is set"
-        response.contentType == 'application/json'
+        response.contentType == 'application/json;charset=UTF-8'
         response.contentAsString == '{"person":{"name":"bob","homepage":"http://foo.com/person"}}'
     }
 
@@ -62,7 +62,7 @@ class JsonViewResolverSpec extends Specification {
 
         then:"The page response header is set"
         response.getHeader("foo") == "bar"
-        response.contentType == 'application/hal+json'
+        response.contentType == 'application/hal+json;charset=UTF-8'
     }
 
     protected void configureIfRunFromRoot(JsonViewResolver resolver) {
