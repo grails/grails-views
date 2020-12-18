@@ -1,4 +1,7 @@
 language: groovy
+branches:
+  only:
+    - 1.2.x
 services:
 - mongodb
 dist: trusty
