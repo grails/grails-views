@@ -3,11 +3,11 @@ on:
   push:
     branches:
       - master
-      - '[2-9]+.[1-9]+.x'
+      - '[2-9]+.[0-9]+.x'
   pull_request:
     branches:
       - master
-      - '[2-9]+.[1-9]+.x'
+      - '[2-9]+.[0-9]+.x'
 jobs:
   build:
     runs-on: ubuntu-latest

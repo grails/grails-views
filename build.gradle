@@ -36,8 +36,7 @@ subprojects { project->
     }
 
     group "org.grails"
-    version "2.1.0.BUILD-SNAPSHOT"
-//    version "2.1.0.M2"
+    version project.projectVersion
 
     repositories {
         mavenCentral()

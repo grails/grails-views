@@ -25,28 +25,28 @@ grails:
                         - Presto
                         - Trident
         types:
-            all: '*/*'
+            json:
+                - application/json
+                - text/json
+            hal:
+                - application/hal+json
+                - application/hal+xml
+            xml:
+                - text/xml
+                - application/xml
             atom: application/atom+xml
             css: text/css
             csv: text/csv
-            form: application/x-www-form-urlencoded
-            html:
-              - text/html
-              - application/xhtml+xml
             js: text/javascript
-            json:
-              - application/json
-              - text/json
-            multipartForm: multipart/form-data
-            pdf: application/pdf
             rss: application/rss+xml
             text: text/plain
-            hal:
-              - application/hal+json
-              - application/hal+xml
-            xml:
-              - text/xml
-              - application/xml
+            form: appication/x-www-form-urlencoded
+            html:
+                - text/html
+                - application/xhtml+xml
+            multipartForm: multipart/form-data
+            pdf: application/pdf
+            all: '*/*'
     urlmapping:
         cache:
             maxsize: 1000
