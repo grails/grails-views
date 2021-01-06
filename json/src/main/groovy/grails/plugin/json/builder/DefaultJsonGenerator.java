@@ -125,6 +125,10 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes Number value and writes it into specified buffer.
+     *
+     * @param numberClass The object {@link Class}
+     * @param value a {@link Number}
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeNumber(Class<?> numberClass, Number value, CharBuf buffer) {
         if (numberClass == Integer.class) {
@@ -170,6 +174,10 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes object and writes it into specified buffer.
+     *
+     * @param key the name for the value
+     * @param object to convert to JSON
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeObject(String key, Object object, CharBuf buffer) {
 
@@ -252,6 +260,9 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes any char sequence and writes it into specified buffer.
+     *
+     * @param seq a {@link CharSequence} to serialize and encode
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeCharSequence(CharSequence seq, CharBuf buffer) {
         if (seq.length() > 0) {
@@ -264,6 +275,9 @@ public class DefaultJsonGenerator implements JsonGenerator {
     /**
      * Serializes any char sequence and writes it into specified buffer
      * without performing any manipulation of the given text.
+     *
+     * @param seq a {@link CharSequence} to serialize to string
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeRaw(CharSequence seq, CharBuf buffer) {
         if (seq != null) {
@@ -273,6 +287,9 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes date and writes it into specified buffer.
+     *
+     * @param date A {@link Date} to serialize into JSON string
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeDate(Date date, CharBuf buffer) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, dateLocale);
@@ -282,6 +299,10 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes array and writes it into specified buffer.
+     *
+     * @param arrayClass the Array class
+     * @param array an array to serialize into JSON
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeArray(Class<?> arrayClass, Object array, CharBuf buffer) {
         if (Object[].class.isAssignableFrom(arrayClass)) {
@@ -360,6 +381,9 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes map and writes it into specified buffer.
+     *
+     * @param map a {@link Map} to serialize to JSON string
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeMap(Map<?, ?> map, CharBuf buffer) {
         if (map.isEmpty()) {
@@ -385,6 +409,10 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes a map entry and writes it into specified buffer.
+     *
+     * @param key a {@link Map.Entry} key
+     * @param value a {@link Map.Entry} value
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeMapEntry(String key, Object value, CharBuf buffer) {
         buffer.addJsonFieldName(key, disableUnicodeEscaping);
@@ -393,6 +421,9 @@ public class DefaultJsonGenerator implements JsonGenerator {
 
     /**
      * Serializes iterator and writes it into specified buffer.
+     *
+     * @param iterator a {@link Iterator} to serialize to JSON string
+     * @param buffer a {@link CharBuf} buffer to write the serialized value
      */
     protected void writeIterator(Iterator<?> iterator, CharBuf buffer) {
         if (!iterator.hasNext()) {

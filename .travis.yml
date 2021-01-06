@@ -2,7 +2,7 @@ language: groovy
 branches:
   only:
     - 1.2.x
-    - 2.0.x
+    - 1.3.x
 services:
 - mongodb
 dist: trusty

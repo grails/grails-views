@@ -34,8 +34,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
-                password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+                username System.getenv('ARTIFACTORY_USERNAME') ?: project.properties.get('artifactoryUsername')
+                password System.getenv("ARTIFACTORY_PASSWORD") ?: project.properties.get('artifactoryPassword')
             }
 
             if(group == 'org.grails.plugins') {

@@ -43,7 +43,7 @@ class TestGsonControllerSpec extends HttpClientSpec {
         resp.body() == '{"test":{"name":"Bob"}}'
 
         when:"When HTML is requested"
-        request = HttpRequest.GET("/testGson/testRespond")
+        request = HttpRequest.GET("/testGson/testRespond.html")
         resp = client.toBlocking().exchange(request, String)
 
         then:"The GSP is rendered"
@@ -95,7 +95,7 @@ class TestGsonControllerSpec extends HttpClientSpec {
         resp.body() == '{"test":{"name":"John","age":20}}'
 
         when:"When HTML is requested"
-        request = HttpRequest.GET("/testGson/testAugmentModel")
+        request = HttpRequest.GET("/testGson/testAugmentModel.html")
         resp = client.toBlocking().exchange(request, String)
 
         then:"The GSP is rendered"
