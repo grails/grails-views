@@ -45,7 +45,7 @@ abstract class JsonViewWritableScript extends AbstractWritableScript implements 
      * @param callable
      * @return
      */
-    StreamingJsonBuilder json(@DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure callable) {
+    StreamingJsonBuilder json(@DelegatesTo(value = StreamingJsonBuilder.StreamingJsonDelegate, strategy = Closure.DELEGATE_FIRST) Closure callable) {
         if(parentTemplate != null) {
             if (!inline) {
                 out.write(JsonOutput.OPEN_BRACE)
@@ -134,7 +134,7 @@ abstract class JsonViewWritableScript extends AbstractWritableScript implements 
      * @param callable
      * @return
      */
-    StreamingJsonBuilder json(Iterable iterable, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate) Closure callable) {
+    StreamingJsonBuilder json(Iterable iterable, @DelegatesTo(value = StreamingJsonBuilder.StreamingJsonDelegate, strategy = Closure.DELEGATE_FIRST) Closure callable) {
         json.call(iterable.asList(), callable)
         return json
     }
