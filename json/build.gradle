@@ -85,3 +85,7 @@ bintray {
         name = 'grails-views'
     }
 }
+
+springBoot {
+    mainClass.set('grails.plugin.json.view.Application')
+}

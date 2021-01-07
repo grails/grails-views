@@ -62,3 +62,7 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
+
+springBoot {
+    mainClass.set('grails.plugin.markup.view.Application')
+}
