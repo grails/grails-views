@@ -1,18 +1,13 @@
-=== Introduction
+= Markup Views
+
+:leveloffset: +1
 
 include::introduction.adoc[]
 
-=== Installation
-
 include::installation.adoc[]
-
-=== Markup View API
 
 include::viewApi.adoc[]
 
-=== Configuration
-
 include::configuration.adoc[]
 
-
-
+:leveloffset: -1

@@ -1,3 +1,5 @@
+= Content Negotiation
+
 GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called `grails-app/views/book/show/show.gsp` (for HTML) and `grails-app/views/book/show/show.gson` (for JSON), you can then define the following action:
 
 [source,groovy]
@@ -10,7 +12,7 @@ The result is that if you send a request to `/book/show` it will render `show.gs
 
 In addition, if the client sends a request with the `Accept` header containing `application/json` the `show.gson` view will be rendered.
 
-==== Content Negotiation and Domain Classes
+== Content Negotiation and Domain Classes
 
 Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the `Book` domain class you can create a `gson` file that matches the class name. 
 
@@ -44,7 +46,7 @@ NOTE: When responding with a list of objects Grails automatically appends the su
 
 By calling the `tmpl.book(..)` method with the list of books the `grails-app/views/book/_book.gson` template will be rendered for each one and a JSON array returned.
 
-==== Global Default Template
+== Global Default Template
 
 You can also define a `/object/_object` template that is rendered by default if no other template is found during content negotiation. To do this create a file called `/grails-app/views/object/_object.gson` where the name of the model is `object`, for example:
 
@@ -54,7 +56,7 @@ model {
 }
 json g.render(object)
 
-==== Content Negotiation and Versioned APIs
+== Content Negotiation and Versioned APIs
 
 A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.
 
@@ -64,11 +66,11 @@ For example given a view called `/book/show.gson` if you wish to deprecate your 
 
 Then when the client sends a request with the `ACCEPT-VERSION` header containing `v1.0` the `/book/show_v1.0.gson` view will be rendered instead of `/book/show.gson`.
 
-==== Content Negotiation and View Resolving Strategy
+== Content Negotiation and View Resolving Strategy
 
-Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.
+Grails Framework takes into account a number of factors when attempting to resolve the view including the content type, version and locale.
 
-The following paths are searched:
+The paths searched are following:
 
 * view_name[_LOCALE][_ACCEPT_CONTENT_TYPE][_ACCEPT-VERSION].gson (Example: show_de_hal_v1.0.gson)
 * view_name[_LOCALE][_ACCEPT_CONTENT_TYPE].gson (Example: show_de_hal.gson)
@@ -83,7 +85,7 @@ The following paths are searched:
 The content type (defined by either the `ACCEPT` header or file extension in the URI) is taken into account to allow different formats for the same view.
 
 [[mimeTypes]]
-==== Content Negotiation and Custom Mime Types
+== Content Negotiation and Custom Mime Types
 
 Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in `grails-app/conf/application.yml`:
 

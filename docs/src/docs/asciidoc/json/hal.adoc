@@ -1,3 +1,5 @@
+= HAL Support
+
 http://stateless.co/hal_specification.html[HAL] is a standard format for representing JSON that has gained traction for its ability to represent links between resources and provide navigable APIs.
 
 The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON views have access to the `hal` instance which implements link:api/grails/plugin/json/view/api/HalViewHelper.html[HalViewHelper].
@@ -46,7 +48,7 @@ This produces the HAL output:
     "title": "The Stand"
 }
 
-==== Generating HAL Links
+== Generating HAL Links
 
 The above example uses the `hal.links(..)` method to render links for a domain resource and the `hal.embedded(..)` method to define any embedded objects that form part of the HAL response.
 
@@ -54,7 +56,6 @@ The `hal.links(..)` method will by default create a link to the resource, but yo
 
 [source,groovy]
 book.link(rel:"publisher", href:"http://foo.com/books")
-
 
 The link will then be included in the HAL output. 
 
@@ -87,7 +88,7 @@ json {
 }
 
 
-==== Rendering Domain Classes as HAL
+== Rendering Domain Classes as HAL
 
 If you prefer to let the plugin handle the rendering of your object you can use the `hal.render(..)` method:
 
@@ -109,7 +110,7 @@ json hal.render(book) {
     pages 1000
 }
 
-==== Embedded Association and HAL
+== Embedded Association and HAL
 
 Generally, when using the `hal.render(..)` method, `_embedded` associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the `book.authors` association:
 
@@ -202,7 +203,7 @@ json {
     }
 }
 
-==== Specifying the HAL Content Type
+== Specifying the HAL Content Type
 
 The default HAL response content type is `application/hal+json`, however as discussed in the section on <<json/contentNegotiation.adoc#mimeTypes,Custom Mime Type>> you can define your own response content types to represent your resources. 
 
@@ -226,7 +227,7 @@ json {
     ...
 }
 
-==== HAL Pagination
+== HAL Pagination
 
 The JSON views plugin for Grails provides navigable pagination support.
 Like the GSP `<g:paginate>` tag, the parameters include: `total`, `max`, `offset`, `sort` and `order`.
@@ -279,8 +280,7 @@ When accessing `http://localhost:8080/book?offset=10` this produces the navigabl
   ...
 }
 
-NOTE: If there aren't enough results to paginate the navigation links will not appear.
-Likewise the `prev` and `next` links are only present when there is a previous or next page.
+NOTE: If there aren't enough results to paginate the navigation links will not appear, Likewise, the `prev` and `next` links are only present when there is a previous or next page.
 
 If you have other links that you want to include along with the pagination links then you can use the `hal.links(..)` method with pagination arguments:
 

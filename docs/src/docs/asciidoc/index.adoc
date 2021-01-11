@@ -1,17 +1,16 @@
 = Grails Views
+
 :author: Graeme Rocher
 :email: graeme.rocher@gmail.com
 :source-highlighter: coderay
 :numbered:
 
-== Introduction
+:leveloffset: +1
 
 include::introduction.adoc[]
 
-== JSON Views
-
 include::json/index.adoc[]
 
-== Markup Views
-
 include::markup/index.adoc[]
+
+:leveloffset: -1

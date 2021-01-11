@@ -1,3 +1,5 @@
+= Introduction
+
 Markup Views are written in Groovy, end with the file extension `gml` and reside in the `grails-app/views` directory.
 
 The Markup Views plugin uses Groovy's http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine[MarkupTemplateEngine] and you can mostly use the http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine[Groovy user guide] as a reference for the syntax.

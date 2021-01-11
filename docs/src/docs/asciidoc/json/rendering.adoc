@@ -1,4 +1,6 @@
-==== Basics of Domain Class Rendering
+= Rendering Domain Classes
+
+== Basics of Domain Class Rendering
 
 Typically your model may involve one or many domain instances. JSON views provide a `render` method for rendering these.
   
@@ -41,7 +43,7 @@ json g.render(book, [includes:['title']]) {
     pages 1000
 }
 
-==== Deep Rendering of Domain Classes
+== Deep Rendering of Domain Classes
 
 Typically the `g.render(..)` method will only render objects one level deep. In other words if you have a domain class such as:
 
@@ -88,7 +90,7 @@ json g.render(book, [excludes:['author']]) {
     }
 }
 
-==== Domain Class Rendering and Templates
+== Domain Class Rendering and Templates
 
 An alternative to the default behaviour of the `render` method is to rely on templates.
 

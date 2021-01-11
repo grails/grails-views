@@ -1,3 +1,5 @@
+= Markup View API
+
 All Markup views subclass the link:api/grails/plugin/markup/view/MarkupViewTemplate.html[MarkupViewTemplate] class by default.
 
 The `MarkupViewTemplate` superclass implements the link:api/grails/plugin/markup/view/api/MarkupView.html[MarkupView] trait which in turn extends the the link:api/grails/views/api/GrailsView.html[GrailsView] trait.

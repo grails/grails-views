@@ -1,3 +1,5 @@
+= Configuration
+
 JSON views configuration can be altered within `grails-app/conf/application.yml`. Any of the properties within the link:api/grails/plugin/json/view/JsonViewConfiguration.html[JsonViewConfiguration] interface can be set. The json view configuration extends link:api/grails/views/GenericViewConfiguration.html[GenericViewConfiguration], therefore any properties in that interface can be set as well.
 
  For example:
@@ -23,7 +25,7 @@ compileGsonViews {
 
 See the API for https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html[GroovyForkOptions] for more information.  
 
-==== Changing the view base class
+== Changing the view base class
 
 All JSON views subclass the link:api/grails/plugin/json/view/JsonViewTemplate.html[JsonViewTemplate] class by default.
 
@@ -36,7 +38,7 @@ grails:
             compileStatic: true
             baseTemplateClass: com.example.MyCustomJsonViewTemplate
 
-==== Adding New Helper Methods via Traits
+== Adding New Helper Methods via Traits
 
 Alternatively, rather than modifying the base class, you can instead just add new methods via traits.
 
@@ -65,7 +67,7 @@ response.header "Token", "foo"
 
 NOTE: The trait cannot be defined in the same project as you are compilation as it needs to be on the classpath of the project you are compiling. You will need to create a Grails plugin and use a multi-project build in this scenario.
 
-==== Default Mime Types
+== Default Mime Types
 
 The mime types that will be accepted by default for JSON view rendering is configurable.
 
@@ -77,7 +79,7 @@ grails:
               - application/json
               - application/hal+json
 
-==== Unicode Escaping
+== Unicode Escaping
 
 By default, unicode characters will not be escaped. If you would like unicode characters to be escaped in your output, set the following configuration.
 
@@ -88,7 +90,7 @@ grails:
             generator:
                 escapeUnicode: true
 
-==== Default Date Format
+== Default Date Format
 
 The default format for `java.util.Date` can be configured.
 
@@ -108,7 +110,7 @@ grails:
             generator:
                 locale: "en/US"
 
-==== Default Time Zone
+== Default Time Zone
 
 The default time zone can be configured. The value here will be passed to `TimeZone.getTimeZone(...)`
 

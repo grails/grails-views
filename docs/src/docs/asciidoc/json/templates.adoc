@@ -1,4 +1,6 @@
-==== Template Basics
+= Templates
+
+== Template Basics
 
 You can define templates starting with underscore `_`. For example given the following template called `_person.gson`:
 
@@ -30,7 +32,7 @@ model {
 }
 json g.render(template:"/person/person", model:[person:person])
     
-==== Template Namespace
+== Template Namespace
 
 The previous example can be simplified using the template namespace:
 
@@ -108,7 +110,7 @@ model {
 }
 json tmpl.person(people:people)
 
-==== More Ways to Render Templates
+== More Ways to Render Templates
 
 The `g.render` method is flexible, you can render templates in many forms:
 
@@ -136,7 +138,7 @@ json {
     children tmpl.person( family.children )
 }
 
-==== Template Inheritance
+== Template Inheritance
 
 JSON templates can inherit from a parent template. For example consider the following parent template:
 

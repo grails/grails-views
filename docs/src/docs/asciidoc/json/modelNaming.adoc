@@ -1,9 +1,11 @@
-Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.
+= Model Naming
+
+Grails Framework supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.
 
 NOTE: Some model names are _reserved_ since there are properties of the same name injected into the view:
 `locale`, `response`, `request`, `page`, `controllerNamespace`, `controllerName`, `actionName`, `config`, `generator`
 
-==== Explicit Model Naming
+== Explicit Model Naming
 
 Given a view:
 [source,groovy]
@@ -57,9 +59,9 @@ json {
 }
 
 
-==== Model By Convention
+== Model By Convention
 
-===== Property Type
+=== Property Type
 
 When rendering a non iterable object, the property name of the type is used when a name is not specified.
 
@@ -128,7 +130,7 @@ def index() {
 
 NOTE: The component+collection convention does not apply when rendering collections with `tmpl` inside a view.
 
-===== Template Name
+=== Template Name
 
 When using a template, unless specified, the model name is based on the template name.
 

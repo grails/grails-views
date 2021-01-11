@@ -1,3 +1,5 @@
+= Installation
+
 To activate JSON views, add the following dependency to the `dependencies` block of your `build.gradle`:
 
 [source,groovy,subs="attributes"]

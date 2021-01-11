@@ -1,10 +1,12 @@
+= JSON View API
+
 All JSON views subclass the link:api/grails/plugin/json/view/JsonViewTemplate.html[JsonViewTemplate] class by default.
 
 The `JsonViewTemplate` superclass implements the link:api/grails/plugin/json/view/api/JsonView.html[JsonView] trait which in turn extends the the link:api/grails/views/api/GrailsView.html[GrailsView] trait.
 
 Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.
 
-==== Creating Links
+== Creating Links
 
 Links can be generated using the `g.link(..)` method:
 
@@ -16,7 +18,7 @@ json.person {
 
 The `g.link` method is similar to the equivalent tag in GSP and allows you to easily create links to other controllers.
 
-==== Altering the Response Headers
+== Altering the Response Headers
 
 To customize content types and headers use the `response` object defined by the link:api/grails/views/api/HttpView.html[HttpView] trait:
 
@@ -31,7 +33,7 @@ The `HttpView` trait defines a variety of methods for inspecting the request and
 
 NOTE: The methods available are only a subset of the methods available via the `HttpServletRequest` and `HttpServletResponse` objects, this is by design as view logic should be limited and logic performed in the controller instead.
 
-==== Accessing the Request
+== Accessing the Request
 
 Various aspects of the request can be accessed by the `request` object defined by the link:api/grails/views/api/HttpView.html[HttpView] trait:
 
@@ -50,7 +52,7 @@ json.person {
  sort params.get('sort', 'name')
 }
 
-==== Default Static Imports
+== Default Static Imports
 
 The following classes' static properties are imported by default:
 
@@ -68,7 +70,7 @@ Or generate links using the appropriate HTTP method:
 [source,groovy]
 g.link(resource:"books", method:POST)
 
-==== I18n & Locale Integration
+== I18n & Locale Integration
 
 You can lookup i18n messages use the `g.message` method:
 
@@ -81,7 +83,7 @@ You can also create locale specific views by appending the locale to view name. 
 
 NOTE: For more complex message lookups the `messageSource` property is an instance of the Spring https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/MessageSource.html[MessageSource] class.
 
-==== Accessing Configuration
+== Accessing Configuration
 
 The application configuration is injected automatically into your json views. To access it, simply reference `config`.
 
@@ -90,7 +92,7 @@ json {
     foo config.getProperty("bar", String, null)
 }
 
-==== Miscellaneous Properties
+== Miscellaneous Properties
 
 Other properties are also available:
 

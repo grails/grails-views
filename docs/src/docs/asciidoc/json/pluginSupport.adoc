@@ -1,12 +1,14 @@
+= Plugin Support
+
 Grails plugins as well as standard Gradle Java/Groovy projects can provide json views to your application.
 
-==== Grails Plugins
+== Grails Plugins
 
 Since JSON views are compiled all of a plugin's views and templates are available for use in your applications.
 
 The view resolution will look through all of the application's configured plugins for views that match a particular name. By default, the views a plugin supplies should be stored in `grails-app/views`, just like applications.
 
-==== Basic Libraries
+== Basic Libraries
 
 The most common use case to provide views in a standard library is to provide global templates. Global templates are templates designed to render a given class as JSON. In order to provide views in a standard Gradle project, you should configure your own view compilation task.
 
@@ -52,7 +54,7 @@ For example if you want to render all instances of type `foo.bar.Birthday` creat
 
 NOTE: See the https://github.com/grails/grails-views/tree/master/json-templates/src/templates/grails/mongodb/geo[GeoJSON templates] for MongoDB for example of how it provides global templates for Mongo specific classes.
 
-==== Customizing the Compile Task
+== Customizing the Compile Task
 
 Unless otherwise configured, the project name of the plugin (the gradle `project.name`) is used as the `packageName` when compiling JSON views.
 

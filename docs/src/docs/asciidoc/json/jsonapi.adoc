@@ -1,3 +1,5 @@
+= JSON API Support
+
 http://jsonapi.org/[JSON API] is a standard format for representing JSON.
 
 The JSON views plugin for Grails provides JSON API support out-of-the-box. All JSON views have access to the `jsonapi` instance which implements link:api/grails/plugin/json/view/api/JsonApiViewHelper.html[JsonApiViewHelper].
@@ -53,7 +55,7 @@ This is what an example `Book` instance rendered with JSON API might look like.
 }
 
 
-==== JSON API Object
+== JSON API Object
 
 To include the link:http://jsonapi.org/format/#document-jsonapi-object[JSON API Object] in the response, include a `jsonApiObject` argument to the `render` method.
 
@@ -65,7 +67,7 @@ json jsonapi.render(book, [jsonApiObject: true])
 
 The response will contain `"jsonapi":{"version":"1.0"}` as the first key in the resulting object.
 
-==== Meta Object
+== Meta Object
 
 To add link:http://jsonapi.org/format/#document-meta[metadata] to your response, the `meta` argument can be passed to render with the value being the object that should be rendered. If this functionality is used in addition to `jsonApiObject: true`, the metadata will be rendered as the "meta" property of the "jsonapi" object.
 
@@ -77,11 +79,11 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])
 
 The response will contain `"meta":{"name":"Metadata Information"}` as the first key in the resulting object.
 
-==== Rendering Errors
+== Rendering Errors
 
 The JSON API specification has link:http://jsonapi.org/format/#errors[instructions on how to render errors]. In the case of the Grails implementation, this applies to both exceptions and validation errors.
 
-===== Exceptions
+=== Exceptions
 
 If an exception is passed to the `render` method, it will be rendered within the specification.
 
@@ -103,7 +105,7 @@ In the example of an exception `new RuntimeException("oops!")`, the following wi
   ]
 }
 
-===== Validation Errors
+=== Validation Errors
 
 In the case of validation errors, the response will look like the following when a `name` property fails the blank constraint:
 
@@ -123,7 +125,7 @@ In the case of validation errors, the response will look like the following when
   ]
 }
 
-==== Links
+== Links
 
 In general, links for relationships will be provided when the relationship has a value.
 
@@ -149,7 +151,7 @@ And when the value is not null:
 
 Currently links are not supported in the case of to many relationships.
 
-==== Pagination
+== Pagination
 
 The JSON API specification has a section which explains http://jsonapi.org/format/#fetching-pagination[pagination]. The Grails implementation follows that specification as it is written.
 
@@ -181,7 +183,7 @@ model {
 }
 json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book, max: 20, sort: params.myCustomSortArgument]])
 
-==== Associations
+== Associations
 
 The JSON API specification details how relationships should be rendered. The first way is through a relationships object described http://jsonapi.org/format/#document-resource-object-relationships[here]. By default that is now relationships will be rendered in json views.
 
@@ -201,11 +203,11 @@ model {
 }
 json jsonapi.render(book, [expand: "author"]) //can also be a list of strings
 
-==== Includes / Excludes
+== Includes / Excludes
 
 The JSON API implementation in Grails supports the same includes and excludes support as normal json views. Please see the section on link:rendering.html[rendering] for details.
 
-==== Identifier Rendering
+== Identifier Rendering
 
 Grails provides a way to customize the rendering of your domain class identifiers. To override the default behavior, register a bean that implements link:api/grails/plugin/json/view/api/jsonapi/JsonApiIdRenderStrategy.html[JsonApiIdRenderStrategy].
 

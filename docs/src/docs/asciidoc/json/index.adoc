@@ -1,71 +1,41 @@
-=== Introduction
+= JSON Views
+
+:leveloffset: +1
 
 include::introduction.adoc[]
 
-=== Version History
-
 include::history.adoc[]
-
-=== Installation
 
 include::installation.adoc[]
 
-=== Templates
-
 include::templates.adoc[]
-
-=== Rendering Domain Classes
 
 include::rendering.adoc[]
 
-=== JSON View API
-
 include::viewApi.adoc[]
-
-=== Model Naming
 
 include::modelNaming.adoc[]
 
-=== Content Negotiation
-
 include::contentNegotiation.adoc[]
-
-=== HAL Support
 
 include::hal.adoc[]
 
-=== JSON API Support
-
 include::jsonapi.adoc[]
-
-=== The JsonTemplateEngine
 
 include::templateEngine.adoc[]
 
-=== Static Compilation
-
 include::staticCompilation.adoc[]
-
-=== Testing
 
 include::testing.adoc[]
 
-=== Plugin Support
-
 include::pluginSupport.adoc[]
-
-=== Configuration
 
 include::configuration.adoc[]
 
-=== Custom Converters
-
 include::converters.adoc[]
-
-=== IntelliJ Support
 
 include::intellij.adoc[]
 
-=== Debugging Views
-
 include::debugging.adoc[]
+
+:leveloffset: -1

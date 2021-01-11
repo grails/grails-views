@@ -1,5 +1,6 @@
-The current release is {version}. Below is a version history.
+= Version History
 
+The current release is {version}. Below is a version history.
 
 *2.0.2*
 

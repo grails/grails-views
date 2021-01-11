@@ -1,3 +1,5 @@
+= Static Compilation
+
 JSON views are statically compiled. You can disable static compilation if you prefer by setting `grails.views.json.compileStatic`:
 
 [source,yaml]
