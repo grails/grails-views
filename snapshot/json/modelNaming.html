@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Explicit Model Naming</title>
+<title>Model Naming</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,17 +433,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
+<h1>Model Naming</h1>
+<div class="details">
+<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
+</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel3">
+<ul class="sectlevel1">
 <li><a href="#_explicit_model_naming">Explicit Model Naming</a></li>
-<li><a href="#_model_by_convention">Model By Convention</a></li>
+<li><a href="#_model_by_convention">Model By Convention</a>
+<ul class="sectlevel2">
+<li><a href="#_property_type">Property Type</a></li>
+<li><a href="#_template_name">Template Name</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
+<p>Grails Framework supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -458,8 +469,11 @@ Some model names are <em>reserved</em> since there are properties of the same na
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="_explicit_model_naming">Explicit Model Naming</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_explicit_model_naming">Explicit Model Naming</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Given a view:</p>
 </div>
@@ -527,10 +541,12 @@ json {
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_model_by_convention">Model By Convention</h4>
-<div class="sect4">
-<h5 id="_property_type">Property Type</h5>
+</div>
+<div class="sect1">
+<h2 id="_model_by_convention">Model By Convention</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_property_type">Property Type</h3>
 <div class="paragraph">
 <p>When rendering a non iterable object, the property name of the type is used when a name is not specified.</p>
 </div>
@@ -629,8 +645,8 @@ The component+collection convention does not apply when rendering collections wi
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_template_name">Template Name</h5>
+<div class="sect2">
+<h3 id="_template_name">Template Name</h3>
 <div class="paragraph">
 <p>When using a template, unless specified, the model name is based on the template name.</p>
 </div>
@@ -677,9 +693,11 @@ json {
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-19 01:21:08 UTC
+Version 2.1.0.BUILD-SNAPSHOT<br>
+Last updated 2021-01-11 14:36:29 UTC
 </div>
 </div>
 </body>

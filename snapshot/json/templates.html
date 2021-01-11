@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Template Basics</title>
+<title>Templates</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,9 +433,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
+<h1>Templates</h1>
+<div class="details">
+<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
+</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel3">
+<ul class="sectlevel1">
 <li><a href="#_template_basics">Template Basics</a></li>
 <li><a href="#_template_namespace">Template Namespace</a></li>
 <li><a href="#_more_ways_to_render_templates">More Ways to Render Templates</a></li>
@@ -444,8 +448,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div class="sect3">
-<h4 id="_template_basics">Template Basics</h4>
+<div class="sect1">
+<h2 id="_template_basics">Template Basics</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can define templates starting with underscore <code>_</code>. For example given the following template called <code>_person.gson</code>:</p>
 </div>
@@ -486,8 +491,10 @@ json g.render(template:"/person/person", model:[person:person])</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_template_namespace">Template Namespace</h4>
+</div>
+<div class="sect1">
+<h2 id="_template_namespace">Template Namespace</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The previous example can be simplified using the template namespace:</p>
 </div>
@@ -593,8 +600,10 @@ json tmpl.person(people:people)</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_more_ways_to_render_templates">More Ways to Render Templates</h4>
+</div>
+<div class="sect1">
+<h2 id="_more_ways_to_render_templates">More Ways to Render Templates</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The <code>g.render</code> method is flexible, you can render templates in many forms:</p>
 </div>
@@ -628,8 +637,10 @@ json {
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_template_inheritance">Template Inheritance</h4>
+</div>
+<div class="sect1">
+<h2 id="_template_inheritance">Template Inheritance</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>JSON templates can inherit from a parent template. For example consider the following parent template:</p>
 </div>
@@ -707,9 +718,11 @@ json {
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-19 01:21:08 UTC
+Version 2.1.0.BUILD-SNAPSHOT<br>
+Last updated 2021-01-11 14:36:29 UTC
 </div>
 </div>
 </body>
