@@ -17,17 +17,16 @@ asciidoctor {
 }
 
 configurations {
-  documentation
+    documentation
 }
 
 dependencies {
-  documentation project(':views-json')
-  documentation project(':views-markup')
-  documentation project(':views-gradle')
-  documentation project(':views-json-testing-support')
+  documentation project(path: ':views-json', configuration: 'documentation')
+  documentation project(path: ':views-markup', configuration: 'documentation')
+  documentation project(path: ':views-gradle', configuration: 'default')
 }
 
-task apidocs(type: Groovydoc) {
+task apidocs(type: Groovydoc, group: 'documentation') {
     def allProjects = rootProject.allprojects.findAll { project ->
       ['views-core', 'views-json', 'views-json-testing-support', 'views-markup','views-gradle'].contains(project.name)
     }
@@ -43,7 +42,7 @@ task apidocs(type: Groovydoc) {
     groovyClasspath = configurations.documentation
 }
 
-task docs(type:Copy, dependsOn:[apidocs, asciidoctor])  {
+task docs(type:Copy, dependsOn:[apidocs, asciidoctor], group:'documentation')  {
     from "$buildDir/asciidoc/html5"
     into "$buildDir/docs"
 }
