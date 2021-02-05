@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>JSON View API</title>
+<title>Creating Links</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,13 +433,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>JSON View API</h1>
-<div class="details">
-<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
-</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<ul class="sectlevel3">
 <li><a href="#_creating_links">Creating Links</a></li>
 <li><a href="#_altering_the_response_headers">Altering the Response Headers</a></li>
 <li><a href="#_accessing_the_request">Accessing the Request</a></li>
@@ -451,8 +447,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -462,11 +456,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_creating_links">Creating Links</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_creating_links">Creating Links</h4>
 <div class="paragraph">
 <p>Links can be generated using the <code>g.link(..)</code> method:</p>
 </div>
@@ -482,10 +473,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The <code>g.link</code> method is similar to the equivalent tag in GSP and allows you to easily create links to other controllers.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_altering_the_response_headers">Altering the Response Headers</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_altering_the_response_headers">Altering the Response Headers</h4>
 <div class="paragraph">
 <p>To customize content types and headers use the <code>response</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -514,10 +503,8 @@ The methods available are only a subset of the methods available via the <code>H
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_accessing_the_request">Accessing the Request</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_accessing_the_request">Accessing the Request</h4>
 <div class="paragraph">
 <p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -542,10 +529,8 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_default_static_imports">Default Static Imports</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_default_static_imports">Default Static Imports</h4>
 <div class="paragraph">
 <p>The following classes' static properties are imported by default:</p>
 </div>
@@ -579,10 +564,8 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_i18n_locale_integration">I18n &amp; Locale Integration</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_i18n_locale_integration">I18n &amp; Locale Integration</h4>
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
 </div>
@@ -609,10 +592,8 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_accessing_configuration">Accessing Configuration</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_accessing_configuration">Accessing Configuration</h4>
 <div class="paragraph">
 <p>The application configuration is injected automatically into your json views. To access it, simply reference <code>config</code>.</p>
 </div>
@@ -624,10 +605,8 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_miscellaneous_properties">Miscellaneous Properties</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_miscellaneous_properties">Miscellaneous Properties</h4>
 <div class="paragraph">
 <p>Other properties are also available:</p>
 </div>
@@ -653,11 +632,9 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </table>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Version 2.1.0.BUILD-SNAPSHOT<br>
-Last updated 2021-01-21 13:59:13 UTC
+Last updated 2021-02-05 21:42:35 UTC
 </div>
 </div>
 </body>

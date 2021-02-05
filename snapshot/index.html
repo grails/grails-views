@@ -5,6 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="author" content="Graeme Rocher">
 <title>Grails Views</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -430,12 +431,104 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
 <h1>Grails Views</h1>
 <div class="details">
-<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
+<span id="author" class="author">Graeme Rocher</span><br>
+<span id="email" class="email"><a href="mailto:graeme.rocher@gmail.com">graeme.rocher@gmail.com</a></span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -488,7 +581,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Markup views allow rendering of XML responses using Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/text/markup/MarkupTemplateEngine.html">MarkupTemplateEngine</a>.</p>
 </div>
 <div class="paragraph">
-<p>However, the core of the project is extensible for potentially any kind of view implementation that is based on a Groovy DSL. The following sections cover usage of Groovy JSON views.</p>
+<p>However the core of the project is extensible for potentially any kind of view implementation that is based on a Groovy DSL. The following sections cover usage of Groovy JSON views.</p>
 </div>
 </div>
 </div>
@@ -560,7 +653,7 @@ json.message {
 <div class="sect2">
 <h3 id="_version_history">2.2. Version History</h3>
 <div class="paragraph">
-<p>The current release is 2.1.0.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 2.0.5.BUILD-SNAPSHOT. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>2.0.2</strong></p>
@@ -578,7 +671,7 @@ json.message {
 <div class="ulist">
 <ul>
 <li>
-<p>Optimized <code>compileGsonViews</code> performance and reduced IOPS as well by compiling in parallel threads.</p>
+<p>Optimized Grails compileGroovyPages (gsp) performance and reduced IOPS as well by compiling in parallel threads.</p>
 </li>
 <li>
 <p>Remove duplicate GSON classes from WAR.</p>
@@ -691,7 +784,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:2.1.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json:2.0.5.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -699,7 +792,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.1.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.0.5.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -711,7 +804,7 @@ json.message {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.5.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -1356,7 +1449,7 @@ For more complex message lookups the <code>messageSource</code> property is an i
 <div class="sect2">
 <h3 id="_model_naming">2.7. Model Naming</h3>
 <div class="paragraph">
-<p>Grails Framework supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
+<p>Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1693,10 +1786,10 @@ json g.render(object)</code></pre>
 <div class="sect3">
 <h4 id="_content_negotiation_and_view_resolving_strategy">2.8.4. Content Negotiation and View Resolving Strategy</h4>
 <div class="paragraph">
-<p>Grails Framework takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
+<p>Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
 </div>
 <div class="paragraph">
-<p>The paths searched are following:</p>
+<p>The following paths are searched:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2148,7 +2241,8 @@ Similar to <code>hal.links()</code> the <code>hal.paginate()</code> has to be th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If there aren&#8217;t enough results to paginate the navigation links will not appear, Likewise, the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
+If there aren&#8217;t enough results to paginate the navigation links will not appear.
+Likewise the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
 </td>
 </tr>
 </table>
@@ -2465,7 +2559,7 @@ json jsonapi.render(book, [<span class="key">expand</span>: <span class="string"
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
 <div class="paragraph">
-<p>This class is a regular Groovy <a href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html">TemplateEngine</a>, and you can use the engine to render JSON views outside the scope of an HTTP request.</p>
+<p>This class is a regular Groovy <a href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html">TemplateEngine</a> and you can use the engine to render JSON views outside the scope of an HTTP request.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -2667,7 +2761,7 @@ The new testing trait, like the testing framework, requires Spock.
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.5.BUILD-SNAPSHOT"
     }
 }
 
@@ -2680,7 +2774,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:2.1.0.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:2.0.5.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
@@ -2689,7 +2783,7 @@ task( compileViews, type:JsonViewCompilerTask ) {
     source = project.file('src/main/gson')
     destinationDir = project.file('build/classes/main')
     packageName = ""
-    classpath = configurations.compileClasspath + configurations.runtimeClasspath
+    classpath = configurations.compile + configurations.compileOnly
 }
 classes.dependsOn compileViews</code></pre>
 </div>
@@ -3080,7 +3174,7 @@ cars {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-markup:2.1.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile "org.grails.plugins:views-markup:2.0.5.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3092,7 +3186,7 @@ cars {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.5.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -3175,8 +3269,7 @@ apply <span class="key">plugin</span>: <span class="string"><span class="delimit
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 2.1.0.BUILD-SNAPSHOT<br>
-Last updated 2021-01-21 13:59:13 UTC
+Last updated 2021-02-05 21:42:35 UTC
 </div>
 </div>
 </body>

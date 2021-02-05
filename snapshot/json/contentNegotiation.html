@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Content Negotiation</title>
+<title>Content Negotiation and Domain Classes</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,13 +433,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Content Negotiation</h1>
-<div class="details">
-<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
-</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<ul class="sectlevel3">
 <li><a href="#_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</a></li>
 <li><a href="#_global_default_template">Global Default Template</a></li>
 <li><a href="#_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</a></li>
@@ -449,8 +445,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
 <div class="paragraph">
 <p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
 </div>
@@ -468,11 +462,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>In addition, if the client sends a request with the <code>Accept</code> header containing <code>application/json</code> the <code>show.gson</code> view will be rendered.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h4>
 <div class="paragraph">
 <p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
 </div>
@@ -523,10 +514,8 @@ When responding with a list of objects Grails automatically appends the suffix "
 <p>By calling the <code>tmpl.book(..)</code> method with the list of books the <code>grails-app/views/book/_book.gson</code> template will be rendered for each one and a JSON array returned.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_global_default_template">Global Default Template</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_global_default_template">Global Default Template</h4>
 <div class="paragraph">
 <p>You can also define a <code>/object/_object</code> template that is rendered by default if no other template is found during content negotiation. To do this create a file called <code>/grails-app/views/object/_object.gson</code> where the name of the model is <code>object</code>, for example:</p>
 </div>
@@ -539,10 +528,8 @@ json g.render(object)</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</h4>
 <div class="paragraph">
 <p>A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.</p>
 </div>
@@ -556,15 +543,13 @@ json g.render(object)</code></pre>
 <p>Then when the client sends a request with the <code>ACCEPT-VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</h4>
 <div class="paragraph">
-<p>Grails Framework takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
+<p>Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
 </div>
 <div class="paragraph">
-<p>The paths searched are following:</p>
+<p>The following paths are searched:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -601,10 +586,8 @@ json g.render(object)</code></pre>
 <p>The content type (defined by either the <code>ACCEPT</code> header or file extension in the URI) is taken into account to allow different formats for the same view.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="mimeTypes">Content Negotiation and Custom Mime Types</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="mimeTypes">Content Negotiation and Custom Mime Types</h4>
 <div class="paragraph">
 <p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
 </div>
@@ -623,11 +606,9 @@ json g.render(object)</code></pre>
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Version 2.1.0.BUILD-SNAPSHOT<br>
-Last updated 2021-01-21 13:59:13 UTC
+Last updated 2021-02-05 21:42:35 UTC
 </div>
 </div>
 </body>

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>JSON Views</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,117 +433,33 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>JSON Views</h1>
-<div class="details">
-<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
-</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<ul class="sectlevel2">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_version_history">Version History</a></li>
 <li><a href="#_installation">Installation</a></li>
-<li><a href="#_templates">Templates</a>
-<ul class="sectlevel2">
-<li><a href="#_template_basics">Template Basics</a></li>
-<li><a href="#_template_namespace">Template Namespace</a></li>
-<li><a href="#_more_ways_to_render_templates">More Ways to Render Templates</a></li>
-<li><a href="#_template_inheritance">Template Inheritance</a></li>
-</ul>
-</li>
-<li><a href="#_rendering_domain_classes">Rendering Domain Classes</a>
-<ul class="sectlevel2">
-<li><a href="#_basics_of_domain_class_rendering">Basics of Domain Class Rendering</a></li>
-<li><a href="#_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</a></li>
-<li><a href="#_domain_class_rendering_and_templates">Domain Class Rendering and Templates</a></li>
-</ul>
-</li>
-<li><a href="#_json_view_api">JSON View API</a>
-<ul class="sectlevel2">
-<li><a href="#_creating_links">Creating Links</a></li>
-<li><a href="#_altering_the_response_headers">Altering the Response Headers</a></li>
-<li><a href="#_accessing_the_request">Accessing the Request</a></li>
-<li><a href="#_default_static_imports">Default Static Imports</a></li>
-<li><a href="#_i18n_locale_integration">I18n &amp; Locale Integration</a></li>
-<li><a href="#_accessing_configuration">Accessing Configuration</a></li>
-<li><a href="#_miscellaneous_properties">Miscellaneous Properties</a></li>
-</ul>
-</li>
-<li><a href="#_model_naming">Model Naming</a>
-<ul class="sectlevel2">
-<li><a href="#_explicit_model_naming">Explicit Model Naming</a></li>
-<li><a href="#_model_by_convention">Model By Convention</a></li>
-</ul>
-</li>
-<li><a href="#_content_negotiation">Content Negotiation</a>
-<ul class="sectlevel2">
-<li><a href="#_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</a></li>
-<li><a href="#_global_default_template">Global Default Template</a></li>
-<li><a href="#_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</a></li>
-<li><a href="#_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</a></li>
-<li><a href="#mimeTypes">Content Negotiation and Custom Mime Types</a></li>
-</ul>
-</li>
-<li><a href="#_hal_support">HAL Support</a>
-<ul class="sectlevel2">
-<li><a href="#_generating_hal_links">Generating HAL Links</a></li>
-<li><a href="#_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</a></li>
-<li><a href="#_embedded_association_and_hal">Embedded Association and HAL</a></li>
-<li><a href="#_specifying_the_hal_content_type">Specifying the HAL Content Type</a></li>
-<li><a href="#_hal_pagination">HAL Pagination</a></li>
-</ul>
-</li>
-<li><a href="#_json_api_support">JSON API Support</a>
-<ul class="sectlevel2">
-<li><a href="#_json_api_object">JSON API Object</a></li>
-<li><a href="#_meta_object">Meta Object</a></li>
-<li><a href="#_rendering_errors">Rendering Errors</a></li>
-<li><a href="#_links">Links</a></li>
-<li><a href="#_pagination">Pagination</a></li>
-<li><a href="#_associations">Associations</a></li>
-<li><a href="#_includes_excludes">Includes / Excludes</a></li>
-<li><a href="#_identifier_rendering">Identifier Rendering</a></li>
-</ul>
-</li>
+<li><a href="#_templates">Templates</a></li>
+<li><a href="#_rendering_domain_classes">Rendering Domain Classes</a></li>
+<li><a href="#_json_view_api">JSON View API</a></li>
+<li><a href="#_model_naming">Model Naming</a></li>
+<li><a href="#_content_negotiation">Content Negotiation</a></li>
+<li><a href="#_hal_support">HAL Support</a></li>
+<li><a href="#_json_api_support">JSON API Support</a></li>
 <li><a href="#_the_jsontemplateengine">The JsonTemplateEngine</a></li>
 <li><a href="#_static_compilation">Static Compilation</a></li>
-<li><a href="#_testing">Testing</a>
-<ul class="sectlevel2">
-<li><a href="#_new_testing_framework">New Testing Framework</a></li>
-</ul>
-</li>
-<li><a href="#_plugin_support">Plugin Support</a>
-<ul class="sectlevel2">
-<li><a href="#_grails_plugins">Grails Plugins</a></li>
-<li><a href="#_basic_libraries">Basic Libraries</a></li>
-<li><a href="#_customizing_the_compile_task">Customizing the Compile Task</a></li>
-</ul>
-</li>
-<li><a href="#_configuration">Configuration</a>
-<ul class="sectlevel2">
-<li><a href="#_changing_the_view_base_class">Changing the view base class</a></li>
-<li><a href="#_adding_new_helper_methods_via_traits">Adding New Helper Methods via Traits</a></li>
-<li><a href="#_default_mime_types">Default Mime Types</a></li>
-<li><a href="#_unicode_escaping">Unicode Escaping</a></li>
-<li><a href="#_default_date_format">Default Date Format</a></li>
-<li><a href="#_default_time_zone">Default Time Zone</a></li>
-</ul>
-</li>
+<li><a href="#_testing">Testing</a></li>
+<li><a href="#_plugin_support">Plugin Support</a></li>
+<li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_custom_converters">Custom Converters</a></li>
 <li><a href="#_intellij_support">IntelliJ Support</a></li>
-<li><a href="#_debugging_views">Debugging Views</a>
-<ul class="sectlevel2">
-<li><a href="#_introspecting_the_model">Introspecting the Model</a></li>
-<li><a href="#_connecting_a_debugger">Connecting a Debugger</a></li>
-</ul>
-</li>
+<li><a href="#_debugging_views">Debugging Views</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_introduction">Introduction</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_introduction">Introduction</h3>
 <div class="paragraph">
 <p>JSON views are written in Groovy, end with the file extension <code>gson</code> and reside in the <code>grails-app/views</code> directory. They provide a DSL for producing output in the JSON format. A hello world example can be seen below:</p>
 </div>
@@ -604,12 +520,10 @@ json.message {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_version_history">Version History</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_version_history">Version History</h3>
 <div class="paragraph">
-<p>The current release is 2.1.0.BUILD-SNAPSHOT. Below is a version history.</p>
+<p>The current release is 2.0.5.BUILD-SNAPSHOT. Below is a version history.</p>
 </div>
 <div class="paragraph">
 <p><strong>2.0.2</strong></p>
@@ -627,7 +541,7 @@ json.message {
 <div class="ulist">
 <ul>
 <li>
-<p>Optimized <code>compileGsonViews</code> performance and reduced IOPS as well by compiling in parallel threads.</p>
+<p>Optimized Grails compileGroovyPages (gsp) performance and reduced IOPS as well by compiling in parallel threads.</p>
 </li>
 <li>
 <p>Remove duplicate GSON classes from WAR.</p>
@@ -733,16 +647,14 @@ json.message {
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_installation">Installation</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_installation">Installation</h3>
 <div class="paragraph">
 <p>To activate JSON views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:2.1.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json:2.0.5.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -750,7 +662,7 @@ json.message {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.1.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-json-templates:2.0.5.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -762,7 +674,7 @@ json.message {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.5.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -781,12 +693,10 @@ apply plugin: "org.grails.plugins.views-json"</code></pre>
 <p>This will add a <code>compileGsonViews</code> task to Gradle that is executed when producing a JAR or WAR file.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_templates">Templates</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_template_basics">Template Basics</h3>
+<h3 id="_templates">Templates</h3>
+<div class="sect3">
+<h4 id="_template_basics">Template Basics</h4>
 <div class="paragraph">
 <p>You can define templates starting with underscore <code>_</code>. For example given the following template called <code>_person.gson</code>:</p>
 </div>
@@ -827,8 +737,8 @@ json g.render(template:"/person/person", model:[person:person])</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_template_namespace">Template Namespace</h3>
+<div class="sect3">
+<h4 id="_template_namespace">Template Namespace</h4>
 <div class="paragraph">
 <p>The previous example can be simplified using the template namespace:</p>
 </div>
@@ -934,8 +844,8 @@ json tmpl.person(people:people)</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_more_ways_to_render_templates">More Ways to Render Templates</h3>
+<div class="sect3">
+<h4 id="_more_ways_to_render_templates">More Ways to Render Templates</h4>
 <div class="paragraph">
 <p>The <code>g.render</code> method is flexible, you can render templates in many forms:</p>
 </div>
@@ -969,8 +879,8 @@ json {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_template_inheritance">Template Inheritance</h3>
+<div class="sect3">
+<h4 id="_template_inheritance">Template Inheritance</h4>
 <div class="paragraph">
 <p>JSON templates can inherit from a parent template. For example consider the following parent template:</p>
 </div>
@@ -1048,12 +958,10 @@ json {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_rendering_domain_classes">Rendering Domain Classes</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_basics_of_domain_class_rendering">Basics of Domain Class Rendering</h3>
+<h3 id="_rendering_domain_classes">Rendering Domain Classes</h3>
+<div class="sect3">
+<h4 id="_basics_of_domain_class_rendering">Basics of Domain Class Rendering</h4>
 <div class="paragraph">
 <p>Typically your model may involve one or many domain instances. JSON views provide a <code>render</code> method for rendering these.</p>
 </div>
@@ -1115,8 +1023,8 @@ json g.render(book)</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</h3>
+<div class="sect3">
+<h4 id="_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</h4>
 <div class="paragraph">
 <p>Typically the <code>g.render(..)</code> method will only render objects one level deep. In other words if you have a domain class such as:</p>
 </div>
@@ -1203,8 +1111,8 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_domain_class_rendering_and_templates">Domain Class Rendering and Templates</h3>
+<div class="sect3">
+<h4 id="_domain_class_rendering_and_templates">Domain Class Rendering and Templates</h4>
 <div class="paragraph">
 <p>An alternative to the default behaviour of the <code>render</code> method is to rely on templates.</p>
 </div>
@@ -1221,10 +1129,8 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_json_view_api">JSON View API</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_json_view_api">JSON View API</h3>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -1234,8 +1140,8 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 <div class="paragraph">
 <p>Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.</p>
 </div>
-<div class="sect2">
-<h3 id="_creating_links">Creating Links</h3>
+<div class="sect3">
+<h4 id="_creating_links">Creating Links</h4>
 <div class="paragraph">
 <p>Links can be generated using the <code>g.link(..)</code> method:</p>
 </div>
@@ -1251,8 +1157,8 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 <p>The <code>g.link</code> method is similar to the equivalent tag in GSP and allows you to easily create links to other controllers.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_altering_the_response_headers">Altering the Response Headers</h3>
+<div class="sect3">
+<h4 id="_altering_the_response_headers">Altering the Response Headers</h4>
 <div class="paragraph">
 <p>To customize content types and headers use the <code>response</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -1281,8 +1187,8 @@ The methods available are only a subset of the methods available via the <code>H
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_accessing_the_request">Accessing the Request</h3>
+<div class="sect3">
+<h4 id="_accessing_the_request">Accessing the Request</h4>
 <div class="paragraph">
 <p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
 </div>
@@ -1307,8 +1213,8 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_default_static_imports">Default Static Imports</h3>
+<div class="sect3">
+<h4 id="_default_static_imports">Default Static Imports</h4>
 <div class="paragraph">
 <p>The following classes' static properties are imported by default:</p>
 </div>
@@ -1342,8 +1248,8 @@ The methods available are only a subset of the methods available via the <code>H
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_i18n_locale_integration">I18n &amp; Locale Integration</h3>
+<div class="sect3">
+<h4 id="_i18n_locale_integration">I18n &amp; Locale Integration</h4>
 <div class="paragraph">
 <p>You can lookup i18n messages use the <code>g.message</code> method:</p>
 </div>
@@ -1370,8 +1276,8 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_accessing_configuration">Accessing Configuration</h3>
+<div class="sect3">
+<h4 id="_accessing_configuration">Accessing Configuration</h4>
 <div class="paragraph">
 <p>The application configuration is injected automatically into your json views. To access it, simply reference <code>config</code>.</p>
 </div>
@@ -1383,8 +1289,8 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_miscellaneous_properties">Miscellaneous Properties</h3>
+<div class="sect3">
+<h4 id="_miscellaneous_properties">Miscellaneous Properties</h4>
 <div class="paragraph">
 <p>Other properties are also available:</p>
 </div>
@@ -1410,12 +1316,10 @@ For more complex message lookups the <code>messageSource</code> property is an i
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_model_naming">Model Naming</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_model_naming">Model Naming</h3>
 <div class="paragraph">
-<p>Grails Framework supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
+<p>Grails supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1430,8 +1334,8 @@ Some model names are <em>reserved</em> since there are properties of the same na
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_explicit_model_naming">Explicit Model Naming</h3>
+<div class="sect3">
+<h4 id="_explicit_model_naming">Explicit Model Naming</h4>
 <div class="paragraph">
 <p>Given a view:</p>
 </div>
@@ -1499,10 +1403,10 @@ json {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_model_by_convention">Model By Convention</h3>
 <div class="sect3">
-<h4 id="_property_type">Property Type</h4>
+<h4 id="_model_by_convention">Model By Convention</h4>
+<div class="sect4">
+<h5 id="_property_type">Property Type</h5>
 <div class="paragraph">
 <p>When rendering a non iterable object, the property name of the type is used when a name is not specified.</p>
 </div>
@@ -1601,8 +1505,8 @@ The component+collection convention does not apply when rendering collections wi
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_template_name">Template Name</h4>
+<div class="sect4">
+<h5 id="_template_name">Template Name</h5>
 <div class="paragraph">
 <p>When using a template, unless specified, the model name is based on the template name.</p>
 </div>
@@ -1649,10 +1553,8 @@ json {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_content_negotiation">Content Negotiation</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_content_negotiation">Content Negotiation</h3>
 <div class="paragraph">
 <p>GSON views integrate with Grails' content negotiation infrastructure. For example if you create two views called <code>grails-app/views/book/show/show.gsp</code> (for HTML) and <code>grails-app/views/book/show/show.gson</code> (for JSON), you can then define the following action:</p>
 </div>
@@ -1670,8 +1572,8 @@ json {
 <div class="paragraph">
 <p>In addition, if the client sends a request with the <code>Accept</code> header containing <code>application/json</code> the <code>show.gson</code> view will be rendered.</p>
 </div>
-<div class="sect2">
-<h3 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h3>
+<div class="sect3">
+<h4 id="_content_negotiation_and_domain_classes">Content Negotiation and Domain Classes</h4>
 <div class="paragraph">
 <p>Content negotiation also works nicely with domain classes, for example if you want to define a template to render any instance of the <code>Book</code> domain class you can create a <code>gson</code> file that matches the class name.</p>
 </div>
@@ -1722,8 +1624,8 @@ When responding with a list of objects Grails automatically appends the suffix "
 <p>By calling the <code>tmpl.book(..)</code> method with the list of books the <code>grails-app/views/book/_book.gson</code> template will be rendered for each one and a JSON array returned.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_global_default_template">Global Default Template</h3>
+<div class="sect3">
+<h4 id="_global_default_template">Global Default Template</h4>
 <div class="paragraph">
 <p>You can also define a <code>/object/_object</code> template that is rendered by default if no other template is found during content negotiation. To do this create a file called <code>/grails-app/views/object/_object.gson</code> where the name of the model is <code>object</code>, for example:</p>
 </div>
@@ -1736,8 +1638,8 @@ json g.render(object)</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</h3>
+<div class="sect3">
+<h4 id="_content_negotiation_and_versioned_apis">Content Negotiation and Versioned APIs</h4>
 <div class="paragraph">
 <p>A typical use case when building REST APIs is the requirement to support different versions of the API. GSON views can be versioned by including the version in the name of the view.</p>
 </div>
@@ -1751,13 +1653,13 @@ json g.render(object)</code></pre>
 <p>Then when the client sends a request with the <code>ACCEPT-VERSION</code> header containing <code>v1.0</code> the <code>/book/show_v1.0.gson</code> view will be rendered instead of <code>/book/show.gson</code>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</h3>
+<div class="sect3">
+<h4 id="_content_negotiation_and_view_resolving_strategy">Content Negotiation and View Resolving Strategy</h4>
 <div class="paragraph">
-<p>Grails Framework takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
+<p>Grails takes into account a number of factors when attempting to resolve the view including the content type, version and locale.</p>
 </div>
 <div class="paragraph">
-<p>The paths searched are following:</p>
+<p>The following paths are searched:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1794,8 +1696,8 @@ json g.render(object)</code></pre>
 <p>The content type (defined by either the <code>ACCEPT</code> header or file extension in the URI) is taken into account to allow different formats for the same view.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="mimeTypes">Content Negotiation and Custom Mime Types</h3>
+<div class="sect3">
+<h4 id="mimeTypes">Content Negotiation and Custom Mime Types</h4>
 <div class="paragraph">
 <p>Some REST APIs use the notion of custom mime types to represent resources. Within Grails you can for example define custom mime types in <code>grails-app/conf/application.yml</code>:</p>
 </div>
@@ -1814,10 +1716,8 @@ json g.render(object)</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_hal_support">HAL Support</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_hal_support">HAL Support</h3>
 <div class="paragraph">
 <p><a href="http://stateless.co/hal_specification.html">HAL</a> is a standard format for representing JSON that has gained traction for its ability to represent links between resources and provide navigable APIs.</p>
 </div>
@@ -1884,8 +1784,8 @@ The call to <code>hal.links()</code> has to be the first element within the <cod
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_generating_hal_links">Generating HAL Links</h3>
+<div class="sect3">
+<h4 id="_generating_hal_links">Generating HAL Links</h4>
 <div class="paragraph">
 <p>The above example uses the <code>hal.links(..)</code> method to render links for a domain resource and the <code>hal.embedded(..)</code> method to define any embedded objects that form part of the HAL response.</p>
 </div>
@@ -1935,8 +1835,8 @@ json {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</h3>
+<div class="sect3">
+<h4 id="_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</h4>
 <div class="paragraph">
 <p>If you prefer to let the plugin handle the rendering of your object you can use the <code>hal.render(..)</code> method:</p>
 </div>
@@ -1965,8 +1865,8 @@ json hal.render(book) {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_embedded_association_and_hal">Embedded Association and HAL</h3>
+<div class="sect3">
+<h4 id="_embedded_association_and_hal">Embedded Association and HAL</h4>
 <div class="paragraph">
 <p>Generally, when using the <code>hal.render(..)</code> method, <code>_embedded</code> associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the <code>book.authors</code> association:</p>
 </div>
@@ -2102,8 +2002,8 @@ json {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_specifying_the_hal_content_type">Specifying the HAL Content Type</h3>
+<div class="sect3">
+<h4 id="_specifying_the_hal_content_type">Specifying the HAL Content Type</h4>
 <div class="paragraph">
 <p>The default HAL response content type is <code>application/hal+json</code>, however as discussed in the section on <a href="#json/contentNegotiation.adoc#mimeTypes">Custom Mime Type</a> you can define your own response content types to represent your resources.</p>
 </div>
@@ -2134,8 +2034,8 @@ json {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_hal_pagination">HAL Pagination</h3>
+<div class="sect3">
+<h4 id="_hal_pagination">HAL Pagination</h4>
 <div class="paragraph">
 <p>The JSON views plugin for Grails provides navigable pagination support.
 Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
@@ -2211,7 +2111,8 @@ Similar to <code>hal.links()</code> the <code>hal.paginate()</code> has to be th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If there aren&#8217;t enough results to paginate the navigation links will not appear, Likewise, the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
+If there aren&#8217;t enough results to paginate the navigation links will not appear.
+Likewise the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
 </td>
 </tr>
 </table>
@@ -2235,10 +2136,8 @@ json {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_json_api_support">JSON API Support</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_json_api_support">JSON API Support</h3>
 <div class="paragraph">
 <p><a href="http://jsonapi.org/">JSON API</a> is a standard format for representing JSON.</p>
 </div>
@@ -2306,8 +2205,8 @@ json jsonapi.render(book)</code></pre>
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_json_api_object">JSON API Object</h3>
+<div class="sect3">
+<h4 id="_json_api_object">JSON API Object</h4>
 <div class="paragraph">
 <p>To include the <a href="http://jsonapi.org/format/#document-jsonapi-object">JSON API Object</a> in the response, include a <code>jsonApiObject</code> argument to the <code>render</code> method.</p>
 </div>
@@ -2323,8 +2222,8 @@ json jsonapi.render(book, [jsonApiObject: true])</code></pre>
 <p>The response will contain <code>"jsonapi":{"version":"1.0"}</code> as the first key in the resulting object.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_meta_object">Meta Object</h3>
+<div class="sect3">
+<h4 id="_meta_object">Meta Object</h4>
 <div class="paragraph">
 <p>To add <a href="http://jsonapi.org/format/#document-meta">metadata</a> to your response, the <code>meta</code> argument can be passed to render with the value being the object that should be rendered. If this functionality is used in addition to <code>jsonApiObject: true</code>, the metadata will be rendered as the "meta" property of the "jsonapi" object.</p>
 </div>
@@ -2340,13 +2239,13 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 <p>The response will contain <code>"meta":{"name":"Metadata Information"}</code> as the first key in the resulting object.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_rendering_errors">Rendering Errors</h3>
+<div class="sect3">
+<h4 id="_rendering_errors">Rendering Errors</h4>
 <div class="paragraph">
 <p>The JSON API specification has <a href="http://jsonapi.org/format/#errors">instructions on how to render errors</a>. In the case of the Grails implementation, this applies to both exceptions and validation errors.</p>
 </div>
-<div class="sect3">
-<h4 id="_exceptions">Exceptions</h4>
+<div class="sect4">
+<h5 id="_exceptions">Exceptions</h5>
 <div class="paragraph">
 <p>If an exception is passed to the <code>render</code> method, it will be rendered within the specification.</p>
 </div>
@@ -2372,8 +2271,8 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_validation_errors">Validation Errors</h4>
+<div class="sect4">
+<h5 id="_validation_errors">Validation Errors</h5>
 <div class="paragraph">
 <p>In the case of validation errors, the response will look like the following when a <code>name</code> property fails the blank constraint:</p>
 </div>
@@ -2397,8 +2296,8 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_links">Links</h3>
+<div class="sect3">
+<h4 id="_links">Links</h4>
 <div class="paragraph">
 <p>In general, links for relationships will be provided when the relationship has a value.</p>
 </div>
@@ -2432,8 +2331,8 @@ json jsonapi.render(book, [meta: [name: "Metadata Information"]])</code></pre>
 <p>Currently links are not supported in the case of to many relationships.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_pagination">Pagination</h3>
+<div class="sect3">
+<h4 id="_pagination">Pagination</h4>
 <div class="paragraph">
 <p>The JSON API specification has a section which explains <a href="http://jsonapi.org/format/#fetching-pagination">pagination</a>. The Grails implementation follows that specification as it is written.</p>
 </div>
@@ -2475,8 +2374,8 @@ json jsonapi.render(books, [pagination: [total: bookTotal, resource: Book, max: 
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_associations">Associations</h3>
+<div class="sect3">
+<h4 id="_associations">Associations</h4>
 <div class="paragraph">
 <p>The JSON API specification details how relationships should be rendered. The first way is through a relationships object described <a href="http://jsonapi.org/format/#document-resource-object-relationships">here</a>. By default that is now relationships will be rendered in json views.</p>
 </div>
@@ -2503,14 +2402,14 @@ json jsonapi.render(book, [expand: "author"]) //can also be a list of strings</c
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_includes_excludes">Includes / Excludes</h3>
+<div class="sect3">
+<h4 id="_includes_excludes">Includes / Excludes</h4>
 <div class="paragraph">
 <p>The JSON API implementation in Grails supports the same includes and excludes support as normal json views. Please see the section on <a href="rendering.html">rendering</a> for details.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_identifier_rendering">Identifier Rendering</h3>
+<div class="sect3">
+<h4 id="_identifier_rendering">Identifier Rendering</h4>
 <div class="paragraph">
 <p>Grails provides a way to customize the rendering of your domain class identifiers. To override the default behavior, register a bean that implements <a href="api/grails/plugin/json/view/api/jsonapi/JsonApiIdRenderStrategy.html">JsonApiIdRenderStrategy</a>.</p>
 </div>
@@ -2524,15 +2423,13 @@ json jsonapi.render(book, [expand: "author"]) //can also be a list of strings</c
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_the_jsontemplateengine">The JsonTemplateEngine</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_jsontemplateengine">The JsonTemplateEngine</h3>
 <div class="paragraph">
 <p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
 <div class="paragraph">
-<p>This class is a regular Groovy <a href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html">TemplateEngine</a>, and you can use the engine to render JSON views outside the scope of an HTTP request.</p>
+<p>This class is a regular Groovy <a href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html">TemplateEngine</a> and you can use the engine to render JSON views outside the scope of an HTTP request.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -2551,10 +2448,8 @@ void myMethod() {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_static_compilation">Static Compilation</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_static_compilation">Static Compilation</h3>
 <div class="paragraph">
 <p>JSON views are statically compiled. You can disable static compilation if you prefer by setting <code>grails.views.json.compileStatic</code>:</p>
 </div>
@@ -2593,10 +2488,8 @@ json {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_testing">Testing</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_testing">Testing</h3>
 <div class="paragraph">
 <p>Although generally testing can be done using functional tests via an HTTP client, the JSON views plugin also provides a trait which helps in writing either unit or integration tests.</p>
 </div>
@@ -2684,8 +2577,8 @@ Links generated by json views in a unit test may not match what they would norma
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_new_testing_framework">New Testing Framework</h3>
+<div class="sect3">
+<h4 id="_new_testing_framework">New Testing Framework</h4>
 <div class="paragraph">
 <p>Since the release of json views, a new testing framework was released for Grails. A new trait has been developed that works with the new testing framework that is designed to replace the existing trait. The existing trait will be left as is for backwards compatibility.</p>
 </div>
@@ -2709,15 +2602,13 @@ The new testing trait, like the testing framework, requires Spock.
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_plugin_support">Plugin Support</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_plugin_support">Plugin Support</h3>
 <div class="paragraph">
 <p>Grails plugins as well as standard Gradle Java/Groovy projects can provide json views to your application.</p>
 </div>
-<div class="sect2">
-<h3 id="_grails_plugins">Grails Plugins</h3>
+<div class="sect3">
+<h4 id="_grails_plugins">Grails Plugins</h4>
 <div class="paragraph">
 <p>Since JSON views are compiled all of a plugin&#8217;s views and templates are available for use in your applications.</p>
 </div>
@@ -2725,8 +2616,8 @@ The new testing trait, like the testing framework, requires Spock.
 <p>The view resolution will look through all of the application&#8217;s configured plugins for views that match a particular name. By default, the views a plugin supplies should be stored in <code>grails-app/views</code>, just like applications.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_basic_libraries">Basic Libraries</h3>
+<div class="sect3">
+<h4 id="_basic_libraries">Basic Libraries</h4>
 <div class="paragraph">
 <p>The most common use case to provide views in a standard library is to provide global templates. Global templates are templates designed to render a given class as JSON. In order to provide views in a standard Gradle project, you should configure your own view compilation task.</p>
 </div>
@@ -2740,7 +2631,7 @@ The new testing trait, like the testing framework, requires Spock.
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.0.5.BUILD-SNAPSHOT"
     }
 }
 
@@ -2753,7 +2644,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.grails.plugins:views-json:2.1.0.BUILD-SNAPSHOT"
+    compile "org.grails.plugins:views-json:2.0.5.BUILD-SNAPSHOT"
     compileOnly "org.grails:grails-plugin-rest:3.1.7"
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 }
@@ -2762,7 +2653,7 @@ task( compileViews, type:JsonViewCompilerTask ) {
     source = project.file('src/main/gson')
     destinationDir = project.file('build/classes/main')
     packageName = ""
-    classpath = configurations.compileClasspath + configurations.runtimeClasspath
+    classpath = configurations.compile + configurations.compileOnly
 }
 classes.dependsOn compileViews</code></pre>
 </div>
@@ -2786,8 +2677,8 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_customizing_the_compile_task">Customizing the Compile Task</h3>
+<div class="sect3">
+<h4 id="_customizing_the_compile_task">Customizing the Compile Task</h4>
 <div class="paragraph">
 <p>Unless otherwise configured, the project name of the plugin (the gradle <code>project.name</code>) is used as the <code>packageName</code> when compiling JSON views.</p>
 </div>
@@ -2812,10 +2703,8 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_configuration">Configuration</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
 <div class="paragraph">
 <p>JSON views configuration can be altered within <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/json/view/JsonViewConfiguration.html">JsonViewConfiguration</a> interface can be set. The json view configuration extends <a href="api/grails/views/GenericViewConfiguration.html">GenericViewConfiguration</a>, therefore any properties in that interface can be set as well.</p>
 </div>
@@ -2853,8 +2742,8 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 <div class="paragraph">
 <p>See the API for <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/compile/GroovyForkOptions.html">GroovyForkOptions</a> for more information.</p>
 </div>
-<div class="sect2">
-<h3 id="_changing_the_view_base_class">Changing the view base class</h3>
+<div class="sect3">
+<h4 id="_changing_the_view_base_class">Changing the view base class</h4>
 <div class="paragraph">
 <p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
@@ -2871,8 +2760,8 @@ See the <a href="https://github.com/grails/grails-views/tree/master/json-templat
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_adding_new_helper_methods_via_traits">Adding New Helper Methods via Traits</h3>
+<div class="sect3">
+<h4 id="_adding_new_helper_methods_via_traits">Adding New Helper Methods via Traits</h4>
 <div class="paragraph">
 <p>Alternatively, rather than modifying the base class, you can instead just add new methods via traits.</p>
 </div>
@@ -2916,8 +2805,8 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_default_mime_types">Default Mime Types</h3>
+<div class="sect3">
+<h4 id="_default_mime_types">Default Mime Types</h4>
 <div class="paragraph">
 <p>The mime types that will be accepted by default for JSON view rendering is configurable.</p>
 </div>
@@ -2932,8 +2821,8 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_unicode_escaping">Unicode Escaping</h3>
+<div class="sect3">
+<h4 id="_unicode_escaping">Unicode Escaping</h4>
 <div class="paragraph">
 <p>By default, unicode characters will not be escaped. If you would like unicode characters to be escaped in your output, set the following configuration.</p>
 </div>
@@ -2947,8 +2836,8 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_default_date_format">Default Date Format</h3>
+<div class="sect3">
+<h4 id="_default_date_format">Default Date Format</h4>
 <div class="paragraph">
 <p>The default format for <code>java.util.Date</code> can be configured.</p>
 </div>
@@ -2974,8 +2863,8 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_default_time_zone">Default Time Zone</h3>
+<div class="sect3">
+<h4 id="_default_time_zone">Default Time Zone</h4>
 <div class="paragraph">
 <p>The default time zone can be configured. The value here will be passed to <code>TimeZone.getTimeZone(...)</code></p>
 </div>
@@ -2990,10 +2879,8 @@ The trait cannot be defined in the same project as you are compilation as it nee
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_custom_converters">Custom Converters</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_custom_converters">Custom Converters</h3>
 <div class="paragraph">
 <p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
 </div>
@@ -3042,10 +2929,8 @@ If you have multiple classes to register, put each one on it&#8217;s own line
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_intellij_support">IntelliJ Support</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_intellij_support">IntelliJ Support</h3>
 <div class="paragraph">
 <p>When opening <code>.gson</code> files in Intellij they should be opened with the regular Groovy editor.</p>
 </div>
@@ -3059,18 +2944,16 @@ If you have multiple classes to register, put each one on it&#8217;s own line
 <p>The GDSL file is generally kept up-to-date with the codebase, however if any variation is spotted please <a href="https://github.com/grails/grails-views/issues">raise an issue</a>.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_debugging_views">Debugging Views</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_debugging_views">Debugging Views</h3>
 <div class="paragraph">
 <p>Generally views should be kept simple and if you arrive to the point where you need to debug a view you probably have too much logic in the view that would be better off handled by the controller prior to supplying the model.</p>
 </div>
 <div class="paragraph">
 <p>Nevertheless here are a few view debugging tips to help identify problems in the view.</p>
 </div>
-<div class="sect2">
-<h3 id="_introspecting_the_model">Introspecting the Model</h3>
+<div class="sect3">
+<h4 id="_introspecting_the_model">Introspecting the Model</h4>
 <div class="paragraph">
 <p>Every JSON view is a Groovy script and like any Groovy script the model is defined in a <code>binding</code> variable. Therefore you can easily find out the model at any time by either logging or printing the binding variables:</p>
 </div>
@@ -3099,19 +2982,17 @@ If you using the <code>log</code> variable then you will need to enabling loggin
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_connecting_a_debugger">Connecting a Debugger</h3>
+<div class="sect3">
+<h4 id="_connecting_a_debugger">Connecting a Debugger</h4>
 <div class="paragraph">
 <p>Some IDEs like Intellij IDE allow you to set break points and step debug within the view itself. As mentioned previously you shouldn&#8217;t arrive to this point and if you do you have too much logic in your view, but if you do need it the feature is there.</p>
 </div>
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Version 2.1.0.BUILD-SNAPSHOT<br>
-Last updated 2021-01-21 13:59:13 UTC
+Last updated 2021-02-05 21:42:35 UTC
 </div>
 </div>
 </body>

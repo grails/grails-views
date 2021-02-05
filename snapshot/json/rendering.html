@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Rendering Domain Classes</title>
+<title>Basics of Domain Class Rendering</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,13 +433,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Rendering Domain Classes</h1>
-<div class="details">
-<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
-</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<ul class="sectlevel3">
 <li><a href="#_basics_of_domain_class_rendering">Basics of Domain Class Rendering</a></li>
 <li><a href="#_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</a></li>
 <li><a href="#_domain_class_rendering_and_templates">Domain Class Rendering and Templates</a></li>
@@ -447,9 +443,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_basics_of_domain_class_rendering">Basics of Domain Class Rendering</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_basics_of_domain_class_rendering">Basics of Domain Class Rendering</h4>
 <div class="paragraph">
 <p>Typically your model may involve one or many domain instances. JSON views provide a <code>render</code> method for rendering these.</p>
 </div>
@@ -511,10 +506,8 @@ json g.render(book)</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_deep_rendering_of_domain_classes">Deep Rendering of Domain Classes</h4>
 <div class="paragraph">
 <p>Typically the <code>g.render(..)</code> method will only render objects one level deep. In other words if you have a domain class such as:</p>
 </div>
@@ -601,10 +594,8 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_domain_class_rendering_and_templates">Domain Class Rendering and Templates</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_domain_class_rendering_and_templates">Domain Class Rendering and Templates</h4>
 <div class="paragraph">
 <p>An alternative to the default behaviour of the <code>render</code> method is to rely on templates.</p>
 </div>
@@ -621,11 +612,9 @@ request parameters can also be used to expand associations (eg. <code>?expand=au
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Version 2.1.0.BUILD-SNAPSHOT<br>
-Last updated 2021-01-21 13:59:13 UTC
+Last updated 2021-02-05 21:42:35 UTC
 </div>
 </div>
 </body>
