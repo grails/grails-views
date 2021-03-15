@@ -1,6 +1,0 @@
-import functional.tests.Embedded
-
-model {
-    Embedded embedded
-}
-json g.render(embedded, [includes: ['name', 'customClass']])

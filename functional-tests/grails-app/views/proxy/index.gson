@@ -1,5 +1,0 @@
-import groovy.transform.Field
-
-@Field List<Proxy> proxies
-
-json g.render(proxies)

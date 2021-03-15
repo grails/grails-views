@@ -1,9 +1,0 @@
-import groovy.transform.Field
-
-@Field Proxy proxy
-
-json {
-    id proxy.id
-    name proxy.name
-    fromTemplate true
-}

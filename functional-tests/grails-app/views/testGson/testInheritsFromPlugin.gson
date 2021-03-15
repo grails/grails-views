@@ -1,5 +1,0 @@
-inherits template: "fromPlugin"
-
-json {
-    foo "bar"
-}
