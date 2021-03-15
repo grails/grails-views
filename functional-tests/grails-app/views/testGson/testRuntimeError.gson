@@ -1,7 +1,0 @@
-model {
-    String one
-}
-
-json {
-    name one.substring(10)
-}

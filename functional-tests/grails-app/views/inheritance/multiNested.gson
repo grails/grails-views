@@ -1,5 +1,0 @@
-inherits template: 'levelOne'
-
-json {
-    entry true
-}

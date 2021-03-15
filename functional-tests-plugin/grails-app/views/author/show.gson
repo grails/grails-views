@@ -1,7 +1,0 @@
-import functional.tests.plugin.Author
-
-model {
-    Author author
-}
-
-json tmpl.author(author)
