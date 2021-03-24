@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Introduction</title>
+<title>Markup Views</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,9 +433,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
+<h1>Markup Views</h1>
+<div class="details">
+<span id="revnumber">version 2.1.0.BUILD-SNAPSHOT</span>
+</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel2">
+<ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_installation">Installation</a></li>
 <li><a href="#_markup_view_api">Markup View API</a></li>
@@ -444,8 +448,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
-<div class="sect2">
-<h3 id="_introduction">Introduction</h3>
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Markup Views are written in Groovy, end with the file extension <code>gml</code> and reside in the <code>grails-app/views</code> directory.</p>
 </div>
@@ -487,14 +492,16 @@ cars {
 <p>The <code>MarkupViewTemplate</code> superclass implements the <a href="api/grails/plugin/markup/view/api/MarkupView.html">MarkupView</a> trait which in turn extends the the <a href="api/grails/views/api/GrailsView.html">GrailsView</a> trait.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_installation">Installation</h3>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To activate Markup views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-markup:2.0.5.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-markup:2.1.0.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -506,7 +513,7 @@ cars {
     ...
     dependencies {
         ...
-        classpath "org.grails.plugins:views-gradle:2.0.5.BUILD-SNAPSHOT"
+        classpath "org.grails.plugins:views-gradle:2.1.0.BUILD-SNAPSHOT"
     }
 }</code></pre>
 </div>
@@ -525,8 +532,10 @@ apply plugin: "org.grails.plugins.views-markup"</code></pre>
 <p>This will add a <code>compileMarkupViews</code> task to Gradle that is executed when producing a JAR or WAR file.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_markup_view_api">Markup View API</h3>
+</div>
+<div class="sect1">
+<h2 id="_markup_view_api">Markup View API</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>All Markup views subclass the <a href="api/grails/plugin/markup/view/MarkupViewTemplate.html">MarkupViewTemplate</a> class by default.</p>
 </div>
@@ -561,8 +570,10 @@ apply plugin: "org.grails.plugins.views-markup"</code></pre>
 <p>Notice the <code>this</code> prefix when refering to <code>this.g.link(..)</code>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_configuration">Configuration</h3>
+</div>
+<div class="sect1">
+<h2 id="_configuration">Configuration</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Markup views configuration can be altered with <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/markup/view/MarkupViewConfiguration.html">MarkupViewConfiguration</a> class and Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/api/groovy/text/markup/TemplateConfiguration.html">TemplateConfiguration</a> class can be set.</p>
 </div>
@@ -585,9 +596,11 @@ apply plugin: "org.grails.plugins.views-markup"</code></pre>
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-03-17 10:09:49 UTC
+Version 2.1.0.BUILD-SNAPSHOT<br>
+Last updated 2021-03-24 19:02:01 UTC
 </div>
 </div>
 </body>
