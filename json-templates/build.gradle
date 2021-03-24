@@ -1,10 +1,4 @@
-plugins {
-    id "com.jfrog.bintray"
-}
-
 apply plugin:"java"
-apply plugin:"groovy"
-apply plugin: 'maven-publish'
 
 group "org.grails.plugins"
 
@@ -48,7 +42,3 @@ task javadocJar(type:Jar) {
 }
 
 classes.dependsOn(compileViews)
-
-// Used for publishing to central repository, remove if not needed
-apply from:'../publishing/grailsCentralPublishing.gradle'
-apply from:'../publishing/bintrayPublishing.gradle'
