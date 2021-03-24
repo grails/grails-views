@@ -7,12 +7,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'eclipse'
-    id 'idea'
-}
-
-
 ext {
     userOrg = 'grails'
 }
@@ -21,30 +15,7 @@ group "org.grails.plugins"
 
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
-apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: 'optional-base'
-
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-grailsPublish {
-    userOrg = 'grails'
-    githubSlug = 'grails/grails-views'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "Markup Views Plugin"
-    desc = "Adds support for defining views in Markup (XML or HTML)"
-    developers = [graemerocher:"Graeme Rocher"]    
-}
-
-bintray {
-    pkg {
-        desc = "Grails Views"
-        name = 'grails-views'
-    }
-}
 
 dependencyManagement {
     imports {
@@ -61,8 +32,4 @@ dependencies {
     testCompile "org.grails:grails-web-testing-support:$testingSupportVersion"
 
     console "org.grails:grails-console"
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
 }

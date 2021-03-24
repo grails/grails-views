@@ -4,42 +4,19 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "io.github.gradle-nexus:publish-plugin:1.0.0"
     }
 }
 
 plugins {
-    id 'eclipse'
-    id 'idea'
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "io.spring.dependency-management"
 }
 
 group "org.grails.plugins"
 
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
-apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: 'optional-base'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-grailsPublish {
-    userOrg = 'grails'
-    githubSlug = 'grails/grails-views'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "JSON Views Plugin"
-    desc = "Adds support for defining views in JSON"
-    developers = [graemerocher:"Graeme Rocher"]
-}
-
-bintray {
-    pkg {
-        desc = "Grails Views"
-        name = 'grails-views'
-    }
-}
 
 dependencyManagement {
     imports {
@@ -78,10 +55,6 @@ dependencies {
     testRuntime "org.javassist:javassist:3.18.1-GA"
 
     console "org.grails:grails-console"
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
 }
 
 jar {

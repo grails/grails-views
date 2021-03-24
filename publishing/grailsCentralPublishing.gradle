@@ -1,6 +1,53 @@
+ext."signing.keyId" = project.hasProperty("signing.keyId") ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY_ID')
+ext."signing.password" = project.hasProperty("signing.password") ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSWORD')
+ext."signing.secretKeyRingFile" = project.hasProperty("signing.secretKeyRingFile") ? project.getProperty('signing.secretKeyRingFile') : "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg"
+
 publishing {
     publications {
         maven(MavenPublication) {
+            artifactId project.name
+            from components.java
+            afterEvaluate {
+                artifact source: sourcesJar, classifier: "sources"
+                artifact source: javadocJar, classifier: "javadoc"
+
+                if(isGrailsPlugin) {
+                    artifact source:"${sourceSets.main.groovy.outputDir}/META-INF/grails-plugin.xml",
+                            classifier:"plugin",
+                            extension:'xml'
+                }
+            }
+
+
+            pom {
+                name = 'Grails Views'
+                description = 'Provides additional view technologies to the Grails framework, including JSON and Markup views.'
+                url = 'https://views.grails.org/latest/'
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/grails/grails-views/tree/master'
+                    connection = 'scm:git:git://github.com/grails/grails-views'
+                    developerConnection = 'scm:git:ssh://github.com:grails/grails-views'
+                }
+                developers {
+                    developer {
+                        id = 'graemerocher'
+                        name = 'Graeme Rocher'
+                        email = 'graeme.rocher@gmail.com'
+                    }
+                    developer {
+                        id = 'puneetbehl'
+                        name = 'Puneet Behl'
+                        email = 'behlp@objectcomputing.com'
+                    }
+                }
+            }
+
             pom.withXml {
                 def pomNode = asNode()
                 try {
@@ -22,34 +69,36 @@ publishing {
                     }
                 }
             }
-            artifactId project.name
-            from components.java
-            afterEvaluate {
-                artifact source: sourcesJar, classifier: "sources"
-                artifact source: javadocJar, classifier: "javadoc"
-            }
         }
     }
 
-    repositories {
-        maven {
-            credentials {
-                username System.getenv('ARTIFACTORY_USERNAME') ?: project.properties.get('artifactoryUsername')
-                password System.getenv("ARTIFACTORY_PASSWORD") ?: project.properties.get('artifactoryPassword')
-            }
-
-            if(group == 'org.grails.plugins') {
-                if(version.endsWith('-SNAPSHOT')) {
-                    url "https://repo.grails.org/grails/plugins3-snapshots-local"
+    if (version.endsWith('-SNAPSHOT')) {
+        repositories {
+            maven {
+                credentials {
+                    username System.getenv('ARTIFACTORY_USERNAME') ?: project.properties.get('artifactoryUsername')
+                    password System.getenv("ARTIFACTORY_PASSWORD") ?: project.properties.get('artifactoryPassword')
                 }
-            }
-            else {
-                if(version.endsWith('-SNAPSHOT')) {
+
+                if (group == 'org.grails.plugins') {
+                    url "https://repo.grails.org/grails/plugins3-snapshots-local"
+                } else {
                     url "https://repo.grails.org/grails/libs-snapshots-local"
                 }
             }
         }
     }
+}
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications.maven
+    }
+}
+
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
 }
 
 task install(dependsOn: project.tasks.withType(PublishToMavenLocal))
