@@ -7,4 +7,4 @@ Initial implementation includes JSON views powered by Groovy's JsonBuilder, howe
 View [the latest documentation](https://grails.github.io/grails-views/latest/) for details. 
 
 
-[![Build Status](https://travis-ci.org/grails/grails-views.svg?branch=master)](https://travis-ci.org/grails/grails-views)
+[![Java CI](https://github.com/grails/grails-views/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/grails/grails-views/actions/workflows/gradle.yml)
