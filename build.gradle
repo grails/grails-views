@@ -1,13 +1,16 @@
 buildscript {
     repositories {
-        jcenter()
+        maven { url "https://repo.grails.org/grails/core" }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath "io.github.gradle-nexus:publish-plugin:1.0.0"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
     }
 }
 
 ext {
+    isReleaseVersion = !version.endsWith('-SNAPSHOT')
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = "grails"
@@ -15,37 +18,61 @@ ext {
 
 apply plugin:'idea'
 
+if (isReleaseVersion) {
+    apply plugin: 'maven-publish'
+    apply plugin: "io.github.gradle-nexus.publish-plugin"
+
+    nexusPublishing {
+        repositories {
+            sonatype {
+                def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.hasProperty("sonatypeOssUsername") ? project.sonatypeOssUsername : ''
+                def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
+                def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileId") ? project.sonatypeOssStagingProfileId : ''
+                username = ossUser
+                password = ossPass
+                stagingProfileId = ossStagingProfileId
+            }
+        }
+    }
+}
+
 subprojects { project->
 
-    final String projectName = project.name
-    if (!(projectName.contains("tests") || projectName.contains("docs"))) {
-        apply plugin: 'com.jfrog.bintray'
+    if (project.name.startsWith('examples') || project.name.endsWith('docs')) {
+        return
     }
 
-    if (!projectName.contains("docs")) {
-        if (projectName.contains("tests")) {
-            apply plugin: 'java'
-        } else {
-            apply plugin: 'java-library'
-        }
-        apply plugin: 'groovy'
+    ext.isGrailsPlugin = project.name in ['views-markup', 'views-json']
+
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: 'java-library'
+    apply plugin: 'groovy'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    if (ext.isGrailsPlugin) {
+        apply plugin: "org.grails.grails-plugin"
     }
 
-    ext {
-        userOrg = "grails"
-    }
-
-    group "org.grails"
     version project.projectVersion
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     repositories {
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
-        maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
-    if (projectName in ["views-core", "views-json", "views-markup"]) {
+    task wrapper(type: Wrapper) {
+        gradleVersion = gradleWrapperVersion
+    }
+
+    apply from: '../publishing/grailsCentralPublishing.gradle'
+
+
+    if (project.name in ["views-core", "views-json", "views-markup"]) {
 
         configurations {
             documentation
@@ -74,7 +101,5 @@ subprojects { project->
 
         groovydoc.classpath += configurations.documentation
     }
-
-
 
 }

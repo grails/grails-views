@@ -1,7 +1,0 @@
-import functional.tests.Book
-
-model {
-	Book book
-}
-
-json tmpl.book(book)

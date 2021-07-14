@@ -1,10 +1,16 @@
-include 'core'
-include 'json'
-include 'markup'
-include 'gradle'
-include 'functional-tests'
-include 'functional-tests-plugin'
-include 'docs'
-include 'json-templates'
-include 'json-testing-support'
-rootProject.children.each { it.name = "views-${it.name}" }
+['core',
+ 'json',
+ 'markup',
+ 'gradle',
+ 'docs',
+ 'json-templates',
+ 'json-testing-support'].each {
+    include("views-$it")
+    project(":views-$it").projectDir = new File(settingsDir, it)
+}
+
+include "examples-functional-tests"
+project(":examples-functional-tests").projectDir = new File(settingsDir, "examples/functional-tests")
+
+include "examples-functional-tests-plugin"
+project(":examples-functional-tests-plugin").projectDir = new File(settingsDir, "examples/functional-tests-plugin")

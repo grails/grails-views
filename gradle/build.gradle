@@ -3,15 +3,10 @@ buildscript {
 		maven { url "https://repo.grails.org/grails/core" }
 	}
 	dependencies {
-		classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+		classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
 	}
 }
 
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'java-library'
-apply plugin: 'groovy'
-apply plugin: 'maven-publish'
 apply plugin: 'io.spring.dependency-management'
 
 ext {
@@ -40,8 +35,6 @@ dependencies {
 	compileOnly gradleApi()
 	api "org.grails:grails-gradle-plugin:$grailsVersion"
 	api "org.codehaus.groovy:groovy:$groovyVersion"
-//	compile project(":grails-views-core")
-//	compile project(":grails-views-json")
 }
 
 task sourcesJar(type:Jar) {
@@ -53,8 +46,3 @@ task javadocJar(type:Jar) {
 	classifier = 'javadoc'
 	from groovydoc.outputs
 }
-
-// Used for publishing to central repository, remove if not needed
-apply from:'../publishing/grailsCentralPublishing.gradle'
-apply from:'../publishing/bintrayPublishing.gradle'
-

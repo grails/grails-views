@@ -5,25 +5,23 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+        classpath "io.github.gradle-nexus:publish-plugin:1.0.0"
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
     }
-}
-
-plugins {
-    id 'eclipse'
-    id 'idea'
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
 
 group "org.grails.plugins"
 
-apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
-apply plugin: "org.grails.grails-plugin-publish"
-apply plugin: 'java-library'
+apply plugin: "io.spring.dependency-management"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
+}
 
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -60,30 +58,8 @@ tasks.withType(GroovyPageCompileTask) {
     classpath += configurations.compileClasspath
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
-}
-
 jar {
   exclude "*.gson"
-}
-
-grailsPublish {
-    userOrg = 'grails'
-    githubSlug = 'grails/grails-views'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "JSON Views Plugin"
-    desc = "Adds support for defining views in JSON"
-    developers = [graemerocher:"Graeme Rocher"]
-}
-
-bintray {
-    pkg {
-        desc = "Grails Views"
-        name = 'grails-views'
-    }
 }
 
 springBoot {

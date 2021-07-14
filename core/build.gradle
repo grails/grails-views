@@ -3,19 +3,16 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+        classpath "io.github.gradle-nexus:publish-plugin:1.0.0"
+        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
     }
 }
 
 group "org.grails"
 
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'provided-base'
-apply plugin: 'java-library'
-apply plugin: 'groovy'
+apply plugin: "io.spring.dependency-management"
 
 ext {
     gradleWrapperVersion = project.gradleWrapperVersion
@@ -31,6 +28,13 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
 }
 
 dependencies {
@@ -51,14 +55,4 @@ task sourcesJar(type:Jar) {
 task javadocJar(type:Jar) {
     classifier = 'javadoc'
     from groovydoc.outputs
-}
-
-// Used for publishing to central repository, remove if not needed
-apply from:'../publishing/grailsCentralPublishing.gradle'
-apply from:'../publishing/bintrayPublishing.gradle'
-
-
-
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
 }
