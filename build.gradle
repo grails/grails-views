@@ -10,7 +10,7 @@ buildscript {
 }
 
 ext {
-    isReleaseVersion = !version.endsWith('-SNAPSHOT')
+    isReleaseVersion = !project.projectVersion.endsWith('-SNAPSHOT')
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = "grails"
