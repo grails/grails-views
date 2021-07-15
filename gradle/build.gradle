@@ -33,7 +33,7 @@ dependencyManagement {
 
 dependencies {
 	compileOnly gradleApi()
-	api "org.grails:grails-gradle-plugin:$grailsVersion"
+	api "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
 	api "org.codehaus.groovy:groovy:$groovyVersion"
 }
 
