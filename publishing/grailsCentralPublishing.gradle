@@ -7,8 +7,10 @@ publishing {
         maven(MavenPublication) {
             artifactId project.name
             from components.java
-            artifact source: sourcesJar, classifier: "sources"
-            artifact source: javadocJar, classifier: "javadoc"
+            afterEvaluate {
+                artifact source: sourcesJar, classifier: "sources"
+                artifact source: javadocJar, classifier: "javadoc"
+            }
 
             if(isGrailsPlugin) {
                 artifact source:"${sourceSets.main.groovy.outputDir}/META-INF/grails-plugin.xml",
