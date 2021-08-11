@@ -5,11 +5,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.asciidoctor:asciidoctor-gradle-jvm:2.4.0"
+        classpath "org.asciidoctor:asciidoctor-gradle-jvm:3.3.2"
     }
 }
 
-apply plugin: "org.asciidoctor.convert"
+apply plugin: "org.asciidoctor.jvm.convert"
 
 repositories {
     mavenCentral()
