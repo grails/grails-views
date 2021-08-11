@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "io.github.gradle-nexus:publish-plugin:1.0.0"
+        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
         classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
     }
 }
@@ -49,7 +49,7 @@ dependencies {
     testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion"
     testImplementation "org.grails:grails-gorm-testing-support:$testingSupportVersion"
     testImplementation "org.grails:grails-datastore-gorm-hibernate5"
-    testRuntimeOnly "org.javassist:javassist:3.18.1-GA"
+    testRuntimeOnly "org.javassist:javassist:3.28.0-GA"
 
     console "org.grails:grails-console"
 }
