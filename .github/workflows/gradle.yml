@@ -35,6 +35,7 @@ jobs:
       - name: Run Tests
         run: ./gradlew check --no-daemon
       - name: Publish Test Report
+        if: failure()
         uses: scacap/action-surefire-report@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
