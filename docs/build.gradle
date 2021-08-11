@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-apply plugin: "org.asciidoctor.convert"
+apply plugin: "org.asciidoctor.jvm.convert"
 
 repositories {
     mavenCentral()
