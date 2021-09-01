@@ -38,6 +38,14 @@ if (isReleaseVersion) {
 
 subprojects { project->
 
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if(details.requested.group == 'org.codehaus.groovy') {
+                details.useVersion(groovyVersion)
+            }
+        }
+    }
+
     if (project.name.startsWith('examples') || project.name.endsWith('docs')) {
         return
     }
