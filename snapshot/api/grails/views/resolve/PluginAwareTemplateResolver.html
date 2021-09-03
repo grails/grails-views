@@ -101,18 +101,19 @@ if (location.href.indexOf('is-external=true') == -1) {
                 <dt>All Implemented Interfaces and Traits:</dt>
                 <dd><a href='../../../grails.plugins.PluginManagerAware.html'>PluginManagerAware</a></dd>
             </dl>
-    
-
             <!-- todo: direct known subclasses -->
             <hr>
             <br>
-
 <pre>@groovy.transform.CompileStatic
 class PluginAwareTemplateResolver
 extends <a href='../../../grails/views/resolve/GenericGroovyTemplateResolver.html'>GenericGroovyTemplateResolver</a>
-implements <a href='../../../grails.plugins.PluginManagerAware.html'>PluginManagerAware</a></pre>
 
-    <p> A template resolver capable of looking through the installed Grails plugins and finding a template within the scope of the plugin <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
+</pre>
+
+
+
+    <p> A template resolver capable of looking through the installed Grails plugins and finding a template within the scope of the plugin
+ <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
 
           </li>
     </ul>
@@ -163,7 +164,7 @@ implements <a href='../../../grails.plugins.PluginManagerAware.html'>PluginManag
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../grails.plugins.GrailsPluginManager.html'>GrailsPluginManager</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../GrailsPluginManager.html'>GrailsPluginManager</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#pluginManager">pluginManager</a></code><br></td>
                         </tr>
                         
@@ -223,14 +224,14 @@ implements <a href='../../../grails.plugins.PluginManagerAware.html'>PluginManag
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>java.lang.Class&lt;? extends Template&gt;</code></td>
+                            <td class="colLast"><code>java.lang.Class&lt;? extends groovy.text.Template&gt;</code></td>
                             <td class="colLast"><code><strong><a href="#resolveTemplateClass(java.lang.String)">resolveTemplateClass</a></strong>(java.lang.String path)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#setPluginManager(grails.plugins.GrailsPluginManager)">setPluginManager</a></strong>(<a href='../../../grails.plugins.GrailsPluginManager.html'>GrailsPluginManager</a> pluginManager)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#setPluginManager(GrailsPluginManager)">setPluginManager</a></strong>(<a href='../../../GrailsPluginManager.html'>GrailsPluginManager</a> pluginManager)</code><br></td>
                         </tr>
                         
                     </table>
@@ -279,7 +280,7 @@ implements <a href='../../../grails.plugins.PluginManagerAware.html'>PluginManag
                         <a name="pluginManager"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails.plugins.GrailsPluginManager.html'>GrailsPluginManager</a> <strong>pluginManager</strong></h4>
+                                <h4><a href='../../../GrailsPluginManager.html'>GrailsPluginManager</a> <strong>pluginManager</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -332,15 +333,15 @@ java.net.URL <strong>resolveTemplate</strong>(java.lang.String path)</h4>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
-java.lang.Class&lt;? extends Template&gt; <strong>resolveTemplateClass</strong>(java.lang.String path)</h4>
+java.lang.Class&lt;? extends groovy.text.Template&gt; <strong>resolveTemplateClass</strong>(java.lang.String path)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="setPluginManager(grails.plugins.GrailsPluginManager)"><!-- --></a>
+                        <a name="setPluginManager(GrailsPluginManager)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>void <strong>setPluginManager</strong>(<a href='../../../grails.plugins.GrailsPluginManager.html'>GrailsPluginManager</a> pluginManager)</h4>
+                                <h4>void <strong>setPluginManager</strong>(<a href='../../../GrailsPluginManager.html'>GrailsPluginManager</a> pluginManager)</h4>
                                 <p></p>
                             </li>
                         </ul>

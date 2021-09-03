@@ -101,18 +101,18 @@ if (location.href.indexOf('is-external=true') == -1) {
                 <dt>All Implemented Interfaces and Traits:</dt>
                 <dd><a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGenerator</a></dd>
             </dl>
-    
-
             <!-- todo: direct known subclasses -->
             <hr>
             <br>
-
 <pre>@groovy.transform.CompileStatic
 class TestLinkGenerator
-extends java.lang.Object
-implements <a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGenerator</a></pre>
 
-    <p> A test link generator <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.1</DD></DL></p>
+</pre>
+
+
+
+    <p> A test link generator
+ <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.1</DD></DL></p>
 
           </li>
     </ul>
@@ -143,7 +143,7 @@ implements <a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGe
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../../../org.grails.datastore.mapping.model.MappingContext.html'>MappingContext</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../../../MappingContext.html'>MappingContext</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#mappingContext">mappingContext</a></code><br></td>
                         </tr>
                         
@@ -170,8 +170,8 @@ implements <a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGe
                         
                         <tr class="altColor">
                             <td class="colFirst">
-                                <code><a href="#TestLinkGenerator(org.grails.datastore.mapping.model.MappingContext)">TestLinkGenerator</a>
-                                (<a href='../../../../../org.grails.datastore.mapping.model.MappingContext.html'>MappingContext</a> mappingContext)</code><br></td>
+                                <code><a href="#TestLinkGenerator(MappingContext)">TestLinkGenerator</a>
+                                (<a href='../../../../../MappingContext.html'>MappingContext</a> mappingContext)</code><br></td>
                         </tr>
                         
                     </table>
@@ -216,7 +216,7 @@ implements <a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGe
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>java.lang.String</code></td>
-                            <td class="colLast"><code><strong><a href="#link(java.util.Map, java.lang.String)">link</a></strong>(java.util.Map params, java.lang.String encoding)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#link(java.util.Map, java.lang.String)">link</a></strong>(java.util.Map params, java.lang.String encoding = "UTF-8")</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
@@ -271,7 +271,7 @@ implements <a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGe
                         <a name="mappingContext"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>final&nbsp;<a href='../../../../../org.grails.datastore.mapping.model.MappingContext.html'>MappingContext</a> <strong>mappingContext</strong></h4>
+                                <h4>final&nbsp;<a href='../../../../../MappingContext.html'>MappingContext</a> <strong>mappingContext</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -290,10 +290,10 @@ implements <a href='../../../../../grails.web.mapping.LinkGenerator.html'>LinkGe
                 </a>
                     <h3>Constructor Detail</h3>
                     
-                        <a name="TestLinkGenerator(org.grails.datastore.mapping.model.MappingContext)"><!-- --></a>
+                        <a name="TestLinkGenerator(MappingContext)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><strong>TestLinkGenerator</strong>(<a href='../../../../../org.grails.datastore.mapping.model.MappingContext.html'>MappingContext</a> mappingContext)</h4>
+                                <h4><strong>TestLinkGenerator</strong>(<a href='../../../../../MappingContext.html'>MappingContext</a> mappingContext)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -342,7 +342,7 @@ java.lang.String <strong>getServerBaseURL</strong>()</h4>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
-java.lang.String <strong>link</strong>(java.util.Map params, java.lang.String encoding)</h4>
+java.lang.String <strong>link</strong>(java.util.Map params, java.lang.String encoding = "UTF-8")</h4>
                                 <p></p>
                             </li>
                         </ul>

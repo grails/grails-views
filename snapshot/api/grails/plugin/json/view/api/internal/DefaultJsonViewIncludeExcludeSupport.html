@@ -98,13 +98,6 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
-            <!-- todo: direct known subclasses -->
-            <hr>
-            <br>
-
-<pre>@groovy.transform.CompileStatic
-class DefaultJsonViewIncludeExcludeSupport
-extends IncludeExcludeSupport&lt;java.lang.String&gt;</pre>
 
           </li>
     </ul>
@@ -141,7 +134,7 @@ extends IncludeExcludeSupport&lt;java.lang.String&gt;</pre>
                         
                         <tr class="altColor">
                             <td class="colFirst">
-                                <code><a href="#DefaultJsonViewIncludeExcludeSupport(List, List)">DefaultJsonViewIncludeExcludeSupport</a>
+                                <code><a href="#DefaultJsonViewIncludeExcludeSupport(List<String>, List<String>)">DefaultJsonViewIncludeExcludeSupport</a>
                                 (java.util.List&lt;java.lang.String&gt; defaultIncludes, java.util.List&lt;java.lang.String&gt; defaultExcludes)</code><br></td>
                         </tr>
                         
@@ -169,13 +162,13 @@ extends IncludeExcludeSupport&lt;java.lang.String&gt;</pre>
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>boolean</code></td>
-                            <td class="colLast"><code><strong><a href="#includes(List, java.lang.String)">includes</a></strong>(java.util.List&lt;java.lang.String&gt; includes, java.lang.String object)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#includes(List<String>, java.lang.String)">includes</a></strong>(java.util.List&lt;java.lang.String&gt; includes, java.lang.String object)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>boolean</code></td>
-                            <td class="colLast"><code><strong><a href="#shouldInclude(List, java.util.List, java.lang.String)">shouldInclude</a></strong>(java.util.List&lt;java.lang.String&gt; incs, java.util.List excs, java.lang.String object)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#shouldInclude(List<String>, java.util.List, java.lang.String)">shouldInclude</a></strong>(java.util.List&lt;java.lang.String&gt; incs, java.util.List excs, java.lang.String object)</code><br></td>
                         </tr>
                         
                     </table>
@@ -207,7 +200,7 @@ extends IncludeExcludeSupport&lt;java.lang.String&gt;</pre>
                 </a>
                     <h3>Constructor Detail</h3>
                     
-                        <a name="DefaultJsonViewIncludeExcludeSupport(List, List)"><!-- --></a>
+                        <a name="DefaultJsonViewIncludeExcludeSupport(List<String>, List<String>)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4><strong>DefaultJsonViewIncludeExcludeSupport</strong>(java.util.List&lt;java.lang.String&gt; defaultIncludes, java.util.List&lt;java.lang.String&gt; defaultExcludes)</h4>
@@ -228,7 +221,7 @@ extends IncludeExcludeSupport&lt;java.lang.String&gt;</pre>
                 </a>
                     <h3>Method Detail</h3>
                     
-                        <a name="includes(List, java.lang.String)"><!-- --></a>
+                        <a name="includes(List<String>, java.lang.String)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
@@ -237,7 +230,7 @@ boolean <strong>includes</strong>(java.util.List&lt;java.lang.String&gt; include
                             </li>
                         </ul>
                     
-                        <a name="shouldInclude(List, java.util.List, java.lang.String)"><!-- --></a>
+                        <a name="shouldInclude(List<String>, java.util.List, java.lang.String)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override

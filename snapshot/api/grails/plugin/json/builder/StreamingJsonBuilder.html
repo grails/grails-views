@@ -98,15 +98,9 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
-            <!-- todo: direct known subclasses -->
-            <hr>
-            <br>
-
-<pre>public&nbsp;class StreamingJsonBuilder
-extends groovy.lang.GroovyObjectSupport</pre>
 
     <p> Temporary fork of groovy.json.StreamingJsonBuilder until Groovy 2.4.5 is out.
-  <DL><DT><B>Authors:</B></DT><DD>Tim Yates</DD><DD>Andrey Bloschetsov</DD><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.8.1</DD></DL></p>
+ <DL><DT><B>Authors:</B></DT><DD>Tim Yates</DD><DD>Andrey Bloschetsov</DD><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.8.1</DD></DL></p>
 
           </li>
     </ul>
@@ -212,19 +206,19 @@ extends groovy.lang.GroovyObjectSupport</pre>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.util.Map)">call</a></strong>(java.util.Map m)</code><br>Named arguments can be passed to the JSON builder instance to create a root JSON object</td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
                             <td class="colLast"><code><strong><a href="#call(groovy.lang.Writable)">call</a></strong>(groovy.lang.Writable writable)</code><br>Invokes the given writable against the writer</td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;void</code></td>
+                            <td class="colLast"><code>void</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.lang.String)">call</a></strong>(java.lang.String name)</code><br>The empty args call will create a key whose value will be an empty JSON object:
  <pre class="groovyTestCase">
  new StringWriter().with { w -&gt;
@@ -234,45 +228,45 @@ extends groovy.lang.GroovyObjectSupport</pre>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.util.List)">call</a></strong>(java.util.List l)</code><br>A list of elements as arguments to the JSON builder creates a root JSON array</td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
-                            <td class="colLast"><code><strong><a href="#call(java.lang.Object)">call</a></strong>(java.lang.Object args)</code><br>Varargs elements as arguments to the JSON builder create a root JSON array</td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
+                            <td class="colLast"><code><strong><a href="#call(java.lang.Object)">call</a></strong>(java.lang.Object... args)</code><br>Varargs elements as arguments to the JSON builder create a root JSON array</td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.lang.Iterable, groovy.lang.Closure)">call</a></strong>(java.lang.Iterable coll, groovy.lang.Closure c)</code><br>A collection and closure passed to a JSON builder will create a root JSON array applying
  the closure to each object in the collection</td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
                             <td class="colLast"><code><strong><a href="#call(groovy.lang.Closure)">call</a></strong>(groovy.lang.Closure c)</code><br>A closure passed to a JSON builder will create a root JSON object</td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;void</code></td>
+                            <td class="colLast"><code>void</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.lang.String, groovy.lang.Closure)">call</a></strong>(java.lang.String name, groovy.lang.Closure c)</code><br>A name and a closure passed to a JSON builder will create a key with a JSON object</td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;void</code></td>
+                            <td class="colLast"><code>void</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.lang.String, java.lang.Iterable, groovy.lang.Closure)">call</a></strong>(java.lang.String name, java.lang.Iterable coll, groovy.lang.Closure c)</code><br>A name, a collection and closure passed to a JSON builder will create a root JSON array applying
  the closure to each object in the collection</td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;void</code></td>
+                            <td class="colLast"><code>void</code></td>
                             <td class="colLast"><code><strong><a href="#call(java.lang.String, java.util.Map, groovy.lang.Closure)">call</a></strong>(java.lang.String name, java.util.Map map, groovy.lang.Closure callable)</code><br>If you use named arguments and a closure as last argument,
  the key/value pairs of the map (as named arguments)
  and the key/value pairs represented in the closure
@@ -283,7 +277,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
-                            <td class="colLast"><code>public&nbsp;java.lang.Object</code></td>
+                            <td class="colLast"><code>java.lang.Object</code></td>
                             <td class="colLast"><code><strong><a href="#invokeMethod(java.lang.String, java.lang.Object)">invokeMethod</a></strong>(java.lang.String name, java.lang.Object args)</code><br>A method call on the JSON builder instance will create a root object with only one key
  whose name is the name of the method being called.
  </td>
@@ -305,7 +299,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code>class groovy.lang.GroovyObjectSupport</code></td>
-                            <td class="colLast"><code>groovy.lang.GroovyObjectSupport#getMetaClass(), groovy.lang.GroovyObjectSupport#setMetaClass(groovy.lang.MetaClass), groovy.lang.GroovyObjectSupport#wait(long, int), groovy.lang.GroovyObjectSupport#wait(long), groovy.lang.GroovyObjectSupport#wait(), groovy.lang.GroovyObjectSupport#equals(java.lang.Object), groovy.lang.GroovyObjectSupport#toString(), groovy.lang.GroovyObjectSupport#hashCode(), groovy.lang.GroovyObjectSupport#getClass(), groovy.lang.GroovyObjectSupport#notify(), groovy.lang.GroovyObjectSupport#notifyAll(), groovy.lang.GroovyObjectSupport#invokeMethod(java.lang.String, java.lang.Object), groovy.lang.GroovyObjectSupport#setProperty(java.lang.String, java.lang.Object), groovy.lang.GroovyObjectSupport#getProperty(java.lang.String)</code></td>
+                            <td class="colLast"><code>groovy.lang.GroovyObjectSupport#invokeMethod(java.lang.String, java.lang.Object), groovy.lang.GroovyObjectSupport#getMetaClass(), groovy.lang.GroovyObjectSupport#setMetaClass(groovy.lang.MetaClass), groovy.lang.GroovyObjectSupport#setProperty(java.lang.String, java.lang.Object), groovy.lang.GroovyObjectSupport#getProperty(java.lang.String), groovy.lang.GroovyObjectSupport#wait(long, int), groovy.lang.GroovyObjectSupport#wait(long), groovy.lang.GroovyObjectSupport#wait(), groovy.lang.GroovyObjectSupport#equals(java.lang.Object), groovy.lang.GroovyObjectSupport#toString(), groovy.lang.GroovyObjectSupport#hashCode(), groovy.lang.GroovyObjectSupport#getClass(), groovy.lang.GroovyObjectSupport#notify(), groovy.lang.GroovyObjectSupport#notifyAll()</code></td>
                         </tr>
                     </table>
                    </ul>
@@ -341,7 +335,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                             <li class="blockList">
                                 <h4>public&nbsp;<strong>StreamingJsonBuilder</strong>(java.io.Writer writer)</h4>
                                 <p> Instantiates a JSON builder.
-      <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -  A writer to which Json will be written</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -  A writer to which Json will be written</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -350,7 +344,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                             <li class="blockList">
                                 <h4>public&nbsp;<strong>StreamingJsonBuilder</strong>(java.io.Writer writer, <a href='../../../../grails/plugin/json/builder/JsonGenerator.html'>JsonGenerator</a> generator)</h4>
                                 <p> Instantiates a JSON builder with the given generator.
-      <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -  A writer to which Json will be written</DD><DD><code>generator</code> -  used to generate the output</DD></DL><DL><DT><B>Since:</B></DT><DD>2.5</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -  A writer to which Json will be written</DD><DD><code>generator</code> -  used to generate the output</DD></DL><DL><DT><B>Since:</B></DT><DD>2.5</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -360,7 +354,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                                 <h4>public&nbsp;<strong>StreamingJsonBuilder</strong>(java.io.Writer writer, java.lang.Object content)</h4>
                                 <p> Instantiates a JSON builder, possibly with some existing data structure.<DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -   A writer to which Json will be written</DD><DD><code>content</code> -  a pre-existing data structure, default to null</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -   A writer to which Json will be written</DD><DD><code>content</code> -  a pre-existing data structure, default to null</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -371,7 +365,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                                 <p> Instantiates a JSON builder, possibly with some existing data structure and
  the given generator.<DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -  A writer to which Json will be written</DD><DD><code>content</code> -  a pre-existing data structure, default to null</DD><DD><code>generator</code> -  used to generate the output</DD></DL><DL><DT><B>Since:</B></DT><DD>2.5</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>writer</code> -  A writer to which Json will be written</DD><DD><code>content</code> -  a pre-existing data structure, default to null</DD><DD><code>generator</code> -  used to generate the output</DD></DL><DL><DT><B>Since:</B></DT><DD>2.5</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -404,7 +398,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>m</code> -  a map of key / value pairs</DD></DL><DL><DT><B>Returns:</B></DT><DD>a map of key / value pairs</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>m</code> -  a map of key / value pairs</DD></DL><DL><DT><B>Returns:</B></DT><DD>a map of key / value pairs</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -414,7 +408,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
                                 <h4>public&nbsp;java.lang.Object <strong>call</strong>(groovy.lang.Writable writable)</h4>
                                 <p> Invokes the given writable against the writer<DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>writable</code> -  a map of key / value pairs</DD></DL><DL><DT><B>Returns:</B></DT><DD>a map of key / value pairs</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>writable</code> -  a map of key / value pairs</DD></DL><DL><DT><B>Returns:</B></DT><DD>a map of key / value pairs</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -432,7 +426,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The name of the empty object to create</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The name of the empty object to create</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -453,14 +447,14 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>l</code> -  a list of values</DD></DL><DL><DT><B>Returns:</B></DT><DD>a list of values</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>l</code> -  a list of values</DD></DL><DL><DT><B>Returns:</B></DT><DD>a list of values</DD></DL></p>
                             </li>
                         </ul>
                     
                         <a name="call(java.lang.Object)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>public&nbsp;java.lang.Object <strong>call</strong>(java.lang.Object args)</h4>
+                                <h4>public&nbsp;java.lang.Object <strong>call</strong>(java.lang.Object... args)</h4>
                                 <p> Varargs elements as arguments to the JSON builder create a root JSON array
  <p>
  Example:
@@ -474,7 +468,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>args</code> -  an array of values</DD></DL><DL><DT><B>Returns:</B></DT><DD>a list of values</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>args</code> -  an array of values</DD></DL><DL><DT><B>Returns:</B></DT><DD>a list of values</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -502,7 +496,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>coll</code> -  a collection</DD><DD><code>c</code> -  a closure used to convert the objects of coll</DD></DL><DL><DT><B>Returns:</B></DT><DD>a list of values</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>coll</code> -  a collection</DD><DD><code>c</code> -  a closure used to convert the objects of coll</DD></DL><DL><DT><B>Returns:</B></DT><DD>a list of values</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -525,7 +519,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>c</code> -  a closure whose method call statements represent key / values of a JSON object</DD></DL><DL><DT><B>Returns:</B></DT><DD>a map of key / value pairs</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>c</code> -  a closure whose method call statements represent key / values of a JSON object</DD></DL><DL><DT><B>Returns:</B></DT><DD>a map of key / value pairs</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -548,7 +542,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The key for the JSON object</DD><DD><code>c</code> -  a closure whose method call statements represent key / values of a JSON object</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The key for the JSON object</DD><DD><code>c</code> -  a closure whose method call statements represent key / values of a JSON object</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -576,7 +570,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The name of the JSON attribute</DD><DD><code>coll</code> -  a collection</DD><DD><code>c</code> -  a closure used to convert the objects of coll</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The name of the JSON attribute</DD><DD><code>coll</code> -  a collection</DD><DD><code>c</code> -  a closure used to convert the objects of coll</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -600,7 +594,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
  }
  </pre><DL><DT><B>throws:</B></DT><DD>IOException
          If an I/O error occurs</DD></DL>
-      <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The name of the JSON object</DD><DD><code>map</code> -  The attributes of the JSON object</DD><DD><code>callable</code> -  Additional attributes of the JSON object represented by the closure</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  The name of the JSON object</DD><DD><code>map</code> -  The attributes of the JSON object</DD><DD><code>callable</code> -  Additional attributes of the JSON object represented by the closure</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -665,7 +659,7 @@ extends groovy.lang.GroovyObjectSupport</pre>
      assert w.toString() == '{"person":{}}'
  }
  </pre>
-      <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  the single key</DD><DD><code>args</code> -  the value associated with the key</DD></DL></p>
+     <DL><DT><B>Parameters:</B></DT><DD><code>name</code> -  the single key</DD><DD><code>args</code> -  the value associated with the key</DD></DL></p>
                             </li>
                         </ul>
                     

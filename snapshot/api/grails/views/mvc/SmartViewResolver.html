@@ -101,21 +101,21 @@ if (location.href.indexOf('is-external=true') == -1) {
                 <dt>All Implemented Interfaces and Traits:</dt>
                 <dd><a href='../../../grails.core.support.GrailsConfigurationAware.html'>GrailsConfigurationAware</a></dd>
             </dl>
-    
-
             <!-- todo: direct known subclasses -->
             <hr>
             <br>
-
 <pre>@groovy.transform.CompileStatic
 class SmartViewResolver
-extends java.lang.Object
-implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>GrailsConfigurationAware</a></pre>
+
+</pre>
+
+
 
     <p> Spring's default view resolving mechanism only accepts the view name and locale, this forces you to code around its limitations when you want to add intelligent features such as
  version and mime type awareness.
 
- This aims to fix that whilst reducing complexity <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
+ This aims to fix that whilst reducing complexity
+ <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
 
           </li>
     </ul>
@@ -170,7 +170,7 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../grails.config.Config.html'>Config</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../Config.html'>Config</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#configuration">configuration</a></code><br></td>
                         </tr>
                         
@@ -180,7 +180,7 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../org.springframework.web.servlet.LocaleResolver.html'>LocaleResolver</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../LocaleResolver.html'>LocaleResolver</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#localeResolver">localeResolver</a></code><br></td>
                         </tr>
                         
@@ -261,13 +261,13 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>protected&nbsp;java.util.List</code></td>
-                            <td class="colLast"><code><strong><a href="#buildQualifiers(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)">buildQualifiers</a></strong>(<a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> response)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#buildQualifiers(HttpServletRequest, HttpServletResponse)">buildQualifiers</a></strong>(<a href='../../../HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> response)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code><a href='../../../grails/views/WritableScriptTemplate.html'>WritableScriptTemplate</a></code></td>
-                            <td class="colLast"><code><strong><a href="#resolveTemplate(java.lang.Class, java.util.Locale, java.lang.String)">resolveTemplate</a></strong>(java.lang.Class type, java.util.Locale locale, java.lang.String[] qualifiers)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#resolveTemplate(java.lang.Class, java.util.Locale, java.lang.String)">resolveTemplate</a></strong>(java.lang.Class type, java.util.Locale locale, java.lang.String... qualifiers)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
@@ -279,7 +279,7 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code><a href='../../../grails/views/WritableScriptTemplate.html'>WritableScriptTemplate</a></code></td>
-                            <td class="colLast"><code><strong><a href="#resolveTemplate(java.lang.String, java.util.Locale, java.lang.String)">resolveTemplate</a></strong>(java.lang.String path, java.util.Locale locale, java.lang.String[] qualifiers)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#resolveTemplate(java.lang.String, java.util.Locale, java.lang.String)">resolveTemplate</a></strong>(java.lang.String path, java.util.Locale locale, java.lang.String... qualifiers)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
@@ -291,13 +291,13 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code><a href='../../../grails/views/api/View.html'>View</a></code></td>
-                            <td class="colLast"><code><strong><a href="#resolveView(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)">resolveView</a></strong>(java.lang.String viewName, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> response)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#resolveView(java.lang.String, HttpServletRequest, HttpServletResponse)">resolveView</a></strong>(java.lang.String viewName, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> response)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code><a href='../../../grails/views/api/View.html'>View</a></code></td>
-                            <td class="colLast"><code><strong><a href="#resolveView(java.lang.Class, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)">resolveView</a></strong>(java.lang.Class type, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> response)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#resolveView(java.lang.Class, HttpServletRequest, HttpServletResponse)">resolveView</a></strong>(java.lang.Class type, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> response)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
@@ -309,13 +309,13 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#setLinkGenerator(grails.web.mapping.LinkGenerator)">setLinkGenerator</a></strong>(<a href='../../../grails.web.mapping.LinkGenerator.html'>LinkGenerator</a> linkGenerator)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#setLinkGenerator(LinkGenerator)">setLinkGenerator</a></strong>(<a href='../../../LinkGenerator.html'>LinkGenerator</a> linkGenerator)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#setTemplateResolver(groovy.text.markup.TemplateResolver)">setTemplateResolver</a></strong>(groovy.text.markup.TemplateResolver templateResolver)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#setTemplateResolver(grails.views.TemplateResolver)">setTemplateResolver</a></strong>(<a href='../../../grails/views/TemplateResolver.html'>TemplateResolver</a> templateResolver)</code><br></td>
                         </tr>
                         
                     </table>
@@ -382,7 +382,7 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <a name="configuration"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails.config.Config.html'>Config</a> <strong>configuration</strong></h4>
+                                <h4><a href='../../../Config.html'>Config</a> <strong>configuration</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -398,8 +398,8 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <a name="localeResolver"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>@org.springframework.beans.factory.annotation.Autowired
-<a href='../../../org.springframework.web.servlet.LocaleResolver.html'>LocaleResolver</a> <strong>localeResolver</strong></h4>
+                                <h4>@Autowired
+<a href='../../../LocaleResolver.html'>LocaleResolver</a> <strong>localeResolver</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -479,10 +479,10 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                 </a>
                     <h3>Method Detail</h3>
                     
-                        <a name="buildQualifiers(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)"><!-- --></a>
+                        <a name="buildQualifiers(HttpServletRequest, HttpServletResponse)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>protected&nbsp;java.util.List <strong>buildQualifiers</strong>(<a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> response)</h4>
+                                <h4>protected&nbsp;java.util.List <strong>buildQualifiers</strong>(<a href='../../../HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> response)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -490,7 +490,7 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <a name="resolveTemplate(java.lang.Class, java.util.Locale, java.lang.String)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails/views/WritableScriptTemplate.html'>WritableScriptTemplate</a> <strong>resolveTemplate</strong>(java.lang.Class type, java.util.Locale locale, java.lang.String[] qualifiers)</h4>
+                                <h4><a href='../../../grails/views/WritableScriptTemplate.html'>WritableScriptTemplate</a> <strong>resolveTemplate</strong>(java.lang.Class type, java.util.Locale locale, java.lang.String... qualifiers)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -506,7 +506,7 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                         <a name="resolveTemplate(java.lang.String, java.util.Locale, java.lang.String)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails/views/WritableScriptTemplate.html'>WritableScriptTemplate</a> <strong>resolveTemplate</strong>(java.lang.String path, java.util.Locale locale, java.lang.String[] qualifiers)</h4>
+                                <h4><a href='../../../grails/views/WritableScriptTemplate.html'>WritableScriptTemplate</a> <strong>resolveTemplate</strong>(java.lang.String path, java.util.Locale locale, java.lang.String... qualifiers)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -519,18 +519,18 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                             </li>
                         </ul>
                     
-                        <a name="resolveView(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)"><!-- --></a>
+                        <a name="resolveView(java.lang.String, HttpServletRequest, HttpServletResponse)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails/views/api/View.html'>View</a> <strong>resolveView</strong>(java.lang.String viewName, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> response)</h4>
+                                <h4><a href='../../../grails/views/api/View.html'>View</a> <strong>resolveView</strong>(java.lang.String viewName, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> response)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="resolveView(java.lang.Class, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)"><!-- --></a>
+                        <a name="resolveView(java.lang.Class, HttpServletRequest, HttpServletResponse)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails/views/api/View.html'>View</a> <strong>resolveView</strong>(java.lang.Class type, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> response)</h4>
+                                <h4><a href='../../../grails/views/api/View.html'>View</a> <strong>resolveView</strong>(java.lang.Class type, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> request, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> response)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -543,18 +543,18 @@ implements <a href='../../../grails.core.support.GrailsConfigurationAware.html'>
                             </li>
                         </ul>
                     
-                        <a name="setLinkGenerator(grails.web.mapping.LinkGenerator)"><!-- --></a>
+                        <a name="setLinkGenerator(LinkGenerator)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>void <strong>setLinkGenerator</strong>(<a href='../../../grails.web.mapping.LinkGenerator.html'>LinkGenerator</a> linkGenerator)</h4>
+                                <h4>void <strong>setLinkGenerator</strong>(<a href='../../../LinkGenerator.html'>LinkGenerator</a> linkGenerator)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="setTemplateResolver(groovy.text.markup.TemplateResolver)"><!-- --></a>
+                        <a name="setTemplateResolver(grails.views.TemplateResolver)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>void <strong>setTemplateResolver</strong>(groovy.text.markup.TemplateResolver templateResolver)</h4>
+                                <h4>void <strong>setTemplateResolver</strong>(<a href='../../../grails/views/TemplateResolver.html'>TemplateResolver</a> templateResolver)</h4>
                                 <p></p>
                             </li>
                         </ul>

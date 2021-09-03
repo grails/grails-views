@@ -98,15 +98,9 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
-            <!-- todo: direct known subclasses -->
-            <hr>
-            <br>
 
-<pre>@groovy.transform.CompileStatic
-class JsonViewResolver
-extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartViewResolver</a></pre>
-
-    <p> <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
+    <p>
+ <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
 
           </li>
     </ul>
@@ -178,12 +172,12 @@ extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartVi
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../../../grails.core.support.proxy.ProxyHandler.html'>ProxyHandler</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../../../ProxyHandler.html'>ProxyHandler</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#proxyHandler">proxyHandler</a></code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
-                            <td class="colFirst"><code><strong><a href='../../../../../grails.rest.render.RendererRegistry.html'>RendererRegistry</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../../../RendererRegistry.html'>RendererRegistry</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#rendererRegistry">rendererRegistry</a></code><br></td>
                         </tr>
                         
@@ -216,7 +210,7 @@ extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartVi
                         <tr class="altColor">
                             <td class="colFirst">
                                 <code><a href="#JsonViewResolver(grails.plugin.json.view.JsonViewConfiguration, java.lang.ClassLoader)">JsonViewResolver</a>
-                                (<a href='../../../../../grails/plugin/json/view/JsonViewConfiguration.html'>JsonViewConfiguration</a> configuration, java.lang.ClassLoader classLoader)</code><br></td>
+                                (<a href='../../../../../grails/plugin/json/view/JsonViewConfiguration.html'>JsonViewConfiguration</a> configuration = new JsonViewConfiguration(, java.lang.ClassLoader classLoader = Thread.currentThread()</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
@@ -274,7 +268,7 @@ extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartVi
                         
                         <tr class="altColor">
                             <td class="colFirst"><code>class <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartViewResolver</a></code></td>
-                            <td class="colLast"><code><a href='../../../../../grails/views/mvc/SmartViewResolver.html#buildQualifiers(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)'>buildQualifiers</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveTemplate(java.lang.Class, java.util.Locale, java.lang.String)'>resolveTemplate</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveTemplate(java.lang.String)'>resolveTemplate</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveTemplate(java.lang.String, java.util.Locale, java.lang.String)'>resolveTemplate</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.String, java.util.Locale)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.Class, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.Class, java.util.Locale)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#setLinkGenerator(grails.web.mapping.LinkGenerator)'>setLinkGenerator</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#setTemplateResolver(groovy.text.markup.TemplateResolver)'>setTemplateResolver</a></code></td>
+                            <td class="colLast"><code><a href='../../../../../grails/views/mvc/SmartViewResolver.html#buildQualifiers(HttpServletRequest, HttpServletResponse)'>buildQualifiers</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveTemplate(java.lang.Class, java.util.Locale, java.lang.String)'>resolveTemplate</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveTemplate(java.lang.String)'>resolveTemplate</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveTemplate(java.lang.String, java.util.Locale, java.lang.String)'>resolveTemplate</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.String, java.util.Locale)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.String, HttpServletRequest, HttpServletResponse)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.Class, HttpServletRequest, HttpServletResponse)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#resolveView(java.lang.Class, java.util.Locale)'>resolveView</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#setLinkGenerator(LinkGenerator)'>setLinkGenerator</a>, <a href='../../../../../grails/views/mvc/SmartViewResolver.html#setTemplateResolver(grails.views.TemplateResolver)'>setTemplateResolver</a></code></td>
                         </tr>
                     </table>
                    </ul>
@@ -322,8 +316,8 @@ extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartVi
                         <a name="proxyHandler"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>@org.springframework.beans.factory.annotation.Autowired(required: false)
-<a href='../../../../../grails.core.support.proxy.ProxyHandler.html'>ProxyHandler</a> <strong>proxyHandler</strong></h4>
+                                <h4>@Autowired(required = false)
+<a href='../../../../../ProxyHandler.html'>ProxyHandler</a> <strong>proxyHandler</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -331,8 +325,8 @@ extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartVi
                         <a name="rendererRegistry"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>@org.springframework.beans.factory.annotation.Autowired(required: false)
-<a href='../../../../../grails.rest.render.RendererRegistry.html'>RendererRegistry</a> <strong>rendererRegistry</strong></h4>
+                                <h4>@Autowired(required = false)
+<a href='../../../../../RendererRegistry.html'>RendererRegistry</a> <strong>rendererRegistry</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -362,7 +356,7 @@ extends <a href='../../../../../grails/views/mvc/SmartViewResolver.html'>SmartVi
                         <a name="JsonViewResolver(grails.plugin.json.view.JsonViewConfiguration, java.lang.ClassLoader)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><strong>JsonViewResolver</strong>(<a href='../../../../../grails/plugin/json/view/JsonViewConfiguration.html'>JsonViewConfiguration</a> configuration, java.lang.ClassLoader classLoader)</h4>
+                                <h4><strong>JsonViewResolver</strong>(<a href='../../../../../grails/plugin/json/view/JsonViewConfiguration.html'>JsonViewConfiguration</a> configuration = new JsonViewConfiguration(, java.lang.ClassLoader classLoader = Thread.currentThread()</h4>
                                 <p></p>
                             </li>
                         </ul>

@@ -98,16 +98,9 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
-            <!-- todo: direct known subclasses -->
-            <hr>
-            <br>
 
-<pre>@groovy.transform.InheritConstructors
-@groovy.transform.CompileStatic
-abstract&nbsp;class DefaultViewRenderer&lt;T&gt;
-extends DefaultHtmlRenderer&lt;T&gt;</pre>
-
-    <p> A renderer implementation that looks up a view from the ViewResolver <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
+    <p> A renderer implementation that looks up a view from the ViewResolver
+ <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
 
           </li>
     </ul>
@@ -162,17 +155,17 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../../grails.rest.render.Renderer.html'>Renderer</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../../Renderer.html'>Renderer</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#defaultRenderer">defaultRenderer</a></code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
-                            <td class="colFirst"><code><strong><a href='../../../../grails.core.support.proxy.ProxyHandler.html'>ProxyHandler</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../../ProxyHandler.html'>ProxyHandler</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#proxyHandler">proxyHandler</a></code><br></td>
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../../grails.rest.render.RendererRegistry.html'>RendererRegistry</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../../RendererRegistry.html'>RendererRegistry</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#rendererRegistry">rendererRegistry</a></code><br></td>
                         </tr>
                         
@@ -204,8 +197,8 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                         
                         <tr class="altColor">
                             <td class="colFirst">
-                                <code><a href="#DefaultViewRenderer(Class, grails.web.mime.MimeType, grails.views.mvc.SmartViewResolver, grails.core.support.proxy.ProxyHandler, grails.rest.render.RendererRegistry, grails.rest.render.Renderer)">DefaultViewRenderer</a>
-                                (java.lang.Class&lt;T&gt; targetType, <a href='../../../../grails.web.mime.MimeType.html'>MimeType</a> mimeType, <a href='../../../../grails/views/mvc/SmartViewResolver.html'>SmartViewResolver</a> viewResolver, <a href='../../../../grails.core.support.proxy.ProxyHandler.html'>ProxyHandler</a> proxyHandler, <a href='../../../../grails.rest.render.RendererRegistry.html'>RendererRegistry</a> rendererRegistry, <a href='../../../../grails.rest.render.Renderer.html'>Renderer</a> defaultRenderer)</code><br></td>
+                                <code><a href="#DefaultViewRenderer(Class<T>, MimeType, grails.views.mvc.SmartViewResolver, ProxyHandler, RendererRegistry, Renderer)">DefaultViewRenderer</a>
+                                (java.lang.Class&lt;T&gt; targetType, <a href='../../../../MimeType.html'>MimeType</a> mimeType, <a href='../../../../grails/views/mvc/SmartViewResolver.html'>SmartViewResolver</a> viewResolver, <a href='../../../../ProxyHandler.html'>ProxyHandler</a> proxyHandler, <a href='../../../../RendererRegistry.html'>RendererRegistry</a> rendererRegistry, <a href='../../../../Renderer.html'>Renderer</a> defaultRenderer)</code><br></td>
                         </tr>
                         
                     </table>
@@ -232,13 +225,13 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#render(T, grails.rest.render.RenderContext)">render</a></strong>(T object, <a href='../../../../grails.rest.render.RenderContext.html'>RenderContext</a> context)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#render(T, RenderContext)">render</a></strong>(T object, <a href='../../../../RenderContext.html'>RenderContext</a> context)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>static&nbsp;java.lang.String</code></td>
-                            <td class="colLast"><code><strong><a href="#templateNameForClass(Class)">templateNameForClass</a></strong>(java.lang.Class&lt;?&gt; cls)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#templateNameForClass(Class<?>)">templateNameForClass</a></strong>(java.lang.Class&lt;?&gt; cls)</code><br></td>
                         </tr>
                         
                     </table>
@@ -287,7 +280,7 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                         <a name="defaultRenderer"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>final&nbsp;<a href='../../../../grails.rest.render.Renderer.html'>Renderer</a> <strong>defaultRenderer</strong></h4>
+                                <h4>final&nbsp;<a href='../../../../Renderer.html'>Renderer</a> <strong>defaultRenderer</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -295,7 +288,7 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                         <a name="proxyHandler"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>final&nbsp;<a href='../../../../grails.core.support.proxy.ProxyHandler.html'>ProxyHandler</a> <strong>proxyHandler</strong></h4>
+                                <h4>final&nbsp;<a href='../../../../ProxyHandler.html'>ProxyHandler</a> <strong>proxyHandler</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -303,7 +296,7 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                         <a name="rendererRegistry"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>final&nbsp;<a href='../../../../grails.rest.render.RendererRegistry.html'>RendererRegistry</a> <strong>rendererRegistry</strong></h4>
+                                <h4>final&nbsp;<a href='../../../../RendererRegistry.html'>RendererRegistry</a> <strong>rendererRegistry</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -330,10 +323,10 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                 </a>
                     <h3>Constructor Detail</h3>
                     
-                        <a name="DefaultViewRenderer(Class, grails.web.mime.MimeType, grails.views.mvc.SmartViewResolver, grails.core.support.proxy.ProxyHandler, grails.rest.render.RendererRegistry, grails.rest.render.Renderer)"><!-- --></a>
+                        <a name="DefaultViewRenderer(Class<T>, MimeType, grails.views.mvc.SmartViewResolver, ProxyHandler, RendererRegistry, Renderer)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><strong>DefaultViewRenderer</strong>(java.lang.Class&lt;T&gt; targetType, <a href='../../../../grails.web.mime.MimeType.html'>MimeType</a> mimeType, <a href='../../../../grails/views/mvc/SmartViewResolver.html'>SmartViewResolver</a> viewResolver, <a href='../../../../grails.core.support.proxy.ProxyHandler.html'>ProxyHandler</a> proxyHandler, <a href='../../../../grails.rest.render.RendererRegistry.html'>RendererRegistry</a> rendererRegistry, <a href='../../../../grails.rest.render.Renderer.html'>Renderer</a> defaultRenderer)</h4>
+                                <h4><strong>DefaultViewRenderer</strong>(java.lang.Class&lt;T&gt; targetType, <a href='../../../../MimeType.html'>MimeType</a> mimeType, <a href='../../../../grails/views/mvc/SmartViewResolver.html'>SmartViewResolver</a> viewResolver, <a href='../../../../ProxyHandler.html'>ProxyHandler</a> proxyHandler, <a href='../../../../RendererRegistry.html'>RendererRegistry</a> rendererRegistry, <a href='../../../../Renderer.html'>Renderer</a> defaultRenderer)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -351,16 +344,16 @@ extends DefaultHtmlRenderer&lt;T&gt;</pre>
                 </a>
                     <h3>Method Detail</h3>
                     
-                        <a name="render(T, grails.rest.render.RenderContext)"><!-- --></a>
+                        <a name="render(T, RenderContext)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
-void <strong>render</strong>(T object, <a href='../../../../grails.rest.render.RenderContext.html'>RenderContext</a> context)</h4>
+void <strong>render</strong>(T object, <a href='../../../../RenderContext.html'>RenderContext</a> context)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="templateNameForClass(Class)"><!-- --></a>
+                        <a name="templateNameForClass(Class<?>)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>static&nbsp;java.lang.String <strong>templateNameForClass</strong>(java.lang.Class&lt;?&gt; cls)</h4>

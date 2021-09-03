@@ -87,7 +87,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 
     <div class="subTitle">Package: <strong>grails.plugin.json.view.test</strong></div>
 
-    <h2 title="[Groovy] Class JsonViewTest.TestHttpResponse" class="title">[Groovy] Class JsonViewTest.TestHttpResponse</h2>
+    <h2 title="[Groovy] Class TestHttpResponse" class="title">[Groovy] Class TestHttpResponse</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -101,15 +101,14 @@ if (location.href.indexOf('is-external=true') == -1) {
                 <dt>All Implemented Interfaces and Traits:</dt>
                 <dd><a href='../../../../../grails/views/api/http/Response.html'>Response</a></dd>
             </dl>
-    
-
             <!-- todo: direct known subclasses -->
             <hr>
             <br>
-
 <pre>static&nbsp;class JsonViewTest.TestHttpResponse
-extends java.lang.Object
-implements <a href='../../../../../grails/views/api/http/Response.html'>Response</a></pre>
+
+</pre>
+
+
 
           </li>
     </ul>
@@ -167,7 +166,7 @@ implements <a href='../../../../../grails/views/api/http/Response.html'>Response
                         
                         <tr class="altColor">
                             <td class="colFirst">
-                                <code><a href="#TestHttpResponse(grails.plugin.json.view.test.JsonRenderResult)">TestHttpResponse</a>
+                                <code><a href="#JsonViewTest.TestHttpResponse(grails.plugin.json.view.test.JsonRenderResult)">JsonViewTest.TestHttpResponse</a>
                                 (<a href='../../../../../grails/plugin/json/view/test/JsonRenderResult.html'>JsonRenderResult</a> result)</code><br></td>
                         </tr>
                         
@@ -213,13 +212,13 @@ implements <a href='../../../../../grails/views/api/http/Response.html'>Response
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#header(Map)">header</a></strong>(java.util.Map&lt;java.lang.String, java.lang.String&gt; nameAndValue)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#header(Map<String, String>)">header</a></strong>(java.util.Map&lt;java.lang.String, java.lang.String&gt; nameAndValue)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#headers(Map)">headers</a></strong>(java.util.Map&lt;java.lang.String, java.lang.String&gt; namesAndValues)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#headers(Map<String, String>)">headers</a></strong>(java.util.Map&lt;java.lang.String, java.lang.String&gt; namesAndValues)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
@@ -237,13 +236,13 @@ implements <a href='../../../../../grails/views/api/http/Response.html'>Response
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#status(org.springframework.http.HttpStatus)">status</a></strong>(<a href='../../../../../org.springframework.http.HttpStatus.html'>HttpStatus</a> status)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#status(HttpStatus)">status</a></strong>(<a href='../../../../../HttpStatus.html'>HttpStatus</a> status)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#status(org.springframework.http.HttpStatus, java.lang.String)">status</a></strong>(<a href='../../../../../org.springframework.http.HttpStatus.html'>HttpStatus</a> status, java.lang.String message)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#status(HttpStatus, java.lang.String)">status</a></strong>(<a href='../../../../../HttpStatus.html'>HttpStatus</a> status, java.lang.String message)</code><br></td>
                         </tr>
                         
                     </table>
@@ -311,10 +310,10 @@ implements <a href='../../../../../grails/views/api/http/Response.html'>Response
                 </a>
                     <h3>Constructor Detail</h3>
                     
-                        <a name="TestHttpResponse(grails.plugin.json.view.test.JsonRenderResult)"><!-- --></a>
+                        <a name="JsonViewTest.TestHttpResponse(grails.plugin.json.view.test.JsonRenderResult)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><strong>TestHttpResponse</strong>(<a href='../../../../../grails/plugin/json/view/test/JsonRenderResult.html'>JsonRenderResult</a> result)</h4>
+                                <h4><strong>JsonViewTest.TestHttpResponse</strong>(<a href='../../../../../grails/plugin/json/view/test/JsonRenderResult.html'>JsonRenderResult</a> result)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -359,7 +358,7 @@ void <strong>header</strong>(java.lang.String name, java.lang.String value)</h4>
                             </li>
                         </ul>
                     
-                        <a name="header(Map)"><!-- --></a>
+                        <a name="header(Map<String, String>)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
@@ -368,7 +367,7 @@ void <strong>header</strong>(java.util.Map&lt;java.lang.String, java.lang.String
                             </li>
                         </ul>
                     
-                        <a name="headers(Map)"><!-- --></a>
+                        <a name="headers(Map<String, String>)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
@@ -395,20 +394,20 @@ void <strong>status</strong>(int status, java.lang.String message)</h4>
                             </li>
                         </ul>
                     
-                        <a name="status(org.springframework.http.HttpStatus)"><!-- --></a>
+                        <a name="status(HttpStatus)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
-void <strong>status</strong>(<a href='../../../../../org.springframework.http.HttpStatus.html'>HttpStatus</a> status)</h4>
+void <strong>status</strong>(<a href='../../../../../HttpStatus.html'>HttpStatus</a> status)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="status(org.springframework.http.HttpStatus, java.lang.String)"><!-- --></a>
+                        <a name="status(HttpStatus, java.lang.String)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
-void <strong>status</strong>(<a href='../../../../../org.springframework.http.HttpStatus.html'>HttpStatus</a> status, java.lang.String message)</h4>
+void <strong>status</strong>(<a href='../../../../../HttpStatus.html'>HttpStatus</a> status, java.lang.String message)</h4>
                                 <p></p>
                             </li>
                         </ul>

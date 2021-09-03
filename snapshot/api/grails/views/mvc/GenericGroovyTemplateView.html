@@ -70,11 +70,11 @@ if (location.href.indexOf('is-external=true') == -1) {
     <div>
         <ul class="subNavList">
             <li>Summary:&nbsp;</li>
-            Nested&nbsp;&nbsp;&nbsp;Field&nbsp;&nbsp;&nbsp;<li><a href="#property_summary">Property</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#constructor_summary">Constructor</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#method_summary">Method</a></li>&nbsp;&nbsp;&nbsp;
+            Nested&nbsp;&nbsp;&nbsp;Field&nbsp;&nbsp;&nbsp;<li><a href="#property_summary">Property</a></li>&nbsp;&nbsp;&nbsp;Constructor&nbsp;&nbsp;&nbsp;<li><a href="#method_summary">Method</a></li>&nbsp;&nbsp;&nbsp;
         </ul>
         <ul class="subNavList">
             <li>&nbsp;|&nbsp;Detail:&nbsp;</li>
-            Field&nbsp;&nbsp;&nbsp;<li><a href="#prop_detail">Property</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#constructor_detail">Constructor</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#method_detail">Method</a></li>&nbsp;&nbsp;&nbsp;
+            Field&nbsp;&nbsp;&nbsp;<li><a href="#prop_detail">Property</a></li>&nbsp;&nbsp;&nbsp;Constructor&nbsp;&nbsp;&nbsp;<li><a href="#method_detail">Method</a></li>&nbsp;&nbsp;&nbsp;
         </ul>
     </div>
     <a name="skip-navbar_top">
@@ -98,15 +98,9 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
-            <!-- todo: direct known subclasses -->
-            <hr>
-            <br>
 
-<pre>@groovy.transform.CompileStatic
-class GenericGroovyTemplateView
-extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedView.html'>AbstractUrlBasedView</a></pre>
-
-    <p> An implementation of the Spring AbstractUrlBaseView class for ResolvableGroovyTemplateEngine <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL></p>
+    <p> An implementation of the Spring AbstractUrlBaseView class for ResolvableGroovyTemplateEngine
+ <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL></p>
 
           </li>
     </ul>
@@ -137,12 +131,12 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
                         </tr>
                         
                         <tr class="altColor">
-                            <td class="colFirst"><code><strong><a href='../../../grails.config.Config.html'>Config</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../Config.html'>Config</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#configuration">configuration</a></code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
-                            <td class="colFirst"><code><strong><a href='../../../org.springframework.web.servlet.LocaleResolver.html'>LocaleResolver</a></strong></code>&nbsp;</td>
+                            <td class="colFirst"><code><strong><a href='../../../LocaleResolver.html'>LocaleResolver</a></strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#localeResolver">localeResolver</a></code><br></td>
                         </tr>
                         
@@ -160,28 +154,6 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
         <!-- =========== ELEMENT SUMMARY =========== -->
         
 
-        
-        <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-        <ul class="blockList">
-                <li class="blockList"><a name="constructor_summary"><!--   --></a>
-                    <h3>Constructor Summary</h3>
-                    <ul class="blockList">
-                    <table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructors Summary table">
-                        <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-                        <tr>
-                            <th class="colFirst" scope="col">Constructor and description</th>
-                        </tr>
-                        
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code><a href="#GenericGroovyTemplateView()">GenericGroovyTemplateView</a>
-                                ()</code><br></td>
-                        </tr>
-                        
-                    </table>
-                   </ul>
-              </li>
-        </ul>
         
 
         
@@ -202,19 +174,19 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>protected&nbsp;void</code></td>
-                            <td class="colLast"><code><strong><a href="#prepareWritable(groovy.lang.Writable, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Locale)">prepareWritable</a></strong>(groovy.lang.Writable writable, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse, java.util.Locale locale)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#prepareWritable(groovy.lang.Writable, HttpServletRequest, HttpServletResponse, java.util.Locale)">prepareWritable</a></strong>(groovy.lang.Writable writable, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse, java.util.Locale locale)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>protected&nbsp;void</code></td>
-                            <td class="colLast"><code><strong><a href="#renderMergedOutputModel(Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)">renderMergedOutputModel</a></strong>(java.util.Map&lt;java.lang.String, java.lang.Object&gt; map, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#renderMergedOutputModel(Map<String, Object>, HttpServletRequest, HttpServletResponse)">renderMergedOutputModel</a></strong>(java.util.Map&lt;java.lang.String, java.lang.Object&gt; map, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse)</code><br></td>
                         </tr>
                         
                         <tr class="altColor">
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>void</code></td>
-                            <td class="colLast"><code><strong><a href="#setLocaleResolver(org.springframework.web.servlet.LocaleResolver)">setLocaleResolver</a></strong>(<a href='../../../org.springframework.web.servlet.LocaleResolver.html'>LocaleResolver</a> localeResolver)</code><br></td>
+                            <td class="colLast"><code><strong><a href="#setLocaleResolver(LocaleResolver)">setLocaleResolver</a></strong>(<a href='../../../LocaleResolver.html'>LocaleResolver</a> localeResolver)</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
@@ -251,7 +223,7 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
                         <a name="configuration"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../grails.config.Config.html'>Config</a> <strong>configuration</strong></h4>
+                                <h4><a href='../../../Config.html'>Config</a> <strong>configuration</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -259,7 +231,7 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
                         <a name="localeResolver"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4><a href='../../../org.springframework.web.servlet.LocaleResolver.html'>LocaleResolver</a> <strong>localeResolver</strong></h4>
+                                <h4><a href='../../../LocaleResolver.html'>LocaleResolver</a> <strong>localeResolver</strong></h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -279,24 +251,6 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
             
 
             
-            <!-- =========== CONSTRUCTOR DETAIL =========== -->
-            <ul class="blockList">
-                <li class="blockList"><a name="constructor_detail">
-                    <!--   -->
-                </a>
-                    <h3>Constructor Detail</h3>
-                    
-                        <a name="GenericGroovyTemplateView()"><!-- --></a>
-                        <ul class="blockListLast">
-                            <li class="blockList">
-                                <h4><strong>GenericGroovyTemplateView</strong>()</h4>
-                                <p></p>
-                            </li>
-                        </ul>
-                    
-                </li>
-            </ul>
-            
 
 
             
@@ -307,27 +261,27 @@ extends <a href='../../../org.springframework.web.servlet.view.AbstractUrlBasedV
                 </a>
                     <h3>Method Detail</h3>
                     
-                        <a name="prepareWritable(groovy.lang.Writable, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Locale)"><!-- --></a>
+                        <a name="prepareWritable(groovy.lang.Writable, HttpServletRequest, HttpServletResponse, java.util.Locale)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>protected&nbsp;void <strong>prepareWritable</strong>(groovy.lang.Writable writable, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse, java.util.Locale locale)</h4>
+                                <h4>protected&nbsp;void <strong>prepareWritable</strong>(groovy.lang.Writable writable, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse, java.util.Locale locale)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="renderMergedOutputModel(Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)"><!-- --></a>
+                        <a name="renderMergedOutputModel(Map<String, Object>, HttpServletRequest, HttpServletResponse)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
-protected&nbsp;void <strong>renderMergedOutputModel</strong>(java.util.Map&lt;java.lang.String, java.lang.Object&gt; map, <a href='../../../javax.servlet.http.HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../javax.servlet.http.HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse)</h4>
+protected&nbsp;void <strong>renderMergedOutputModel</strong>(java.util.Map&lt;java.lang.String, java.lang.Object&gt; map, <a href='../../../HttpServletRequest.html'>HttpServletRequest</a> httpServletRequest, <a href='../../../HttpServletResponse.html'>HttpServletResponse</a> httpServletResponse)</h4>
                                 <p></p>
                             </li>
                         </ul>
                     
-                        <a name="setLocaleResolver(org.springframework.web.servlet.LocaleResolver)"><!-- --></a>
+                        <a name="setLocaleResolver(LocaleResolver)"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
-                                <h4>void <strong>setLocaleResolver</strong>(<a href='../../../org.springframework.web.servlet.LocaleResolver.html'>LocaleResolver</a> localeResolver)</h4>
+                                <h4>void <strong>setLocaleResolver</strong>(<a href='../../../LocaleResolver.html'>LocaleResolver</a> localeResolver)</h4>
                                 <p></p>
                             </li>
                         </ul>
@@ -374,11 +328,11 @@ protected&nbsp;void <strong>renderMergedOutputModel</strong>(java.util.Map&lt;ja
     <div>
         <ul class="subNavList">
             <li>Summary:&nbsp;</li>
-            Nested&nbsp;&nbsp;&nbsp;Field&nbsp;&nbsp;&nbsp;<li><a href="#property_summary">Property</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#constructor_summary">Constructor</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#method_summary">Method</a></li>&nbsp;&nbsp;&nbsp;
+            Nested&nbsp;&nbsp;&nbsp;Field&nbsp;&nbsp;&nbsp;<li><a href="#property_summary">Property</a></li>&nbsp;&nbsp;&nbsp;Constructor&nbsp;&nbsp;&nbsp;<li><a href="#method_summary">Method</a></li>&nbsp;&nbsp;&nbsp;
         </ul>
         <ul class="subNavList">
             <li>&nbsp;|&nbsp;Detail:&nbsp;</li>
-            Field&nbsp;&nbsp;&nbsp;<li><a href="#prop_detail">Property</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#constructor_detail">Constructor</a></li>&nbsp;&nbsp;&nbsp;<li><a href="#method_detail">Method</a></li>&nbsp;&nbsp;&nbsp;
+            Field&nbsp;&nbsp;&nbsp;<li><a href="#prop_detail">Property</a></li>&nbsp;&nbsp;&nbsp;Constructor&nbsp;&nbsp;&nbsp;<li><a href="#method_detail">Method</a></li>&nbsp;&nbsp;&nbsp;
         </ul>
     </div>
     <p>Groovy Documentation</p>
