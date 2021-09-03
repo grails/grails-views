@@ -37,7 +37,7 @@ configurations {
 dependencies {
   documentation project(path: ':views-json', configuration: 'documentation')
   documentation project(path: ':views-markup', configuration: 'documentation')
-  documentation project(path: ':views-gradle', configuration: 'default')
+  documentation project(path: ':views-gradle', configuration: 'compileOnly')
 }
 
 task apidocs(type: Groovydoc, group: 'documentation') {
