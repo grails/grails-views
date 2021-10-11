@@ -11,7 +11,6 @@ buildscript {
 
 group "org.grails"
 
-apply plugin: 'provided-base'
 apply plugin: "io.spring.dependency-management"
 
 ext {
@@ -31,9 +30,9 @@ repositories {
 }
 
 dependencies {
-    provided "org.grails:grails-core:$grailsVersion"
-    provided "org.grails:grails-dependencies:$grailsVersion"
-    provided "javax.servlet:javax.servlet-api:$servletApiVersion"
+    api "org.grails:grails-core:$grailsVersion"
+    api "org.grails:grails-dependencies:$grailsVersion"
+    api "javax.servlet:javax.servlet-api:$servletApiVersion"
 
     api "org.grails:grails-gorm-testing-support:$testingSupportVersion"
     api "org.grails:grails-web-testing-support:$testingSupportVersion"

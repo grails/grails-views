@@ -41,14 +41,14 @@ dependencyManagement {
 }
 
 dependencies {
-    provided 'org.springframework.boot:spring-boot-starter-logging'
-    provided "org.springframework.boot:spring-boot-starter-actuator"
-    provided "org.springframework.boot:spring-boot-autoconfigure"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    api 'org.springframework.boot:spring-boot-starter-logging'
+    api "org.springframework.boot:spring-boot-starter-actuator"
+    api "org.springframework.boot:spring-boot-autoconfigure"
+    api "org.springframework.boot:spring-boot-starter-tomcat"
 
-    provided "org.grails:grails-web-boot"
-    provided "org.grails:grails-dependencies"
-    provided "javax.servlet:javax.servlet-api:$servletApiVersion"
+    api "org.grails:grails-web-boot"
+    api "org.grails:grails-dependencies"
+    api "javax.servlet:javax.servlet-api:$servletApiVersion"
 
     api project(":views-json")
     api project(":views-markup")
