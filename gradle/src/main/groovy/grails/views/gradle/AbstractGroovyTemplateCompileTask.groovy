@@ -103,6 +103,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
         // no-op
     }
 
+    @Input
     protected String getCompilerName() {
         "grails.views.GenericGroovyTemplateCompiler"
     }
