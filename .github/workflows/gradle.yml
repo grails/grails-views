@@ -19,42 +19,48 @@ jobs:
       GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java }}
-      - name: Optional setup step
-        run: |
-          [ -f ./setup.sh ] && ./setup.sh || true
       - name: Run Tests
-        run: ./gradlew check --no-daemon
+        if: github.event_name == 'pull_request'
+        id: tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: check -Dgeb.env=chromeHeadless
+      - name: Run Build
+        if: github.event_name == 'push'
+        id: build
+        uses: gradle/gradle-build-action@v2
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+        with:
+          arguments: build -Dgeb.env=chromeHeadless
       - name: Publish Test Report
-        if: failure()
+        if: steps.build.outcome == 'failure' || steps.tests.outcome == 'failure'
         uses: scacap/action-surefire-report@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           report_paths: '**/build/test-results/test/TEST-*.xml'
-      - name: Run Assemble
-        if: success() && github.event_name == 'push' && matrix.java == '8'
-        run: ./gradlew assemble --no-daemon
       - name: Publish to repo.grails.org
-        if: success() && github.event_name == 'push' && matrix.java == '8'
+        id: publish
+        uses: gradle/gradle-build-action@v2
+        if: steps.build.outcome == 'success' && github.event_name == 'push' && matrix.java == '8'
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-        run: |
-          ./gradlew publish
-          echo "Publishing Docs..."
-          ./gradlew views-docs:docs --no-daemon
+        with:
+          arguments: -Dorg.gradle.internal.publish.checksums.insecure=true publish
+      - name: Build Docs
+        id: docs
+        if: steps.build.outcome == 'success' && github.event_name == 'push' && matrix.java == '8'
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: views-docs:docs
       - name: Publish to Github Pages
-        if: success() && github.event_name == 'push' && matrix.java == '8'
+        if: steps.docs.outcome == 'success' && github.event_name == 'push' && matrix.java == '8'
         uses: micronaut-projects/github-pages-deploy-action@master
         env:
           TARGET_REPOSITORY: ${{ github.repository }}
