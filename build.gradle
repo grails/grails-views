@@ -85,7 +85,7 @@ subprojects { project->
     if (project.name in ["views-core", "views-json", "views-markup"]) {
 
         configurations {
-            documentation
+            documentation.extendsFrom(compileClasspath)
         }
 
         dependencies {
@@ -116,7 +116,7 @@ subprojects { project->
             }
         }
 
-        groovydoc.classpath += configurations.documentation
+        groovydoc.classpath = configurations.documentation
     }
 
 }
