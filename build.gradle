@@ -29,7 +29,6 @@ if (isReleaseVersion) {
                 def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.hasProperty("sonatypeOssUsername") ? project.sonatypeOssUsername : ''
                 def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
                 def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileId") ? project.sonatypeOssStagingProfileId : ''
-                nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
                 username = ossUser
                 password = ossPass
                 stagingProfileId = ossStagingProfileId
@@ -86,14 +85,14 @@ subprojects { project->
     if (project.name in ["views-core", "views-json", "views-markup"]) {
 
         configurations {
-            documentation.extendsFrom(compileClasspath)
+            documentation
         }
 
         dependencies {
             documentation "org.fusesource.jansi:jansi:$jansiVersion"
             documentation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
-            documentation 'info.picocli:picocli:4.6.2'
-            documentation ("com.github.javaparser:javaparser-core:$javaParserCoreVersion")
+            documentation "info.picocli:picocli:4.6.2"
+            documentation "com.github.javaparser:javaparser-core:$javaParserCoreVersion"
 
             testImplementation "org.spockframework:spock-core:$spockVersion"
             testImplementation "org.codehaus.groovy:groovy-test-junit5:${groovyVersion}"

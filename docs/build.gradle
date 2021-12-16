@@ -12,7 +12,6 @@ buildscript {
 apply plugin: "org.asciidoctor.jvm.convert"
 
 repositories {
-    mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
@@ -31,12 +30,12 @@ asciidoctor {
 }
 
 configurations {
-    documentation
+    documentation.extendsFrom(compileClasspath)
 }
 
 dependencies {
-  documentation project(path: ':views-json', configuration: 'documentation')
-  documentation project(path: ':views-markup', configuration: 'documentation')
+  documentation project(path: ':views-json', configuration: 'compileOnly')
+  documentation project(path: ':views-markup', configuration: 'compileOnly')
   documentation project(path: ':views-gradle', configuration: 'compileOnly')
 }
 
