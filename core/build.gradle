@@ -37,6 +37,7 @@ dependencyManagement {
 }
 
 dependencies {
+    api platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
     api "org.grails:grails-encoder:$grailsVersion"
     api "org.grails:grails-web-common:$grailsVersion"
     api "org.grails:grails-web-url-mappings:$grailsVersion"
