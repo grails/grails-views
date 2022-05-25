@@ -1,3 +1,4 @@
+:includedir: src/docs/asciidoc/
 = Grails Views
 
 :author: Graeme Rocher
@@ -7,10 +8,10 @@
 
 :leveloffset: +1
 
-include::introduction.adoc[]
+include::{includedir}introduction.adoc[]
 
-include::json/index.adoc[]
+include::{includedir}json/index.adoc[]
 
-include::markup/index.adoc[]
+include::{includedir}markup/index.adoc[]
 
 :leveloffset: -1
