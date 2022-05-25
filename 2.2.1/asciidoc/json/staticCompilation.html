@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Static Compilation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,45 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Static Compilation</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>JSON views are statically compiled. You can disable static compilation if you prefer by setting <code>grails.views.json.compileStatic</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        json:
+            compileStatic: false</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you disable static compilation rendering performance will suffer.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>For model variables you need to declare the types otherwise you will get a compilation error:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Person person
+}
+json {
+    name person.name
+    age person.age
+}</code></pre>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
 </div>
 </div>
 <div id="footer">

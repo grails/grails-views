@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Introduction</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>Markup Views are written in Groovy, end with the file extension <code>gml</code> and reside in the <code>grails-app/views</code> directory.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>The Markup Views plugin uses Groovy&#8217;s <a href="http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine">MarkupTemplateEngine</a> and you can mostly use the <a href="http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine">Groovy user guide</a> as a reference for the syntax.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>Example Markup View:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Iterable&lt;Map&gt; cars
+}
+xmlDeclaration()
+cars {
+    cars.each {
+        car(make: it.make, model: it.model)
+    }
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>This produces the following output given a model such as <code>[cars:[[make:"Audi", model:"A5"]]]</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version='1.0'?&gt;
+&lt;cars&gt;&lt;car make='Audi' model='A5'/&gt;&lt;/cars&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For further examples see Groovy&#8217;s <a href="http://docs.groovy-lang.org/docs/latest/html/documentation/template-engines.html#_the_markuptemplateengine">MarkupTemplateEngine</a> documentation.</p>
+</div>
+<div class="paragraph">
+<p>All Markup views subclass the <a href="api/grails/plugin/markup/view/MarkupViewTemplate.html">MarkupViewTemplate</a> class by default.</p>
+</div>
+<div class="paragraph">
+<p>The <code>MarkupViewTemplate</code> superclass implements the <a href="api/grails/plugin/markup/view/api/MarkupView.html">MarkupView</a> trait which in turn extends the the <a href="api/grails/views/api/GrailsView.html">GrailsView</a> trait.</p>
 </div>
 </div>
 <div id="footer">

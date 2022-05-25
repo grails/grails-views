@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Installation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,43 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Installation</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>To activate Markup views, add the following dependency to the <code>dependencies</code> block of your <code>build.gradle</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails.plugins:views-markup:unspecified"</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>To enable Gradle compilation of Markup views for production environment add the following to the <code>buildscript</code> <code>dependencies</code> block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
+    ...
+    dependencies {
+        ...
+        classpath "org.grails.plugins:views-gradle:unspecified"
+    }
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>Then apply the <code>org.grails.plugins.views-markup</code> Gradle plugin after any Grails core gradle plugins:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">...
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.plugins.views-markup"</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>This will add a <code>compileMarkupViews</code> task to Gradle that is executed when producing a JAR or WAR file.</p>
 </div>
 </div>
 <div id="footer">

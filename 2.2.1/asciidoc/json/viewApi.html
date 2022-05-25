@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>JSON View API</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,22 +437,224 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>JSON View API</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_creating_links">Creating Links</a></li>
+<li><a href="#_altering_the_response_headers">Altering the Response Headers</a></li>
+<li><a href="#_accessing_the_request">Accessing the Request</a></li>
+<li><a href="#_default_static_imports">Default Static Imports</a></li>
+<li><a href="#_i18n_locale_integration">I18n &amp; Locale Integration</a></li>
+<li><a href="#_accessing_configuration">Accessing Configuration</a></li>
+<li><a href="#_miscellaneous_properties">Miscellaneous Properties</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>All JSON views subclass the <a href="api/grails/plugin/json/view/JsonViewTemplate.html">JsonViewTemplate</a> class by default.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>The <code>JsonViewTemplate</code> superclass implements the <a href="api/grails/plugin/json/view/api/JsonView.html">JsonView</a> trait which in turn extends the the <a href="api/grails/views/api/GrailsView.html">GrailsView</a> trait.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>Thanks to these traits several methods and properties are available to JSON views that can be used to accomplish different tasks.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_links">Creating Links</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Links can be generated using the <code>g.link(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+    name "bob"
+    homepage g.link(controller:"person", id:"bob")
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>The <code>g.link</code> method is similar to the equivalent tag in GSP and allows you to easily create links to other controllers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_altering_the_response_headers">Altering the Response Headers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To customize content types and headers use the <code>response</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.contentType "application/hal+json"
+response.header "Token", "foo"
+json.person {
+    name "bob"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>HttpView</code> trait defines a variety of methods for inspecting the request and altering the response.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The methods available are only a subset of the methods available via the <code>HttpServletRequest</code> and <code>HttpServletResponse</code> objects, this is by design as view logic should be limited and logic performed in the controller instead.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_accessing_the_request">Accessing the Request</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Various aspects of the request can be accessed by the <code>request</code> object defined by the <a href="api/grails/views/api/HttpView.html">HttpView</a> trait:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+ name "bob"
+ userAgent request.getHeader('User-Agent')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Parameters can be accessed via the <code>params</code> object which is an instance of <a href="api/grails/views/api/http/Parameters.html">Parameters</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.person {
+ name "bob"
+ first params.int('offset', 0)
+ sort params.get('sort', 'name')
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_default_static_imports">Default Static Imports</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following classes' static properties are imported by default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.springframework.http.HttpStatus</code></p>
+</li>
+<li>
+<p><code>org.springframework.http.HttpMethod</code></p>
+</li>
+<li>
+<p><code>grails.web.http.HttpHeaders</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This means that you can use the <code>response</code> object to set the status using these constants, instead of hard coded numbers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">response.status NOT_FOUND</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or generate links using the appropriate HTTP method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">g.link(resource:"books", method:POST)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_i18n_locale_integration">I18n &amp; Locale Integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can lookup i18n messages use the <code>g.message</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.error {
+    description g.message(code:'default.error.message')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also create locale specific views by appending the locale to view name. For example <code>person_de.gson</code> for German or <code>person.gson</code> for the default.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more complex message lookups the <code>messageSource</code> property is an instance of the Spring <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/MessageSource.html">MessageSource</a> class.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_accessing_configuration">Accessing Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The application configuration is injected automatically into your json views. To access it, simply reference <code>config</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json {
+    foo config.getProperty("bar", String, null)
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_miscellaneous_properties">Miscellaneous Properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Other properties are also available:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controllerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the current controller</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>actionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the current controller action</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controllerNamespace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of the current controller</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div id="footer">

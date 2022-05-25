@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Configuration</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Configuration</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>Markup views configuration can be altered with <code>grails-app/conf/application.yml</code>. Any of the properties within the <a href="api/grails/plugin/markup/view/MarkupViewConfiguration.html">MarkupViewConfiguration</a> class and Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/api/groovy/text/markup/TemplateConfiguration.html">TemplateConfiguration</a> class can be set.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">grails:
+    views:
+        markup:
+            compileStatic: true
+            cacheTemplates: true
+            autoIndent: true
+            ...</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>Alternatively you can register a new <code>MarkupViewConfiguration</code> bean using the bean name <code>markupViewConfiguration</code> in <code>grails-app/conf/spring/resources.groovy</code>.</p>
 </div>
 </div>
 <div id="footer">

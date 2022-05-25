@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>The JsonTemplateEngine</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>The JsonTemplateEngine</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>The JSON Views plugin registers a bean called <code>jsonTemplateEngine</code> of type <a href="api/grails/plugin/json/view/JsonViewTemplateEngine.html">JsonViewTemplateEngine</a>.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>This class is a regular Groovy <a href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html">TemplateEngine</a>, and you can use the engine to render JSON views outside the scope of an HTTP request.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>For example:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Autowired
+JsonViewTemplateEngine templateEngine
+void myMethod() {
+	Template t = templateEngine.resolveTemplate('/book/show')
+	def writable = t.make(book: new Book(title:"The Stand"))
+	def sw = new StringWriter()
+	writable.writeTo( sw )
+	...
+}</code></pre>
+</div>
 </div>
 </div>
 <div id="footer">

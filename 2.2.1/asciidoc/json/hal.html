@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>HAL Support</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,22 +437,450 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>HAL Support</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_generating_hal_links">Generating HAL Links</a></li>
+<li><a href="#_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</a></li>
+<li><a href="#_embedded_association_and_hal">Embedded Association and HAL</a></li>
+<li><a href="#_specifying_the_hal_content_type">Specifying the HAL Content Type</a></li>
+<li><a href="#_hal_pagination">HAL Pagination</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p><a href="http://stateless.co/hal_specification.html">HAL</a> is a standard format for representing JSON that has gained traction for its ability to represent links between resources and provide navigable APIs.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>The JSON views plugin for Grails provides HAL support out-of-the-box. All JSON views have access to the <code>hal</code> instance which implements <a href="api/grails/plugin/json/view/api/HalViewHelper.html">HalViewHelper</a>.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(book)
+    hal.embedded {
+        author( book.authors.first() ) { Author author -&gt;
+            name author.name
+        }
+    }
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The call to <code>hal.links()</code> has to be the first element within the <code>json{}</code> closure.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>This produces the HAL output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/book/show/1",
+            "hreflang": "en",
+            "type": "application/hal+json"
+        }
+    },
+    "_embedded": {
+        "author": {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/author/show/1",
+                    "hreflang": "en",
+                    "type": "application/hal+json"
+                }
+            },
+            "name": "Stephen King"
+        }
+    },
+    "title": "The Stand"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generating_hal_links">Generating HAL Links</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The above example uses the <code>hal.links(..)</code> method to render links for a domain resource and the <code>hal.embedded(..)</code> method to define any embedded objects that form part of the HAL response.</p>
+</div>
+<div class="paragraph">
+<p>The <code>hal.links(..)</code> method will by default create a link to the resource, but you can define additional links by annotating the domain class with either <code>grails.rest.Linkable</code> or <code>grails.rest.Resource</code> and using the <code>link</code> method on the object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">book.link(rel:"publisher", href:"http://foo.com/books")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The link will then be included in the HAL output.</p>
+</div>
+<div class="paragraph">
+<p>If you wish to be specific about which links to include you can do so by passing a map of objects to link to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(self:book, author: book.author)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, if you prefer to define the HAL links yourself then you can do so by passing a closure to the <code>hal.links</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links {
+        self {
+            href '...'
+            hreflang 'en'
+            type "application/hal+json"
+        }
+    }
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rendering_domain_classes_as_hal">Rendering Domain Classes as HAL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you prefer to let the plugin handle the rendering of your object you can use the <code>hal.render(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>hal.render</code> method works the same as the <code>g.render</code> method, accepting the same arguments, the difference being it will output HAL links for the object via <code>hal.links</code> and also output associations fetched via a join query for <code>hal.embedded</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example you can also customize the content of the generated HAL with a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book) {
+    pages 1000
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embedded_association_and_hal">Embedded Association and HAL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Generally, when using the <code>hal.render(..)</code> method, <code>_embedded</code> associations are only rendered for associations that have been initialized and eagerly fetched. This means that the following query will not render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.get(params.id)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, this query will render the <code>book.authors</code> association:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Book.get(params.id, [fetch:[authors:'eager']])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is by design and to prevent unexpected performance degradation due to N+1 query loading. If you wish to force the <code>render</code> method to render <code>_embedded</code> associations for HAL you can do see using the <code>deep</code> argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json hal.render(book, [deep:true])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can prevent HAL <code>_embedded</code> associations from being rendering using the <code>embedded:false</code> parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json hal.render(book, [embedded:false])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also render embedded associations without using the <code>hal.render(..)</code> method, by using the <code>hal.embedded(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(book)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Like the <code>hal.links(..)</code> method, the <code>hal.embedded(..)</code> method should come first, before any other attributes, in your JSON output
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can also control which associations should be embedded by using a map argument instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    title book.title
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you can inline the contents of the book without any associations using the <code>hal.inline(..)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To customize the contents of the inlined JSON output use a closure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You cannot include additional content after the call to <code>hal.inline(..)</code> as this will produce invalid JSON
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can combine <code>hal.embeddded(..)</code> and <code>hal.links(..)</code> to obtain exactly the links and the embedded content you want:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+json {
+    hal.links(self: book )
+    hal.embedded(authors: book.authors)
+    hal.inline(book) {
+        pages 300
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_specifying_the_hal_content_type">Specifying the HAL Content Type</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The default HAL response content type is <code>application/hal+json</code>, however as discussed in the section on <a href="#json/contentNegotiation.adoc#mimeTypes">Custom Mime Type</a> you can define your own response content types to represent your resources.</p>
+</div>
+<div class="paragraph">
+<p>For example given the following configuration in <code>grails-app/conf/application.yml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">grails:
+    mime:
+        types:
+            all:      "*/*"
+            book:     "application/vnd.books.org.book+json"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can set the HAL content type to an explicit content type or one of the named content types defined in <code>grails.mime.types</code> in <code>application.yml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Book book
+}
+hal.type("book")
+json {
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hal_pagination">HAL Pagination</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The JSON views plugin for Grails provides navigable pagination support.
+Like the GSP <code>&lt;g:paginate&gt;</code> tag, the parameters include: <code>total</code>, <code>max</code>, <code>offset</code>, <code>sort</code> and <code>order</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Iterable&lt;Book&gt; bookList
+    Integer bookCount
+    Integer max // optional, defaults to 10
+    Integer offset // optional, defaults to 0
+    String sort // optional
+    String order // optional
+}
+json {
+    hal.paginate(Book, bookCount, max, offset, sort, order)
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Similar to <code>hal.links()</code> the <code>hal.paginate()</code> has to be the first element within the <code>json{}</code> closure.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When accessing <code>http://localhost:8080/book?offset=10</code> this produces the navigable output like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/book/index?offset=10&amp;max=10",
+      "hreflang": "en_US",
+      "type": "application/hal+json"
+    },
+    "first": {
+      "href": "http://localhost:8080/book/index?offset=0&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "prev": {
+      "href": "http://localhost:8080/book/index?offset=0&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "next": {
+      "href": "http://localhost:8080/book/index?offset=20&amp;max=10",
+      "hreflang": "en_US"
+    },
+    "last": {
+      "href": "http://localhost:8080/book/index?offset=40&amp;max=10",
+      "hreflang": "en_US"
+    }
+  },
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If there aren&#8217;t enough results to paginate the navigation links will not appear, Likewise, the <code>prev</code> and <code>next</code> links are only present when there is a previous or next page.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you have other links that you want to include along with the pagination links then you can use the <code>hal.links(..)</code> method with pagination arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    Author author
+    Iterable&lt;Book&gt; bookList
+    Integer bookCount
+}
+json {
+    // the model, type to paginate, and the total count
+    hal.links([author:author], Book, bookCount)
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Custom Converters</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,55 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Custom Converters</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>It is possible to register custom converters to change how a given class is rendered with json views. To do so, create a class that implements <a href="api/grails/plugin/json/builder/JsonGenerator.Converter.html">Converter</a>. Then you must register the class in <code>src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package foo
+
+class MyConverter implements JsonGenerator.Converter {
+
+    @Override
+    boolean handles(Class&lt;?&gt; type) {
+        CustomClass.isAssignableFrom(type)
+    }
+
+    @Override
+    Object convert(Object value, String key) {
+        ((CustomClass)value).name
+    }
+}
+
+
+class CustomClass {
+    String name
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>Because plugins could potentially provide converters, you can also determine the order by implementing the <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/Ordered.html">Ordered</a> interface in your converter.</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<div class="listingblock">
+<div class="title">src/main/resources/META-INF/services/grails.plugin.json.builder.JsonGenerator$Converter</div>
+<div class="content">
+<pre class="highlight"><code>foo.MyCustomConverter</code></pre>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you have multiple classes to register, put each one on it&#8217;s own line
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div id="footer">

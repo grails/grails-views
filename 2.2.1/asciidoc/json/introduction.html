@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,67 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Introduction</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>JSON views are written in Groovy, end with the file extension <code>gson</code> and reside in the <code>grails-app/views</code> directory. They provide a DSL for producing output in the JSON format. A hello world example can be seen below:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.message {
+    hello "world"
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>The above JSON view results in the output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{"message":{ "hello":"world"}}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>The <code>json</code> variable is an instance of <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>. See the <a href="http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_streamingjsonbuilder">documentation</a> in the Groovy user guide for more information on <code>StreamingJsonBuilder</code>.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>More example usages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json(1,2,3) == "[1,2,3]"
+json { name "Bob" } == '{"name":"Bob"}'
+json([1,2,3]) { n it } == '[{"n":1},{"n":2},{"n":3}]'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can specify a model to view in one of two ways. Either with a <code>model</code> block:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with the <code>@Field</code> transformation provided by Groovy:</p>
+</div>
+<div class="listingblock">
+<div class="title"><code>grails-app/views/hello.gson</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import groovy.transform.Field
+@Field String message
+json.message {
+    hello message
+}</code></pre>
+</div>
 </div>
 </div>
 <div id="footer">

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Model Naming</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,22 +437,264 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Model Naming</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_explicit_model_naming">Explicit Model Naming</a></li>
+<li><a href="#_model_by_convention">Model By Convention</a>
+<ul class="sectlevel2">
+<li><a href="#_property_type">Property Type</a></li>
+<li><a href="#_template_name">Template Name</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>Grails Framework supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Some model names are <em>reserved</em> since there are properties of the same name injected into the view:
+<code>locale</code>, <code>response</code>, <code>request</code>, <code>page</code>, <code>controllerNamespace</code>, <code>controllerName</code>, <code>actionName</code>, <code>config</code>, <code>generator</code>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_explicit_model_naming">Explicit Model Naming</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Given a view:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>Then the controller has to specify the name to be used in the view:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond(message: "Hello World")
+    //or [message: "Hello World"]
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>When using a template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String message
+}
+json.message {
+    hello message
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>In the view you can use the <code>tmpl</code> namespace:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json {
+    message tmpl.msg([message: message])
+    // or g.render(template:'msg', model:[message: message])
+    // or g.render(template:'msg', model: message, var:'message')
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using collections:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;String&gt; messages
+}
+json {
+    messages tmpl.msg('message', messages)
+    // or g.render(template:'msg', collection: messages, var: 'message')
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_model_by_convention">Model By Convention</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_property_type">Property Type</h3>
+<div class="paragraph">
+<p>When rendering a non iterable object, the property name of the type is used when a name is not specified.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String string
+}
+json.message {
+    hello string
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable can be passed in directly to <code>respond</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond("Hello World")
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This also applies when rendering templates with <code>tmpl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String string
+}
+json.message {
+    hello string
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String someString
+}
+json tmpl.msg(someString)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a collection is rendered, the property name of the component type is appended with the property name of the collection type. The component type is based on the first item in the list.</p>
+</div>
+<div class="paragraph">
+<p><code>List&lt;String&gt;</code>  &#8594; <code>stringList</code></p>
+</div>
+<div class="paragraph">
+<p><code>Set&lt;String&gt;</code>  &#8594; <code>stringSet</code></p>
+</div>
+<div class="paragraph">
+<p><code>Bag&lt;String&gt;</code>  &#8594; <code>stringCollection</code></p>
+</div>
+<div class="paragraph">
+<p>If the collection is empty, <code>emptyCollection</code> will be used as the default model name. This is due to not being able to inspect the first object&#8217;s type.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String stringList
+}
+json {
+    strings stringList
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable can be passed in directly to <code>respond</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/controllers/HelloController.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def index() {
+    respond(["Hello", "World"])
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The component+collection convention does not apply when rendering collections with <code>tmpl</code> inside a view.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_template_name">Template Name</h3>
+<div class="paragraph">
+<p>When using a template, unless specified, the model name is based on the template name.</p>
+</div>
+<div class="paragraph">
+<p>Given the following template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/_msg.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    String msg // or String string
+}
+json.message {
+    hello msg
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render a single message from another view using the template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json.message tmpl.msg(message)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render a collection of messages from another view using the template:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/hello/index.gson</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">model {
+    List&lt;String&gt; stringList
+}
+json {
+    messages tmpl.msg(stringList)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In both cases the convention of the variable name matching the template name is used.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">

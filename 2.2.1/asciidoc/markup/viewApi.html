@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Markup Views</title>
+<title>Markup View API</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,20 +439,41 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Markup Views</h1>
+<h1>Markup View API</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::introduction.adoc[]</p>
+<p>All Markup views subclass the <a href="api/grails/plugin/markup/view/MarkupViewTemplate.html">MarkupViewTemplate</a> class by default.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::installation.adoc[]</p>
+<p>The <code>MarkupViewTemplate</code> superclass implements the <a href="api/grails/plugin/markup/view/api/MarkupView.html">MarkupView</a> trait which in turn extends the the <a href="api/grails/views/api/GrailsView.html">GrailsView</a> trait.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::viewApi.adoc[]</p>
+<p>Much of the API is shared between JSON and Markup views. However, one difference compared to JSON views is that you must use <code>this</code> as a prefix when refering to properties from the parent class. For example to generate links this will produce a compilation error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">cars {
+   cars.each {
+       car(make: it.make, href: g.link(controller:'car'))
+   }
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration.adoc[]</p>
+<p>However, the following works fine:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">cars {
+   cars.each {
+       car(make: it.make, href: this.g.link(controller:'car'))
+   }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice the <code>this</code> prefix when refering to <code>this.g.link(..)</code>.</p>
 </div>
 </div>
 <div id="footer">
