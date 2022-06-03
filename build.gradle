@@ -83,7 +83,7 @@ subprojects { project->
     apply from: '../publishing/grailsCentralPublishing.gradle'
 
 
-    if (project.name in ["views-core", "views-json", "views-markup"]) {
+    if (project.name in ["views-core", "views-json", "views-markup", "views-json-testing-support"]) {
 
         configurations {
             documentation
