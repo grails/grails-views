@@ -40,6 +40,8 @@ if (isReleaseVersion) {
 
 subprojects { project->
 
+    version project.projectVersion
+
     configurations.all {
         resolutionStrategy.eachDependency { DependencyResolveDetails details ->
             if(details.requested.group == 'org.codehaus.groovy') {
@@ -65,8 +67,6 @@ subprojects { project->
     if (ext.isGrailsPlugin) {
         apply plugin: "org.grails.grails-plugin"
     }
-
-    version project.projectVersion
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
