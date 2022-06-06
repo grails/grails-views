@@ -39,12 +39,17 @@ dependencies {
     api project(":views-json")
 }
 
-task sourcesJar(type:Jar) {
-    classifier = 'sources'
-    from project.sourceSets.main.allSource
+if (!tasks.findByName("sourcesJar")) {
+    tasks.register("sourcesJar", Jar) {
+        classifier = 'sources'
+        from project.sourceSets.main.allSource
+    }
 }
 
-task javadocJar(type:Jar) {
-    classifier = 'javadoc'
-    from groovydoc.outputs
+if (!tasks.findByName("javadocJar")) {
+// no javadocs, just a workaround
+    tasks.register("javadocJar", Jar) {
+        classifier = 'javadoc'
+        from tasks.named("groovydoc").get().outputs
+    }
 }
