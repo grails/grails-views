@@ -108,9 +108,10 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
         "grails.views.GenericGroovyTemplateCompiler"
     }
 
-
+    @Input
     abstract String getFileExtension()
 
+    @Input
     abstract String getScriptBaseName()
 
     Iterable<String> getProjectPackageNames(File baseDir) {
