@@ -20,7 +20,7 @@ dependencies {
     compileOnly "org.grails:grails-datastore-gorm-mongodb:$mongodbVersion"
 }
 
-task('compileViews', type:JavaExec) {
+def compileViews = tasks.register("compileViews", JavaExec) {
     inputs.files 'src/templates'
     outputs.dir 'build/classes/groovy/main'
     main "grails.plugin.json.view.JsonViewCompiler"
@@ -28,15 +28,19 @@ task('compileViews', type:JavaExec) {
     args("src/templates", "build/classes/groovy/main", "1.8", ' ', ' ', "none", "UTF-8")
 }
 
-task sourcesJar(type:Jar) {
-    classifier = 'sources'
-    from 'src/templates'
+if (!tasks.findByName("sourcesJar")) {
+    tasks.register("sourcesJar", Jar) {
+        classifier = 'sources'
+        from 'src/templates'
+    }
 }
 
+if (!tasks.findByName("javadocJar")) {
 // no javadocs, just a workaround
-task javadocJar(type:Jar) {
-    classifier = 'javadoc'
-    from 'src/templates'
+    tasks.register("javadocJar", Jar) {
+        classifier = 'javadoc'
+        from 'src/templates'
+    }
 }
 
 classes.dependsOn(compileViews)

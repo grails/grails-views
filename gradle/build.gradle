@@ -8,6 +8,8 @@ buildscript {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'groovy'
 
 ext {
 	userOrg = 'grails'
@@ -22,7 +24,6 @@ repositories {
 	maven { url "https://repo.grails.org/grails/core" }
 }
 
-
 dependencyManagement {
 	imports {
 		mavenBom "org.grails:grails-bom:$grailsVersion"
@@ -30,19 +31,58 @@ dependencyManagement {
 	applyMavenExclusions false
 }
 
-
 dependencies {
 	compileOnly gradleApi()
 	api "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
 	api "org.codehaus.groovy:groovy:$groovyVersion"
 }
 
-task sourcesJar(type:Jar) {
-	classifier = 'sources'
-	from project.sourceSets.main.allSource
+if (!tasks.findByName("sourcesJar")) {
+	tasks.register("sourcesJar", Jar) {
+		classifier = 'sources'
+		from project.sourceSets.main.allSource
+	}
 }
 
-task javadocJar(type:Jar) {
-	classifier = 'javadoc'
-	from groovydoc.outputs
+if (!tasks.findByName("javadocJar")) {
+// no javadocs, just a workaround
+	tasks.register("javadocJar", Jar) {
+		classifier = 'javadoc'
+		from tasks.named("groovydoc").get().outputs
+	}
+}
+
+gradlePlugin {
+	plugins {
+		viewsJson {
+			id = 'org.grails.plugins.views-json'
+			implementationClass = 'grails.views.gradle.json.GrailsJsonViewsPlugin'
+			displayName = "Grails Json Views Gradle Plugin"
+			description = 'The Gradle plugin for Json Views'
+		}
+		viewsMarkup {
+			id = 'org.grails.plugins.views-markup'
+			implementationClass = 'grails.views.gradle.markup.GrailsMarkupViewsPlugin'
+			displayName = "Grails Markup Views Gradle Plugin"
+			description = 'The Gradle plugin for Markup Views'
+		}
+	}
+}
+
+afterEvaluate {
+	signing {
+		required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+		Publication[] publications = new Publication[publishing.publications.size() - 1]
+		project.publishing.publications.findAll { it.name != 'pluginMaven' }.toArray(publications)
+		sign(publications)
+	}
+
+	publishing.publications.each { MavenPublication publication ->
+		if (publication.name != "pluginMaven") {
+			publication.pom.withXml {
+				def xml = asNode()
+				xml.children().last() + pomInfo
+			}
+		}
+	}
 }

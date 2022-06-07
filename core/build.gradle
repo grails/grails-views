@@ -44,15 +44,18 @@ dependencies {
     api "org.grails:grails-plugin-rest:$grailsVersion"
     api "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     api "javax.servlet:javax.servlet-api:$servletApiVersion"
-
 }
 
-task sourcesJar(type:Jar) {
-    classifier = 'sources'
-    from project.sourceSets.main.allSource
+if (!tasks.findByName("sourcesJar")) {
+    tasks.register("sourcesJar", Jar) {
+        classifier = 'sources'
+        from project.sourceSets.main.allSource
+    }
 }
 
-task javadocJar(type:Jar) {
-    classifier = 'javadoc'
-    from groovydoc.outputs
+if (!tasks.findByName("javadocJar")) {
+    tasks.register("javadocJar", Jar) {
+        classifier = 'javadoc'
+        from groovydoc.outputs
+    }
 }
