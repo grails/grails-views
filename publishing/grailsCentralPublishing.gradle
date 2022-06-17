@@ -33,6 +33,9 @@ publishing {
     publications {
         pluginMaven(MavenPublication) {
             artifactId project.name
+            if (project.name != "views-gradle") {
+                from components.java
+            }
             afterEvaluate {
                 artifact source: sourcesJar, classifier: "sources"
                 artifact source: javadocJar, classifier: "javadoc"
