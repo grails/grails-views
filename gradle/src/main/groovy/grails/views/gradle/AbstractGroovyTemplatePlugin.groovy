@@ -86,16 +86,9 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
 
         templateCompileTask.dependsOn( allTasks.findByName('classes') )
 
-        allTasks.withType(War) { War war ->
-            war.dependsOn templateCompileTask
-        }
         allTasks.withType(Jar) { Jar jar ->
-            if(!(jar instanceof War)) {
-                if (jar.name == 'bootJar') {
-                    jar.dependsOn templateCompileTask
-                } else if(jar.name == 'jar') {
-                    jar.dependsOn templateCompileTask
-                }
+            if (jar.name in ['jar', 'bootJar', 'war', 'bootWar']) {
+                jar.dependsOn templateCompileTask
             }
         }
     }
