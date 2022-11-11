@@ -75,7 +75,7 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             allClasspath += providedConfig
         }
 
-        templateCompileTask.setDestinationDir( destDir )
+        templateCompileTask.getDestinationDirectory().set( destDir )
         templateCompileTask.setClasspath( allClasspath )
         templateCompileTask.setPackageName(
                 project.name
