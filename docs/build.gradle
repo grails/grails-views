@@ -16,9 +16,12 @@ repositories {
 }
 
 asciidoctor {
+
+    baseDirFollowsSourceDir()
+
     resources {
-        from('src/docs/images')
-        into "./images"
+        from 'src/docs/images'
+        into './images'
     }
 
     attributes 'experimental'  : 'true',
