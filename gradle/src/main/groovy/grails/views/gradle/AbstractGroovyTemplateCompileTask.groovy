@@ -14,6 +14,7 @@ import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.process.ExecResult
 import org.gradle.process.JavaExecSpec
+import org.gradle.work.InputChanges
 
 /**
  * Abstract Gradle task for compiling templates, using GenericGroovyTemplateCompiler
@@ -48,7 +49,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
     }
 
     @TaskAction
-    void execute(IncrementalTaskInputs inputs) {
+    void execute(InputChanges inputs) {
         compile()
     }
 
@@ -81,7 +82,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                         String packageImports = projectPackageNames.join(',') ?: packageName
                         def arguments = [
                                 srcDir.canonicalPath,
-                                destinationDir.canonicalPath,
+                                destinationDirectory.getAsFile().get()?.canonicalPath,
                                 targetCompatibility,
                                 packageImports,
                                 packageName,
