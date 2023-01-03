@@ -25,7 +25,7 @@ asciidoctor {
                'compat-mode'   : 'true',
                'toc'           : 'left',
                'icons'         : 'font',
-               'version'       : project.version,
+               'version'       : version,
                'sourcedir'     : "${rootProject.allprojects.find { it.name == 'views-core'}.projectDir}/src/main/groovy"
 }
 
