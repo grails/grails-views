@@ -17,7 +17,7 @@ repositories {
 
 asciidoctor {
 
-    baseDirFollowsSourceDir()
+     baseDirFollowsSourceFile()
 
     resources {
         from 'src/docs/images'
