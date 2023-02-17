@@ -2,25 +2,7 @@
 
 The current release is {version}. Below is a version history.
 
-*2.3.2* https://github.com/grails/grails-views/releases/tag/v2.3.2[Release notes]
-
-*2.3.1* https://github.com/grails/grails-views/releases/tag/v2.3.1[Release notes]
-
-*2.3.0* https://github.com/grails/grails-views/releases/tag/v2.3.0[Release notes]
-
-*2.2.1* https://github.com/grails/grails-views/releases/tag/v2.2.1[Release notes]
-
-*2.2.0* https://github.com/grails/grails-views/releases/tag/v2.2.0[Release notes]
-
-*2.1.2* https://github.com/grails/grails-views/releases/tag/v2.1.2[Release notes]
-
-*2.1.1* https://github.com/grails/grails-views/releases/tag/v2.1.1[Release notes]
-
-*2.1.0* https://github.com/grails/grails-views/releases/tag/v2.1.0[Release notes]
-
-*2.0.4* https://github.com/grails/grails-views/releases/tag/v2.0.4[Release notes]
-
-*2.0.3* https://github.com/grails/grails-views/releases/tag/v2.0.3[Release notes]
+For later releases check the release notes at: https://github.com/grails/grails-views/releases
 
 *2.0.2*
 
