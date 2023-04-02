@@ -43,6 +43,7 @@ subprojects { project->
     version project.projectVersion
 
     configurations.all {
+        resolutionStrategy.force 'org.yaml:snakeyaml:1.33'
         resolutionStrategy.eachDependency { DependencyResolveDetails details ->
             if(details.requested.group == 'org.codehaus.groovy') {
                 details.useVersion(groovyVersion)
