@@ -13,7 +13,6 @@ buildscript {
 ext {
     isReleaseVersion = !project.projectVersion.endsWith('-SNAPSHOT')
     grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = "grails"
 }
 
@@ -38,24 +37,32 @@ if (isReleaseVersion) {
     }
 }
 
-subprojects { project->
+subprojects { subproject->
 
-    version project.projectVersion
+    version subproject.projectVersion
 
-    configurations.all {
-        resolutionStrategy.force 'org.yaml:snakeyaml:1.33'
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if(details.requested.group == 'org.codehaus.groovy') {
-                details.useVersion(groovyVersion)
+    subproject.configurations {
+        all {
+            resolutionStrategy {
+                force 'org.yaml:snakeyaml:1.33'
+                force 'org.codehaus.groovy:groovy-xml:3.0.13'
+                force 'org.codehaus.groovy:groovy-sql:3.0.13'
+
+                eachDependency { DependencyResolveDetails details ->
+                    if (details.requested.group == 'org.codehaus.groovy' &&
+                            !(details.requested.name in ['groovy-xml', 'groovy-sql'])) {
+                        details.useVersion(groovyVersion)
+                    }
+                }
             }
         }
     }
 
-    if (project.name.startsWith('examples') || project.name.endsWith('docs')) {
+    if (subproject.name.startsWith('examples') || subproject.name.endsWith('docs')) {
         return
     }
 
-    ext.isGrailsPlugin = project.name in ['views-markup', 'views-json']
+    ext.isGrailsPlugin = subproject.name in ['views-markup', 'views-json']
 
     apply plugin: 'eclipse'
     apply plugin: 'idea'
@@ -77,14 +84,10 @@ subprojects { project->
         maven { url "https://repo.grails.org/grails/core" }
     }
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = gradleWrapperVersion
-    }
-
     apply from: '../publishing/grailsCentralPublishing.gradle'
 
 
-    if (project.name in ["views-core", "views-json", "views-markup", "views-json-testing-support"]) {
+    if (subproject.name in ["views-core", "views-json", "views-markup", "views-json-testing-support"]) {
 
         configurations {
             documentation

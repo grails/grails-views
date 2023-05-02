@@ -5,16 +5,12 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
-        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
     }
 }
 
 group "org.grails"
 
-apply plugin: "io.spring.dependency-management"
-
 ext {
-    gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = 'grails'
     repo = 'grails-core'
     isGrailsPlugin = false
@@ -29,15 +25,7 @@ repositories {
     maven { url "https://repo.grails.org/grails/core" }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
-
 dependencies {
-    api platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
     api "org.grails:grails-encoder:$grailsVersion"
     api "org.grails:grails-web-common:$grailsVersion"
     api "org.grails:grails-web-url-mappings:$grailsVersion"
