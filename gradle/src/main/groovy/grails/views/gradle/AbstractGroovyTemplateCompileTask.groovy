@@ -1,9 +1,7 @@
 package grails.views.gradle
 
-import grails.io.ResourceUtils
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.tools.shell.util.PackageHelper
 import org.gradle.api.Action
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
@@ -11,7 +9,6 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.compile.AbstractCompile
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.process.ExecResult
 import org.gradle.process.JavaExecSpec
 import org.gradle.work.InputChanges

@@ -1,7 +1,6 @@
 group "org.grails.plugins"
 
 ext {
-    gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = 'grails'
     repo = 'plugins'
     isGrailsPlugin = false

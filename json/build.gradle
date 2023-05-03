@@ -7,39 +7,34 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
-        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
     }
 }
 
 group "org.grails.plugins"
 
 apply plugin: "org.grails.grails-gsp"
-apply plugin: "io.spring.dependency-management"
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
+configurations {
+    all {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, 'seconds'
+            eachDependency { DependencyResolveDetails details ->
+                if(details.requested.group == 'org.grails' &&
+                        details.requested.name.startsWith('grails-datastore')) {
 
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if(details.requested.group == 'org.grails' &&
-                details.requested.name.startsWith('grails-datastore')) {
+                    if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
+                        details.useVersion("$hibernateGormVersion")
+                    } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
+                            details.requested.name.equals("grails-datastore-gorm-bson")) {
+                        details.useVersion("$mongodbVersion")
+                    } else {
+                        details.useVersion("$gormVersion")
+                    }
+                }
 
-            if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
-                details.useVersion("$hibernateGormVersion")
-            } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
-                    details.requested.name.equals("grails-datastore-gorm-bson")) {
-                details.useVersion("$mongodbVersion")
-            } else {
-                details.useVersion("$gormVersion")
             }
         }
-
     }
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {

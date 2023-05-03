@@ -4,25 +4,21 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "io.spring.gradle:dependency-management-plugin:$springDependencyManagementPluginVersion"
         classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
     }
 }
 
 group "org.grails"
 
-apply plugin: "io.spring.dependency-management"
-
 ext {
-    gradleWrapperVersion = project.gradleWrapperVersion
     userOrg = 'grails'
     repo = 'grails-core'
     isGrailsPlugin = false
     projectDesc = "JSON Views Testing Support"
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
 
 repositories {
     mavenCentral()
