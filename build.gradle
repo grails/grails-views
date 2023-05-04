@@ -44,7 +44,7 @@ subprojects { subproject->
     subproject.configurations {
         all {
             resolutionStrategy {
-                force 'org.yaml:snakeyaml:1.33'
+                force 'org.yaml:snakeyaml:2.0'
                 force 'org.codehaus.groovy:groovy-xml:3.0.13'
                 force 'org.codehaus.groovy:groovy-sql:3.0.13'
 
