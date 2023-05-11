@@ -2,6 +2,8 @@
 
 The current release is {version}. Below is a version history.
 
+For later releases check the release notes at: https://github.com/grails/grails-views/releases
+
 *2.0.2*
 
 * Fix bug where incorrect JSON was generated when all values are null in the nested object.
