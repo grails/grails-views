@@ -86,20 +86,9 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
 
         templateCompileTask.dependsOn( allTasks.findByName('classes') )
 
-        allTasks.withType(War) { War war ->
-            war.dependsOn templateCompileTask
-        }
         allTasks.withType(Jar) { Jar jar ->
-            if(!(jar instanceof War)) {
-                if (jar.name == 'bootJar') {
-                    jar.dependsOn templateCompileTask
-                    jar.from(destDir) { CopySpec spec ->
-                        spec.into("BOOT-INF/classes")
-                    }
-                } else if(jar.name == 'jar') {
-                    jar.dependsOn templateCompileTask
-                    jar.from destDir
-                }
+            if (jar.name in ['jar', 'bootJar', 'war', 'bootWar']) {
+                jar.dependsOn templateCompileTask
             }
         }
     }
