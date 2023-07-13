@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
 	compileOnly gradleApi()
+	api "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
 	api "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
 	api "org.codehaus.groovy:groovy:$groovyVersion"
 }
