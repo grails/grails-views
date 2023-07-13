@@ -65,7 +65,7 @@ abstract class AbstractGroovyTemplateCompileTask extends AbstractCompile {
                     @Override
                     @CompileDynamic
                     void execute(JavaExecSpec javaExecSpec) {
-                        javaExecSpec.setMain(getCompilerName())
+                        javaExecSpec.mainClass.set(getCompilerName())
                         javaExecSpec.setClasspath(getClasspath())
 
                         def jvmArgs = compileOptions.forkOptions.jvmArgs
