@@ -47,20 +47,12 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
     void apply(Project project) {
         def allTasks = project.tasks
         def upperCaseName = GrailsNameUtils.getClassName(fileExtension)
-
         AbstractGroovyTemplateCompileTask templateCompileTask = (AbstractGroovyTemplateCompileTask) allTasks.register("compile${upperCaseName}Views".toString(), (Class<? extends Task>) taskClass).get()
-
-
-        SourceSet mainSourceSet = SourceSets.findMainSourceSet(project)
-        SourceSetOutput output = mainSourceSet?.output
+        SourceSetOutput output = SourceSets.findMainSourceSet(project)?.output
         FileCollection classesDir = resolveClassesDirs(output, project)
         File destDir = new File(project.buildDir, "${templateCompileTask.fileExtension}-classes/main")
         output?.dir(destDir)
-        Configuration providedConfig = project.configurations.named('provided').get()
-
-
         FileCollection allClasspath = project.objects.fileCollection()
-
         project.afterEvaluate {
             GrailsExtension grailsExt = project.extensions.getByType(GrailsExtension)
             if (grailsExt.pathingJar && Os.isFamily(Os.FAMILY_WINDOWS)) {
@@ -70,43 +62,23 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
                 templateCompileTask.setClasspath(allClasspath)
             }
         }
-
         allClasspath += classesDir + project.configurations.named('compileClasspath').get()
-        if(providedConfig) {
-            allClasspath += providedConfig
-        }
-
+        def providedConfig = project.configurations.named('provided')
+        if(providedConfig.isPresent()) { allClasspath += providedConfig.get() }
         templateCompileTask.getDestinationDirectory().set( destDir )
         templateCompileTask.setClasspath( allClasspath )
-        templateCompileTask.setPackageName(
-                project.name
-        )
-        templateCompileTask.setSource(
-                project.file("${project.projectDir}/$pathToSource")
-        )
-
+        templateCompileTask.setPackageName(project.name)
+        templateCompileTask.setSource(project.file("${project.projectDir}/$pathToSource"))
         templateCompileTask.dependsOn( allTasks.named('classes').get() )
-
         project.plugins.withType(SpringBootPlugin).configureEach {plugin ->
             allTasks.withType(Jar).configureEach { Task task ->
-                if (task.name in ['jar', 'bootJar', 'war', 'bootWar']) {
-                    task.dependsOn templateCompileTask
-                }
+                if (task.name in ['jar', 'bootJar', 'war', 'bootWar']) { task.dependsOn templateCompileTask }
             }
-
-            allTasks.withType(ResolveMainClassName)
-                    .configureEach { t ->
-                        t.dependsOn(templateCompileTask)
-                    }
+            allTasks.withType(ResolveMainClassName).configureEach { t -> t.dependsOn(templateCompileTask)}
         }
-
         project.plugins.withType(IntegrationTestGradlePlugin).configureEach { plugin ->
-            allTasks.named("compileIntegrationTestGroovy") { t->
-                t.dependsOn(templateCompileTask)
-            }
-            allTasks.named("integrationTest") {t ->
-                t.dependsOn(templateCompileTask)
-            }
+            allTasks.named("compileIntegrationTestGroovy") { t-> t.dependsOn(templateCompileTask)}
+            allTasks.named("integrationTest") {t -> t.dependsOn(templateCompileTask)}
         }
     }
 
