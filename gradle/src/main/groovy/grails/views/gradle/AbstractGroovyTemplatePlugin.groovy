@@ -50,19 +50,18 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
         FileCollection classesDir = resolveClassesDirs(output, project)
         File destDir = new File(project.buildDir, "${templateCompileTask.fileExtension}-classes/main")
         output?.dir(destDir)
-        def allClasspath
         project.afterEvaluate {
             GrailsExtension grailsExt = project.extensions.getByType(GrailsExtension)
             if (grailsExt.pathingJar && Os.isFamily(Os.FAMILY_WINDOWS)) {
                 Jar pathingJar = (Jar) allTasks.named('pathingJar').get()
-                allClasspath = project.files("${project.buildDir}/classes/groovy/main", "${project.buildDir}/resources/main", "${project.projectDir}/gsp-classes", pathingJar.archiveFile.get().asFile)
+                def allClasspath = project.files("${project.buildDir}/classes/groovy/main", "${project.buildDir}/resources/main", "${project.projectDir}/gsp-classes", pathingJar.archiveFile.get().asFile)
                 templateCompileTask.dependsOn(pathingJar)
-                templateCompileTask.setClasspath(allClasspath)
+                templateCompileTask.classpath = allClasspath
             }
         }
-        allClasspath = classesDir + project.configurations.named('compileClasspath').get()
+        def allClasspath = classesDir + project.configurations.named('compileClasspath').get()
         templateCompileTask.getDestinationDirectory().set( destDir )
-        templateCompileTask.setClasspath( allClasspath )
+        templateCompileTask.classpath = allClasspath
         templateCompileTask.setPackageName(project.name)
         templateCompileTask.setSource(project.file("${project.projectDir}/$pathToSource"))
         templateCompileTask.dependsOn( allTasks.named('classes').get() )
