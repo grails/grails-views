@@ -7,9 +7,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetOutput
 import org.gradle.api.tasks.bundling.Jar
 import org.grails.gradle.plugin.core.GrailsExtension
@@ -52,19 +50,17 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
         FileCollection classesDir = resolveClassesDirs(output, project)
         File destDir = new File(project.buildDir, "${templateCompileTask.fileExtension}-classes/main")
         output?.dir(destDir)
-        FileCollection allClasspath = project.objects.fileCollection()
+        def allClasspath
         project.afterEvaluate {
             GrailsExtension grailsExt = project.extensions.getByType(GrailsExtension)
             if (grailsExt.pathingJar && Os.isFamily(Os.FAMILY_WINDOWS)) {
                 Jar pathingJar = (Jar) allTasks.named('pathingJar').get()
-                allClasspath += project.files("${project.buildDir}/classes/groovy/main", "${project.buildDir}/resources/main", "${project.projectDir}/gsp-classes", pathingJar.archiveFile.get().asFile)
+                allClasspath = project.files("${project.buildDir}/classes/groovy/main", "${project.buildDir}/resources/main", "${project.projectDir}/gsp-classes", pathingJar.archiveFile.get().asFile)
                 templateCompileTask.dependsOn(pathingJar)
                 templateCompileTask.setClasspath(allClasspath)
             }
         }
-        allClasspath += classesDir + project.configurations.named('compileClasspath').get()
-        def providedConfig = project.configurations.named('provided')
-        if(providedConfig.isPresent()) { allClasspath += providedConfig.get() }
+        allClasspath = classesDir + project.configurations.named('compileClasspath').get()
         templateCompileTask.getDestinationDirectory().set( destDir )
         templateCompileTask.setClasspath( allClasspath )
         templateCompileTask.setPackageName(project.name)
