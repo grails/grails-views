@@ -51,6 +51,10 @@ subprojects { subproject->
                     if (details.requested.group == 'org.codehaus.groovy' &&
                             !(details.requested.name in ['groovy-xml', 'groovy-sql'])) {
                         details.useVersion(groovyVersion)
+                    } else if (details.requested.group == 'org.junit.jupiter') {
+                        details.useVersion(junitJupiterVersion)
+                    } else if (details.requested.group == 'org.junit.platform') {
+                        details.useVersion(junitPlatformVersion)
                     }
                 }
             }
@@ -99,9 +103,9 @@ subprojects { subproject->
 
             testImplementation "org.spockframework:spock-core:$spockVersion"
             testImplementation "org.codehaus.groovy:groovy-test-junit5:${groovyVersion}"
-            testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
-            testImplementation "org.junit.platform:junit-platform-runner:1.10.0"
-            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.0"
+            testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+            testImplementation "org.junit.platform:junit-platform-runner:$junitPlatformVersion"
+            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
         }
 
         tasks.withType(Test) {
