@@ -1,5 +1,3 @@
-package author
-
 import functional.tests.plugin.Author
 
 model {
