@@ -14,25 +14,22 @@ group "org.grails.plugins"
 
 apply plugin: "org.grails.grails-gsp"
 
-configurations {
-    all {
-        resolutionStrategy {
-            cacheChangingModulesFor 0, 'seconds'
-            eachDependency { DependencyResolveDetails details ->
-                if(details.requested.group == 'org.grails' &&
-                        details.requested.name.startsWith('grails-datastore')) {
+configurations.configureEach {
+    resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+            if(details.requested.group == 'org.grails' &&
+                    details.requested.name.startsWith('grails-datastore')) {
 
-                    if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
-                        details.useVersion("$hibernateGormVersion")
-                    } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
-                            details.requested.name.equals("grails-datastore-gorm-bson")) {
-                        details.useVersion("$mongodbVersion")
-                    } else {
-                        details.useVersion("$gormVersion")
-                    }
+                if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
+                    details.useVersion("$hibernateGormVersion")
+                } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
+                        details.requested.name.equals("grails-datastore-gorm-bson")) {
+                    details.useVersion("$mongodbVersion")
+                } else {
+                    details.useVersion("$gormVersion")
                 }
-
             }
+
         }
     }
 }

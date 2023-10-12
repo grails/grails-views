@@ -42,7 +42,7 @@ publishing {
             }
 
             if (isGrailsPlugin) {
-                artifact source: "${project.sourceSets.main.groovy.outputDir}/META-INF/grails-plugin.xml",
+                artifact source: "${project.sourceSets.main.groovy.classesDirectory}/META-INF/grails-plugin.xml",
                         classifier: "plugin",
                         extension: 'xml'
             }

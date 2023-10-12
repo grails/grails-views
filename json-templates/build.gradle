@@ -22,14 +22,15 @@ dependencies {
 def compileViews = tasks.register("compileViews", JavaExec) {
     inputs.files 'src/templates'
     outputs.dir 'build/classes/groovy/main'
-    main "grails.plugin.json.view.JsonViewCompiler"
+    mainClass.set("grails.plugin.json.view.JsonViewCompiler")
     classpath configurations.compileClasspath + configurations.runtimeClasspath
-    args("src/templates", "build/classes/groovy/main", "1.8", ' ', ' ', "none", "UTF-8")
+    args("src/templates", "build/classes/groovy/main", "1.11", ' ', ' ', "none", "UTF-8")
 }
 
 if (!tasks.findByName("sourcesJar")) {
     tasks.register("sourcesJar", Jar) {
-        classifier = 'sources'
+        archiveClassifier.set('sources')
+        archiveClassifier.convention('sources')
         from 'src/templates'
     }
 }
@@ -37,7 +38,8 @@ if (!tasks.findByName("sourcesJar")) {
 if (!tasks.findByName("javadocJar")) {
 // no javadocs, just a workaround
     tasks.register("javadocJar", Jar) {
-        classifier = 'javadoc'
+        archiveClassifier.set('javadoc')
+        archiveClassifier.convention('javadoc')
         from 'src/templates'
     }
 }

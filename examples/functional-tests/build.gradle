@@ -32,7 +32,7 @@ repositories {
     maven { url "https://repo.grails.org/grails/core" }
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.group == 'org.grails' &&
                 details.requested.name.startsWith('grails-datastore')) {

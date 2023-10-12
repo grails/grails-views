@@ -37,7 +37,8 @@ dependencies {
 
 if (!tasks.findByName("sourcesJar")) {
     tasks.register("sourcesJar", Jar) {
-        classifier = 'sources'
+        archiveClassifier.set('sources')
+        archiveClassifier.convention('sources')
         from project.sourceSets.main.allSource
     }
 }
@@ -45,7 +46,8 @@ if (!tasks.findByName("sourcesJar")) {
 if (!tasks.findByName("javadocJar")) {
 // no javadocs, just a workaround
     tasks.register("javadocJar", Jar) {
-        classifier = 'javadoc'
+        archiveClassifier.set('javadoc')
+        archiveClassifier.convention('javadoc')
         from tasks.named("groovydoc").get().outputs
     }
 }
