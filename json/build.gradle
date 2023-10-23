@@ -41,7 +41,7 @@ dependencies {
     testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion"
     testImplementation "org.grails:grails-gorm-testing-support:$testingSupportVersion"
     testImplementation "org.grails:grails-datastore-gorm-hibernate5"
-    testRuntimeOnly "org.javassist:javassist:3.29.0-GA"
+    testRuntimeOnly "org.javassist:javassist:3.29.2-GA"
 
     console "org.grails:grails-console"
 }
