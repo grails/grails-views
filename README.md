@@ -1,10 +1,13 @@
 # Grails Views
 
-Additional View Technologies for Grails 3.0 and above.
-
-Initial implementation includes JSON views powered by Groovy's JsonBuilder, however this project provides the basis for implementation other view types.
-
-View [the latest documentation](https://grails.github.io/grails-views/latest/) for details. 
+[![Maven Central](https://img.shields.io/maven-central/v/org.grails/views-core.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/org.grails/views-core)
+[![Java CI](https://github.com/grails/grails-views/actions/workflows/gradle.yml/badge.svg?event=push)](https://github.com/grails/grails-views/actions/workflows/gradle.yml)
 
 
-[![Java CI](https://github.com/grails/grails-views/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/grails/grails-views/actions/workflows/gradle.yml)
+Additional View Technologies for Grails 3 and above.
+
+Initial implementation includes JSON views powered by Groovy's JsonBuilder.\
+However, this project provides the basis for implementing other view types.
+
+View [the latest documentation](https://views.grails.org/latest/) for details. 
+
