@@ -26,7 +26,7 @@ class TestRequestConfigurer implements Request {
     String contentType = 'application/json'
     String characterEncoding = 'UTF-8'
     Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>().withDefault { String name ->
-        return []
+        return [] as List<String>
     }
     Map<String, Object> attributes = new LinkedHashMap<String, Object>()
 
