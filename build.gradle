@@ -40,6 +40,8 @@ subprojects { subproject->
 
     version subproject.projectVersion
 
+    ext['groovyVersion'] = System.getenv('CI_GROOVY_VERSION') ?: project.groovyVersion
+
     subproject.configurations {
         all {
             resolutionStrategy {
@@ -55,6 +57,12 @@ subprojects { subproject->
                 }
             }
         }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://repo.grails.org/grails/core" }
     }
 
     if (subproject.name.startsWith('examples') || subproject.name.endsWith('docs')) {
@@ -76,11 +84,6 @@ subprojects { subproject->
 
     sourceCompatibility = 1.11
     targetCompatibility = 1.11
-
-    repositories {
-        mavenCentral()
-        maven { url "https://repo.grails.org/grails/core" }
-    }
 
     apply from: '../publishing/grailsCentralPublishing.gradle'
 
