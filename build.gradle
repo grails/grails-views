@@ -40,6 +40,8 @@ subprojects { subproject->
 
     version subproject.projectVersion
 
+    ext['groovyVersion'] = System.getenv('CI_GROOVY_VERSION') ?: project.groovyVersion
+
     subproject.configurations {
         all {
             resolutionStrategy {
