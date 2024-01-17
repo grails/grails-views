@@ -80,6 +80,7 @@ subprojects { subproject->
     targetCompatibility = 1.11
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
     }
