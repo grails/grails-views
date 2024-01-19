@@ -102,10 +102,6 @@ subprojects { subproject->
             documentation "com.github.javaparser:javaparser-core:$javaParserCoreVersion"
 
             testImplementation "org.spockframework:spock-core:$spockVersion"
-            testImplementation "org.codehaus.groovy:groovy-test-junit5:${groovyVersion}"
-            testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-            testImplementation "org.junit.platform:junit-platform-runner:$junitPlatformVersion"
-            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
         }
 
         tasks.withType(Test) {
