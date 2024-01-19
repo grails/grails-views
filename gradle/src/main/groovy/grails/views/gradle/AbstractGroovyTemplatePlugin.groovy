@@ -71,9 +71,17 @@ class AbstractGroovyTemplatePlugin implements Plugin<Project> {
             }
             allTasks.withType(ResolveMainClassName).configureEach { t -> t.dependsOn(templateCompileTask)}
         }
-        project.plugins.withType(IntegrationTestGradlePlugin).configureEach { plugin ->
-            allTasks.named("compileIntegrationTestGroovy") { t-> t.dependsOn(templateCompileTask)}
-            allTasks.named("integrationTest") {t -> t.dependsOn(templateCompileTask)}
+        if (project.plugins.hasPlugin(IntegrationTestGradlePlugin)) {
+            project.plugins.withType(IntegrationTestGradlePlugin).configureEach { plugin ->
+                def compileIntegrationTestGroovy = allTasks.named("compileIntegrationTestGroovy")
+                if (compileIntegrationTestGroovy.isPresent()) {
+                    compileIntegrationTestGroovy.configure { it.dependsOn(templateCompileTask) }
+                }
+                def integrationTest = allTasks.named("integrationTest")
+                if (integrationTest.isPresent()) {
+                    integrationTest.configure { it.dependsOn(templateCompileTask) }
+                }
+            }
         }
     }
 

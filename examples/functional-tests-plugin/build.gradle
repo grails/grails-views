@@ -17,7 +17,6 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.plugins.views-json"
-//apply plugin: "org.grails.plugins.views-markup"
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
