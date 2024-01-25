@@ -1,7 +1,9 @@
 package functional.tests
 
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
 
+@CompileStatic
 @ToString(includePackage = false, includeNames = true)
 class DomainObject {
     String id

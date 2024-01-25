@@ -33,9 +33,9 @@ import java.util.TimeZone;
 /**
  * Temporary fork of groovy JsonGenerator until Groovy 2.5.0 is out.
  *
- * Generates JSON from objects.
+ * <p>Generates JSON from objects.
  *
- * The {@link Options} builder can be used to configure an instance of a JsonGenerator.
+ * <p>The {@link Options} builder can be used to configure an instance of a JsonGenerator.
  *
  * @see Options#build()
  * @since 2.5
@@ -130,9 +130,9 @@ public interface JsonGenerator {
         protected String dateFormat = JSON_DATE_FORMAT;
         protected Locale dateLocale = JSON_DATE_FORMAT_LOCALE;
         protected TimeZone timezone = TimeZone.getTimeZone(DEFAULT_TIMEZONE);
-        protected final Set<Converter> converters = new LinkedHashSet<Converter>();
-        protected final Set<String> excludedFieldNames = new HashSet<String>();
-        protected final Set<Class<?>> excludedFieldTypes = new HashSet<Class<?>>();
+        protected final Set<Converter> converters = new LinkedHashSet<>();
+        protected final Set<String> excludedFieldNames = new HashSet<>();
+        protected final Set<Class<?>> excludedFieldTypes = new HashSet<>();
 
         public Options() {}
 
@@ -217,7 +217,7 @@ public interface JsonGenerator {
          * is serialized.
          *
          * <p>The closure must accept either 1 or 2 parameters.  The first parameter
-         * is required and will be instance of the {@code type} for which the closure
+         * is required and will be an instance of the {@code type} for which the closure
          * is registered.  The second optional parameter should be of type {@code String}
          * and, if available, will be passed the name of the key associated with this
          * value if serializing a JSON Object.  This parameter will be {@code null} when
@@ -239,7 +239,7 @@ public interface JsonGenerator {
          *
          * <p>If two or more closures are registered for the exact same type the last
          * closure based on the order they were specified will be used.  When serializing an
-         * object its type is compared to the list of registered types in the order the were
+         * object its type is compared to the list of registered types in the order they were
          * given and the closure for the first suitable type will be called.  Therefore, it is
          * important to register more specific types first.
          *
@@ -257,9 +257,7 @@ public interface JsonGenerator {
                                                 Closure<?> closure)
         {
             Converter converter = new DefaultJsonGenerator.ClosureConverter(type, closure);
-            if (converters.contains(converter)) {
-                converters.remove(converter);
-            }
+            converters.remove(converter);
             return addConverter(converter);
         }
 

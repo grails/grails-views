@@ -1,0 +1,72 @@
+plugins {
+	id 'java-gradle-plugin'
+	id 'groovy'
+	id 'maven-publish'
+	id 'signing'
+}
+
+group = 'org.grails.plugins'
+ext.set('projectDesc', 'Grails Views Gradle Plugin')
+
+configurations.configureEach {
+	// This is a workaround for grails-gradle-plugin exposing a different version of Groovy
+	// then the one used by Gradle. This causes issues with the Groovy compiler.
+	resolutionStrategy.force "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
+}
+
+dependencies {
+	implementation libs.grails.bootstrap
+	implementation libs.grails.gradle.plugin
+	implementation libs.groovy.core
+	implementation libs.spring.boot.gradle.plugin
+}
+
+java {
+	sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
+	withJavadocJar()
+	withSourcesJar()
+}
+
+tasks.named('javadocJar', Jar) {
+	from tasks.named('groovydoc')
+}
+
+tasks.withType(Sign).configureEach {
+	onlyIf { isReleaseVersion }
+}
+
+gradlePlugin {
+	plugins {
+		register('viewsJson') {
+			id = 'org.grails.plugins.views-json'
+			implementationClass = 'grails.views.gradle.json.GrailsJsonViewsPlugin'
+			displayName = 'Grails Json Views Gradle Plugin'
+			description = 'The Gradle plugin for Json Views'
+		}
+		register('viewsMarkup') {
+			id = 'org.grails.plugins.views-markup'
+			implementationClass = 'grails.views.gradle.markup.GrailsMarkupViewsPlugin'
+			displayName = 'Grails Markup Views Gradle Plugin'
+			description = 'The Gradle plugin for Markup Views'
+		}
+	}
+}
+
+afterEvaluate {
+	signing {
+		required { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
+		Publication[] publications = new Publication[publishing.publications.size() - 1]
+		publishing.publications.findAll { it.name != 'pluginMaven' }.toArray(publications)
+		sign(publications)
+	}
+
+	publishing.publications.each { publication ->
+		MavenPublication pub = publication as MavenPublication
+		if (pub.name != 'pluginMaven') {
+			pub.pom.withXml {
+				def xml = asNode()
+				xml.children().last() + pomInfo
+			}
+		}
+	}
+}

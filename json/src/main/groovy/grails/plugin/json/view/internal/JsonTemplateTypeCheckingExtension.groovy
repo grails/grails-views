@@ -4,10 +4,11 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.internal.TemplateRenderer
 import grails.views.api.http.Parameters
 import grails.views.compiler.BuilderTypeCheckingExtension
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.ClassHelper
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.MethodNode
-import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.PropertyExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
@@ -18,6 +19,7 @@ import org.codehaus.groovy.control.SourceUnit
  *
  * @author Graeme Rocher
  */
+@CompileStatic
 class JsonTemplateTypeCheckingExtension extends BuilderTypeCheckingExtension {
     private static final ClassNode BUILDER_CLASS_NODE = ClassHelper.make(StreamingJsonBuilder)
     private static final MethodNode JSON_BUILDER_INVOKE_METHOD = ClassHelper.make(StreamingJsonBuilder).getMethods('invokeMethod')[0]
@@ -37,7 +39,7 @@ class JsonTemplateTypeCheckingExtension extends BuilderTypeCheckingExtension {
                 insideScope = true
             }
             else if(methodCallExpression.objectExpression instanceof VariableExpression) {
-                VariableExpression ve = methodCallExpression.objectExpression
+                VariableExpression ve = methodCallExpression.objectExpression as VariableExpression
                 if(ve.name == 'json') {
                     insideScope = true
                 }
@@ -46,6 +48,7 @@ class JsonTemplateTypeCheckingExtension extends BuilderTypeCheckingExtension {
     }
 
     @Override
+    @CompileDynamic
     boolean isMethodDynamic(Object receiver, Object name, Object argList, Object argTypes, Object call) {
         if( receiver.name == TEMPLATE_NAMESPACE.name) {
             return true

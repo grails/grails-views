@@ -7,19 +7,15 @@ import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import org.junit.jupiter.api.BeforeEach
-import spock.lang.AutoCleanup
-import spock.lang.Shared
-import spock.lang.Specification
 
 @Integration(applicationClass = Application)
 class BookSpec extends HttpClientSpec {
 
     @RunOnce
     @BeforeEach
-    def init() {
+    void init() {
         super.init()
     }
 

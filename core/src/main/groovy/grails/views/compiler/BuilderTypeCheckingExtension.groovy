@@ -1,6 +1,8 @@
 package grails.views.compiler
 
 import grails.views.Views
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.ClassCodeExpressionTransformer
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.MethodNode
@@ -24,11 +26,13 @@ import static org.codehaus.groovy.ast.ClassHelper.OBJECT_TYPE
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionSupport.TypeCheckingDSL {
 
     boolean insideScope = true
 
     @Override
+    @CompileDynamic
     Object run() {
         BuilderTypeCheckingExtension self = this
 
@@ -157,6 +161,7 @@ abstract class BuilderTypeCheckingExtension extends GroovyTypeCheckingExtensionS
         }
 
         @Override
+        @CompileDynamic
         Expression transform(final Expression exp) {
             if (callsToBeReplaced.contains(exp)) {
                 def args = exp.arguments instanceof TupleExpression ? exp.arguments.expressions : [exp.arguments]

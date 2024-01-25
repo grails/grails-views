@@ -8,10 +8,12 @@ import grails.views.api.HttpView
 import grails.views.api.http.Response
 import groovy.json.JsonSlurper
 import groovy.text.Template
+import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.testing.GrailsUnitTest
 import org.springframework.http.HttpStatus
 
+@CompileStatic
 trait JsonViewUnitTest extends GrailsUnitTest {
 
     private static JsonViewTemplateEngine _templateEngine

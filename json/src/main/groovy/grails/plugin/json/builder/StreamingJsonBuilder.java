@@ -39,7 +39,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
     private static final String DOUBLE_CLOSE_BRACKET = "}}";
     private static final String COLON_WITH_OPEN_BRACE = ":{";
 
-    private Writer writer;
+    private final Writer writer;
     private final JsonGenerator generator;
 
     /**
@@ -49,7 +49,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
      */
     public StreamingJsonBuilder(Writer writer) {
         this.writer = writer;
-        generator = JsonOutput.DEFAULT_GENERATOR;
+        this.generator = JsonOutput.DEFAULT_GENERATOR;
     }
 
     /**
@@ -369,7 +369,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             writer.write(JsonOutput.COLON);
             writer.write(generator.toJson(value));
         }
-        StreamingJsonDelegate.cloneDelegateAndGetContent(writer, callable, map.size() == 0, generator);
+        StreamingJsonDelegate.cloneDelegateAndGetContent(writer, callable, map.isEmpty(), generator);
         writer.write(DOUBLE_CLOSE_BRACKET);
     }
 
@@ -793,8 +793,8 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             return args.length == 2 && args[0] instanceof Iterable && args[1] instanceof Closure;
         }
 
-        public static Object writeCollectionWithClosure(Writer writer, Collection coll, @DelegatesTo(value = StreamingJsonDelegate.class, strategy = Closure.DELEGATE_FIRST)   Closure closure) throws IOException {
-            return writeCollectionWithClosure(writer, (Iterable)coll, closure, JsonOutput.DEFAULT_GENERATOR);
+        public static Object writeCollectionWithClosure(Writer writer, Collection coll, @DelegatesTo(value = StreamingJsonDelegate.class, strategy = Closure.DELEGATE_FIRST) Closure closure) throws IOException {
+            return writeCollectionWithClosure(writer, coll, closure, JsonOutput.DEFAULT_GENERATOR);
         }
 
         public static Object writeCollectionWithClosure(Writer writer, Iterable coll, @DelegatesTo(value = StreamingJsonDelegate.class, strategy = Closure.DELEGATE_FIRST) Closure closure, JsonGenerator generator) throws IOException {
@@ -820,8 +820,7 @@ public class StreamingJsonBuilder extends GroovyObjectSupport {
             writer.write(JsonOutput.CLOSE_BRACE);
         }
 
-        public static void cloneDelegateAndGetContent(Writer w, @DelegatesTo(value = StreamingJsonDelegate.class, strategy = Closure.DELEGATE_FIRST) Closure c)
-        {
+        public static void cloneDelegateAndGetContent(Writer w, @DelegatesTo(value = StreamingJsonDelegate.class, strategy = Closure.DELEGATE_FIRST) Closure c) {
             cloneDelegateAndGetContent(w, c, true);
         }
 

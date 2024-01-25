@@ -4,6 +4,7 @@ import grails.views.api.http.Parameters
 import grails.views.api.http.Request
 import grails.views.api.http.Response
 import grails.views.api.internal.EmptyParameters
+import groovy.transform.CompileStatic
 
 /**
  * A view that is rendered in the context of an HTTP request
@@ -11,6 +12,7 @@ import grails.views.api.internal.EmptyParameters
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 trait HttpView extends View {
 
     /**

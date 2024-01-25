@@ -1,5 +1,6 @@
 package grails.views
 
+import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.control.CompilationFailedException
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
@@ -12,6 +13,7 @@ import org.grails.exceptions.reporting.SourceCodeAware
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 class ViewCompilationException extends ViewException implements SourceCodeAware {
 
     final String fileName

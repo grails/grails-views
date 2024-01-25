@@ -1,11 +1,13 @@
 package functional.tests
 
 import grails.plugin.json.builder.JsonGenerator
+import groovy.transform.CompileStatic
 import org.springframework.core.Ordered
 
 /**
  * Created by jameskleeh on 12/12/16.
  */
+@CompileStatic
 class MyOtherConverter implements JsonGenerator.Converter, Ordered {
 
     @Override

@@ -1,0 +1,38 @@
+[versions]
+assetpipeline = '4.3.0'
+caffeine = '2.9.3'
+gorm = '8.0.4'
+gorm-hibernate5 = '8.0.3'
+gorm-mongodb = '8.1.2'
+grails = '6.1.1'
+grails-gradle-plugin = '6.1.1'
+grails-testing-support = '3.1.2'
+groovy = '3.0.11'
+java-baseline = '11'
+micronaut = '3.8.7'
+slf4j = '1.7.36'
+spock = '2.3-groovy-3.0'
+spring-boot = '2.7.18'
+
+[libraries]
+assetpipeline = { module = 'com.bertramlabs.plugins:asset-pipeline-grails', version.ref = 'assetpipeline' }
+caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
+grails-bootstrap = { module = 'org.grails:grails-bootstrap', version.ref = 'grails' }
+grails-core = { module = 'org.grails:grails-core', version.ref = 'grails' }
+grails-datastore-core = { module = 'org.grails:grails-datastore-core', version.ref = 'gorm' }
+grails-datastore-gorm-hibernate5 = { module = 'org.grails:grails-datastore-gorm-hibernate5', version.ref = 'gorm-hibernate5' }
+grails-datastore-gorm-mongodb = { module = 'org.grails:grails-datastore-gorm-mongodb', version.ref = 'gorm-mongodb' }
+grails-datastore-gorm-support = { module = 'org.grails:grails-datastore-gorm-support', version.ref = 'gorm' }
+grails-gradle-plugin = { module = 'org.grails:grails-gradle-plugin', version.ref = 'grails-gradle-plugin' }
+grails-mimetypes = { module = 'org.grails:grails-plugin-mimetypes', version.ref = 'grails' }
+grails-rest = { module = 'org.grails:grails-plugin-rest', version.ref = 'grails' }
+grails-testing-support-core = { module = 'org.grails:grails-testing-support', version.ref = 'grails-testing-support' }
+grails-testing-support-gorm = { module = 'org.grails:grails-gorm-testing-support', version.ref = 'grails-testing-support' }
+grails-web-urlmappings = { module = 'org.grails:grails-web-url-mappings', version.ref = 'grails' }
+groovy-core = { module = 'org.codehaus.groovy:groovy', version.ref = 'groovy' }
+groovy-json = { module = 'org.codehaus.groovy:groovy-json', version.ref = 'groovy' }
+micronaut-http-client = { module = 'io.micronaut:micronaut-http-client', version.ref = 'micronaut' }
+slf4j-api = { module = 'org.slf4j:slf4j-api', version.ref = 'slf4j' }
+slf4j-nop = { module = 'org.slf4j:slf4j-nop', version.ref = 'slf4j' }
+spock-core = { module = 'org.spockframework:spock-core', version.ref = 'spock' }
+spring-boot-gradle-plugin = { module = 'org.springframework.boot:spring-boot-gradle-plugin', version.ref = 'spring-boot' }

@@ -43,7 +43,7 @@ class ViewUtils {
         if(map.containsKey(key)) {
             def o = map.get(key)
             if(o instanceof Iterable) {
-                return (List<String>)((Iterable)o).toList()
+                return ((Iterable)o).toList() as List<String>
             }
             else {
                 return Arrays.asList(o.toString())

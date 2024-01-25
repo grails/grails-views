@@ -1,5 +1,6 @@
 package grails.views
 
+import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 
 /**
@@ -7,6 +8,7 @@ import groovy.transform.InheritConstructors
  *
  * @author Graeme Rocher
  */
+@CompileStatic
 @InheritConstructors
 class ViewException extends RuntimeException{
 }

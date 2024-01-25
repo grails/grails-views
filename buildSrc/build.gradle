@@ -1,0 +1,20 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.grails.org/grails/core' }
+}
+
+dependencies {
+
+    // Needs to be implementation, as Asciidoctor task is referenced in docs/build.gradle
+    implementation buildsrcLibs.asciidoctor.gradle.plugin
+
+    runtimeOnly buildsrcLibs.assetpipeline.gradle.plugin
+    runtimeOnly buildsrcLibs.nexus.publish.gradle.plugin
+    runtimeOnly buildsrcLibs.grails.gradle.plugin
+    runtimeOnly buildsrcLibs.grails.views.gradle.plugin
+    runtimeOnly buildsrcLibs.groovydoc.gradle.plugin
+}

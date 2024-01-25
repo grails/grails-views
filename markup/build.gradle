@@ -1,36 +1,48 @@
-buildscript {
-    repositories {
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-    }
+import io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension
+
+plugins {
+    id 'groovy'
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.grails.grails-plugin'
+    id 'signing'
 }
 
-ext {
-    userOrg = 'grails'
-}
-
-group "org.grails.plugins"
-
-apply plugin: "org.grails.grails-gsp"
-
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
+group = 'org.grails.plugins'
+ext.set('projectDesc', 'Grails Markup Views')
 
 dependencies {
-    api "org.grails:grails-core:$grailsVersion"
-    api project(":views-core")
 
-    testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion"
+    api project(':views-core')
 
-    console "org.grails:grails-console"
+    implementation libs.grails.core
+    implementation libs.grails.rest
+
+    testImplementation libs.spock.core
+    testRuntimeOnly libs.slf4j.nop // Get rid of warning about missing slf4j implementation during test task
 }
 
-springBoot {
-    mainClass.set('grails.plugin.markup.view.Application')
+java {
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
+    withJavadocJar()
+    withSourcesJar()
 }
+
+tasks.named('bootJar') {
+    enabled = false // Don't need a bootJar for plugin
+}
+
+tasks.named('jar', Jar) {
+    enabled = true // Need a jar for plugin
+    archiveClassifier = '' // Don't want the '-plain' classifier
+}
+
+tasks.named('javadocJar', Jar) {
+    from tasks.named('groovydoc')
+}
+
+tasks.named('build') {
+    finalizedBy 'javadocJar', 'sourcesJar'
+}
+
+apply from: rootProject.layout.projectDirectory.file('gradle/grailsCentralPublishing.gradle')

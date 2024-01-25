@@ -1,103 +1,57 @@
-buildscript {
-    repositories {
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "org.grails.plugins:views-gradle:$viewsGradleVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
-    }
+plugins {
+    id 'application'
+    id 'com.bertramlabs.asset-pipeline'
+    id 'groovy'
+    id 'org.grails.grails-gsp'
+    id 'org.grails.grails-web'
 }
 
-version "0.1"
-group "functional.tests"
+group = 'functional.tests'
 
-apply plugin: "eclipse"
-apply plugin: "idea"
-apply plugin: "war"
-apply plugin: "com.bertramlabs.asset-pipeline"
-apply plugin: "org.grails.grails-web"
-apply plugin: "org.grails.grails-gsp"
+dependencies {
 
-// uncommenting fails because we have functional tests for compilation errors
-//apply plugin: "org.grails.plugins.views-json"
-//apply plugin: "org.grails.plugins.views-markup"
+
+    implementation project(':examples-functional-tests-plugin')
+    implementation project(':views-json')
+    implementation project(':views-markup')
+
+    runtimeOnly project(':views-json-templates')
+
+    testImplementation project(':views-json-testing-support')
+
+    implementation 'org.grails:grails-core'
+    implementation 'org.grails:grails-logging'
+    implementation 'org.grails:grails-web-boot'
+
+    implementation 'org.grails:grails-plugin-databinding'
+    implementation 'org.grails:grails-plugin-i18n'
+    implementation 'org.grails:grails-plugin-interceptors'
+    implementation 'org.grails:grails-plugin-rest'
+    implementation 'org.grails:grails-plugin-services'
+    implementation 'org.grails:grails-plugin-url-mappings'
+    implementation 'org.grails:grails-plugin-validation'
+
+    implementation 'org.grails.plugins:gsp'
+    implementation 'org.grails.plugins:hibernate5'
+    implementation libs.grails.datastore.gorm.mongodb // Only used for access to grails.mongodb.geo.Point class
+
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.apache.tomcat:tomcat-jdbc'
+    runtimeOnly libs.assetpipeline
+
+    testImplementation libs.grails.testing.support.core
+    testImplementation libs.micronaut.http.client
+}
 
 assets {
     minifyJs = true
     minifyCss = true
 }
 
-repositories {
-    maven { url "https://repo.grails.org/grails/core" }
-}
-
-configurations.configureEach {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.grails' &&
-                details.requested.name.startsWith('grails-datastore')) {
-
-            if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
-                details.useVersion("$hibernateGormVersion")
-            } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
-                    details.requested.name.equals("grails-datastore-gorm-bson")) {
-                details.useVersion("$mongodbVersion")
-            } else {
-                details.useVersion("$gormVersion")
-            }
-        } else if (details.requested.group == 'org.mongodb' && details.requested.module.name != 'mongodb-driver-rx') {
-            details.useVersion(mongodbDriverVersion)
-        } else if (details.requested.group == 'org.grails.plugins') {
-            if (details.requested.name == 'hibernate5') {
-                details.useVersion(hibernateGormVersion)
-            } else if (details.requested.name == 'mongodb') {
-                details.useVersion(mongodbVersion)
-            }
-        }
-
-    }
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-
-dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-logging"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
-    implementation "org.grails:grails-dependencies"
-    implementation "org.grails:grails-web-boot"
-
-    implementation "org.grails.plugins:hibernate5"
-    implementation "org.grails.plugins:mongodb"
-    implementation "org.grails.plugins:cache"
-    implementation "org.hibernate:hibernate-ehcache"
-    implementation "org.grails.plugins:scaffolding"
-
-    implementation project(":views-json")
-    implementation project(":views-markup")
-    implementation project(":examples-functional-tests-plugin")
-
-    runtimeOnly "org.apache.tomcat:tomcat-jdbc:9.0.13"
-    runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
-    runtimeOnly project(":views-json-templates")
-
-    testImplementation project(":views-json-testing-support")
-
-    testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
-}
-
-integrationTest {
-    testLogging {
-        showStandardStreams = true
-        exceptionFormat = 'full'
-    }
-}
-
-tasks.withType(Test) {
-    useJUnitPlatform()
-    testLogging {
-        showStandardStreams = true
-        exceptionFormat = 'full'
-    }
+java {
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
 }

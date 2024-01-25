@@ -1,11 +1,14 @@
 package grails.views
 
+import groovy.transform.CompileStatic
+
 /**
  * Interface for view configurations
  *
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 interface ViewConfiguration {
     /**
      * @return Should compile statically

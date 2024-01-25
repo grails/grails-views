@@ -1,10 +1,13 @@
 package grails.views
 
+import groovy.transform.CompileStatic
+
 /**
  * Settings and constants for the Groovy view infrastructure
  *
  * @author Graeme Rocher
  */
+@CompileStatic
 interface Views {
 
     /**

@@ -17,3 +17,8 @@ class PlaceController {
         respond new Place(name: "London", location: Point.valueOf(10,10))
     }
 }
+
+class Place {
+    String name
+    Point location
+}

@@ -1,11 +1,14 @@
 package grails.views
 
+import groovy.transform.CompileStatic
+
 /**
  * Interface for scripts that are writable
  *
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 interface WritableScript extends Writable, WriterProvider {
 
     /**

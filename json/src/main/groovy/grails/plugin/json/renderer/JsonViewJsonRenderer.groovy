@@ -7,7 +7,6 @@ import grails.views.mvc.SmartViewResolver
 import grails.views.mvc.renderer.DefaultViewRenderer
 import grails.web.mime.MimeType
 import groovy.transform.CompileStatic
-import org.springframework.web.servlet.ViewResolver
 
 /**
  * A renderer that will lookup a JSON view if it exists and render it, otherwise fallback to default
