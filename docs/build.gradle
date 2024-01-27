@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
+        classpath("org.asciidoctor:asciidoctor-gradle-jvm:4.0.2")
     }
 }
 
