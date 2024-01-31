@@ -29,8 +29,8 @@ project.extensions.configure(PublishingExtension) {
         repositories {
             maven {
                 credentials {
-                    username = System.getenv('ARTIFACTORY_USERNAME') ?: project.findProperty('artifactoryUsername') ?: ''
-                    password = System.getenv("ARTIFACTORY_PASSWORD") ?: project.findProperty('artifactoryPassword') ?: ''
+                    username = project.findProperty('artifactoryUsername') ?: ''
+                    password = project.findProperty('artifactoryPassword') ?: ''
                 }
                 url = group == 'org.grails.plugins' ?
                         uri('https://repo.grails.org/grails/plugins3-snapshots-local') :
