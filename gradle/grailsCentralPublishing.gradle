@@ -4,6 +4,7 @@ ext.set('signing.secretKeyRingFile', project.findProperty('signing.secretKeyRing
 
 def javaComponent = components.named('java')
 project.extensions.configure(PublishingExtension) {
+
     it.publications.create('pluginMaven', MavenPublication) {
         artifactId project.name
         from javaComponent.get()
@@ -21,32 +22,24 @@ project.extensions.configure(PublishingExtension) {
 
             // dependency management shouldn't be included
             try { pomNode.dependencyManagement.replaceNode({}) } catch (Throwable ignore) {}
+        }
+    }
 
-            // simply remove dependencies without a version
-            // version-less dependencies are handled with dependencyManagement
-            // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
-/*
-            pomNode.dependencies.dependency.findAll { it.version.text().isEmpty() }.each {
-                try { it.replaceNode {} } catch (Throwable ignored) {}
+    if (isSnapshot) {
+        repositories {
+            maven {
+                credentials {
+                    username = System.getenv('ARTIFACTORY_USERNAME') ?: project.findProperty('artifactoryUsername') ?: ''
+                    password = System.getenv("ARTIFACTORY_PASSWORD") ?: project.findProperty('artifactoryPassword') ?: ''
+                }
+                url = group == 'org.grails.plugins' ?
+                        uri('https://repo.grails.org/grails/plugins3-snapshots-local') :
+                        uri('https://repo.grails.org/grails/libs-snapshots-local')
             }
-*/
         }
     }
 }
 
-if (isSnapshot) {
-    repositories {
-        maven {
-            credentials {
-                username = System.getenv('ARTIFACTORY_USERNAME') ?: project.findProperty('artifactoryUsername') ?: ''
-                password = System.getenv("ARTIFACTORY_PASSWORD") ?: project.findProperty('artifactoryPassword') ?: ''
-            }
-            url = group == 'org.grails.plugins' ?
-                  uri('https://repo.grails.org/grails/plugins3-snapshots-local') :
-                  uri('https://repo.grails.org/grails/libs-snapshots-local')
-        }
-    }
-}
 
 def mavenPublication = project.extensions.findByType(PublishingExtension).publications.named('pluginMaven')
 afterEvaluate {
