@@ -8,17 +8,16 @@ plugins {
 group = 'org.grails.plugins'
 ext.set('projectDesc', 'Grails Views Gradle Plugin')
 
-configurations.configureEach {
-	// This is a workaround for grails-gradle-plugin exposing a different version of Groovy
-	// then the one used by Gradle. This causes issues with the Groovy compiler.
-	resolutionStrategy.force "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
-}
-
 dependencies {
 	implementation libs.grails.bootstrap
 	implementation libs.grails.gradle.plugin
 	implementation libs.groovy.core
 	implementation libs.spring.boot.gradle.plugin
+
+	// This is a workaround for grails-bootstrap exposing a
+	// different version of groovy-xml than the one used by Gradle.
+	// This causes issues with the Groovy compiler.
+	compileOnly "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
 }
 
 java {
