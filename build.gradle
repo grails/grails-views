@@ -7,7 +7,7 @@ plugins {
 }
 
 version = projectVersion
-ext.set('groovyVersion', System.getenv('CI_GROOVY_VERSION') ?: libs.versions.groovy.get())
+ext.set('grailsVersion', libs.versions.grails.asProvider().get())
 ext.set('isSnapshot', version.endsWith('-SNAPSHOT'))
 ext.set('isReleaseVersion', !isSnapshot)
 ext.set('pomInfo', {
