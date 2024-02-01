@@ -8,6 +8,9 @@ plugins {
 group = 'org.grails'
 ext.set('projectDesc', 'Grails Views Core')
 
+// Groovydoc task requires the Groovy version of Gradle
+configurations.register('groovydocImplementation')
+
 dependencies {
 
     implementation libs.groovy.core
@@ -23,6 +26,10 @@ dependencies {
     api libs.caffeine // Used in public api
 
     testImplementation libs.spock.core
+
+    groovydocImplementation localGroovy(), {
+        because 'The Groovydoc task requires the Groovy version of Gradle'
+    }
 }
 
 java {
@@ -33,6 +40,11 @@ java {
 
 tasks.named('javadocJar', Jar) {
     from tasks.named('groovydoc')
+}
+
+tasks.withType(Groovydoc).configureEach {
+    classpath = configurations.groovydocImplementation
+    groovyClasspath = configurations.groovydocImplementation
 }
 
 apply from: rootProject.layout.projectDirectory.file('gradle/grailsCentralPublishing.gradle')
