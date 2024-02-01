@@ -67,12 +67,13 @@ allprojects {
 
 if (isReleaseVersion) {
     nexusPublishing {
-        String ossUser = System.getenv('SONATYPE_USERNAME') ?: project.findProperty('sonatypeOssUsername') ?: ''
-        String ossPass = System.getenv('SONATYPE_PASSWORD') ?: project.findProperty('sonatypeOssPassword') ?: ''
-        String ossStagingProfileId = System.getenv('SONATYPE_STAGING_PROFILE_ID') ?: project.findProperty('sonatypeOssStagingProfileId') ?: ''
+        String ossUser = project.findProperty('sonatypeOssUsername') ?: ''
+        String ossPass = project.findProperty('sonatypeOssPassword') ?: ''
+        String ossStagingProfileId = project.findProperty('sonatypeOssStagingProfileId') ?: ''
+        String ossRepo = project.findProperty('sonatypeOssRepo') ?: ''
         repositories {
             sonatype {
-                nexusUrl = uri('https://s01.oss.sonatype.org/service/local/')
+                nexusUrl = uri(ossRepo)
                 username = ossUser
                 password = ossPass
                 stagingProfileId = ossStagingProfileId
