@@ -28,6 +28,21 @@ buildCache {
     }
 }
 
+rootProject.name = 'grails-views'
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            // Make it possible to override the Groovy version
+            // via environment variable
+            def groovyVersion = System.getenv('GROOVY_VERSION')
+            if (groovyVersion) {
+                logger.warn "Using custom version $groovyVersion of Groovy due to GROOVY_VERSION being set."
+                version('groovy', groovyVersion)
+            }
+        }
+    }
+}
+
 ['core', 'json', 'docs', 'json-templates', 'json-testing-support', 'markup'].each {dirName ->
     include("views-$dirName")
     project(":views-$dirName").projectDir = file(dirName)
