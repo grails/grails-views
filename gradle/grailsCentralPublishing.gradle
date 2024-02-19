@@ -1,12 +1,11 @@
 ext.set('signing.keyId', project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
 ext.set('signing.password', project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
-ext.set('signing.secretKeyRingFile', project.findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
 
 def javaComponent = components.named('java')
-project.extensions.configure(PublishingExtension) {
+project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
 
-    it.publications.create('pluginMaven', MavenPublication) {
-        artifactId project.name
+    pe.publications.register('pluginMaven', MavenPublication) {
+        artifactId = project.name
         from javaComponent.get()
         versionMapping {
             usage('java-api') { fromResolutionOf('runtimeClasspath') }
@@ -40,12 +39,11 @@ project.extensions.configure(PublishingExtension) {
     }
 }
 
-
-def mavenPublication = project.extensions.findByType(PublishingExtension).publications.named('pluginMaven')
 afterEvaluate {
-    project.extensions.configure(SigningExtension) {
-        it.required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
-        it.sign mavenPublication.get()
+    def mavenPublication = project.extensions.findByType(PublishingExtension).publications.named('pluginMaven')
+    project.extensions.configure(SigningExtension) { SigningExtension se ->
+        se.required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
+        se.sign mavenPublication.get()
     }
 }
 
