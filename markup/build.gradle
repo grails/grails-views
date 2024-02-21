@@ -1,5 +1,3 @@
-import io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension
-
 plugins {
     id 'groovy'
     id 'java-library'
