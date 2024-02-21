@@ -32,7 +32,7 @@ ext.set('pomInfo', {
         delegate.developer {
             delegate.id 'puneetbehl'
             delegate.name 'Puneet Behl'
-            delegate.email 'behlp@objectcomputing.com'
+            delegate.email 'behlp@unityfoundation.io'
         }
     }
 })
