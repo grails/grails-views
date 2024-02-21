@@ -107,7 +107,8 @@ if (location.href.indexOf('is-external=true') == -1) {
             <hr>
             <br>
 
-<pre>@org.springframework.boot.context.properties.ConfigurationProperties(value: grails.views.json)
+<pre>@groovy.transform.CompileStatic
+@org.springframework.boot.context.properties.ConfigurationProperties(value: grails.views.json)
 class JsonViewConfiguration
 extends java.lang.Object
 implements <a href='../../../../grails/views/GenericViewConfiguration.html'>GenericViewConfiguration</a></pre>

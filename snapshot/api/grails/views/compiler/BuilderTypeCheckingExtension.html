@@ -102,7 +102,8 @@ if (location.href.indexOf('is-external=true') == -1) {
             <hr>
             <br>
 
-<pre>abstract&nbsp;class BuilderTypeCheckingExtension
+<pre>@groovy.transform.CompileStatic
+abstract&nbsp;class BuilderTypeCheckingExtension
 extends org.codehaus.groovy.transform.stc.GroovyTypeCheckingExtensionSupport$TypeCheckingDSL</pre>
 
     <p> An abstract type checking extension for view DSLs to implement <DL><DT><B>Authors:</B></DT><DD>Graeme Rocher</DD></DL><DL><DT><B>Since:</B></DT><DD>1.0</DD></DL></p>
@@ -453,6 +454,7 @@ extends org.codehaus.groovy.transform.stc.GroovyTypeCheckingExtensionSupport$Typ
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>@java.lang.Override
+@groovy.transform.CompileDynamic
 java.lang.Object <strong>run</strong>()</h4>
                                 <p></p>
                             </li>
