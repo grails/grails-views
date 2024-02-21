@@ -1,33 +1,79 @@
-buildscript {
+import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
+
+plugins {
+    id 'groovy'
+    id 'io.github.gradle-nexus.publish-plugin'
+    id 'org.asciidoctor.jvm.convert'
+}
+
+version = projectVersion
+ext.set('grailsVersion', libs.versions.grails.asProvider().get())
+ext.set('isSnapshot', version.endsWith('-SNAPSHOT'))
+ext.set('isReleaseVersion', !isSnapshot)
+ext.set('pomInfo', {
+    delegate.url 'https://views.grails.org/latest/'
+    delegate.licenses {
+        delegate.license {
+            delegate.name 'The Apache Software License, Version 2.0'
+            delegate.url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+        }
+    }
+    delegate.scm {
+        delegate.url 'https://github.com/grails/grails-views/'
+        delegate.connection 'scm:git:git://github.com/grails/grails-views'
+        delegate.developerConnection 'scm:git:ssh://github.com:grails/grails-views'
+    }
+    delegate.developers {
+        delegate.developer {
+            delegate.id 'graemerocher'
+            delegate.name 'Graeme Rocher'
+            delegate.email 'graeme.rocher@gmail.com'
+        }
+        delegate.developer {
+            delegate.id 'puneetbehl'
+            delegate.name 'Puneet Behl'
+            delegate.email 'behlp@unityfoundation.io'
+        }
+    }
+})
+
+allprojects {
+    version = rootProject.version
     repositories {
-        maven { url "https://repo.grails.org/grails/core" }
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenLocal() // Used by Groovy Joint workflow github action after building Groovy
+        mavenCentral()
+        maven { url = 'https://repo.grails.org/grails/core' }
+        if (libs.versions.groovy.get().endsWith('-SNAPSHOT')) {
+            maven {
+                name = 'JFrog Groovy snapshot repo'
+                url = 'https://groovy.jfrog.io/artifactory/libs-snapshot-local'
+            }
+        }
     }
-    dependencies {
-        classpath "io.github.gradle-nexus:publish-plugin:1.3.0"
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+        testLogging { events 'passed', 'skipped', 'failed', 'standardOut', 'standardError' }
+    }
+    tasks.withType(Jar).configureEach {
+        manifest.attributes(
+                'Built-By': System.properties['user.name'],
+                'Created-By': System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
+                'Implementation-Title': project.findProperty('projectDesc') ?: 'Grails Views',
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'grails.org'
+        )
     }
 }
-
-ext {
-    isReleaseVersion = !project.projectVersion.endsWith('-SNAPSHOT')
-    grailsVersion = project.grailsVersion
-    userOrg = "grails"
-}
-
-apply plugin:'idea'
 
 if (isReleaseVersion) {
-    apply plugin: 'maven-publish'
-    apply plugin: "io.github.gradle-nexus.publish-plugin"
-
     nexusPublishing {
+        String ossUser = project.findProperty('sonatypeOssUsername') ?: ''
+        String ossPass = project.findProperty('sonatypeOssPassword') ?: ''
+        String ossStagingProfileId = project.findProperty('sonatypeOssStagingProfileId') ?: ''
+        String ossRepo = project.findProperty('sonatypeOssRepo') ?: ''
         repositories {
             sonatype {
-                def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.hasProperty("sonatypeOssUsername") ? project.sonatypeOssUsername : ''
-                def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
-                def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileId") ? project.sonatypeOssStagingProfileId : ''
-                nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+                nexusUrl = uri(ossRepo)
                 username = ossUser
                 password = ossPass
                 stagingProfileId = ossStagingProfileId
@@ -36,89 +82,7 @@ if (isReleaseVersion) {
     }
 }
 
-subprojects { subproject->
-
-    version subproject.projectVersion
-
-    ext['groovyVersion'] = System.getenv('CI_GROOVY_VERSION') ?: project.groovyVersion
-
-    subproject.configurations {
-        all {
-            resolutionStrategy {
-                force 'org.yaml:snakeyaml:1.33'
-                force 'org.codehaus.groovy:groovy-xml:3.0.13'
-                force 'org.codehaus.groovy:groovy-sql:3.0.13'
-
-                eachDependency { DependencyResolveDetails details ->
-                    if (details.requested.group == 'org.codehaus.groovy' &&
-                            !(details.requested.name in ['groovy-xml', 'groovy-sql'])) {
-                        details.useVersion(groovyVersion)
-                    }
-                }
-            }
-        }
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-
-    if (subproject.name.startsWith('examples') || subproject.name.endsWith('docs')) {
-        return
-    }
-
-    ext.isGrailsPlugin = subproject.name in ['views-markup', 'views-json']
-
-    apply plugin: 'eclipse'
-    apply plugin: 'idea'
-    apply plugin: 'java-library'
-    apply plugin: 'groovy'
-    apply plugin: 'maven-publish'
-    apply plugin: 'signing'
-
-    if (ext.isGrailsPlugin) {
-        apply plugin: "org.grails.grails-plugin"
-    }
-
-    sourceCompatibility = 1.11
-    targetCompatibility = 1.11
-
-    apply from: '../publishing/grailsCentralPublishing.gradle'
-
-
-    if (subproject.name in ["views-core", "views-json", "views-markup", "views-json-testing-support"]) {
-
-        configurations {
-            documentation
-        }
-
-        dependencies {
-            documentation "org.fusesource.jansi:jansi:$jansiVersion"
-            documentation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
-            documentation "info.picocli:picocli:4.7.5"
-            documentation "com.github.javaparser:javaparser-core:$javaParserCoreVersion"
-
-            testImplementation "org.spockframework:spock-core:$spockVersion"
-        }
-
-        tasks.withType(Test) {
-            useJUnitPlatform()
-            testLogging {
-                showStandardStreams = true
-                exceptionFormat = 'full'
-            }
-            configure {
-                retry {
-                    maxRetries = 2
-                    maxFailures = 20
-                    failOnPassedAfterRetry = true
-                }
-            }
-        }
-
-        groovydoc.classpath = configurations.documentation
-    }
-
+// Do not generate extra load on Nexus with new staging repository if signing fails
+tasks.withType(InitializeNexusStagingRepository).configureEach {
+    shouldRunAfter = tasks.withType(Sign)
 }

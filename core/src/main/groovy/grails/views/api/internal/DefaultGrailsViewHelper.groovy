@@ -6,7 +6,6 @@ import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileStatic
 import org.springframework.context.MessageSourceResolvable
 import org.springframework.context.NoSuchMessageException
-import org.springframework.context.support.DefaultMessageSourceResolvable
 
 /**
  * Default methods for views, additional methods can be added via traits

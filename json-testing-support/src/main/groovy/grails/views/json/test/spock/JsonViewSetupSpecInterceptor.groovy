@@ -25,21 +25,21 @@ class JsonViewSetupSpecInterceptor implements IMethodInterceptor {
     @CompileStatic(TypeCheckingMode.SKIP)
     protected void setup(JsonViewUnitTest test) {
 
-        GrailsApplication grailsApplication = test.grailsApplication
-        def config = grailsApplication.config
+        GrailsApplication grailsApp = test.grailsApplication
+        def config = grailsApp.config
 
         test.defineBeans {
             grailsLinkGenerator(DefaultLinkGenerator, config?.grails?.serverURL ?: "http://localhost:8080")
             localeResolver(SessionLocaleResolver)
             grailsUrlMappingsHolder(UrlMappingsHolderFactoryBean) {
-                grailsApplication = grailsApplication
+                grailsApplication = grailsApp
             }
             grailsDomainClassMappingContext(KeyValueMappingContext, 'test') {
                 canInitializeEntities = true
             }
         }
         JsonViewGrailsPlugin plugin = new JsonViewGrailsPlugin()
-        plugin.setApplicationContext(grailsApplication.mainContext)
+        plugin.setApplicationContext(grailsApp.mainContext)
         test.defineBeans(plugin)
     }
 }

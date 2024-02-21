@@ -1,0 +1,56 @@
+ext.set('signing.keyId', project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
+ext.set('signing.password', project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
+
+def javaComponent = components.named('java')
+project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
+
+    pe.publications.register('pluginMaven', MavenPublication) {
+        artifactId = project.name
+        from javaComponent.get()
+        versionMapping {
+            usage('java-api') { fromResolutionOf('runtimeClasspath') }
+            usage('java-runtime') { fromResolutionResult() }
+        }
+        pom {
+            name = 'Grails Views'
+            description = 'Provides additional view technologies to the Grails framework, including JSON and Markup views.'
+        }
+        pom.withXml {
+            def pomNode = asNode()
+            pomNode.children().last() + pomInfo
+
+            // dependency management shouldn't be included
+            try { pomNode.dependencyManagement.replaceNode({}) } catch (Throwable ignore) {}
+        }
+    }
+
+    if (isSnapshot) {
+        repositories {
+            maven {
+                credentials {
+                    username = project.findProperty('artifactoryUsername') ?: ''
+                    password = project.findProperty('artifactoryPassword') ?: ''
+                }
+                url = group == 'org.grails.plugins' ?
+                        uri('https://repo.grails.org/grails/plugins3-snapshots-local') :
+                        uri('https://repo.grails.org/grails/libs-snapshots-local')
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    def mavenPublication = project.extensions.findByType(PublishingExtension).publications.named('pluginMaven')
+    project.extensions.configure(SigningExtension) { SigningExtension se ->
+        se.required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
+        se.sign mavenPublication.get()
+    }
+}
+
+tasks.withType(Sign).configureEach {
+    onlyIf { isReleaseVersion }
+}
+
+tasks.register('install') {
+    dependsOn 'publishToMavenLocal'
+}

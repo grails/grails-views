@@ -2,11 +2,13 @@ package grails.plugin.json.view.api
 
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
+import groovy.transform.CompileStatic
 
 /**
  * @author Graeme Rocher
  * @since 1.1.0
  */
+@CompileStatic
 interface HalViewHelper {
 
     /**

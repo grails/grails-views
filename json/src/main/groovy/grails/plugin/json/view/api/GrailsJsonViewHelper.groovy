@@ -3,6 +3,7 @@ package grails.plugin.json.view.api
 import grails.plugin.json.builder.JsonOutput
 import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.views.api.GrailsViewHelper
+import groovy.transform.CompileStatic
 
 /**
  * Additional methods specific to JSON views
@@ -10,6 +11,7 @@ import grails.views.api.GrailsViewHelper
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 interface GrailsJsonViewHelper extends GrailsViewHelper {
 
     /**

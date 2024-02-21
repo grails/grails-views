@@ -11,7 +11,9 @@ import functional.tests.Site
 import functional.tests.Team
 import functional.tests.Proxy
 import grails.gorm.transactions.Transactional
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class BootStrap {
 
     def init = { servletContext ->
@@ -48,8 +50,5 @@ class BootStrap {
                 .addToEmployees(new Employee(name: "James Kleeh"))
                 .addToEmployees(new Employee(name: "Iván López"))
                 .save(flush: true, failOnError: true)
-    }
-
-    def destroy = {
     }
 }

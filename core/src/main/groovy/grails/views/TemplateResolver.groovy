@@ -1,6 +1,7 @@
 package grails.views
 
 import groovy.text.Template
+import groovy.transform.CompileStatic
 
 /**
  * Interface for resolving templates
@@ -8,6 +9,7 @@ import groovy.text.Template
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 interface TemplateResolver {
 
     /**

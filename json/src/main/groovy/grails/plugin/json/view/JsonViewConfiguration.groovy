@@ -2,6 +2,7 @@ package grails.plugin.json.view
 
 import grails.views.GenericViewConfiguration
 import grails.web.mime.MimeType
+import groovy.transform.CompileStatic
 import org.springframework.beans.BeanUtils
 import org.springframework.boot.context.properties.ConfigurationProperties
 
@@ -13,6 +14,7 @@ import java.beans.PropertyDescriptor
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 @ConfigurationProperties('grails.views.json')
 class JsonViewConfiguration implements GenericViewConfiguration {
 

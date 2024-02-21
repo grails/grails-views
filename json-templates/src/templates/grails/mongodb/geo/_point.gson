@@ -2,10 +2,9 @@
  * A template for rendering a GeoJSON Point in MongoDB
  */
 import grails.mongodb.geo.*
+import groovy.transform.Field
 
-model {
-    Point point
-}
+@Field Point point
 
 json {
     type "Point"

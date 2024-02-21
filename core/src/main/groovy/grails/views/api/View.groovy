@@ -1,9 +1,12 @@
 package grails.views.api
 
+import groovy.transform.CompileStatic
+
 /**
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 trait View {
 
     /**

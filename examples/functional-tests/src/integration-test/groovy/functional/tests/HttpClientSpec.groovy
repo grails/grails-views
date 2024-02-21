@@ -19,7 +19,7 @@ class HttpClientSpec extends Specification {
 
     @RunOnce
     @BeforeEach
-    def init() {
+    void init() {
         this.baseUrl = "http://localhost:$serverPort"
         this.client = HttpClient.create(new URL(baseUrl))
     }

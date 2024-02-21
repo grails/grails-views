@@ -1,47 +1,58 @@
-group "org.grails.plugins"
-
-ext {
-    userOrg = 'grails'
-    repo = 'plugins'
-    isGrailsPlugin = false
-    projectDesc = "JSON Views Templates"
+plugins {
+    id 'groovy'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
-repositories {
-    mavenCentral()
-    maven { url "https://repo.grails.org/grails/core" }
-}
+group = 'org.grails.plugins'
+ext.set('projectDesc', 'JSON Views Templates')
 
 dependencies {
+
     api project(':views-json')
-    compileOnly "org.grails:grails-plugin-rest:$grailsVersion"
-    compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
-    compileOnly "org.grails:grails-datastore-gorm-mongodb:$mongodbVersion"
+
+    // Should this be api, implementation, compileOnly or provided?
+    // The templates expect classes from this library as models
+    // but I'm not sure in what context these templates are used
+    // They were previously compileOnly
+    implementation libs.grails.datastore.gorm.mongodb
+
+    compileOnly libs.slf4j.nop // Get rid of warning about missing slf4j implementation during compileGsonViews task
 }
 
-def compileViews = tasks.register("compileViews", JavaExec) {
-    inputs.files 'src/templates'
-    outputs.dir 'build/classes/groovy/main'
-    mainClass.set("grails.plugin.json.view.JsonViewCompiler")
+def sourceDir = layout.projectDirectory.dir('src/templates')
+def outputDir = layout.buildDirectory.dir('classes/groovy/main')
+sourceSets {
+    main {
+        groovy {
+            srcDirs = [sourceDir]
+        }
+    }
+}
+
+tasks.register('compileViews', JavaExec) {
+    inputs.dir sourceDir
+    outputs.dir outputDir
+    mainClass = 'grails.plugin.json.view.JsonViewCompiler'
     classpath configurations.compileClasspath + configurations.runtimeClasspath
-    args("src/templates", "build/classes/groovy/main", "1.11", ' ', ' ', "none", "UTF-8")
+    args(sourceDir.asFile, outputDir.get().asFile, libs.versions.java.baseline.get(), ' ', ' ', 'none', 'UTF-8')
 }
 
-if (!tasks.findByName("sourcesJar")) {
-    tasks.register("sourcesJar", Jar) {
-        archiveClassifier.set('sources')
-        archiveClassifier.convention('sources')
-        from 'src/templates'
-    }
+tasks.named('classes') {
+    dependsOn 'compileViews'
 }
 
-if (!tasks.findByName("javadocJar")) {
-// no javadocs, just a workaround
-    tasks.register("javadocJar", Jar) {
-        archiveClassifier.set('javadoc')
-        archiveClassifier.convention('javadoc')
-        from 'src/templates'
-    }
+java {
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
+    withSourcesJar()
+    withJavadocJar()
 }
 
-classes.dependsOn(compileViews)
+// There are no javadocs for this project.
+// This is a workaround as a javadoc jar is required for publishing.
+tasks.named('javadocJar', Jar) {
+    from 'src/templates'
+}
+
+apply from: rootProject.layout.projectDirectory.file('gradle/grailsCentralPublishing.gradle')

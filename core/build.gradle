@@ -1,49 +1,50 @@
-buildscript {
-    repositories {
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "io.github.gradle-nexus:publish-plugin:1.3.0"
-    }
+plugins {
+    id 'groovy'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
-group "org.grails"
+group = 'org.grails'
+ext.set('projectDesc', 'Grails Views Core')
 
-ext {
-    userOrg = 'grails'
-    repo = 'grails-core'
-    isGrailsPlugin = false
-    projectDesc = "Grails Views Core"
-}
-
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
-
-repositories {
-    mavenCentral()
-    maven { url "https://repo.grails.org/grails/core" }
-}
+// Groovydoc task requires the Groovy version of Gradle
+configurations.register('groovydocImplementation')
 
 dependencies {
-    api "org.grails:grails-encoder:$grailsVersion"
-    api "org.grails:grails-web-common:$grailsVersion"
-    api "org.grails:grails-web-url-mappings:$grailsVersion"
-    api "org.grails:grails-plugin-rest:$grailsVersion"
-    api "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-    api "javax.servlet:javax.servlet-api:$servletApiVersion"
-}
 
-if (!tasks.findByName("sourcesJar")) {
-    tasks.register("sourcesJar", Jar) {
-        classifier = 'sources'
-        from project.sourceSets.main.allSource
+    implementation libs.groovy.core
+
+    implementation libs.grails.core
+    implementation libs.grails.web.urlmappings
+    implementation libs.grails.mimetypes
+    implementation libs.grails.datastore.gorm.support
+    implementation libs.grails.rest
+
+    implementation libs.slf4j.api
+
+    api libs.caffeine // Used in public api
+
+    testImplementation libs.spock.core
+
+    groovydocImplementation localGroovy(), {
+        because 'The Groovydoc task requires the Groovy version of Gradle'
     }
 }
 
-if (!tasks.findByName("javadocJar")) {
-    tasks.register("javadocJar", Jar) {
-        classifier = 'javadoc'
-        from groovydoc.outputs
-    }
+java {
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
+    withJavadocJar()
+    withSourcesJar()
 }
+
+tasks.named('javadocJar', Jar) {
+    from tasks.named('groovydoc')
+}
+
+tasks.withType(Groovydoc).configureEach {
+    classpath = configurations.groovydocImplementation
+    groovyClasspath = configurations.groovydocImplementation
+}
+
+apply from: rootProject.layout.projectDirectory.file('gradle/grailsCentralPublishing.gradle')

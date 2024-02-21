@@ -3,6 +3,6 @@ import org.bson.types.*
 import groovy.transform.*
 import grails.plugin.json.builder.*
 
-@Field ObjectId objectId
+@Field ObjectId objectId = null
 
-json(JsonOutput.unescaped("\"${objectId.toString()}\""))
+json(JsonOutput.unescaped("\"${objectId?.toString()}\""))

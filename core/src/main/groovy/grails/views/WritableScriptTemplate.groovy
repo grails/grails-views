@@ -120,8 +120,7 @@ class WritableScriptTemplate implements Template {
     @Override
     Writable make(Map binding) {
 
-        WritableScript writableTemplate = templateClass
-                                    .newInstance()
+        WritableScript writableTemplate = templateClass.getDeclaredConstructor().newInstance()
         writableTemplate.viewTemplate = (GrailsViewTemplate)this
         writableTemplate.prettyPrint = prettyPrint
         if(!binding.isEmpty()) {

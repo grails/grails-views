@@ -107,7 +107,7 @@ trait JsonView extends GrailsView {
      * @return
      * @throws IOException
      */
-    public Object json(Map m) throws IOException {
+    Object json(Map m) throws IOException {
         json.call m
     }
 

@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.16.1"
+    id 'com.gradle.enterprise' version '3.16.1'
     id 'com.gradle.common-custom-user-data-gradle-plugin' version '1.12.1'
 }
 
@@ -8,7 +8,7 @@ gradleEnterprise {
     buildScan {
         publishAlwaysIf(System.getenv('CI') == 'true')
         publishIfAuthenticated()
-        uploadInBackground = System.getenv("CI") == null
+        uploadInBackground = System.getenv('CI') == null
         capture {
             taskInputFiles = true
         }
@@ -25,22 +25,33 @@ buildCache {
             username = System.getenv('GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER')
             password = System.getenv('GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY')
         }
-    }}
-
-
-['core',
- 'json',
- 'markup',
- 'gradle',
- 'docs',
- 'json-templates',
- 'json-testing-support'].each {
-    include("views-$it")
-    project(":views-$it").projectDir = new File(settingsDir, it)
+    }
 }
 
-include "examples-functional-tests"
-project(":examples-functional-tests").projectDir = new File(settingsDir, "examples/functional-tests")
+rootProject.name = 'grails-views'
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            // Make it possible to override the Groovy version
+            // via environment variable
+            def groovyVersion = System.getenv('GROOVY_VERSION')
+            if (groovyVersion) {
+                logger.warn "Using custom version $groovyVersion of Groovy due to GROOVY_VERSION being set."
+                version('groovy', groovyVersion)
+            }
+        }
+    }
+}
 
-include "examples-functional-tests-plugin"
-project(":examples-functional-tests-plugin").projectDir = new File(settingsDir, "examples/functional-tests-plugin")
+['core', 'json', 'docs', 'json-templates', 'json-testing-support', 'markup'].each {dirName ->
+    include("views-$dirName")
+    project(":views-$dirName").projectDir = file(dirName)
+}
+
+include 'views-gradle'
+project(':views-gradle').projectDir = file('gradle-plugin')
+
+file('examples').eachDir { dir ->
+    include "examples-$dir.name"
+    project(":examples-$dir.name").projectDir = dir
+}

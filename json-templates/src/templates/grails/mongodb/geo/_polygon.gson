@@ -2,10 +2,9 @@
  * A template for rendering a GeoJSON Polygon in MongoDB
  */
 import grails.mongodb.geo.*
+import groovy.transform.Field
 
-model {
-    Polygon polygon
-}
+@Field Polygon polygon
 
 json {
     type "Polygon"

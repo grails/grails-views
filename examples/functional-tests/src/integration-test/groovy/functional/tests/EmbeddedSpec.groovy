@@ -15,7 +15,7 @@ class EmbeddedSpec extends HttpClientSpec {
 
     @RunOnce
     @BeforeEach
-    def init() {
+    void init() {
         super.init()
     }
 

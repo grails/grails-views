@@ -1,10 +1,11 @@
 package grails.views
 
-import grails.util.GrailsUtil
+
 import org.grails.config.CodeGenConfig
 import org.springframework.beans.BeanUtils
-import java.beans.PropertyDescriptor
 import spock.lang.Specification
+
+import java.beans.PropertyDescriptor
 
 class GenericViewConfigurationSpec extends Specification {
 

@@ -15,7 +15,7 @@ class TeamSpec extends HttpClientSpec {
 
     @RunOnce
     @BeforeEach
-    def init() {
+    void init() {
         super.init()
     }
 

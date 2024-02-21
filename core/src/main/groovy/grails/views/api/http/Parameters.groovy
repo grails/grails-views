@@ -1,11 +1,14 @@
 package grails.views.api.http
 
+import groovy.transform.CompileStatic
+
 /**
  * Represents HTTP parameters
  *
  * @author Graeme Rocher
  * @since 1.1.0
  */
+@CompileStatic
 interface Parameters {
 
     /**

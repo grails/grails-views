@@ -1,8 +1,11 @@
 package grails.views.api.http
 
+import groovy.transform.CompileStatic
+
 /**
  * Allows access to request properties
  */
+@CompileStatic
 interface Request {
     /**
      * @return The context path

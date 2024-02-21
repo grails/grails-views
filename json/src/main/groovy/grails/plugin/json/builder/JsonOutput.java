@@ -28,6 +28,7 @@ import org.apache.groovy.json.internal.CharBuf;
 import org.apache.groovy.json.internal.Chr;
 import org.grails.buffer.FastStringWriter;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -35,8 +36,8 @@ import java.util.*;
 /**
  * Temporary fork of {@link groovy.json.JsonOutput} until Groovy 2.5.0 is out.
  *
- * Class responsible for the actual String serialization of the possible values of a JSON structure.
- * This class can also be used as a category, so as to add <code>toJson()</code> methods to various types.
+ * <p>Class responsible for the actual String serialization of the possible values of a JSON structure.
+ * This class can also be used as a category, to add <code>toJson()</code> methods to various types.
  *
  * @author Guillaume Laforge
  * @author Roshan Dawrani
@@ -193,7 +194,7 @@ public class JsonOutput {
 
         JsonLexer lexer = new JsonLexer(new StringReader(jsonPayload));
         // Will store already created indents.
-        Map<Integer, char[]> indentCache = new HashMap<Integer, char[]>();
+        Map<Integer, char[]> indentCache = new HashMap<>();
         while (lexer.hasNext()) {
             JsonToken token = lexer.next();
             switch (token.getType()) {
@@ -236,7 +237,7 @@ public class JsonOutput {
                 case STRING:
                     String textStr = token.getText();
                     String textWithoutQuotes = textStr.substring(1, textStr.length() - 1);
-                    if (textWithoutQuotes.length() > 0) {
+                    if (!textWithoutQuotes.isEmpty()) {
                         output.addJsonEscapedString(textWithoutQuotes);
                     } else {
                         output.addQuoted(Chr.array());
@@ -281,7 +282,7 @@ public class JsonOutput {
      * Represents unescaped JSON
      */
     public static class JsonUnescaped {
-        private CharSequence text;
+        private final CharSequence text;
 
         public JsonUnescaped(CharSequence text) {
             this.text = text;

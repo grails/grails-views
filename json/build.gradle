@@ -1,59 +1,63 @@
-import org.grails.gradle.plugin.web.gsp.GroovyPageCompileTask
-
-buildscript {
-    repositories {
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "io.github.gradle-nexus:publish-plugin:1.3.0"
-    }
+plugins {
+    id 'java-library'
+    id 'groovy'
+    id 'org.grails.grails-plugin'
+    id 'maven-publish'
+    id 'signing'
 }
 
-group "org.grails.plugins"
-
-apply plugin: "org.grails.grails-gsp"
-
-configurations.configureEach {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if(details.requested.group == 'org.grails' &&
-                    details.requested.name.startsWith('grails-datastore')) {
-
-                if (details.requested.name.equals("grails-datastore-gorm-hibernate5")) {
-                    details.useVersion("$hibernateGormVersion")
-                } else if (details.requested.name.startsWith("grails-datastore-gorm-mongodb") ||
-                        details.requested.name.equals("grails-datastore-gorm-bson")) {
-                    details.useVersion("$mongodbVersion")
-                } else {
-                    details.useVersion("$gormVersion")
-                }
-            }
-
-        }
-    }
-}
+group = 'org.grails.plugins'
+ext.set('projectDesc', 'Grails JSON Views')
 
 dependencies {
-    api "org.grails:grails-core:$grailsVersion"
-    api project(":views-core")
 
-    testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion"
-    testImplementation "org.grails:grails-gorm-testing-support:$testingSupportVersion"
-    testImplementation "org.grails:grails-datastore-gorm-hibernate5"
-    testRuntimeOnly "org.javassist:javassist:3.30.2-GA"
+    api project(':views-core')
 
-    console "org.grails:grails-console"
+    implementation libs.grails.core
+    implementation libs.grails.rest
+    implementation libs.groovy.json
+
+    testImplementation libs.grails.testing.support.core
+    testImplementation libs.grails.testing.support.gorm
+    testImplementation libs.grails.datastore.gorm.hibernate5
+    testImplementation libs.spock.core
+
+    testRuntimeOnly libs.slf4j.nop // Get rid of warning about missing slf4j implementation during test task
 }
 
-tasks.withType(GroovyPageCompileTask) {
-    classpath += configurations.compileClasspath
-}
-
-jar {
-  exclude "*.gson"
+java {
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
+    withJavadocJar()
+    withSourcesJar()
 }
 
 springBoot {
-    mainClass.set('grails.plugin.json.view.Application')
+    // Project has 2 classes with main methods, so we need to specify which one to select
+    mainClass = 'grails.plugin.json.view.Application'
 }
+
+tasks.named('bootJar') {
+    enabled = false // Don't need a bootJar for plugin
+}
+
+def testArtifacts = ['*.gson', 'circular/**']
+
+tasks.named('jar', Jar) {
+    enabled = true // Need a jar for plugin
+    archiveClassifier = '' // Don't want the '-plain' classifier
+    exclude testArtifacts
+}
+
+tasks.named('sourcesJar', Jar) {
+    exclude testArtifacts
+}
+
+tasks.named('javadocJar', Jar) {
+    from tasks.named('groovydoc')
+}
+
+tasks.named('build') {
+    finalizedBy 'javadocJar', 'sourcesJar'
+}
+
+apply from: rootProject.layout.projectDirectory.file('gradle/grailsCentralPublishing.gradle')

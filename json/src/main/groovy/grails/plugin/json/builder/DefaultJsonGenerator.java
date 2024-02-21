@@ -57,8 +57,7 @@ import static grails.plugin.json.builder.JsonOutput.OPEN_BRACKET;
 
 /**
  * Temporary fork of DefaultJsonGenerator until Groovy 2.5.0 is out.
- *
- * A JsonGenerator that can be configured with various {@link JsonGenerator.Options}.
+ * <p>A JsonGenerator that can be configured with various {@link JsonGenerator.Options}.
  * If the default options are sufficient consider using the static {@code JsonOutput.toJson}
  * methods.
  *
@@ -72,9 +71,9 @@ public class DefaultJsonGenerator implements JsonGenerator {
     protected final String dateFormat;
     protected final Locale dateLocale;
     protected final TimeZone timezone;
-    protected final Set<Converter> converters = new LinkedHashSet<Converter>();
-    protected final Set<String> excludedFieldNames = new HashSet<String>();
-    protected final Set<Class<?>> excludedFieldTypes = new HashSet<Class<?>>();
+    protected final Set<Converter> converters = new LinkedHashSet<>();
+    protected final Set<String> excludedFieldNames = new HashSet<>();
+    protected final Set<Class<?>> excludedFieldTypes = new HashSet<>();
 
     protected DefaultJsonGenerator(Options options) {
         excludeNulls = options.excludeNulls;
@@ -236,13 +235,7 @@ public class DefaultJsonGenerator implements JsonGenerator {
         } else if (File.class.isAssignableFrom(objectClass)) {
             Map<?, ?> properties = getObjectProperties(object);
             //Clean up all recursive references to File objects
-            Iterator<? extends Map.Entry<?, ?>> iterator = properties.entrySet().iterator();
-            while(iterator.hasNext()) {
-                Map.Entry<?,?> entry = iterator.next();
-                if(entry.getValue() instanceof File) {
-                    iterator.remove();
-                }
-            }
+            properties.entrySet().removeIf(entry -> entry.getValue() instanceof File);
             writeMap(properties, buffer);
         } else {
             Map<?, ?> properties = getObjectProperties(object);
@@ -393,7 +386,7 @@ public class DefaultJsonGenerator implements JsonGenerator {
         buffer.addChar(OPEN_BRACE);
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             if (entry.getKey() == null) {
-                throw new IllegalArgumentException("Maps with null keys can\'t be converted to JSON");
+                throw new IllegalArgumentException("Maps with null keys can't be converted to JSON");
             }
             String key = entry.getKey().toString();
             Object value = entry.getValue();
@@ -502,12 +495,12 @@ public class DefaultJsonGenerator implements JsonGenerator {
             }
             Class<?> param1 = closure.getParameterTypes()[0];
             if (!param1.isAssignableFrom(type)) {
-                throw new IllegalArgumentException("Expected first parameter to be of type: " + type.toString());
+                throw new IllegalArgumentException("Expected first parameter to be of type: " + type);
             }
             if (paramCount > 1) {
                 Class<?> param2 = closure.getParameterTypes()[1];
                 if (!param2.isAssignableFrom(String.class)) {
-                    throw new IllegalArgumentException("Expected second parameter to be of type: " + String.class.toString());
+                    throw new IllegalArgumentException("Expected second parameter to be of type: " + String.class);
                 }
             }
             this.type = type;

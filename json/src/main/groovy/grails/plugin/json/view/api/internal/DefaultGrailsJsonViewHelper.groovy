@@ -616,7 +616,7 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                             }
                         } else {
                             jsonDelegate.call(propertyName, (Iterable)value) { child ->
-                                Map idProperties = getValidIdProperties(associatedEntity, child, incs, excs, "${qualified}.")
+                                Map idProperties = getValidIdProperties(associatedEntity, child, incs, excs, "${qualified}.") as Map
                                 if (idProperties.size() > 0) {
                                     renderEntityId((StreamingJsonBuilder.StreamingJsonDelegate) getDelegate(), processedObjects, incs, excs, "${qualified}.", isDeep, renderNulls, expandProperties, idProperties)
                                 } else {
@@ -764,7 +764,6 @@ class DefaultGrailsJsonViewHelper extends DefaultJsonViewHelper implements Grail
                 return out
             }
         }
-
     }
 
     @Override

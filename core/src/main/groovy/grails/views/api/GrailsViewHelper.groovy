@@ -1,12 +1,14 @@
 package grails.views.api
 
 import grails.web.mapping.LinkGenerator
+import groovy.transform.CompileStatic
 
 /**
  * Methods available via the 'g' namespace in views
  *
  * @author Graeme Rocher
  */
+@CompileStatic
 interface GrailsViewHelper extends LinkGenerator {
 
 

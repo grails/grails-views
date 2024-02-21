@@ -1,11 +1,14 @@
 package grails.views
 
+import groovy.transform.CompileStatic
+
 /**
  * A ViewUriResolver is response for response template and view URIs using Grails' conventions.
  *
  *
  * @author Graeme Rocher
  */
+@CompileStatic
 interface ViewUriResolver {
     /**
      * Resolves a template URI for the given path

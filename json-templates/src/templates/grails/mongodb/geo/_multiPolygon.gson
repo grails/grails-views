@@ -2,10 +2,9 @@
  * A template for rendering a GeoJSON MultiPoint in MongoDB
  */
 import grails.mongodb.geo.*
+import groovy.transform.Field
 
-model {
-    MultiPolygon multiPolygon
-}
+@Field MultiPoint multiPolygon
 
 json {
     type "MultiPolygon"

@@ -3,6 +3,7 @@ package grails.views
 import grails.views.compiler.ViewsTransform
 import grails.views.resolve.GenericGroovyTemplateResolver
 import groovy.io.FileType
+import groovy.transform.CompileStatic
 import org.codehaus.groovy.control.CompilationUnit
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.SourceUnit
@@ -22,6 +23,7 @@ import java.util.concurrent.Future
  * @author Graeme Rocher
  * @since 1.0
  */
+@CompileStatic
 abstract class AbstractGroovyTemplateCompiler {
 
     @Delegate CompilerConfiguration configuration = new CompilerConfiguration()
@@ -72,7 +74,7 @@ abstract class AbstractGroovyTemplateCompiler {
             List<Future<Boolean>> futures = []
             for(int index=0;index < collatedSources.size();index++) {
                 def sourceFiles = collatedSources[index]
-                futures << completionService.submit({ ->
+                futures.add(completionService.submit({ ->
                     CompilerConfiguration configuration = new CompilerConfiguration(this.configuration)
                     for(int viewIndex=0;viewIndex < sourceFiles.size();viewIndex++) {
                         File source = sourceFiles[viewIndex]
@@ -93,7 +95,7 @@ abstract class AbstractGroovyTemplateCompiler {
                         unit.compile()
                     }
                     return true
-                } as Callable)
+                } as Callable) as Future<Boolean>)
             }
 
             int pending = futures.size()
@@ -137,14 +139,14 @@ Usage: java -cp CLASSPATH ${compilerClass.name} [srcDir] [destDir] [targetCompat
         File configFile = new File(args[5])
         String encoding = new File(args[6])
 
-        GenericViewConfiguration configuration = configurationClass.newInstance()
+        GenericViewConfiguration configuration = configurationClass.getDeclaredConstructor().newInstance()
         configuration.packageName = packageName
         configuration.encoding = encoding
         configuration.packageImports = packageImports
 
         configuration.readConfiguration(configFile)
 
-        AbstractGroovyTemplateCompiler compiler = compilerClass.newInstance(configuration, srcDir)
+        AbstractGroovyTemplateCompiler compiler = compilerClass.getDeclaredConstructor(ViewConfiguration, File).newInstance(configuration, srcDir)
         compiler.setTargetDirectory( destinationDir )
         compiler.setSourceEncoding( configuration.encoding )
         if(targetCompatibility != null) {

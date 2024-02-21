@@ -202,7 +202,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 }
 
                 if(paginationObject != null) {
-                    List<Link> links = getPaginationLinks(paginationObject, total.intValue(), jsonView.params)
+                    List<Link> links = getPaginationLinks(paginationObject, total.intValue(), jsonView.params) as List<Link>
                     for(link in links) {
                         ((StreamingJsonDelegate) delegate).call(link.rel) {
                             ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, link.href)
@@ -253,7 +253,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 ((StreamingJsonDelegate) delegate).call(HREFLANG_ATTRIBUTE, locale.toString())
                 ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, contentTypeMimeType ?: contentType)
             }
-            List<Link> links = getPaginationLinks(object, total, max, offset, sort, order)
+            List<Link> links = getPaginationLinks(object, total, max, offset, sort, order) as List<Link>
             for(link in links) {
                 ((StreamingJsonDelegate) delegate).call(link.rel) {
                     ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, link.href)
@@ -401,7 +401,7 @@ class DefaultHalViewHelper extends DefaultJsonViewHelper implements HalViewHelpe
                 ((StreamingJsonDelegate) delegate).call(TYPE_ATTRIBUTE, contentType)
             }
 
-            Set<Link> links = getLinks(object)
+            Set<Link> links = getLinks(object) as Set<Link>
             for (link in links) {
                 ((StreamingJsonDelegate) delegate).call(link.rel) {
                     ((StreamingJsonDelegate) delegate).call(HREF_ATTRIBUTE, link.href)

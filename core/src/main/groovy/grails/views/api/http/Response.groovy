@@ -1,10 +1,12 @@
 package grails.views.api.http
 
+import groovy.transform.CompileStatic
 import org.springframework.http.HttpStatus
 
 /**
  * Allows control over the page response (headers, content type, status)
  */
+@CompileStatic
 interface Response {
 
     /**
