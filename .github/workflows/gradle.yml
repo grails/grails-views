@@ -56,7 +56,7 @@ jobs:
             build
             -Dgeb.env=chromeHeadless
 
-      - name: Publish to repo.grails.org
+      - name: Publish Snapshot to repo.grails.org
         id: publish
         uses: gradle/actions/setup-gradle@v3
         if: steps.build.outcome == 'success' && github.event_name == 'push' && matrix.java == '11'
