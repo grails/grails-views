@@ -20,6 +20,8 @@ tasks.withType(AsciidoctorTask).configureEach {
                'icons'        : 'font',
                'version'      : version
                //'sourcedir'    : coreSourceDir
+
+    outputDir layout.buildDirectory.dir('docs')
 }
 
 // Groovydoc task requires the Groovy version of Gradle
