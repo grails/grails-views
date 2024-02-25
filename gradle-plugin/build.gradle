@@ -53,7 +53,7 @@ gradlePlugin {
 
 afterEvaluate {
 	signing {
-		required { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
+		required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
 		Publication[] publications = new Publication[publishing.publications.size() - 1]
 		publishing.publications.findAll { it.name != 'pluginMaven' }.toArray(publications)
 		sign(publications)
