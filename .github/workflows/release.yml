@@ -4,34 +4,32 @@ on:
     types: [published]
 
 jobs:
-
   release:
     runs-on: ubuntu-latest
-
     env:
       GIT_USER_NAME: puneetbehl
       GIT_USER_EMAIL: behlp@unityfoundation.io
-
     steps:
-
       - uses: actions/checkout@v4
       - uses: gradle/wrapper-validation-action@v2
       - uses: actions/setup-java@v4
         with: { java-version: 11, distribution: temurin }
 
-      - name: Set the current release version
+      - name: Get the current release version
         id: release_version
-        run: echo "release_version=${GITHUB_REF:11}" >> $GITHUB_OUTPUT
+        run: |
+          echo "Release version: ${GITHUB_REF:11}"
+          echo "release_version=${GITHUB_REF:11}" >> $GITHUB_OUTPUT
 
-      - name: Run pre-release
+      - name: Set projectVersion to the release version
         uses: micronaut-projects/github-actions/pre-release@master
 
-      - name: Generate secring file
+      - name: Generate key file for artifact signing
         env:
           SECRING_FILE: ${{ secrets.SECRING_FILE }}
         run: echo $SECRING_FILE | base64 -d > ${{ github.workspace }}/secring.gpg
 
-      - name: Publish to Sonatype
+      - name: Publish release artifacts to Sonatype
         id: publish_to_sonatype
         uses: gradle/actions/setup-gradle@v3
         env:
@@ -60,21 +58,18 @@ jobs:
         with:
           arguments: views-docs:docs
 
-      - name: Export Gradle Properties
-        uses: micronaut-projects/github-actions/export-gradle-properties@master
-
-      - name: Publish to Github Pages
+      - name: Publish Documentation to Github Pages
         if: success()
         uses: micronaut-projects/github-pages-deploy-action@grails
         env:
           BETA: ${{ contains(steps.release_version.outputs.release_version, 'M') || contains(steps.release_version.outputs.release_version, 'RC') }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: docs/build/docs
-          VERSION: ${{ steps.release_version.outputs.release_version }}
           COMMIT_EMAIL: ${{ env.GIT_USER_EMAIL }}
           COMMIT_NAME: ${{ env.GIT_USER_NAME }}
+          FOLDER: docs/build/docs
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          VERSION: ${{ steps.release_version.outputs.release_version }}
 
-      - name: Run post-release
+      - name: Set projectVersion to the next snapshot version
         if: success()
         uses: micronaut-projects/github-actions/post-release@master

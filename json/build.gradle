@@ -31,11 +31,6 @@ java {
     withSourcesJar()
 }
 
-springBoot {
-    // Project has 2 classes with main methods, so we need to specify which one to select
-    mainClass = 'grails.plugin.json.view.Application'
-}
-
 tasks.named('bootJar') {
     enabled = false // Don't need a bootJar for plugin
 }
