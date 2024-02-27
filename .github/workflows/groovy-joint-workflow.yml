@@ -96,14 +96,9 @@ jobs:
           echo "" >> $GITHUB_OUTPUT
           echo "buildCache {" >> $GITHUB_OUTPUT 
           echo "    local { enabled = false }" >> $GITHUB_OUTPUT 
-          echo "    remote(HttpBuildCache) {" >> $GITHUB_OUTPUT 
+          echo "    remote(gradleEnterprise.buildCache) {" >> $GITHUB_OUTPUT 
           echo "        push = true" >> $GITHUB_OUTPUT
           echo "        enabled = true" >> $GITHUB_OUTPUT 
-          echo "        url = 'https://ge.grails.org/cache/'" >> $GITHUB_OUTPUT 
-          echo "        credentials {" >> $GITHUB_OUTPUT 
-          echo "            username = System.getenv('GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER')" >> $GITHUB_OUTPUT 
-          echo "            password = System.getenv('GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY')" >> $GITHUB_OUTPUT 
-          echo "        }" >> $GITHUB_OUTPUT 
           echo "    }" >> $GITHUB_OUTPUT 
           echo "}" >> $GITHUB_OUTPUT 
           echo "" >> $GITHUB_OUTPUT
