@@ -41,8 +41,8 @@ jobs:
       - name: Get version of Gradle Enterprise plugin
         id: gradle_enterprise_version
         run: |
-          GE_PLUGIN_VERSION=$(grep -m 1 'id\s*\(\"com.gradle.enterprise\"\|'"'com.gradle.enterprise'"'\)\s*version' settings.gradle | sed -E "s/.*version[[:space:]]*['\"]?([0-9]+\.[0-9]+\.[0-9]+)['\"]?.*/\1/" | tr -d [:space:])
-          GE_USER_DATA_PLUGIN_VERSION=$(grep -m 1 'id\s*\(\"com.gradle.common-custom-user-data-gradle-plugin\"\|'"'com.gradle.common-custom-user-data-gradle-plugin'"'\)\s*version' settings.gradle | sed -E "s/.*version[[:space:]]*['\"]?([0-9]+\.[0-9]+\.[0-9]+)['\"]?.*/\1/" | tr -d [:space:])
+          GE_PLUGIN_VERSION=$(grep -m 1 'id\s*\(\"com.gradle.enterprise\"\|'"'com.gradle.enterprise'"'\)\s*version' settings.gradle | sed -E "s/.*version[[:space:]]*['\"]?([0-9]+\.[0-9]+(\.[0-9]+)?)['\"]?.*/\1/" | tr -d [:space:])
+          GE_USER_DATA_PLUGIN_VERSION=$(grep -m 1 'id\s*\(\"com.gradle.common-custom-user-data-gradle-plugin\"\|'"'com.gradle.common-custom-user-data-gradle-plugin'"'\)\s*version' settings.gradle | sed -E "s/.*version[[:space:]]*['\"]?([0-9]+\.[0-9]+(\.[0-9]+)?)['\"]?.*/\1/" | tr -d [:space:])
           echo "Project uses Gradle Enterprise Plugin version: $GE_PLUGIN_VERSION"
           echo "Project uses Gradle Common Custom User Data Plugin version: $GE_USER_DATA_PLUGIN_VERSION"
           echo "ge_plugin_version=$GE_PLUGIN_VERSION" >> $GITHUB_OUTPUT
