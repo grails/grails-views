@@ -1,5 +1,5 @@
 [versions]
-asciidoctor-gradle-jvm = '4.0.1'
+asciidoctor-gradle-jvm = '4.0.2'
 assetpipeline = '4.4.0'
 grails-gradle-plugin = '6.1.2'
 grails-views = '3.1.2'
