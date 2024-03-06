@@ -5,6 +5,7 @@ import grails.plugin.json.builder.StreamingJsonBuilder
 import grails.plugin.json.view.api.internal.DefaultGrailsJsonViewHelper
 import grails.plugin.json.view.api.internal.DefaultHalViewHelper
 import grails.plugin.json.view.api.internal.DefaultJsonApiViewHelper
+import grails.plugin.json.view.api.internal.ParentInfo
 import grails.plugin.json.view.api.internal.TemplateRenderer
 import grails.plugin.json.view.api.jsonapi.JsonApiIdRenderStrategy
 import grails.views.GrailsViewTemplate
@@ -21,7 +22,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 trait JsonView extends GrailsView {
-
     /**
      * The default generator
      */
@@ -37,15 +37,7 @@ trait JsonView extends GrailsView {
      */
     StreamingJsonBuilder json
 
-    /**
-     * The parent template if any
-     */
-    GrailsViewTemplate parentTemplate
-
-    /**
-     * The parent model, if any
-     */
-    Map parentModel
+    Collection<ParentInfo> parentData = []
     /**
      * Overrides the default helper with new methods specific to JSON building
      */
@@ -91,8 +83,11 @@ trait JsonView extends GrailsView {
                     .resolveTemplateUri(getControllerNamespace(), getControllerName(), template.toString())
             GrailsViewTemplate parentTemplate = (GrailsViewTemplate)templateEngine.resolveTemplate(templateUri, locale)
             if(parentTemplate != null) {
-                this.parentTemplate = parentTemplate
-                this.parentModel = model
+                ParentInfo parentInfo = new ParentInfo(
+                    parentTemplate: parentTemplate,
+                    parentModel: model
+                )
+                parentData.add(parentInfo)
             }
             else {
                 throw new ViewException("Template not found for name $template")
