@@ -70,10 +70,9 @@ if (isReleaseVersion) {
         String ossUser = project.findProperty('sonatypeOssUsername') ?: ''
         String ossPass = project.findProperty('sonatypeOssPassword') ?: ''
         String ossStagingProfileId = project.findProperty('sonatypeOssStagingProfileId') ?: ''
-        String ossRepo = project.findProperty('sonatypeOssRepo') ?: ''
         repositories {
             sonatype {
-                nexusUrl = uri(ossRepo)
+                nexusUrl = uri('https://s01.oss.sonatype.org/service/local/')
                 username = ossUser
                 password = ossPass
                 stagingProfileId = ossStagingProfileId
