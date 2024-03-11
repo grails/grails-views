@@ -8,9 +8,6 @@ plugins {
 group = 'org.grails'
 ext.set('projectDesc', 'JSON Views Testing Support')
 
-
-configurations.register('groovydocImplementation')
-
 dependencies {
 
     api project(':views-json')
@@ -21,24 +18,8 @@ dependencies {
     implementation libs.groovy.core
     implementation libs.groovy.json
     implementation libs.spock.core
-
-    groovydocImplementation localGroovy(), {
-        because 'The Groovydoc task requires the same Groovy version as Gradle'
-    }
 }
 
-java {
-    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
-    withJavadocJar()
-    withSourcesJar()
-}
-
-tasks.withType(Groovydoc).configureEach {
-    classpath = configurations.groovydocImplementation
-}
-
-tasks.named('javadocJar', Jar) {
-    from tasks.named('groovydoc')
-}
-
-apply from: rootProject.layout.projectDirectory.file('gradle/grailsCentralPublishing.gradle')
+apply from: rootProject.layout.projectDirectory.file('gradle/java-config.gradle')
+apply from: rootProject.layout.projectDirectory.file('gradle/api-docs-config.gradle')
+apply from: rootProject.layout.projectDirectory.file('gradle/publishing.gradle')
