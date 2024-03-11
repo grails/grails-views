@@ -10,6 +10,9 @@ version = projectVersion
 ext.set('grailsVersion', libs.versions.grails.asProvider().get())
 ext.set('isSnapshot', version.endsWith('-SNAPSHOT'))
 ext.set('isReleaseVersion', !isSnapshot)
+ext.set('signing.keyId', findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
+ext.set('signing.password', findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
+ext.set('signing.secretKeyRingFile', findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
 ext.set('pomInfo', {
     delegate.url 'https://views.grails.org/latest/'
     delegate.licenses {
@@ -63,14 +66,17 @@ allprojects {
                 'Implementation-Vendor': 'grails.org'
         )
     }
+    tasks.withType(Sign).configureEach {
+        onlyIf { isReleaseVersion }
+    }
 }
 
 if (isReleaseVersion) {
     nexusPublishing {
-        String ossUser = project.findProperty('sonatypeOssUsername')
-        String ossPass = project.findProperty('sonatypeOssPassword')
-        String ossStagingProfileId = project.findProperty('sonatypeOssStagingProfileId')
-        String ossRepo = project.findProperty('sonatypeOssRepo') ?: 'https://s01.oss.sonatype.org/service/local/'
+        String ossUser = findProperty('sonatypeOssUsername')
+        String ossPass = findProperty('sonatypeOssPassword')
+        String ossStagingProfileId = findProperty('sonatypeOssStagingProfileId')
+        String ossRepo = findProperty('sonatypeOssRepo') ?: 'https://s01.oss.sonatype.org/service/local/'
         repositories {
             sonatype {
                 nexusUrl = uri(ossRepo)

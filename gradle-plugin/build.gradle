@@ -37,25 +37,35 @@ gradlePlugin {
 	}
 }
 
-// This is for signing and publishing the Gradle Plugin Marker poms
+// Signing and publishing for this project is handled
+// separately as it is using the java-gradle-plugin
 afterEvaluate {
+	def publications = extensions.findByType(PublishingExtension).publications
 	signing {
 		required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
-		def publicationContainer = project.extensions.findByType(PublishingExtension).publications
-		def publicationsToSign = publicationContainer.stream().filter { it.name != 'pluginMaven' }.toArray(Publication[]::new)
-		sign(publicationsToSign)
+		sign(publications.withType(MavenPublication))
 	}
-	publishing.publications.each { publication ->
-		def pub = publication as MavenPublication
-		if (pub.name != 'pluginMaven') {
-			pub.pom.withXml {
-				def xml = asNode()
-				xml.children().last() + pomInfo
-			}
+	// Modify the 'pluginMaven' publication that is already
+	// set up by the java-gradle-plugin for the java components
+	publications.named('pluginMaven', MavenPublication) {
+		artifactId = project.name
+		versionMapping {
+			usage('java-api') { fromResolutionOf('runtimeClasspath') }
+			usage('java-runtime') { fromResolutionResult() }
+		}
+		pom {
+			name = 'Grails Views'
+			description = 'Provides additional view technologies to the Grails framework, including JSON and Markup views.'
+		}
+	}
+	// Add our pom info to all publications
+	// (e.g. also to the plugin marker poms)
+	publications.withType(MavenPublication).each {
+		it.pom.withXml {
+			asNode().children().last() + pomInfo
 		}
 	}
 }
 
 apply from: rootProject.layout.projectDirectory.file('gradle/java-config.gradle')
 apply from: rootProject.layout.projectDirectory.file('gradle/api-docs-config.gradle')
-apply from: rootProject.layout.projectDirectory.file('gradle/publishing.gradle')
