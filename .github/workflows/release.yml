@@ -57,7 +57,8 @@ jobs:
           SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
         with:
           arguments: |
-            -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg 
+            -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg
+            -Porg.gradle.parallel=false
             publishToSonatype 
             closeSonatypeStagingRepository
   release:
