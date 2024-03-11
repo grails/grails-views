@@ -1,12 +1,20 @@
 ext.set('signing.keyId', project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
 ext.set('signing.password', project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
+ext.set('signing.secretKeyRingFile', project.findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
 
 def javaComponent = components.named('java')
 project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
 
-    pe.publications.register('pluginMaven', MavenPublication) {
+    // 'java-gradle-plugin' in views-gradle has already created this publication
+    if (!pe.publications.names.contains('pluginMaven')) {
+        pe.publications.register('pluginMaven', MavenPublication)
+    }
+    pe.publications.named('pluginMaven', MavenPublication) {
         artifactId = project.name
-        from javaComponent.get()
+        // 'java-gradle-plugin' in views-gradle has already configured this
+        if (project.name != 'views-gradle') {
+            from javaComponent.get()
+        }
         versionMapping {
             usage('java-api') { fromResolutionOf('runtimeClasspath') }
             usage('java-runtime') { fromResolutionResult() }
@@ -28,8 +36,8 @@ project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
         repositories {
             maven {
                 credentials {
-                    username = project.findProperty('artifactoryUsername') ?: ''
-                    password = project.findProperty('artifactoryPassword') ?: ''
+                    username = project.findProperty('artifactoryUsername')
+                    password = project.findProperty('artifactoryPassword')
                 }
                 url = group == 'org.grails.plugins' ?
                         uri('https://repo.grails.org/grails/plugins3-snapshots-local') :
@@ -43,8 +51,7 @@ afterEvaluate {
     def publicationContainer = extensions.findByType(PublishingExtension).publications
     extensions.configure(SigningExtension) { SigningExtension se ->
         se.required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
-        Publication[] publicationsToSign = new Publication[publicationContainer.size()]
-        publicationContainer.findAll().toArray(publicationsToSign)
+        def publicationsToSign = publicationContainer.stream().filter { it.name == 'pluginMaven' }.toArray(Publication[]::new)
         se.sign(publicationsToSign)
     }
 }

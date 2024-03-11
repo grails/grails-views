@@ -20,29 +20,15 @@ dependencies {
 	compileOnly "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
 }
 
-java {
-	sourceCompatibility = JavaVersion.toVersion(libs.versions.java.baseline.get())
-	withJavadocJar()
-	withSourcesJar()
-}
-
-tasks.named('javadocJar', Jar) {
-	from tasks.named('groovydoc')
-}
-
-tasks.withType(Sign).configureEach {
-	onlyIf { isReleaseVersion }
-}
-
 gradlePlugin {
 	plugins {
-		register('viewsJson') {
+		create('viewsJson') {
 			id = 'org.grails.plugins.views-json'
 			implementationClass = 'grails.views.gradle.json.GrailsJsonViewsPlugin'
 			displayName = 'Grails Json Views Gradle Plugin'
 			description = 'The Gradle plugin for Json Views'
 		}
-		register('viewsMarkup') {
+		create('viewsMarkup') {
 			id = 'org.grails.plugins.views-markup'
 			implementationClass = 'grails.views.gradle.markup.GrailsMarkupViewsPlugin'
 			displayName = 'Grails Markup Views Gradle Plugin'
@@ -51,17 +37,16 @@ gradlePlugin {
 	}
 }
 
+// This is for signing and publishing the Gradle Plugin Marker poms
 afterEvaluate {
 	signing {
-		def publicationContainer = project.extensions.findByType(PublishingExtension).publications
 		required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
-		Publication[] publicationsToSign = new Publication[publicationContainer.size() - 1]
-		publicationContainer.findAll { it.name != 'pluginMaven' }.toArray(publicationsToSign)
+		def publicationContainer = project.extensions.findByType(PublishingExtension).publications
+		def publicationsToSign = publicationContainer.stream().filter { it.name != 'pluginMaven' }.toArray(Publication[]::new)
 		sign(publicationsToSign)
 	}
-
 	publishing.publications.each { publication ->
-		MavenPublication pub = publication as MavenPublication
+		def pub = publication as MavenPublication
 		if (pub.name != 'pluginMaven') {
 			pub.pom.withXml {
 				def xml = asNode()
@@ -70,3 +55,7 @@ afterEvaluate {
 		}
 	}
 }
+
+apply from: rootProject.layout.projectDirectory.file('gradle/java-config.gradle')
+apply from: rootProject.layout.projectDirectory.file('gradle/api-docs-config.gradle')
+apply from: rootProject.layout.projectDirectory.file('gradle/publishing.gradle')
