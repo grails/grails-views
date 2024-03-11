@@ -1,20 +1,8 @@
-ext.set('signing.keyId', project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
-ext.set('signing.password', project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
-ext.set('signing.secretKeyRingFile', project.findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
-
 def javaComponent = components.named('java')
 project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
-
-    // 'java-gradle-plugin' in views-gradle has already created this publication
-    if (!pe.publications.names.contains('pluginMaven')) {
-        pe.publications.register('pluginMaven', MavenPublication)
-    }
-    pe.publications.named('pluginMaven', MavenPublication) {
+    pe.publications.register('maven', MavenPublication) {
         artifactId = project.name
-        // 'java-gradle-plugin' in views-gradle has already configured this
-        if (project.name != 'views-gradle') {
-            from javaComponent.get()
-        }
+        from javaComponent.get()
         versionMapping {
             usage('java-api') { fromResolutionOf('runtimeClasspath') }
             usage('java-runtime') { fromResolutionResult() }
@@ -26,7 +14,6 @@ project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
         pom.withXml {
             def pomNode = asNode()
             pomNode.children().last() + pomInfo
-
             // dependency management shouldn't be included
             try { pomNode.dependencyManagement.replaceNode({}) } catch (Throwable ignore) {}
         }
@@ -48,18 +35,12 @@ project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
 }
 
 afterEvaluate {
-    def publicationContainer = extensions.findByType(PublishingExtension).publications
+    def publications = extensions.findByType(PublishingExtension).publications
     extensions.configure(SigningExtension) { SigningExtension se ->
         se.required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
-        def publicationsToSign = publicationContainer.stream().filter { it.name == 'pluginMaven' }.toArray(Publication[]::new)
-        se.sign(publicationsToSign)
+        se.sign(publications.named('maven').get())
     }
 }
-
-tasks.withType(Sign).configureEach {
-    onlyIf { isReleaseVersion }
-}
-
 tasks.register('install') {
     dependsOn 'publishToMavenLocal'
 }
