@@ -36,7 +36,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: grails-views-${{ steps.release_version.outputs.value }}.zip
+          name: grails-views-${{ steps.release_version.outputs.value }}
           path: ./**/build/libs/*
       - name: Generate key file for artifact signing
         env:
