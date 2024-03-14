@@ -1,21 +1,35 @@
 def javaComponent = components.named('java')
-project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
-    pe.publications.register('maven', MavenPublication) {
-        artifactId = project.name
-        from javaComponent.get()
-        versionMapping {
-            usage('java-api') { fromResolutionOf('runtimeClasspath') }
-            usage('java-runtime') { fromResolutionResult() }
-        }
-        pom {
-            name = 'Grails Views'
-            description = 'Provides additional view technologies to the Grails framework, including JSON and Markup views.'
-        }
-        pom.withXml {
-            def pomNode = asNode()
-            pomNode.children().last() + pomInfo
-            // dependency management shouldn't be included
-            try { pomNode.dependencyManagement.replaceNode({}) } catch (Throwable ignore) {}
+
+publishing {
+    publications {
+        pluginMaven(MavenPublication) {
+            artifactId = project.name
+            artifactId = "grails-${project.name}"
+            if (project.name != 'views-gradle') {
+                from javaComponent.get()
+            }
+            versionMapping {
+                usage('java-api') { fromResolutionOf('runtimeClasspath') }
+                usage('java-runtime') { fromResolutionResult() }
+            }
+            if (ext.has('isGrailsPlugin')) {
+                artifact source: "${project.sourceSets.main.groovy.classesDirectory.getAsFile().get()}/META-INF/grails-plugin.xml",
+                        classifier: "plugin",
+                        extension: 'xml'
+            }
+            pom {
+                name = 'Grails Views'
+                description = 'Provides additional view technologies to the Grails framework, including JSON and Markup views.'
+            }
+            pom.withXml {
+                def pomNode = asNode()
+                pomNode.children().last() + pomInfo
+                // dependency management shouldn't be included
+                try {
+                    pomNode.dependencyManagement.replaceNode({})
+                } catch (Throwable ignore) {
+                }
+            }
         }
     }
 
@@ -35,12 +49,18 @@ project.extensions.configure(PublishingExtension) { PublishingExtension pe ->
 }
 
 afterEvaluate {
-    def publications = extensions.findByType(PublishingExtension).publications
-    extensions.configure(SigningExtension) { SigningExtension se ->
-        se.required = { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
-        se.sign(publications.named('maven').get())
+    signing {
+        required = { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+        Publication[] publications = new Publication[project.publishing.publications.size()]
+        project.publishing.publications.findAll().toArray(publications)
+        sign(publications)
+    }
+
+    tasks.withType(Sign) {
+        onlyIf { isReleaseVersion }
     }
 }
+
 tasks.register('install') {
     dependsOn 'publishToMavenLocal'
 }

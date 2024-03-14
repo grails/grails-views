@@ -10,37 +10,39 @@ version = projectVersion
 ext.set('grailsVersion', libs.versions.grails.asProvider().get())
 ext.set('isSnapshot', version.endsWith('-SNAPSHOT'))
 ext.set('isReleaseVersion', !isSnapshot)
-ext.set('signing.keyId', findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
-ext.set('signing.password', findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
-ext.set('signing.secretKeyRingFile', findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
-ext.set('pomInfo', {
-    delegate.url 'https://views.grails.org/latest/'
-    delegate.licenses {
-        delegate.license {
-            delegate.name 'The Apache Software License, Version 2.0'
-            delegate.url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-        }
-    }
-    delegate.scm {
-        delegate.url 'https://github.com/grails/grails-views/'
-        delegate.connection 'scm:git:git://github.com/grails/grails-views'
-        delegate.developerConnection 'scm:git:ssh://github.com:grails/grails-views'
-    }
-    delegate.developers {
-        delegate.developer {
-            delegate.id 'graemerocher'
-            delegate.name 'Graeme Rocher'
-            delegate.email 'graeme.rocher@gmail.com'
-        }
-        delegate.developer {
-            delegate.id 'puneetbehl'
-            delegate.name 'Puneet Behl'
-            delegate.email 'behlp@unityfoundation.io'
-        }
-    }
-})
 
 allprojects {
+
+    ext.set('signing.keyId', findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
+    ext.set('signing.password', findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
+    ext.set('signing.secretKeyRingFile', findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
+    ext.set('pomInfo', {
+        delegate.url 'https://views.grails.org/latest/'
+        delegate.licenses {
+            delegate.license {
+                delegate.name 'The Apache Software License, Version 2.0'
+                delegate.url 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+        }
+        delegate.scm {
+            delegate.url 'https://github.com/grails/grails-views/'
+            delegate.connection 'scm:git:git://github.com/grails/grails-views'
+            delegate.developerConnection 'scm:git:ssh://github.com:grails/grails-views'
+        }
+        delegate.developers {
+            delegate.developer {
+                delegate.id 'graemerocher'
+                delegate.name 'Graeme Rocher'
+                delegate.email 'graeme.rocher@gmail.com'
+            }
+            delegate.developer {
+                delegate.id 'puneetbehl'
+                delegate.name 'Puneet Behl'
+                delegate.email 'behlp@unityfoundation.io'
+            }
+        }
+    })
+
     version = rootProject.version
     repositories {
         mavenLocal() // Used by Groovy Joint workflow github action after building Groovy
