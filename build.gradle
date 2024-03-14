@@ -6,6 +6,7 @@ plugins {
     id 'org.asciidoctor.jvm.convert'
 }
 
+group = 'org.grails'
 version = projectVersion
 ext.set('grailsVersion', libs.versions.grails.asProvider().get())
 ext.set('isSnapshot', version.endsWith('-SNAPSHOT'))
