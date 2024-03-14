@@ -8,6 +8,7 @@ plugins {
 
 group = 'org.grails.plugins'
 ext.set('projectDesc', 'Grails JSON Views')
+ext.set('isGrailsPlugin', true)
 
 dependencies {
 
