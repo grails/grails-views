@@ -1,24 +1,43 @@
 name-template: $RESOLVED_VERSION
 tag-template: v$RESOLVED_VERSION
+pull-request:
+  title-templates:
+    fix: '🐛 $TITLE (#$NUMBER)'
+    feat: '🚀 $TITLE (#$NUMBER)'
+    default: '$TITLE (#$NUMBER)'
 categories:
-  - title: ✨ Features
+  - title: '🚀 Features'
     labels:
+      - 'feat'
       - "type: enhancement"
       - "type: new feature"
       - "type: major"
-  - title: 🐛 Bug Fixes/Improvements
+  - title: '🐛 Bug Fixes'
     labels:
+      - 'fix'
       - "type: improvement"
       - "type: bug"
       - "type: minor"
-  - title: 🛠 Dependency upgrades
+  - title: '📚 Documentation'
     labels:
+      - 'docs'
+  - title: '🔧 Maintenance'
+    labels:
+      - 'chore'
+      - 'refactor'
+      - 'style'
+      - 'test'
+      - 'ci'
+      - 'perf'
+      - 'build'
+      - 'deps'
       - "type: dependency upgrade"
       - "dependencies"
-  - title: ⚙️ Build/CI
-    labels:
       - "type: ci"
       - "type: build"
+  - title: '⏪ Reverts'
+    labels:
+      - 'revert'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 version-resolver:
   major:
