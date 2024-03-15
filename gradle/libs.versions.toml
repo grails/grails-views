@@ -1,7 +1,7 @@
 [versions]
 assetpipeline = '4.3.0'
 caffeine = '2.9.3'
-gorm = '8.1.1'
+gorm = '8.1.2'
 gorm-hibernate5 = '8.0.3'
 gorm-mongodb = '8.1.2'
 grails = '6.1.2'
