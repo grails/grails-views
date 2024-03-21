@@ -2,7 +2,7 @@
 assetpipeline = '4.3.0'
 caffeine = '2.9.3'
 gorm = '8.1.2'
-gorm-hibernate5 = '8.0.3'
+gorm-hibernate5 = '8.1.0'
 gorm-mongodb = '8.2.0'
 grails = '6.1.2'
 grails-gradle-plugin = '6.1.2'
