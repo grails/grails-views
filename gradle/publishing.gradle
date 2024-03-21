@@ -4,7 +4,6 @@ publishing {
     publications {
         pluginMaven(MavenPublication) {
             artifactId = project.name
-            artifactId = "grails-${project.name}"
             if (project.name != 'views-gradle') {
                 from javaComponent.get()
             }
