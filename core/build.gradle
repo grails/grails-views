@@ -10,17 +10,17 @@ ext.set('projectDesc', 'Grails Views Core')
 
 dependencies {
 
-    implementation libs.groovy.core
+    api libs.caffeine // Used in public API
+    api libs.grails.datastore.core // MappingContext is used in public API
+    api libs.grails.mimetypes // MimeUtility is used in public API
+    api libs.grails.rest // Used in public API
+    api libs.grails.web.urlmappings // LinkGenerator is used in public API
+    api libs.spring.context // MessageSource is used in public API
 
-    implementation libs.grails.core
-    implementation libs.grails.web.urlmappings
-    implementation libs.grails.mimetypes
+    implementation libs.grails.bootstrap
     implementation libs.grails.datastore.gorm.support
-    implementation libs.grails.rest
-
     implementation libs.slf4j.api
-
-    api libs.caffeine // Used in public api
+    implementation libs.spring.beans
 
     testImplementation libs.spock.core
     testRuntimeOnly libs.slf4j.nop // Get rid of warnings about missing slf4j implementation during test task

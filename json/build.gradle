@@ -12,10 +12,11 @@ ext.set('isGrailsPlugin', true)
 
 dependencies {
 
-    api project(':views-core')
+    api project(':views-core') // Used in public API
+    api libs.grails.rest // Used in public API
 
-    implementation libs.grails.core
-    implementation libs.grails.rest
+    implementation libs.grails.encoder
+    implementation libs.groovy.core
     implementation libs.groovy.json
 
     testImplementation libs.grails.testing.support.core

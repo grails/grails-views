@@ -13,7 +13,6 @@ import org.grails.plugins.web.rest.render.ServletRenderContext
 import org.grails.plugins.web.rest.render.html.DefaultHtmlRenderer
 import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.web.servlet.ModelAndView
-import org.springframework.web.servlet.View
 import org.springframework.web.servlet.view.AbstractUrlBasedView
 
 /**

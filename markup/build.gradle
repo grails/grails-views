@@ -11,11 +11,18 @@ ext.set('isGrailsPlugin', true)
 
 dependencies {
 
-    api project(':views-core')
+    api project(':views-core') // Used in public API
+    api libs.grails.core // Used in public API
+    api libs.grails.mimetypes // Used in public API
+    api libs.grails.rest // Used in public API
 
-    implementation libs.grails.core
-    implementation libs.grails.rest
+    implementation libs.groovy.core
+    implementation libs.spring.beans
+    implementation libs.spring.boot // For @ConfigurationProperties
 
+    compileOnly libs.javax.annotation.api // Provided
+
+    testImplementation libs.grails.web.urlmappings
     testImplementation libs.spock.core
     testRuntimeOnly libs.slf4j.nop // Get rid of warning about missing slf4j implementation during test task
 }

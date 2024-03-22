@@ -4,7 +4,6 @@ import grails.core.support.proxy.ProxyHandler
 import grails.plugin.markup.view.MarkupViewConfiguration
 import grails.plugin.markup.view.MarkupViewTemplate
 import grails.plugin.markup.view.MarkupViewTemplateEngine
-import grails.plugin.markup.view.MarkupViewWritableScriptTemplate
 import grails.plugin.markup.view.renderer.MarkupViewXmlRenderer
 import grails.rest.render.RendererRegistry
 import grails.views.mvc.SmartViewResolver

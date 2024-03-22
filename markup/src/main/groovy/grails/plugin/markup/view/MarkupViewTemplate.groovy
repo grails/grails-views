@@ -1,7 +1,6 @@
 package grails.plugin.markup.view
 
 import grails.plugin.markup.view.api.MarkupView
-import grails.views.Views
 import grails.views.WritableScript
 import groovy.text.markup.BaseTemplate
 import groovy.text.markup.MarkupTemplateEngine

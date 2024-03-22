@@ -1,7 +1,6 @@
 package grails.views.gradle.markup
 
 import grails.views.gradle.AbstractGroovyTemplatePlugin
-import grails.views.gradle.markup.MarkupViewCompilerTask
 import groovy.transform.CompileStatic
 
 /**

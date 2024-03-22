@@ -2,13 +2,8 @@ package grails.plugin.markup.view
 
 import grails.plugin.markup.view.mvc.MarkupViewResolver
 import grails.plugins.Plugin
-import grails.util.BuildSettings
-import grails.util.Environment
-import grails.util.Metadata
-import grails.views.ViewsEnvironment
 import grails.views.mvc.GenericGroovyTemplateViewResolver
 import grails.views.resolve.PluginAwareTemplateResolver
-import org.grails.io.support.GrailsResourceUtils
 
 /**
  * Plugin class for markup views
