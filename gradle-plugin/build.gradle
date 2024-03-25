@@ -9,15 +9,17 @@ group = 'org.grails.plugins'
 ext.set('projectDesc', 'Grails Views Gradle Plugin')
 
 dependencies {
-    implementation libs.grails.bootstrap
+
+    // the gradle api is provided by java-gradle-plugin
+
+    implementation libs.grails.bootstrap, {
+        // grails-bootstrap leaks groovy-xml which is a problem for Gradle (version conflict)
+        exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
+    }
     implementation libs.grails.gradle.plugin
-    implementation libs.groovy.core
     implementation libs.spring.boot.gradle.plugin
 
-    // This is a workaround for grails-bootstrap exposing a
-    // different version of groovy-xml than the one used by Gradle.
-    // This causes issues with the Groovy compiler.
-    compileOnly "org.codehaus.groovy:groovy-xml:$GroovySystem.version"
+    compileOnly libs.groovy.core // @CompileStatic
 }
 
 gradlePlugin {

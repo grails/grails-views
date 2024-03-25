@@ -9,9 +9,11 @@ grails-gradle-plugin = '6.1.2'
 grails-testing-support = '3.2.1'
 groovy = '3.0.21'
 java-baseline = '11'
+javax-annotation-api = '1.3.2'
 micronaut = '3.10.3'
 slf4j = '1.7.36'
 spock = '2.3-groovy-3.0'
+spring = '5.3.33'
 spring-boot = '2.7.18'
 
 [libraries]
@@ -23,6 +25,7 @@ grails-datastore-core = { module = 'org.grails:grails-datastore-core', version.r
 grails-datastore-gorm-hibernate5 = { module = 'org.grails:grails-datastore-gorm-hibernate5', version.ref = 'gorm-hibernate5' }
 grails-datastore-gorm-mongodb = { module = 'org.grails:grails-datastore-gorm-mongodb', version.ref = 'gorm-mongodb' }
 grails-datastore-gorm-support = { module = 'org.grails:grails-datastore-gorm-support', version.ref = 'gorm' }
+grails-encoder = { module = 'org.grails:grails-encoder', version.ref = 'grails' }
 grails-gradle-plugin = { module = 'org.grails:grails-gradle-plugin', version.ref = 'grails-gradle-plugin' }
 grails-mimetypes = { module = 'org.grails:grails-plugin-mimetypes', version.ref = 'grails' }
 grails-rest = { module = 'org.grails:grails-plugin-rest', version.ref = 'grails' }
@@ -31,8 +34,15 @@ grails-testing-support-gorm = { module = 'org.grails:grails-gorm-testing-support
 grails-web-urlmappings = { module = 'org.grails:grails-web-url-mappings', version.ref = 'grails' }
 groovy-core = { module = 'org.codehaus.groovy:groovy', version.ref = 'groovy' }
 groovy-json = { module = 'org.codehaus.groovy:groovy-json', version.ref = 'groovy' }
+groovy-templates = { module = 'org.codehaus.groovy:groovy-templates', version.ref = 'groovy' }
+javax-annotation-api = { module = 'javax.annotation:javax.annotation-api', version.ref = 'javax-annotation-api' }
 micronaut-http-client = { module = 'io.micronaut:micronaut-http-client', version.ref = 'micronaut' }
 slf4j-api = { module = 'org.slf4j:slf4j-api', version.ref = 'slf4j' }
 slf4j-nop = { module = 'org.slf4j:slf4j-nop', version.ref = 'slf4j' }
 spock-core = { module = 'org.spockframework:spock-core', version.ref = 'spock' }
+spring-beans = { module = 'org.springframework:spring-beans', version.ref = 'spring' }
+spring-context = { module = 'org.springframework:spring-context', version.ref = 'spring' }
+spring-web = { module = 'org.springframework:spring-web', version.ref = 'spring' }
+spring-webmvc = { module = 'org.springframework:spring-webmvc', version.ref = 'spring' }
+spring-boot = { module = 'org.springframework.boot:spring-boot', version.ref = 'spring-boot' }
 spring-boot-gradle-plugin = { module = 'org.springframework.boot:spring-boot-gradle-plugin', version.ref = 'spring-boot' }

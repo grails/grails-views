@@ -36,7 +36,7 @@ tasks.register('compileViews', JavaExec) {
     inputs.dir templateSourceDir
     outputs.dir compilationOutputDir
     mainClass = 'grails.plugin.json.view.JsonViewCompiler'
-    classpath configurations.compileClasspath + configurations.runtimeClasspath
+    classpath configurations.compileClasspath
     args(templateSourceDir.asFile, compilationOutputDir.get().asFile, libs.versions.java.baseline.get(), ' ', ' ', 'none', 'UTF-8')
 }
 

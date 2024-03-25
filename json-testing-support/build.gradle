@@ -10,14 +10,18 @@ ext.set('projectDesc', 'JSON Views Testing Support')
 
 dependencies {
 
-    api project(':views-json')
-    api libs.grails.datastore.core // Used in public api
+    api project(':views-json') // Used in public API
+    api libs.spring.web // Used in public API
+    api libs.grails.datastore.core // Used in public API
+    api libs.spock.core // Used in public API
 
     implementation libs.grails.core
     implementation libs.grails.testing.support.core
+    implementation libs.grails.web.urlmappings
     implementation libs.groovy.core
     implementation libs.groovy.json
-    implementation libs.spock.core
+    implementation libs.groovy.templates
+    implementation libs.spring.webmvc
 }
 
 apply from: rootProject.layout.projectDirectory.file('gradle/java-config.gradle')
