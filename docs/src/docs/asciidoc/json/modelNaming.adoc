@@ -3,7 +3,7 @@
 Grails Framework supports a convention for the model names in your JSON views. If the convention does not meet your needs, model variables can be explicitly defined.
 
 NOTE: Some model names are _reserved_ since there are properties of the same name injected into the view:
-`locale`, `response`, `request`, `page`, `controllerNamespace`, `controllerName`, `actionName`, `config`, `generator`
+`locale`, `response`, `request`, `page`, `controllerNamespace`, `controllerName`, `actionName`, `config`, `generator`, `json`
 
 == Explicit Model Naming
 
